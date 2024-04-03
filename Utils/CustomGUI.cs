@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static UnityEngine.UI.CanvasScaler;
-using UnityEngine.Diagnostics;
+﻿using static UnityEngine.UI.CanvasScaler;
 using UnityEngine.UI;
 using UnityEngine;
-using LethalMystery.Players;
+
 
 
 namespace LethalMystery.Utils
@@ -75,21 +71,6 @@ namespace LethalMystery.Utils
             val.uiScaleMode = (CanvasScaler.ScaleMode)1;
             val.screenMatchMode = (ScreenMatchMode)2;
             val.referenceResolution = new Vector2(1920f, 1080f);
-            _noneText = new GameObject("NoneText");
-            Text val2 = _noneText.AddComponent<Text>();
-            val2.fontSize = 20;
-            val2.font = _font;
-            val2.fontStyle = (FontStyle)1;
-            val2.text = "NO ASSIGNMENT ACTIVE";
-            ((Graphic)val2).color = NONE_TEXT_COLOR;
-            val2.alignment = (TextAnchor)4;
-            RectTransform component2 = _noneText.GetComponent<RectTransform>();
-            ((Transform)component2).SetParent((Transform)(object)component);
-            component2.pivot = Vector2.one;
-            component2.anchorMin = Vector2.one;
-            component2.anchorMax = Vector2.one;
-            component2.anchoredPosition = new Vector2(-70f, -360f);
-            component2.sizeDelta = new Vector2(310f, 50f);
             CanvasGroup val3 = new GameObject("AssignmentPanel").AddComponent<CanvasGroup>();
             val3.alpha = 0.5f;
             Image val4 = ((Component)val3).gameObject.AddComponent<Image>();
@@ -105,7 +86,7 @@ namespace LethalMystery.Utils
             _assignmentTitle.font = _font;
             _assignmentTitle.fontSize = 20;
             _assignmentTitle.fontStyle = (FontStyle)1;
-            _assignmentTitle.text = "NO ASSIGNMENT ACTIVE";
+            _assignmentTitle.text = "No Current Role";
             ((Graphic)_assignmentTitle).color = TITLE_COLOR;
             _assignmentTitle.alignment = (TextAnchor)0;
             RectTransform component3 = ((Component)_assignmentTitle).gameObject.GetComponent<RectTransform>();
@@ -119,7 +100,7 @@ namespace LethalMystery.Utils
             _assignmentText.font = _font;
             _assignmentText.fontSize = 16;
             _assignmentText.fontStyle = (FontStyle)1;
-            _assignmentText.text = "NO ASSIGNMENT ACTIVE";
+            _assignmentText.text = "No Current Role";
             ((Graphic)_assignmentText).color = TEXT_COLOR;
             _assignmentText.alignment = (TextAnchor)6;
             RectTransform component4 = ((Component)_assignmentText).gameObject.GetComponent<RectTransform>();
@@ -164,12 +145,12 @@ namespace LethalMystery.Utils
 
 
 
-        public static void SetAssignment(string role)
+        public static void SetAssignment(Dictionary<string, string> role)
         {
             if (_assignmentTitle is not null)
-                _assignmentTitle.text = role;
+                _assignmentTitle.text = $"Role: {role["topText"]}";
             if (_assignmentText is not null)
-                _assignmentText.text = string.Format(role, "");
+                _assignmentText.text = role["bottomText"];
 
         }
 

@@ -7,28 +7,45 @@ namespace LethalMystery.Players
     {
 
 
-        public string? TopText;
-        public string? BottomText;
-        private AssignmentUI? _assignmentUI;
+        private static readonly Dictionary<string, Dictionary<string, string>> RoleAttrs = new Dictionary<string, Dictionary<string, string>>
+        {
+            {"Employee", new Dictionary<string, string>
+                {
+                    {"topText", "Employee"},
+                    {"bottomText", "Do all your tasks"}
+                }
+            },
+            {"Monster", new Dictionary<string, string>
+                {
+                    {"topText", "Monster"},
+                    {"bottomText", "Eliminate all the crew"}
+                }
+            },
+            {"Shapeshifter", new Dictionary<string, string>
+                {
+                    {"topText", "Shapeshifter"},
+                    {"bottomText", "Eliminate all the crew and press x to shapeshift"}
+                }
+            },
+            {"Sherif", new Dictionary<string, string>
+                {
+                    {"topText", "Shapeshifter"},
+                    {"bottomText", "Eliminate all the crew and press x to shapeshift"}
+                }
+            }
+        };
 
+        public static string? TopText;
+        public static string? BottomText;
 
-
-        public void displayRole(string role)
+        public static void AssignRole(string role)
         {
             Debug.Log(">>>>>>>>>EEEEEEEEEEEEEEEEE");
-            if (_assignmentUI is not null)
-            {
-                //TopText = RoleAttrs[role]["topText"];
-                //BottomText = RoleAttrs[role]["bottomText"];
 
-                if (Plugin.Instance is not null)
-                    if (Plugin.Instance.logger is not null)
-                //Plugin.Instance?.logger.LogInfo($"TopText: {TopText}\nBottomText: {BottomText} ");
-                Debug.Log(">>>>>>>>>EEEEEEEEEEEEEEEEE");
+            TopText = RoleAttrs[role]["topText"];
+            BottomText = RoleAttrs[role]["bottomText"];
 
-                //_assignmentUI.SetAssignment(role);
-                
-            }
+            AssignmentUI.SetAssignment(RoleAttrs[role]);
         }
 
 

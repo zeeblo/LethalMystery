@@ -42,13 +42,9 @@ namespace LethalMystery
         internal ManualLogSource? logger;
         private TerminalModRegistry? TCommands;
         
-        //private Roles? _roles;
 
         public static readonly LethalServerMessage<string> customServerMessage = new LethalServerMessage<string>(identifier: "LethalMystery", ReceiveByServer);
         public static readonly LethalClientMessage<string> customClientMessage = new LethalClientMessage<string>(identifier: "LethalMystery", ReceiveFromServer, ReceiveFromClient);
-        public static LethalNetworkVariable<string> globalMessage = new LethalNetworkVariable<string>(identifier: "globalMessage");
-        public static LethalNetworkVariable<bool> tempEject = new LethalNetworkVariable<bool>(identifier: "tempEject");
-
 
 
         private void Awake()
@@ -62,7 +58,8 @@ namespace LethalMystery
 
         private void PatchAllStuff()
         {
-            _harmony.PatchAll(typeof(StartOfRoundPatch));
+            //_harmony.PatchAll(typeof(StartOfRoundPatch));
+            _harmony.PatchAll(typeof(RoundManagerPatch));
         }
 
 
@@ -78,16 +75,6 @@ namespace LethalMystery
         private static void ReceiveByServer(string data, ulong id)
         {
 
-        }
-
-
-        [TerminalCommand("start")]
-        [CommandInfo("Begin the Lethal Mystery game")]
-        public string startCommand()
-        {
-
-            //_roles?.displayRole("Monster");
-            return "Cool.";
         }
 
 
