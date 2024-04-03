@@ -114,90 +114,15 @@ namespace LethalMystery.Utils
 
 
 
-        private const float EASE_IN_OUT_MAGIC1 = 1.7f;
-
-        private const float EASE_IN_OUT_MAGIC2 = 2.5500002f;
-
-        public static float EaseInOutBack(float x)
-        {
-            return (x < 0.5f) ? (MathF.Pow(2f * x, 2f) * (7.1000004f * x - 2.5500002f) / 2f) : ((MathF.Pow(2f * x - 2f, 2f) * (3.5500002f * (x * 2f - 2f) + 2.5500002f) + 2f) / 2f);
-        }
-
-        public static int WeightedRandom(int[] weights)
-        {
-            int num = 0;
-            for (int i = 0; i < weights.Length; i++)
-            {
-                num += weights[i];
-            }
-            int num2 = UnityEngine.Random.Range(0, num);
-            int num3 = 0;
-            for (int j = 0; j < weights.Length; j++)
-            {
-                num3 += weights[j];
-                if (num3 >= num2)
-                {
-                    return j;
-                }
-            }
-            return 0;
-        }
-
-
 
         public static void SetAssignment(Dictionary<string, string> role)
         {
             if (_assignmentTitle is not null)
-                _assignmentTitle.text = $"Role: {role["topText"]}";
+                _assignmentTitle.text = $"Role: {role["role"]}";
             if (_assignmentText is not null)
-                _assignmentText.text = role["bottomText"];
+                _assignmentText.text = role["desc"];
 
         }
 
-        public void ClearAssignment(bool force = false)
-        {
-            if (force || _state == State.Shown || _state == State.Showing)
-            {
-                ChangeState(State.Hiding);
-                //currentRole = null;
-            }
-        }
-
-        private void ChangeState(State state)
-        {
-            _state = state;
-            _animationProgress = 0f;
-        }
-
-        private void PanelAnimation()
-        {
-            if (_state == State.Shown || _state == State.Hidden)
-            {
-                return;
-            }
-            if (_animationProgress >= 1f)
-            {
-                _state++;
-                return;
-            }
-            float num = 1f;
-            if (_state == State.Hiding)
-            {
-                num = 2f;
-            }
-            _animationProgress += num * Time.deltaTime;
-            float num2 = _animationProgress;
-            if (_state == State.Hiding)
-            {
-                num2 = 1f - num2;
-            }
-            if (_assignment is not null)
-                _assignment.anchoredPosition = Vector2.Lerp(HIDE_POSITION, SHOW_POSITION, EaseInOutBack(num2));
-        }
-
-        private void Update()
-        {
-            PanelAnimation();
-        }
     }
 }

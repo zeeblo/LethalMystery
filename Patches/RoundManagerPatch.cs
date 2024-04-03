@@ -16,9 +16,11 @@ namespace LethalMystery.Patches
         private static void Start()
         {
             _assignmentUI = new GameObject("UI").AddComponent<AssignmentUI>();
+            Roles.AssignRole("Shapeshifter");
 
-            Roles.AssignRole("Monster");
+
         }
+
 
     }
 }

@@ -5,15 +5,16 @@ using LethalAPI.LibTerminal;
 using LethalAPI.LibTerminal.Attributes;
 using LethalAPI.LibTerminal.Models;
 using LethalMystery.Patches;
-using LethalMystery.Utils;
 using LethalNetworkAPI;
-using UnityEngine;
+
 
 
 
 /*
  * - Add Start command
- * - Have a GUI that says if they're the monster/crew & if they're shapeshifter (Stays on whole game)
+ * ! Have a GUI that says if they're the monster/crew & if they're shapeshifter (Stays on whole game)
+ * - Have the speaker dialouge tell players their role instead.
+ * - Have a chat commands that will tell the users their role & what they do
  * - Imposters can spawn their weapon (Using config not Keyboard)
  * - 
 */
@@ -77,21 +78,6 @@ namespace LethalMystery
 
         }
 
-
-
-        public static void ShowRole()
-        {
-            DialogueSegment[] array = (DialogueSegment[])(object)new DialogueSegment[1]
-            {
-                    new DialogueSegment
-                    {
-                        speakerText = "Monster",
-                        bodyText = "As a crew u do stuff",
-                        waitTime = 10f
-                    }
-            };
-            HUDManager.Instance.ReadDialogue(array);
-        }
 
     }
 }

@@ -11,26 +11,31 @@ namespace LethalMystery.Players
         {
             {"Employee", new Dictionary<string, string>
                 {
-                    {"topText", "Employee"},
-                    {"bottomText", "Do all your tasks"}
-                }
-            },
-            {"Monster", new Dictionary<string, string>
-                {
-                    {"topText", "Monster"},
-                    {"bottomText", "Eliminate all the crew"}
-                }
-            },
-            {"Shapeshifter", new Dictionary<string, string>
-                {
-                    {"topText", "Shapeshifter"},
-                    {"bottomText", "Eliminate all the crew and press x to shapeshift"}
+                    {"role", "Employee"},
+                    {"desc", "Do all your tasks"},
+                    {"type", "employee"}
                 }
             },
             {"Sherif", new Dictionary<string, string>
                 {
-                    {"topText", "Shapeshifter"},
-                    {"bottomText", "Eliminate all the crew and press x to shapeshift"}
+                    {"role", "Shapeshifter"},
+                    {"desc", "Eliminate all the crew and press x to shapeshift"},
+                    {"type", "employee"}
+                }
+            },
+            {"Monster", new Dictionary<string, string>
+                {
+                    {"role", "Monster"},
+                    {"desc", "Eliminate all the crew"},
+                    {"type", "monster"}
+
+                }
+            },
+            {"Shapeshifter", new Dictionary<string, string>
+                {
+                    {"role", "Shapeshifter"},
+                    {"desc", "Eliminate all the crew and press x to shapeshift"},
+                    {"type", "monster"}
                 }
             }
         };
@@ -40,12 +45,25 @@ namespace LethalMystery.Players
 
         public static void AssignRole(string role)
         {
-            Debug.Log(">>>>>>>>>EEEEEEEEEEEEEEEEE");
-
-            TopText = RoleAttrs[role]["topText"];
-            BottomText = RoleAttrs[role]["bottomText"];
-
+            TopText = RoleAttrs[role]["role"];
+            BottomText = RoleAttrs[role]["desc"];
             AssignmentUI.SetAssignment(RoleAttrs[role]);
+            ShowRole(role);
+        }
+
+
+        public static void ShowRole(string role)
+        {
+            DialogueSegment[] array = (DialogueSegment[])(object)new DialogueSegment[1]
+            {
+                    new DialogueSegment
+                    {
+                        speakerText = RoleAttrs[role]["role"],
+                        bodyText = RoleAttrs[role]["desc"],
+                        waitTime = 14f
+                    }
+            };
+            HUDManager.Instance.ReadDialogue(array);
         }
 
 
