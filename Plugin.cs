@@ -1,0 +1,110 @@
+﻿using BepInEx;
+using BepInEx.Logging;
+using HarmonyLib;
+using LethalAPI.LibTerminal;
+using LethalAPI.LibTerminal.Attributes;
+using LethalAPI.LibTerminal.Models;
+using LethalMystery.Patches;
+using LethalMystery.Utils;
+using LethalNetworkAPI;
+using UnityEngine;
+
+
+
+/*
+ * - Add Start command
+ * - Have a GUI that says if they're the monster/crew & if they're shapeshifter (Stays on whole game)
+ * - Imposters can spawn their weapon (Using config not Keyboard)
+ * - 
+*/
+
+
+
+
+/*
+ * Win Game Mechanics
+ * - Top text will say (Monsters/Employees won).
+ * - If monsters won the bottom text will say the names of the 1 or 2 imps
+*/
+
+
+namespace LethalMystery
+{
+    [BepInPlugin(modGUID, modName, modVersion)]
+    [BepInDependency("LethalNetworkAPI")]
+    public class Plugin : BaseUnityPlugin
+    {
+        private const string modGUID = "syntax_z.LethalMystery";
+        private const string modName = "syntax_z.LethalMystery";
+        private const string modVersion = "0.1.0";
+        private readonly Harmony _harmony = new(modGUID);
+        public static Plugin? Instance;
+        internal ManualLogSource? logger;
+        private TerminalModRegistry? TCommands;
+        
+        //private Roles? _roles;
+
+        public static readonly LethalServerMessage<string> customServerMessage = new LethalServerMessage<string>(identifier: "LethalMystery", ReceiveByServer);
+        public static readonly LethalClientMessage<string> customClientMessage = new LethalClientMessage<string>(identifier: "LethalMystery", ReceiveFromServer, ReceiveFromClient);
+        public static LethalNetworkVariable<string> globalMessage = new LethalNetworkVariable<string>(identifier: "globalMessage");
+        public static LethalNetworkVariable<bool> tempEject = new LethalNetworkVariable<bool>(identifier: "tempEject");
+
+
+
+        private void Awake()
+        {
+            PatchAllStuff();
+
+            TCommands = TerminalRegistry.CreateTerminalRegistry();
+            TCommands.RegisterFrom(this);
+        }
+
+
+        private void PatchAllStuff()
+        {
+            _harmony.PatchAll(typeof(StartOfRoundPatch));
+        }
+
+
+
+        private static void ReceiveFromServer(string data)
+        {
+
+        }
+        private static void ReceiveFromClient(string data, ulong id)
+        {
+
+        }
+        private static void ReceiveByServer(string data, ulong id)
+        {
+
+        }
+
+
+        [TerminalCommand("start")]
+        [CommandInfo("Begin the Lethal Mystery game")]
+        public string startCommand()
+        {
+
+            //_roles?.displayRole("Monster");
+            return "Cool.";
+        }
+
+
+
+        public static void ShowRole()
+        {
+            DialogueSegment[] array = (DialogueSegment[])(object)new DialogueSegment[1]
+            {
+                    new DialogueSegment
+                    {
+                        speakerText = "Monster",
+                        bodyText = "As a crew u do stuff",
+                        waitTime = 10f
+                    }
+            };
+            HUDManager.Instance.ReadDialogue(array);
+        }
+
+    }
+}
