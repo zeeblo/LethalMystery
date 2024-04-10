@@ -1,5 +1,4 @@
-﻿using LethalMystery.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LethalMystery.Players
 {
@@ -12,7 +11,7 @@ namespace LethalMystery.Players
             {"Employee", new Dictionary<string, string>
                 {
                     {"role", "Employee"},
-                    {"desc", "Do all your tasks"},
+                    {"desc", "Bring back items to the ship to meet the quota."},
                     {"type", "employee"}
                 }
             },
@@ -40,21 +39,29 @@ namespace LethalMystery.Players
             }
         };
 
+        public static string[] availableRoles = { "Employee", "Monster"};
         public static string? TopText;
         public static string? BottomText;
+        public static string CurrentRole = "";
 
-        public static void AssignRole(string role)
+
+
+        public static void AssignRole()
         {
+            System.Random randomNum = new System.Random();
+            int index = randomNum.Next(0, availableRoles.Length);
+            string role = availableRoles[index];
+
             TopText = RoleAttrs[role]["role"];
             BottomText = RoleAttrs[role]["desc"];
-            AssignmentUI.SetAssignment(RoleAttrs[role]);
+            CurrentRole = role;
             ShowRole(role);
         }
 
 
         public static void ShowRole(string role)
         {
-            DialogueSegment[] array = (DialogueSegment[])(object)new DialogueSegment[1]
+            DialogueSegment[] array = new DialogueSegment[]
             {
                     new DialogueSegment
                     {

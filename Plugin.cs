@@ -42,7 +42,7 @@ namespace LethalMystery
         public static Plugin? Instance;
         internal ManualLogSource? logger;
         private TerminalModRegistry? TCommands;
-        
+
 
         public static readonly LethalServerMessage<string> customServerMessage = new LethalServerMessage<string>(identifier: "LethalMystery", ReceiveByServer);
         public static readonly LethalClientMessage<string> customClientMessage = new LethalClientMessage<string>(identifier: "LethalMystery", ReceiveFromServer, ReceiveFromClient);
