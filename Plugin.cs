@@ -61,6 +61,7 @@ namespace LethalMystery
         {
             //_harmony.PatchAll(typeof(StartOfRoundPatch));
             _harmony.PatchAll(typeof(RoundManagerPatch));
+            _harmony.PatchAll(typeof(StartMatchLeverPatch));
         }
 
 
