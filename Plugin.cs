@@ -1,11 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using LethalAPI.LibTerminal;
-using LethalAPI.LibTerminal.Attributes;
-using LethalAPI.LibTerminal.Models;
 using LethalMystery.Patches;
-using LethalNetworkAPI;
 
 
 
@@ -32,28 +28,20 @@ using LethalNetworkAPI;
 namespace LethalMystery
 {
     [BepInPlugin(modGUID, modName, modVersion)]
-    [BepInDependency("LethalNetworkAPI")]
     public class Plugin : BaseUnityPlugin
     {
-        private const string modGUID = "syntax_z.LethalMystery";
-        private const string modName = "syntax_z.LethalMystery";
+        private const string modGUID = "zeeblo.LethalMystery";
+        private const string modName = "zeeblo.LethalMystery";
         private const string modVersion = "0.1.0";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? Instance;
-        internal ManualLogSource? logger;
-        private TerminalModRegistry? TCommands;
-
-
-        public static readonly LethalServerMessage<string> customServerMessage = new LethalServerMessage<string>(identifier: "LethalMystery", ReceiveByServer);
-        public static readonly LethalClientMessage<string> customClientMessage = new LethalClientMessage<string>(identifier: "LethalMystery", ReceiveFromServer, ReceiveFromClient);
+        internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
 
         private void Awake()
         {
             PatchAllStuff();
 
-            TCommands = TerminalRegistry.CreateTerminalRegistry();
-            TCommands.RegisterFrom(this);
         }
 
 
@@ -63,22 +51,10 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(RoundManagerPatch));
             _harmony.PatchAll(typeof(StartMatchLeverPatch));
             _harmony.PatchAll(typeof(UnlockableSuitPatch));
+            _harmony.PatchAll(typeof(HUDManagerPatch));
         }
 
 
-
-        private static void ReceiveFromServer(string data)
-        {
-
-        }
-        private static void ReceiveFromClient(string data, ulong id)
-        {
-
-        }
-        private static void ReceiveByServer(string data, ulong id)
-        {
-
-        }
 
 
     }
