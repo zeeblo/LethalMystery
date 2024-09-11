@@ -105,17 +105,16 @@ namespace LethalMystery
 
             if (numOfInputs > 1)
             {
-                foreach (var title in Commands.HelpCmds)
+                foreach (var cmd in Commands.HelpCmds)
                 {
 
-                    if (command.StartsWith("help") && commandargs[1].ToLower().Contains(title.Key))
+                    if (command.StartsWith("help") && commandargs[1].ToLower().Contains(cmd.Key))
                     {
-                        foreach (var body in title.Value)
-                        {
-                            Plugin.msgtitle = title.Key;
-                            Plugin.msgbody = body.Value;
-                            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-                        }
+
+                        Plugin.msgtitle = cmd.Key;
+                        Plugin.msgbody = cmd.Value;
+                        Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
+
                         return IsNonHostCommand;
                     }
                 }

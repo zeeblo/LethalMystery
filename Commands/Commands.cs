@@ -26,13 +26,10 @@ namespace LethalMystery
     public class Commands
     {
 
-        public static readonly Dictionary<string, Dictionary<string, string>> HelpCmds = new Dictionary<string, Dictionary<string, string>>
+        public static readonly Dictionary<string, string> HelpCmds = new Dictionary<string, string>()
         {
-            {"vote", new Dictionary<string, string>
-                {
-                    {"title", "vote"},
-                    {"body", "/vote playerID - use in a meeting to vote a specific user. To see everyone's playerID type /ids \n /vote skip - use in a meeting to skip votting"},
-                }
+            {
+                "vote", "/vote playerID - use in a meeting to vote a specific user. To see everyone's playerID type /ids \n /vote skip - use in a meeting to skip votting"
             }
         };
 
