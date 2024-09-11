@@ -11,44 +11,35 @@ namespace LethalMystery.Patches
     internal class HUDManagerPatch
     {
 
+        private static string NetCommandPrefix = Plugin.NetCommandPrefix;
+        private static string NetHostCommandPrefix = Plugin.NetHostCommandPrefix;
+        private static string NetCommandPostfix = Plugin.NetCommandPostfix;
+        private static string nullChatMessage = "";
+
+
+        #region Chat Commands
+
 
         [HarmonyPatch(typeof(HUDManager), "AddPlayerChatMessageClientRpc")]
         [HarmonyPrefix]
-        private static bool ReadChatMessage(ref HUDManager __instance, ref string chatMessage)
+        private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage, ref int playerId)
         {
-            if (chatMessage.StartsWith("boop"))
+            string nameOfUserWhoTyped = __instance.playersManager.allPlayerScripts[playerId].playerUsername;
+            Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
+            if (chatMessage.StartsWith('/'))
             {
-                Plugin.mls.LogInfo("Recieved command from Host, trying to handle command: boop");
-                chatMessage = "";
-                DisplayChatMessage("pop pop");
+                string[] temp = chatMessage.Split('/');
+                string command = temp[1];
+
+                Plugin.ProcessCommandInput(command);
+                chatMessage = nullChatMessage;
                 return false;
             }
+
             return true;
         }
 
 
-        public static void DisplayChatMessage(string chatMessage)
-        {
-            string formattedMessage =
-                $"<color=#FF00FF>LM</color>: <color=#FFFF00>{chatMessage}</color>";
-
-            HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
-
-            UpdateChatText();
-        }
-        public static void DisplayChatError(string errorMessage)
-        {
-            string formattedMessage =
-                $"<color=#FF0000>LM: ERROR</color>: <color=#FF0000>{errorMessage}</color>";
-
-            HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
-
-            UpdateChatText();
-        }
-
-        private static void UpdateChatText()
-        {
-            HUDManager.Instance.chatText.text = string.Join("\n", HUDManager.Instance.ChatMessageHistory);
-        }
+        #endregion Chat Commands
     }
 }

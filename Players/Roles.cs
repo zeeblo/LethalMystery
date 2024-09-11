@@ -6,7 +6,7 @@ namespace LethalMystery.Players
     {
 
 
-        private static readonly Dictionary<string, Dictionary<string, string>> RoleAttrs = new Dictionary<string, Dictionary<string, string>>
+        public static readonly Dictionary<string, Dictionary<string, string>> RoleAttrs = new Dictionary<string, Dictionary<string, string>>
         {
             {"Employee", new Dictionary<string, string>
                 {
@@ -17,8 +17,8 @@ namespace LethalMystery.Players
             },
             {"Sherif", new Dictionary<string, string>
                 {
-                    {"role", "Shapeshifter"},
-                    {"desc", "Eliminate all the crew and press x to shapeshift"},
+                    {"role", "Sherif"},
+                    {"desc", "Kill the monster(s). Guessing wrong will get you killed."},
                     {"type", "employee"}
                 }
             },
@@ -34,6 +34,13 @@ namespace LethalMystery.Players
                 {
                     {"role", "Shapeshifter"},
                     {"desc", "Eliminate all the crew and press x to shapeshift"},
+                    {"type", "monster"}
+                }
+            },
+            {"Necromancer", new Dictionary<string, string>
+                {
+                    {"role", "Necromancer"},
+                    {"desc", "Spawn monsters to eliminate all the crew. Press x to spawn"},
                     {"type", "monster"}
                 }
             }
