@@ -80,11 +80,13 @@ namespace LethalMystery
 
         private void PatchAllStuff()
         {
-            //_harmony.PatchAll(typeof(StartOfRoundPatch));
+            _harmony.PatchAll(typeof(StartOfRoundPatch));
             _harmony.PatchAll(typeof(RoundManagerPatch));
             _harmony.PatchAll(typeof(StartMatchLeverPatch));
             _harmony.PatchAll(typeof(UnlockableSuitPatch));
             _harmony.PatchAll(typeof(HUDManagerPatch));
+            _harmony.PatchAll(typeof(TerminalPatch));
+            _harmony.PatchAll(typeof(ShipAlarmCordPatch));
         }
 
 

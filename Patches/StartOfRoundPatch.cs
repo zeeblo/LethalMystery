@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI;
 
 
 
@@ -10,6 +12,53 @@ namespace LethalMystery.Patches
     internal class StartOfRoundPatch
     {
 
+        [HarmonyPatch(typeof(StartOfRound), "Start")]
+        [HarmonyPostfix]
+        private static void StartPatch(StartOfRound __instance)
+        {
+            Plugin.mls.LogInfo(">>> Attempting to spawn meeting horn:");
 
+            /*
+            foreach (UnlockableItem value in __instance.unlockablesList.unlockables)
+            {
+                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + value.unlockableName);
+
+                if (value.unlockableName.Contains("Loud"))
+            }
+            */
+
+            for (int k = 0; k < __instance.unlockablesList.unlockables.Count; k++)
+            {
+                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + __instance.unlockablesList.unlockables[k].unlockableName);
+                if (__instance.unlockablesList.unlockables[k].unlockableName.Contains("Loud"))
+                {
+                    //__instance.SpawnUnlockable(k);
+
+                    SpawnHorn(
+                        __instance : __instance,
+                        prefab : __instance.unlockablesList.unlockables[k].prefabObject,
+                        pos : __instance.elevatorTransform.position,
+                        unlockableIndex : k
+                        );
+                }
+            }
+
+        }
+
+
+        private static void SpawnHorn(StartOfRound __instance, GameObject prefab, Vector3 pos, int unlockableIndex)
+        {
+            GameObject gameObject = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.identity, null);
+            //UnlockableItem unlockableItem = unlockablesList.unlockables[unlockableIndex];
+
+            if (!gameObject.GetComponent<NetworkObject>().IsSpawned)
+            {
+                gameObject.GetComponent<NetworkObject>().Spawn();
+            }
+            if (gameObject != null)
+            {
+                __instance.SpawnedShipUnlockables.Add(unlockableIndex, gameObject);
+            }
+        }
     }
 }
