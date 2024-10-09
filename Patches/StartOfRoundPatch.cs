@@ -16,16 +16,6 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void StartPatch(StartOfRound __instance)
         {
-            Plugin.mls.LogInfo(">>> Attempting to spawn meeting horn:");
-
-            /*
-            foreach (UnlockableItem value in __instance.unlockablesList.unlockables)
-            {
-                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + value.unlockableName);
-
-                if (value.unlockableName.Contains("Loud"))
-            }
-            */
 
             for (int k = 0; k < __instance.unlockablesList.unlockables.Count; k++)
             {
@@ -49,7 +39,6 @@ namespace LethalMystery.Patches
         private static void SpawnHorn(StartOfRound __instance, GameObject prefab, Vector3 pos, int unlockableIndex)
         {
             GameObject gameObject = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.identity, null);
-            //UnlockableItem unlockableItem = unlockablesList.unlockables[unlockableIndex];
 
             if (!gameObject.GetComponent<NetworkObject>().IsSpawned)
             {

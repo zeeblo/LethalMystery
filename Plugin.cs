@@ -86,7 +86,7 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(UnlockableSuitPatch));
             _harmony.PatchAll(typeof(HUDManagerPatch));
             _harmony.PatchAll(typeof(TerminalPatch));
-            _harmony.PatchAll(typeof(ShipAlarmCordPatch));
+           // _harmony.PatchAll(typeof(ShipAlarmCordPatch));
         }
 
 
