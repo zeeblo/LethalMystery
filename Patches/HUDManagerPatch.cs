@@ -4,6 +4,7 @@ using System.Text;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LethalMystery.Patches
 {
@@ -41,5 +42,21 @@ namespace LethalMystery.Patches
 
 
         #endregion Chat Commands
+
+
+        [HarmonyPatch(typeof(HUDManager), "Update")]
+        [HarmonyPostfix]
+        private static void UpdatePatch(HUDManager __instance)
+        {
+
+            if (Plugin.inMeeting)
+            {
+                // __instance.tipsPanelHeader.text = "Meeting";
+                //__instance.tipsPanelBody.text = $"{Plugin.currentMeetingCountdown}";
+                Plugin.UpdateSidebar($"{Plugin.currentMeetingCountdown}");
+            }
+        }
+
+
     }
 }

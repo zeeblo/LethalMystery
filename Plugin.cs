@@ -4,9 +4,10 @@ using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Patches;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 
 
@@ -63,7 +64,15 @@ namespace LethalMystery
         internal static string NetCommandPostfix = "</size>";
         internal static string? playerwhocalled;
 
+        public static bool inMeeting = false;
+        public static float defaultMeetingCountdown = 20f;
+        public static float currentMeetingCountdown = defaultMeetingCountdown;
+        public static float defaultMeetingCooldown = 10f;
+        public static float MeetingCooldown = defaultMeetingCooldown;
 
+        public static GameObject? sidebar;
+        public static TextMeshProUGUI? sidebarHeaderText;
+        public static TextMeshProUGUI? sidebarBodyText;
 
         private void Awake()
         {
@@ -86,11 +95,74 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(UnlockableSuitPatch));
             _harmony.PatchAll(typeof(HUDManagerPatch));
             _harmony.PatchAll(typeof(TerminalPatch));
-           // _harmony.PatchAll(typeof(ShipAlarmCordPatch));
+            _harmony.PatchAll(typeof(ShipAlarmCordPatch));
+            _harmony.PatchAll(typeof(HangarShipDoorPatch));
         }
 
 
+        #region UI Elements
 
+        public static void CreateSidebar(string body, string header="Meeting")
+        {
+            GameObject RightCorner = GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD/TopRightCorner");
+            sidebar = new GameObject("Sidebar");
+            sidebar.transform.SetParent(RightCorner.transform, false);
+
+            Image sidebarBackground = sidebar.AddComponent<Image>();
+            sidebarBackground.color = Color.yellow;
+
+            RectTransform sidebarRect = sidebar.GetComponent<RectTransform>();
+            sidebarRect.sizeDelta = new Vector2(65, 20);
+            sidebarRect.localPosition = new Vector2(-70, -120);
+            
+            GameObject sidebarTextObject = new GameObject("SidebarText");
+            sidebarTextObject.transform.SetParent(sidebar.transform, false);
+
+            sidebarHeaderText = sidebarTextObject.AddComponent<TextMeshProUGUI>();
+            sidebarHeaderText.color = Color.black;
+            sidebarHeaderText.text = $" <color=#FF0000>{header}:</color> {body}";
+            sidebarHeaderText.fontWeight = FontWeight.Heavy;
+            sidebarHeaderText.alignment = TextAlignmentOptions.Left;
+            sidebarHeaderText.fontSize = 8;
+
+            // Make the size and position of the text object relative to the background
+            RectTransform textRect = sidebarHeaderText.GetComponent<RectTransform>();
+            textRect.sizeDelta = sidebarRect.sizeDelta;
+            textRect.anchoredPosition = Vector2.zero;
+
+        }
+
+
+        public static void UpdateSidebar(string body, string header = "Meeting")
+        {
+            if (sidebarHeaderText == null)
+            {
+                CreateSidebar(body, header: header);
+            }
+            else
+            {
+                sidebarHeaderText.text = $" <color=#FF0000>{header}:</color> {body}";
+                sidebarHeaderText.fontWeight = FontWeight.Heavy;
+                sidebarHeaderText.alignment = TextAlignmentOptions.Left;
+                sidebarHeaderText.fontSize = 8;
+            }
+
+        }
+
+        public static void ShowSidebar(bool show, string body = "", string header = "Meeting")
+        {
+            if (sidebar != null)
+            {
+                sidebar.gameObject.SetActive(show);
+            }
+            else
+            {
+                CreateSidebar(body, header: header);
+            }
+        }
+
+
+        #endregion UI Elements
 
 
         #region Chat Commands

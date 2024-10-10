@@ -12,30 +12,7 @@ namespace LethalMystery.Patches
     internal class StartOfRoundPatch
     {
 
-        [HarmonyPatch(typeof(StartOfRound), "Start")]
-        [HarmonyPostfix]
-        private static void StartPatch(StartOfRound __instance)
-        {
-
-            for (int k = 0; k < __instance.unlockablesList.unlockables.Count; k++)
-            {
-                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + __instance.unlockablesList.unlockables[k].unlockableName);
-                if (__instance.unlockablesList.unlockables[k].unlockableName.Contains("Loud"))
-                {
-                    //__instance.SpawnUnlockable(k);
-
-                    SpawnHorn(
-                        __instance : __instance,
-                        prefab : __instance.unlockablesList.unlockables[k].prefabObject,
-                        pos : __instance.elevatorTransform.position,
-                        unlockableIndex : k
-                        );
-                }
-            }
-
-        }
-
-
+        #region Regular Methods
         private static void SpawnHorn(StartOfRound __instance, GameObject prefab, Vector3 pos, int unlockableIndex)
         {
             GameObject gameObject = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.identity, null);
@@ -49,5 +26,40 @@ namespace LethalMystery.Patches
                 __instance.SpawnedShipUnlockables.Add(unlockableIndex, gameObject);
             }
         }
+
+
+        #endregion Regular Methods
+
+
+
+
+        [HarmonyPatch(typeof(StartOfRound), "Start")]
+        [HarmonyPostfix]
+        private static void StartPatch(StartOfRound __instance)
+        {
+
+            // Spawn the meeting horn
+            for (int k = 0; k < __instance.unlockablesList.unlockables.Count; k++)
+            {
+                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + __instance.unlockablesList.unlockables[k].unlockableName);
+                if (__instance.unlockablesList.unlockables[k].unlockableName.Contains("Loud"))
+                {
+
+                    SpawnHorn(
+                        __instance : __instance,
+                        prefab : __instance.unlockablesList.unlockables[k].prefabObject,
+                        pos : __instance.elevatorTransform.position,
+                        unlockableIndex : k
+                        );
+                }
+            }
+
+
+        }
+
+
+
+
+
     }
 }
