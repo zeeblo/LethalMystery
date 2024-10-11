@@ -56,5 +56,15 @@ namespace LethalMystery.Patches
         }
 
 
+        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
+        [HarmonyPostfix]
+        private static void ShowResults()
+        {
+            HUDManager.Instance.profitQuotaDaysLeftText.text = "Imposters Won";
+            HUDManager.Instance.profitQuotaDaysLeftText2.text = "";
+        }
+
+
+
     }
 }

@@ -16,14 +16,15 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void CallAMeeting()
         {
-            if (StartOfRound.Instance.shipHasLanded == false || Plugin.inMeeting == true)
+            if (StartOfRound.Instance.shipHasLanded == false || Plugin.inMeeting == true || Plugin.MeetingNum <= 0)
                 return;
             if (!(Plugin.MeetingCooldown <= 0)) // If MeetingCooldown is still 1-10 then dont continue
                 return;
 
             Plugin.inMeeting = true;
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+            Plugin.MeetingNum -= 1;
 
+            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.ShowSidebar(show: true, $"{Plugin.currentMeetingCountdown}");
         }
 

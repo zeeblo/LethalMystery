@@ -69,6 +69,8 @@ namespace LethalMystery
         public static float currentMeetingCountdown = defaultMeetingCountdown;
         public static float defaultMeetingCooldown = 10f;
         public static float MeetingCooldown = defaultMeetingCooldown;
+        public static int defaultMeetingNum = 1;
+        public static int MeetingNum = defaultMeetingNum;
 
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;
@@ -97,6 +99,7 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(TerminalPatch));
             _harmony.PatchAll(typeof(ShipAlarmCordPatch));
             _harmony.PatchAll(typeof(HangarShipDoorPatch));
+            _harmony.PatchAll(typeof(TimeOfDayPatch));
         }
 
 
