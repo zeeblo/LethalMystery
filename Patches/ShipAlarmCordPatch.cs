@@ -23,9 +23,7 @@ namespace LethalMystery.Patches
 
             Plugin.inMeeting = true;
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            //HUDManager.Instance.DisplayTip("Meeting", $"{Plugin.currentMeetingCountdown}");
-            //HUDManager.Instance.tipsPanelAnimator.enabled = true;
-            //HUDManager.Instance.tipsPanelAnimator.SetTrigger("TriggerHint");
+
             Plugin.ShowSidebar(show: true, $"{Plugin.currentMeetingCountdown}");
         }
 

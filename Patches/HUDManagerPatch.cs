@@ -51,8 +51,6 @@ namespace LethalMystery.Patches
 
             if (Plugin.inMeeting)
             {
-                // __instance.tipsPanelHeader.text = "Meeting";
-                //__instance.tipsPanelBody.text = $"{Plugin.currentMeetingCountdown}";
                 Plugin.UpdateSidebar($"{Plugin.currentMeetingCountdown}");
             }
         }
