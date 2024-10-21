@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using HarmonyLib;
+using UnityEngine.SceneManagement;
 
 namespace LethalMystery.Patches
 {
@@ -10,7 +11,7 @@ namespace LethalMystery.Patches
     internal class ShipAlarmCordPatch
     {
 
-        
+
 
         [HarmonyPatch(typeof(ShipAlarmCord), nameof(ShipAlarmCord.StopHorn))]
         [HarmonyPostfix]
@@ -26,6 +27,7 @@ namespace LethalMystery.Patches
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.ShowSidebar(show: true, $"{Plugin.currentMeetingCountdown}");
+            Plugin.RemoveEnvironment();
         }
 
 
@@ -41,5 +43,7 @@ namespace LethalMystery.Patches
                 Plugin.MeetingCooldown -= Time.deltaTime;
             }
         }
+
+
     }
 }

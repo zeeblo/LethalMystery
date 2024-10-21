@@ -38,6 +38,7 @@ namespace LethalMystery.Patches
                 __instance.triggerScript.interactable = true;
 
                 Plugin.inMeeting = false;
+                Plugin.RemoveEnvironment(view: true);
                 StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
                 Plugin.currentMeetingCountdown = Plugin.defaultMeetingCountdown;
                 Plugin.MeetingCooldown = Plugin.defaultMeetingCooldown;

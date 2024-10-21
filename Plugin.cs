@@ -7,6 +7,7 @@ using LethalMystery.Patches;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -100,6 +101,26 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(ShipAlarmCordPatch));
             _harmony.PatchAll(typeof(HangarShipDoorPatch));
             _harmony.PatchAll(typeof(TimeOfDayPatch));
+        }
+
+
+        public static void RemoveEnvironment(bool view = false)
+        {
+            // Environment 
+            GameObject OutOfBoundsTerrain = GameObject.Find("OutOfBoundsTerrain").gameObject;
+            Scene currentScene = SceneManager.GetSceneAt(1);
+
+            OutOfBoundsTerrain.SetActive(view);
+
+            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            {
+                if (obj.name == "Environment")
+                {
+                    obj.SetActive(view);
+                    break;
+                }
+            }
+
         }
 
 

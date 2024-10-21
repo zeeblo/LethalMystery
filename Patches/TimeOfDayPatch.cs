@@ -10,13 +10,12 @@ namespace LethalMystery.Patches
     internal class TimeOfDayPatch
     {
 
-        [HarmonyPatch(typeof(TimeOfDay), "UpdateProfitQuotaCurrentTime")]
-        [HarmonyPrefix]
-        private static bool DisableDeadline()
+        [HarmonyPatch(typeof(TimeOfDay), "Update")]
+        [HarmonyPostfix]
+        private static void DisableDeadline()
         {
-            TimeOfDay.Instance.timeUntilDeadline = 999;
+            TimeOfDay.Instance.timeUntilDeadline = 99999;
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
-            return false;
         }
     }
 }
