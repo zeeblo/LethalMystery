@@ -26,7 +26,6 @@ namespace LethalMystery.Patches
             Plugin.MeetingNum -= 1;
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            Plugin.ShowSidebar(show: true, $"{Plugin.currentMeetingCountdown}");
             Plugin.RemoveEnvironment();
         }
 

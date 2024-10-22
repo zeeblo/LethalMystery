@@ -51,7 +51,9 @@ namespace LethalMystery.Patches
 
             if (Plugin.inMeeting)
             {
-                Plugin.UpdateSidebar($"{Plugin.currentMeetingCountdown}");
+                __instance.Clock.targetAlpha = 1.0f;
+                __instance.Clock.canvasGroup.alpha = 1.0f;
+                __instance.clockNumber.text = $"{(int)Plugin.currentMeetingCountdown}";
             }
         }
 

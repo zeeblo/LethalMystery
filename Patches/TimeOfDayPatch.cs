@@ -14,7 +14,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void DisableDeadline()
         {
-            TimeOfDay.Instance.timeUntilDeadline = 99999;
+            TimeOfDay.Instance.timeUntilDeadline = 99;
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
         }
     }

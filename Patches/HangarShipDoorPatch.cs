@@ -42,7 +42,6 @@ namespace LethalMystery.Patches
                 StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
                 Plugin.currentMeetingCountdown = Plugin.defaultMeetingCountdown;
                 Plugin.MeetingCooldown = Plugin.defaultMeetingCooldown;
-                Plugin.ShowSidebar(show: false, $"{Plugin.currentMeetingCountdown}");
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }
