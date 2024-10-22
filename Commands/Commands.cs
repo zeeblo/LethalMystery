@@ -36,10 +36,6 @@ namespace LethalMystery
 
         internal static void SpawnEnemy(SpawnableEnemyWithRarity enemy, int amount, bool inside, Vector3 location)
         {
-            if (!Plugin.isHost)
-            {
-                return;
-            }
             if (location.x != 0f && location.y != 0f && location.z != 0f && inside)
             {
                 try
@@ -59,7 +55,7 @@ namespace LethalMystery
                     return;
                 }
             }
-            if (location.x != 0f && location.y != 0f && location.z != 0f && !inside)
+            if (location.x != 0f && location.y != 0f && location.z != 0f)
             {
                 try
                 {
@@ -81,48 +77,16 @@ namespace LethalMystery
                     return;
                 }
             }
-            if (inside)
-            {
-                try
-                {
-                    int i = 0;
-                    for (; i < amount; i++)
-                    {
-                        if (Plugin.currentLevel != null)
-                        {
-                            Plugin.currentRound?.SpawnEnemyOnServer(Plugin.currentRound.allEnemyVents[UnityEngine.Random.Range(0, Plugin.currentRound.allEnemyVents.Length)].floorNode.position, Plugin.currentRound.allEnemyVents[i].floorNode.eulerAngles.y, Plugin.currentLevel.Enemies.IndexOf(enemy));
-                        }
-
-                    }
-                    Plugin.mls.LogInfo($"You wanted to spawn: {amount} enemies");
-                    Plugin.mls.LogInfo(("Total Spawned: " + i));
-                    return;
-                }
-                catch
-                {
-                    Plugin.mls.LogInfo("Failed to spawn enemies, check your command.");
-                    return;
-                }
-            }
-            int j = 0;
-            for (; j < amount; j++)
-            {
-                if (Plugin.currentLevel != null)
-                {
-                    UnityEngine.Object.Instantiate<GameObject>(Plugin.currentLevel.OutsideEnemies[Plugin.currentLevel.OutsideEnemies.IndexOf(enemy)].enemyType.enemyPrefab, GameObject.FindGameObjectsWithTag("OutsideAINode")[UnityEngine.Random.Range(0, GameObject.FindGameObjectsWithTag("OutsideAINode").Length - 1)].transform.position, Quaternion.Euler(Vector3.zero)).gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
-                }
-            }
-            Plugin.mls.LogInfo($"You wanted to spawn: {amount} enemies");
-            Plugin.mls.LogInfo(("Total Spawned: " + j));
         }
 
 
 
         public static string SpawnEnemyFunc(string text)
         {
-
             Plugin.msgtitle = "Spawned Enemies";
             string[] array = text.Split(' ');
+            string playerID = array[0];
+            string entity = array[1];
             if (Plugin.currentLevel == null || Plugin.levelEnemySpawns == null || Plugin.currentLevel.Enemies == null)
             {
                 Plugin.msgtitle = "Command";
@@ -130,118 +94,61 @@ namespace LethalMystery
                 Plugin.DisplayChatError(Plugin.msgtitle + "\n" + Plugin.msgbody);
                 return Plugin.msgbody + "/" + Plugin.msgtitle;
             }
-            if (array.Length < 2)
-            {
-                Plugin.msgtitle = "Command Error";
-                Plugin.msgbody = "Missing Arguments For Spawn\n'/spawnenemy <name> (amount=<amount>) (state=<state>) (position={random, @me, @<playername>})";
-                Plugin.DisplayChatError(Plugin.msgtitle + "\n" + Plugin.msgbody);
-                Plugin.mls.LogWarning("Missing Arguments For Spawn\n'/spawnenemy <name> (amount=<amount>) (state=<state>) (position={random, @me, @<playername>})");
-                return Plugin.msgbody + "/" + Plugin.msgtitle;
-            }
             int amount = 1;
-            string vstate = "alive";
             Vector3 position = Vector3.zero;
-            string sposition = "random";
-            var args = array.Skip(2);
 
-            foreach (string arg in args)
+            position = CalculateSpawnPosition(playerID);
+
+            bool flag = false;
+            string enemyName = "";
+            foreach (SpawnableEnemyWithRarity enemy in Plugin.currentLevel.Enemies)
             {
-                string[] darg = arg.Split('=');
-                switch (darg[0])
+                if (enemy.enemyType.enemyName.ToLower().Contains(entity.ToLower()))
                 {
-                    case "a":
-                    case "amount":
-                        amount = int.Parse(darg[1]);
-                        Plugin.mls.LogInfo($"{amount}");
-                        break;
-                    case "s":
-                    case "state":
-                        vstate = darg[1];
-                        Plugin.mls.LogInfo(vstate);
-                        break;
-                    case "p":
-                    case "position":
-                        sposition = darg[1];
-                        Plugin.mls.LogInfo(sposition);
-                        break;
-                    default:
-                        break;
+                    try
+                    {
+                        flag = true;
+                        enemyName = enemy.enemyType.enemyName;
+
+                        SpawnEnemy(enemy, amount, inside: true, location: position);
+
+                        Plugin.mls.LogInfo("Spawned " + enemy.enemyType.enemyName);
+                    }
+                    catch
+                    {
+                        Plugin.mls.LogInfo("Could not spawn enemy");
+                    }
+                    Plugin.msgbody = "Spawned: " + enemyName;
+                    break;
                 }
             }
-
-            if (sposition != "random")
+            if (!flag)
             {
-                position = CalculateSpawnPosition(sposition);
-                if (position == Vector3.zero && sposition != "random")
+                foreach (SpawnableEnemyWithRarity outsideEnemy in Plugin.currentLevel.OutsideEnemies)
                 {
-                    Plugin.mls.LogWarning("Position Invalid, Using Default 'random'");
-                    sposition = "random";
-                }
-            }
-
-            if (array.Length > 1)
-            {
-                bool flag = false;
-                string enemyName = "";
-                foreach (SpawnableEnemyWithRarity enemy in Plugin.currentLevel.Enemies)
-                {
-                    if (enemy.enemyType.enemyName.ToLower().Contains(array[1].ToLower()))
+                    if (outsideEnemy.enemyType.enemyName.ToLower().Contains(array[1].ToLower()))
                     {
                         try
                         {
                             flag = true;
-                            enemyName = enemy.enemyType.enemyName;
-                            if (sposition == "random")
-                            {
-                                SpawnEnemy(enemy, amount, inside: true, location: new Vector3(0f, 0f, 0f));
-                            }
-                            else
-                            {
-                                SpawnEnemy(enemy, amount, inside: true, location: position);
-                            }
-                            Plugin.mls.LogInfo((object)("Spawned " + enemy.enemyType.enemyName));
+                            enemyName = outsideEnemy.enemyType.enemyName;
+                            Plugin.mls.LogInfo(outsideEnemy.enemyType.enemyName);
+                            Plugin.mls.LogInfo(("The index of " + outsideEnemy.enemyType.enemyName + " is " + Plugin.currentLevel.OutsideEnemies.IndexOf(outsideEnemy)));
+
+                            SpawnEnemy(outsideEnemy, amount, inside: false, location: position);
+                            Plugin.mls.LogInfo(("Spawned " + outsideEnemy.enemyType.enemyName));
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            Plugin.mls.LogInfo((object)"Could not spawn enemy");
+                            Plugin.mls.LogInfo("Could not spawn enemy");
+                            Plugin.mls.LogInfo(("The game tossed an error: " + ex.Message));
                         }
-                        Plugin.msgbody = "Spawned: " + enemyName;
+                        Plugin.msgbody = "Spawned " + amount + " " + enemyName + (amount > 1 ? "s" : "");
                         break;
                     }
                 }
-                if (!flag)
-                {
-                    foreach (SpawnableEnemyWithRarity outsideEnemy in Plugin.currentLevel.OutsideEnemies)
-                    {
-                        if (outsideEnemy.enemyType.enemyName.ToLower().Contains(array[1].ToLower()))
-                        {
-                            try
-                            {
-                                flag = true;
-                                enemyName = outsideEnemy.enemyType.enemyName;
-                                Plugin.mls.LogInfo(outsideEnemy.enemyType.enemyName);
-                                Plugin.mls.LogInfo(("The index of " + outsideEnemy.enemyType.enemyName + " is " + Plugin.currentLevel.OutsideEnemies.IndexOf(outsideEnemy)));
-                                if (sposition == "random")
-                                {
-                                    SpawnEnemy(outsideEnemy, amount, inside: false, location: new Vector3(0f, 0f, 0f));
-                                }
-                                else
-                                {
-                                    SpawnEnemy(outsideEnemy, amount, inside: false, location: position);
-                                }
-                                Plugin.mls.LogInfo(("Spawned " + outsideEnemy.enemyType.enemyName));
-                            }
-                            catch (Exception ex)
-                            {
-                                Plugin.mls.LogInfo("Could not spawn enemy");
-                                Plugin.mls.LogInfo(("The game tossed an error: " + ex.Message));
-                            }
-                            Plugin.msgbody = "Spawned " + amount + " " + enemyName + (amount > 1 ? "s" : "");
-                            break;
-                        }
-                    }
-                }
             }
+
             return Plugin.msgbody + "/" + Plugin.msgtitle;
         }
 
@@ -326,7 +233,7 @@ namespace LethalMystery
                 Plugin.msgbody = Players.Roles.CurrentRole + ": " + Players.Roles.RoleAttrs[Players.Roles.CurrentRole]["desc"];
             }
 
-            
+
             Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
             return Plugin.msgbody + "/" + Plugin.msgtitle;
         }
@@ -351,7 +258,7 @@ namespace LethalMystery
 
         public static string SetVote(string vote)
         {
-            
+
             Plugin.msgtitle = "vote";
 
             if (GameNetworkManager.Instance.localPlayerController.playersManager.inShipPhase) // temporary, add check for when in meeting instead
@@ -366,7 +273,7 @@ namespace LethalMystery
             {
                 ulong playerID;
 
-                if ( !ulong.TryParse(vote, out playerID) || !StartOfRound.Instance.ClientPlayerList.Keys.Contains(playerID))
+                if (!ulong.TryParse(vote, out playerID) || !StartOfRound.Instance.ClientPlayerList.Keys.Contains(playerID))
                 {
                     Plugin.msgbody = "Invalid. Type \"/ids\" to see the available IDs \n Type \"/help vote\" to properly use this command";
                     Plugin.DisplayChatError("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);

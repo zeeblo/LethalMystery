@@ -49,6 +49,11 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(HUDManager __instance)
         {
 
+            if (Keyboard.current.digit8Key.wasPressedThisFrame)
+            {
+                Commands.SpawnEnemyFunc($"{GameNetworkManager.Instance.localPlayerController.playerClientId} nutcrack");
+            }
+
             if (Plugin.inMeeting)
             {
                 __instance.Clock.targetAlpha = 1.0f;

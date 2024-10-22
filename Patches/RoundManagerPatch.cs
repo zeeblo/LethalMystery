@@ -19,6 +19,26 @@ namespace LethalMystery.Patches
         }
 
 
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
+        [HarmonyPrefix]
+        private static bool NoEnemiesPatch(ref SelectableLevel newLevel)
+        {
+            foreach (SpawnableEnemyWithRarity enemy in newLevel.Enemies)
+            {
+                enemy.rarity = 0;
+            }
+            foreach (SpawnableEnemyWithRarity outsideEnemy in newLevel.OutsideEnemies)
+            {
+                outsideEnemy.rarity = 0;
+            }
+            foreach (SpawnableEnemyWithRarity daytimeEnemy in newLevel.DaytimeEnemies)
+            {
+                daytimeEnemy.rarity = 0;
+            }
+            return true;
+        }
+
+
         [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPrefix]
         private static void SetIsHost()
