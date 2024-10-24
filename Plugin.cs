@@ -101,6 +101,9 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(ShipAlarmCordPatch));
             _harmony.PatchAll(typeof(HangarShipDoorPatch));
             _harmony.PatchAll(typeof(TimeOfDayPatch));
+            _harmony.PatchAll(typeof(NutcrackerEnemyAIPatch));
+            _harmony.PatchAll(typeof(PlayerControllerBPatch));
+            _harmony.PatchAll(typeof(GrabbableObjectPatch));
         }
 
 
@@ -121,6 +124,19 @@ namespace LethalMystery
                 }
             }
 
+        }
+
+        public static void DespawnNutcracker()
+        {
+            Scene currentScene = SceneManager.GetSceneAt(0);
+            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            {
+                if (obj.name.Contains("Nutcracker"))
+                {
+                    Plugin.mls.LogInfo($"< Finding nuts");
+                    Destroy(obj.gameObject);
+                }
+            }
         }
 
 

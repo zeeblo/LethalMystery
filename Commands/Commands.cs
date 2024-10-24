@@ -1,25 +1,7 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using BepInEx.Configuration;
+﻿using UnityEngine;
 using GameNetcodeStuff;
 using Unity.Netcode;
-using TMPro;
-using LethalMystery.Patches;
-using HarmonyLib.Tools;
-using System.Linq;
-using static Steamworks.InventoryItem;
-using System.Security;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
-using System.Collections;
-using UnityEngine.AI;
-using System.Runtime.CompilerServices;
-using Unity.Services.Authentication.Internal;
+
 
 namespace LethalMystery
 {
@@ -32,6 +14,8 @@ namespace LethalMystery
                 "vote", "/vote playerID - use in a meeting to vote a specific user. To see everyone's playerID type /ids \n /vote skip - use in a meeting to skip votting"
             }
         };
+
+        public static GrabbableObject? randomObject;
 
 
         internal static void SpawnEnemy(SpawnableEnemyWithRarity enemy, int amount, bool inside, Vector3 location)
@@ -161,15 +145,15 @@ namespace LethalMystery
 
 
 
-        public static void SpawnScrapFunc(string toSpawn, string name)
+        public static void SpawnScrapFunc(string toSpawn, string location, bool toInventory = false)
         {
 
             Vector3 position = Vector3.zero;
 
             Plugin.mls.LogInfo(">>> ABOVE CALC <<<");
-            if (name != "vnt" || name != "btn")
+            if (location != "vnt" || location != "btn")
             {
-                position = CalculateSpawnPosition(name);
+                position = CalculateSpawnPosition(playerID: location);
             }
 
             Plugin.mls.LogInfo(">>> BELOW CALC <<<");
@@ -195,6 +179,11 @@ namespace LethalMystery
                         component.SetScrapValue(10); // Set Scrap Value
                         component.NetworkObject.Spawn();
                         spawnable = true;
+
+                        if (toInventory)
+                        {
+                            randomObject = component;
+                        }
 
                         break;
                     }
@@ -309,10 +298,10 @@ namespace LethalMystery
             return true;
         }
 
-        private static Vector3 CalculateSpawnPosition(string username)
+        private static Vector3 CalculateSpawnPosition(string playerID, string place = "none")
         {
             Vector3 position = Vector3.zero;
-            if (username == "skeldmap")
+            if (place == "skeldmap")
             {
                 Plugin.mls.LogInfo(">>> REACHED SKELD THING<<<");
 
@@ -324,13 +313,12 @@ namespace LethalMystery
             }
             else
             {
-                //username = username.Replace("player (1)", "player #1").Replace("player (2)", "player #2").Replace("player (3)", "player #3").Replace("player (4)", "player #4").Replace("player (5)", "player #5").Replace("player (6)", "player #6").Replace("player (7)", "player #7").Replace("player (8)", "player #8").Replace("player (9)", "player #9");
                 Plugin.mls.LogInfo(">>> REACHED @PLAYER THING<<<");
                 PlayerControllerB[] allPlayerScripts = StartOfRound.Instance.allPlayerScripts;
                 foreach (PlayerControllerB testedPlayer in allPlayerScripts)
                 {
-                    Plugin.mls.LogInfo($"Checking Playername: {testedPlayer.playerUsername.ToLower()} || {username}");
-                    if ($"{testedPlayer.playerClientId}" == username)
+                    Plugin.mls.LogInfo($"Checking Playername: {testedPlayer.playerUsername.ToLower()} || {playerID}");
+                    if ($"{testedPlayer.playerClientId}" == playerID)
                     {
                         Plugin.mls.LogInfo($"Found player {testedPlayer.playerUsername}");
                         position = testedPlayer.transform.position;
