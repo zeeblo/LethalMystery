@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using GameNetcodeStuff;
 using Unity.Netcode;
+using static Steamworks.InventoryItem;
+using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.UIElements;
+using System.ComponentModel;
 
 
 namespace LethalMystery
@@ -16,7 +20,7 @@ namespace LethalMystery
         };
 
         public static GrabbableObject? randomObject;
-
+        public static ShotgunItem? gunObject;
 
         internal static void SpawnEnemy(SpawnableEnemyWithRarity enemy, int amount, bool inside, Vector3 location)
         {
@@ -62,7 +66,6 @@ namespace LethalMystery
                 }
             }
         }
-
 
 
         public static string SpawnEnemyFunc(string text)
@@ -167,13 +170,15 @@ namespace LethalMystery
                 for (int i = 0; i < len; i++)
                 {
                     Item scrap = Plugin.currentRound.currentLevel.spawnableScrap[i].spawnableItem;
+                    Plugin.mls.LogInfo($">< Scrap name: {scrap} ");
                     if (scrap.spawnPrefab.name.ToLower().Contains(toSpawn))
                     {
 
                         GameObject objToSpawn = scrap.spawnPrefab;
                         GameObject gameObject = UnityEngine.Object.Instantiate(objToSpawn, position, Quaternion.identity, Plugin.currentRound.spawnedScrapContainer);
-                        GrabbableObject component = gameObject.GetComponent<GrabbableObject>();
 
+                        GrabbableObject component = gameObject.GetComponent<GrabbableObject>();
+                        
                         component.startFallingPosition = position;
                         component.targetFloorPosition = component.GetItemFloorPosition(position);
                         component.SetScrapValue(10); // Set Scrap Value
@@ -192,6 +197,44 @@ namespace LethalMystery
                 {
                     Plugin.mls.LogInfo("Could not spawn " + toSpawn);
                 }
+            }
+
+        }
+
+
+        public static void SpawnGun(string location, bool toInventory = false)
+        {
+            Vector3 position = Vector3.zero;
+            position = CalculateSpawnPosition(playerID: location);
+
+            if (Plugin.currentRound != null)
+            {
+                for (int i = 0; i < Plugin.currentRound.currentLevel.Enemies.Count(); i++)
+                {
+                    Plugin.mls.LogInfo($">< Enemy name: {Plugin.currentRound.currentLevel.Enemies[i].enemyType.name} ");
+                    if (Plugin.currentRound.currentLevel.Enemies[i].enemyType.name == "Nutcracker")
+                    {
+                        GameObject nutcra = UnityEngine.Object.Instantiate(Plugin.currentRound.currentLevel.Enemies[i].enemyType.enemyPrefab, new Vector3(float.MinValue, float.MinValue, float.MinValue), Quaternion.identity);
+                        NutcrackerEnemyAI nutcracomponent = nutcra.GetComponent<NutcrackerEnemyAI>();
+
+
+                        GameObject gameObject = UnityEngine.Object.Instantiate(nutcracomponent.gunPrefab, position, Quaternion.identity, Plugin.currentRound.spawnedScrapContainer);
+                        ShotgunItem component = gameObject.GetComponent<ShotgunItem>();
+                        //component.shellsLoaded = 2;
+                        component.startFallingPosition = position;
+                        component.targetFloorPosition = component.GetItemFloorPosition(position);
+                        component.SetScrapValue(10); // Set Scrap Value
+                        component.NetworkObject.Spawn();
+
+                        if (toInventory)
+                        {
+                            gunObject = component;
+                            //randomObject = component;
+                        }
+                        break;
+                    }
+                }
+
             }
 
         }

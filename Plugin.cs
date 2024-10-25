@@ -104,6 +104,7 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(NutcrackerEnemyAIPatch));
             _harmony.PatchAll(typeof(PlayerControllerBPatch));
             _harmony.PatchAll(typeof(GrabbableObjectPatch));
+            _harmony.PatchAll(typeof(ShotgunItemPatch));
         }
 
 

@@ -21,6 +21,7 @@ namespace LethalMystery.Patches
                 __instance.KillEnemy();
                 amnt += 1;
             }
+
             return true;
         }
     }
