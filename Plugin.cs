@@ -4,11 +4,13 @@ using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Patches;
+using LethalMystery.Players;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 
 
 
@@ -81,6 +83,7 @@ namespace LethalMystery
         {
 
             PatchAllStuff();
+            Roles.AppendRoles();
 
             PrefixSetting = instance?.Config.Bind<string>("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
             enemyRaritys = new Dictionary<SpawnableEnemyWithRarity, int>();
@@ -105,6 +108,15 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(PlayerControllerBPatch));
             _harmony.PatchAll(typeof(GrabbableObjectPatch));
             _harmony.PatchAll(typeof(ShotgunItemPatch));
+            _harmony.PatchAll(typeof(ButlerEnemyAIPatch));
+        }
+
+
+        public static void ResetVariables()
+        {
+            ButlerEnemyAIPatch.spawnedButlerForKnife = false;
+            NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
+            PlayerControllerBPatch.checkedForWeapon = false;
         }
 
 
@@ -112,7 +124,7 @@ namespace LethalMystery
         {
             // Environment 
             GameObject OutOfBoundsTerrain = GameObject.Find("OutOfBoundsTerrain").gameObject;
-            Scene currentScene = SceneManager.GetSceneAt(1);
+            Scene currentScene = SceneManager.GetSceneAt(1); // might not work on other moons. try getting the current scene
 
             OutOfBoundsTerrain.SetActive(view);
 
@@ -127,12 +139,17 @@ namespace LethalMystery
 
         }
 
-        public static void DespawnNutcracker()
+        public static void DespawnEnemies()
         {
             Scene currentScene = SceneManager.GetSceneAt(0);
             foreach (GameObject obj in currentScene.GetRootGameObjects())
             {
                 if (obj.name.Contains("Nutcracker"))
+                {
+                    Plugin.mls.LogInfo($"< Finding nuts");
+                    Destroy(obj.gameObject);
+                }
+                if (obj.name.Contains("Butler"))
                 {
                     Plugin.mls.LogInfo($"< Finding nuts");
                     Destroy(obj.gameObject);

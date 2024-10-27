@@ -62,7 +62,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void ShowResults()
         {
-            HUDManager.Instance.profitQuotaDaysLeftText.text = "Imposters Won";
+            HUDManager.Instance.profitQuotaDaysLeftText.text = "Aliens Won";
             HUDManager.Instance.profitQuotaDaysLeftText2.text = "";
         }
 

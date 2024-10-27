@@ -10,18 +10,17 @@ namespace LethalMystery.Patches
     [HarmonyPatch(typeof(NutcrackerEnemyAI))]
     internal class NutcrackerEnemyAIPatch
     {
-        private static int amnt = 0;
+        public static bool spawnedNutForWeapon = false;
 
         [HarmonyPatch(typeof(NutcrackerEnemyAI), nameof(NutcrackerEnemyAI.Update))]
         [HarmonyPrefix]
         private static bool UpdatePatch(NutcrackerEnemyAI __instance)
         {
-            if (amnt == 0)
+            if (spawnedNutForWeapon == false)
             {
                 __instance.KillEnemy();
-                amnt += 1;
+                spawnedNutForWeapon = true;
             }
-
             return true;
         }
     }

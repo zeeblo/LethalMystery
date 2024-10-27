@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using LethalMystery.Players;
 using UnityEngine;
+using static UnityEngine.Rendering.HighDefinition.ScalableSettingLevelParameter;
 
 
 namespace LethalMystery.Patches
@@ -14,7 +15,13 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void Start()
         {
+            Terminal terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
+            terminal.groupCredits = 9999;
+
+            Plugin.ResetVariables();
             Roles.AssignRole();
+            Commands.SpawnWeapons();
+
 
         }
 

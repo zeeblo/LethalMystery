@@ -12,6 +12,7 @@ using UnityEngine.UIElements;
 using System.Xml.Linq;
 using System.ComponentModel;
 using System.Collections;
+using LethalMystery.Players;
 
 
 
@@ -22,133 +23,44 @@ namespace LethalMystery.Patches
     internal class PlayerControllerBPatch
     {
 
-        private static bool check = true;
-
+        public static bool checkedForWeapon = false;
 
         [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)
         {
-            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                Commands.SpawnEnemyFunc($"{GameNetworkManager.Instance.localPlayerController.playerClientId} nutcrack");
-            }
+            __instance.takingFallDamage = false;
 
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                Plugin.DespawnNutcracker();
-            }
 
-            if (Keyboard.current.digit3Key.wasPressedThisFrame)
+            /// <summary>
+            /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
+            /// </summary>
+            if (StartOfRound.Instance.shipHasLanded && checkedForWeapon == false && Roles.CurrentRole != null)
             {
-                Commands.SpawnScrapFunc("metalsheet", $"{GameNetworkManager.Instance.localPlayerController.playerClientId}", toInventory: true);
-                if (Commands.randomObject != null)
+                if (Roles.CurrentRole.GetWeapon() == "")
                 {
-                    GrabbableObject component = Commands.randomObject;
-                    __instance.ItemSlots[3] = component;
-                    HUDManager.Instance.itemSlotIcons[3].sprite = component.itemProperties.itemIcon;
-                    HUDManager.Instance.itemSlotIcons[3].enabled = true;
-                    component.parentObject = __instance.localItemHolder;
+                    checkedForWeapon = true;
+                    Plugin.mls.LogInfo(">>> No weapon for this role");
                 }
-
-
-            }
-
-            if (Keyboard.current.digit4Key.wasPressedThisFrame)
-            {
-                Commands.SpawnGun($"{GameNetworkManager.Instance.localPlayerController}", toInventory: true);
-                if (Commands.gunObject != null)
+                else
                 {
-                    // Get the private method "BeginGrabObject" then call it
-                    MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
-                    GrabTest.Invoke(__instance, null);
-
-
-                    //ShotgunItem component = Commands.gunObject;
-                    //__instance.ItemSlots[3] = component;
-                    //HUDManager.Instance.itemSlotIcons[3].sprite = component.itemProperties.itemIcon;
-                    //HUDManager.Instance.itemSlotIcons[3].enabled = true;
-                    //component.parentObject = __instance.localItemHolder;
-                }
-
-
-            }
-
-            if (Keyboard.current.digit5Key.wasPressedThisFrame && check)
-            {
-                Commands.SpawnScrapFunc("metalsheet", $"{GameNetworkManager.Instance.localPlayerController.playerClientId}", toInventory: true);
-
-                if (Commands.randomObject != null)
-                {
-                    MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
-                    GrabTest.Invoke(__instance, null);
-                    check = false;
-                }
-
-            }
-
-
-            if (check && StartOfRound.Instance.shipHasLanded)
-            {
-                Scene currentScene = SceneManager.GetSceneAt(0);
-                foreach (GameObject obj in currentScene.GetRootGameObjects())
-                {
-                    if (obj.name.Contains("ShotgunItem"))
+                    Scene currentScene = SceneManager.GetSceneAt(0);
+                    foreach (GameObject obj in currentScene.GetRootGameObjects())
                     {
-                        Commands.randomObject = obj.GetComponent<GrabbableObject>();
+                        if (obj.name.Contains(Roles.CurrentRole.GetWeapon()))
+                        {
+                            Commands.randomObject = obj.GetComponent<GrabbableObject>();
+                            MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
+                            GrabTest.Invoke(__instance, null);
 
-                        MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
-                        GrabTest.Invoke(__instance, null);
-
-                        check = false;
-                        break;
+                            checkedForWeapon = true;
+                            break;
+                        }
                     }
                 }
+                Plugin.DespawnEnemies();
             }
 
-
-            /*
-            if (check && StartOfRound.Instance.shipHasLanded)
-            {
-                Scene currentScene = SceneManager.GetSceneAt(0);
-                foreach (GameObject obj in currentScene.GetRootGameObjects())
-                {
-                    if (obj.name.Contains("ShotgunItem"))
-                    {
-                        GrabbableObject component = obj.GetComponent<GrabbableObject>();
-
-                        component.startFallingPosition = GameNetworkManager.Instance.localPlayerController.transform.position;
-                        component.targetFloorPosition = component.GetItemFloorPosition(GameNetworkManager.Instance.localPlayerController.transform.position);
-                        component.SetScrapValue(10); // Set Scrap Value
-                        __instance.ItemSlots[3] = component;
-                        HUDManager.Instance.itemSlotIcons[3].sprite = component.itemProperties.itemIcon;
-                        HUDManager.Instance.itemSlotIcons[3].enabled = true;
-                        component.parentObject = __instance.localItemHolder;
-                        check = false;
-                        break;
-                    }
-                }
-            }
-            */
-
-            /*
-            if (check && StartOfRound.Instance.shipHasLanded)
-            {
-                Scene currentScene = SceneManager.GetSceneAt(0);
-                foreach (GameObject obj in currentScene.GetRootGameObjects())
-                {
-                    Plugin.mls.LogInfo($"<> Object name: {obj.name} ");
-                    if (obj.name.Contains("ShotgunItem"))
-                    {
-                        Plugin.mls.LogInfo(">>> TP shotgun on player");
-                        obj.gameObject.transform.position = GameNetworkManager.Instance.localPlayerController.transform.position;
-                        //obj.gameObject.transform.localScale = new Vector3(40f, 40f, 40f);
-                        check = false;
-                        break;
-                    }
-                }
-            }
-            */
         }
 
 

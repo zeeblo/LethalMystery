@@ -32,13 +32,22 @@ namespace LethalMystery
                     {
                         if (Plugin.currentLevel != null)
                         {
-                            Plugin.currentRound?.SpawnEnemyOnServer(location, 0.0f, Plugin.currentLevel.Enemies.IndexOf(enemy));
+                            List<SpawnableEnemyWithRarity> EnemyList = RoundManager.Instance.playersManager.levels
+                                  .SelectMany(level => level.Enemies).ToList();
+
+                            foreach (SpawnableEnemyWithRarity en in EnemyList)
+                            {
+                                Plugin.mls.LogInfo($">>> EnemyList: {en.enemyType.enemyName}");
+                            }
+
+                            Plugin.currentRound?.SpawnEnemyOnServer(location, 0.0f, EnemyList.IndexOf(enemy));
                         }
                     }
                     return;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Plugin.mls.LogInfo($">>> first check: {ex}");
                     Plugin.mls.LogInfo("Failed to spawn enemies, check your command.");
                     return;
                 }
@@ -61,6 +70,7 @@ namespace LethalMystery
                 }
                 catch
                 {
+                    Plugin.mls.LogInfo("second check");
                     Plugin.mls.LogInfo("Failed to spawn enemies, check your command.");
                     return;
                 }
@@ -83,32 +93,31 @@ namespace LethalMystery
             }
             int amount = 1;
             Vector3 position = Vector3.zero;
-
             position = CalculateSpawnPosition(playerID);
 
             bool flag = false;
             string enemyName = "";
-            foreach (SpawnableEnemyWithRarity enemy in Plugin.currentLevel.Enemies)
+
+            StartOfRound playersManager = RoundManager.Instance.playersManager;
+
+            SpawnableEnemyWithRarity matchingEnemy = playersManager.levels
+                .SelectMany(level => level.Enemies)
+                .FirstOrDefault(enemy => enemy.enemyType.enemyName
+                    .ToLower().Contains(entity.ToLower()));
+
+
+            Plugin.mls.LogInfo(">> below matching");
+            if (matchingEnemy != null)
             {
-                if (enemy.enemyType.enemyName.ToLower().Contains(entity.ToLower()))
-                {
-                    try
-                    {
-                        flag = true;
-                        enemyName = enemy.enemyType.enemyName;
-
-                        SpawnEnemy(enemy, amount, inside: true, location: position);
-
-                        Plugin.mls.LogInfo("Spawned " + enemy.enemyType.enemyName);
-                    }
-                    catch
-                    {
-                        Plugin.mls.LogInfo("Could not spawn enemy");
-                    }
-                    Plugin.msgbody = "Spawned: " + enemyName;
-                    break;
-                }
+                flag = true;
+                SpawnEnemy(matchingEnemy, amount, inside: true, location: position);
             }
+            else
+            {
+                Plugin.mls.LogInfo("Could not find enemy matching: " + entity);
+            }
+
+
             if (!flag)
             {
                 foreach (SpawnableEnemyWithRarity outsideEnemy in Plugin.currentLevel.OutsideEnemies)
@@ -178,7 +187,7 @@ namespace LethalMystery
                         GameObject gameObject = UnityEngine.Object.Instantiate(objToSpawn, position, Quaternion.identity, Plugin.currentRound.spawnedScrapContainer);
 
                         GrabbableObject component = gameObject.GetComponent<GrabbableObject>();
-                        
+
                         component.startFallingPosition = position;
                         component.targetFloorPosition = component.GetItemFloorPosition(position);
                         component.SetScrapValue(10); // Set Scrap Value
@@ -202,41 +211,24 @@ namespace LethalMystery
         }
 
 
-        public static void SpawnGun(string location, bool toInventory = false)
+
+        public static void SpawnWeapons()
         {
-            Vector3 position = Vector3.zero;
-            position = CalculateSpawnPosition(playerID: location);
+            Vector3 position = new Vector3(12f, -60f, 15f);
+            SelectableLevel currentLevel = RoundManager.Instance.playersManager.levels[6]; // "6" (rend) is the moon butlers will spawn on
 
-            if (Plugin.currentRound != null)
+            string buttcrack = currentLevel.Enemies[11].enemyType.name;
+            string nutcrack = currentLevel.Enemies[9].enemyType.name;
+            if (buttcrack == "Butler")
             {
-                for (int i = 0; i < Plugin.currentRound.currentLevel.Enemies.Count(); i++)
-                {
-                    Plugin.mls.LogInfo($">< Enemy name: {Plugin.currentRound.currentLevel.Enemies[i].enemyType.name} ");
-                    if (Plugin.currentRound.currentLevel.Enemies[i].enemyType.name == "Nutcracker")
-                    {
-                        GameObject nutcra = UnityEngine.Object.Instantiate(Plugin.currentRound.currentLevel.Enemies[i].enemyType.enemyPrefab, new Vector3(float.MinValue, float.MinValue, float.MinValue), Quaternion.identity);
-                        NutcrackerEnemyAI nutcracomponent = nutcra.GetComponent<NutcrackerEnemyAI>();
-
-
-                        GameObject gameObject = UnityEngine.Object.Instantiate(nutcracomponent.gunPrefab, position, Quaternion.identity, Plugin.currentRound.spawnedScrapContainer);
-                        ShotgunItem component = gameObject.GetComponent<ShotgunItem>();
-                        //component.shellsLoaded = 2;
-                        component.startFallingPosition = position;
-                        component.targetFloorPosition = component.GetItemFloorPosition(position);
-                        component.SetScrapValue(10); // Set Scrap Value
-                        component.NetworkObject.Spawn();
-
-                        if (toInventory)
-                        {
-                            gunObject = component;
-                            //randomObject = component;
-                        }
-                        break;
-                    }
-                }
-
+                UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[11].enemyType.enemyPrefab, position, Quaternion.identity)
+                    .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }
-
+            if (nutcrack == "Nutcracker")
+            {
+                UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[9].enemyType.enemyPrefab, position, Quaternion.identity)
+                    .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
+            }
         }
 
 
@@ -260,9 +252,9 @@ namespace LethalMystery
             Plugin.msgtitle = "Role";
             Plugin.msgbody = "You currently have no role.";
 
-            if (Players.Roles.CurrentRole != "")
+            if (Players.Roles.CurrentRole != null)
             {
-                Plugin.msgbody = Players.Roles.CurrentRole + ": " + Players.Roles.RoleAttrs[Players.Roles.CurrentRole]["desc"];
+                Plugin.msgbody = Players.Roles.CurrentRole.Name + ": " + Players.Roles.CurrentRole.Desc;
             }
 
 
