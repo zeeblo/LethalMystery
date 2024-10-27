@@ -29,8 +29,6 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)
         {
-            __instance.takingFallDamage = false;
-
 
             /// <summary>
             /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
@@ -57,10 +55,18 @@ namespace LethalMystery.Patches
                             break;
                         }
                     }
+
                 }
-                Plugin.DespawnEnemies();
+
+                StartOfRound.Instance.StartCoroutine(waitAFew(4));
             }
 
+        }
+
+        private static IEnumerator waitAFew(float amount)
+        {
+            yield return new WaitForSeconds(amount);
+            Plugin.DespawnEnemies();
         }
 
 
@@ -98,11 +104,9 @@ namespace LethalMystery.Patches
                     __instance.playerBodyAnimator.SetBool("cancelHolding", value: false);
                     __instance.playerBodyAnimator.ResetTrigger("Throw");
 
-                    Plugin.mls.LogInfo(">>> 1");
                     MethodInfo SetSpecialGrabAnimationBool = typeof(PlayerControllerB).GetMethod("SetSpecialGrabAnimationBool", BindingFlags.NonPublic | BindingFlags.Instance);
                     SetSpecialGrabAnimationBool.Invoke(__instance, new object[] { true, Type.Missing });
 
-                    Plugin.mls.LogInfo(">>> 1.1");
                     //__instance.SetSpecialGrabAnimationBool(setTrue: true);
                     __instance.isGrabbingObjectAnimation = true;
                     __instance.cursorIcon.enabled = false;
@@ -119,23 +123,17 @@ namespace LethalMystery.Patches
                     }
                     if (!__instance.isTestingPlayer)
                     {
-                        Plugin.mls.LogInfo(">>> 2");
                         MethodInfo GrabObjectServerRpc = typeof(PlayerControllerB).GetMethod("GrabObjectServerRpc", BindingFlags.NonPublic | BindingFlags.Instance);
                         GrabObjectServerRpc.Invoke(__instance, new object[] { (NetworkObjectReference)networkObject });
                     }
 
-                    Plugin.mls.LogInfo(">>> 3");
                     Coroutine grabObjectCoroutine = (Coroutine)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("grabObjectCoroutine").GetValue();
                     if (grabObjectCoroutine != null)
                     {
-                        Plugin.mls.LogInfo(">>> 4");
                         __instance.StopCoroutine(grabObjectCoroutine);
                     }
 
-                    Plugin.mls.LogInfo(">>> 5");
-
                     MethodInfo GetGrabObject = typeof(PlayerControllerB).GetMethod("GrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
-                    Plugin.mls.LogInfo(">>> 6");
 
                     IEnumerator GrabObject = (IEnumerator)GetGrabObject.Invoke(__instance, null);
 
@@ -145,8 +143,6 @@ namespace LethalMystery.Patches
                             .SetValue(__instance.StartCoroutine(GrabObject));
 
 
-
-                    Plugin.mls.LogInfo(">>> 7");
                     Commands.randomObject = null;
                 }
                 return false;

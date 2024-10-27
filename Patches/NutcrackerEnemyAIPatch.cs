@@ -23,5 +23,6 @@ namespace LethalMystery.Patches
             }
             return true;
         }
+
     }
 }

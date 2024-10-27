@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using LethalMystery.Players;
 using UnityEngine;
-using static UnityEngine.Rendering.HighDefinition.ScalableSettingLevelParameter;
 
 
 namespace LethalMystery.Patches
@@ -21,7 +20,6 @@ namespace LethalMystery.Patches
             Plugin.ResetVariables();
             Roles.AssignRole();
             Commands.SpawnWeapons();
-
 
         }
 

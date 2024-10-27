@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Linq;
-using UnityEngine;
-
+﻿
 namespace LethalMystery.Players
 {
     public class Roles
@@ -34,14 +31,17 @@ namespace LethalMystery.Players
 
             public string GetWeapon()
             {
-                switch (Type)
+                if (Type == "monster")
                 {
-                    case "monster":
-                        return "Knife";
-                    case "sherif":
-                        return "Shotgun";
-                    default:
-                        return "";
+                    return "Knife";
+                }
+                else if (Name == "Sherif")
+                {
+                    return "Shotgun";
+                }
+                else
+                {
+                    return "";
                 }
             }
         }
@@ -78,6 +78,7 @@ namespace LethalMystery.Players
             "Curse users by disrupting their vision and silencing their voice.",
             "monster"
             ));
+
         }
 
         public static string? TopText;

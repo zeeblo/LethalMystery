@@ -109,6 +109,7 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(GrabbableObjectPatch));
             _harmony.PatchAll(typeof(ShotgunItemPatch));
             _harmony.PatchAll(typeof(ButlerEnemyAIPatch));
+            _harmony.PatchAll(typeof(Players.Effects.General));
         }
 
 
@@ -151,7 +152,7 @@ namespace LethalMystery
                 }
                 if (obj.name.Contains("Butler"))
                 {
-                    Plugin.mls.LogInfo($"< Finding nuts");
+                    Plugin.mls.LogInfo($"< Finding Butlers");
                     Destroy(obj.gameObject);
                 }
             }
