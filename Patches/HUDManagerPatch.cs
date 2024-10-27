@@ -12,12 +12,6 @@ namespace LethalMystery.Patches
     internal class HUDManagerPatch
     {
 
-        private static string NetCommandPrefix = Plugin.NetCommandPrefix;
-        private static string NetHostCommandPrefix = Plugin.NetHostCommandPrefix;
-        private static string NetCommandPostfix = Plugin.NetCommandPostfix;
-        private static string nullChatMessage = "";
-
-
         #region Chat Commands
 
 
@@ -32,8 +26,8 @@ namespace LethalMystery.Patches
                 string[] temp = chatMessage.Split('/');
                 string command = temp[1];
 
-                Plugin.ProcessCommandInput(command);
-                chatMessage = nullChatMessage;
+                Commands.ProcessCommandInput(command);
+                chatMessage = "";
                 return false;
             }
 
@@ -62,7 +56,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void ShowResults()
         {
-            HUDManager.Instance.profitQuotaDaysLeftText.text = "Aliens Won";
+            HUDManager.Instance.profitQuotaDaysLeftText.text = "Monsters Won";
             HUDManager.Instance.profitQuotaDaysLeftText2.text = "";
         }
 

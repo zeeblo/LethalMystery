@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using GameNetcodeStuff;
 using Unity.Netcode;
-using static Steamworks.InventoryItem;
-using static UnityEngine.Rendering.DebugUI;
-using UnityEngine.UIElements;
-using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 
 namespace LethalMystery
@@ -22,138 +19,153 @@ namespace LethalMystery
         public static GrabbableObject? randomObject;
         public static ShotgunItem? gunObject;
 
-        internal static void SpawnEnemy(SpawnableEnemyWithRarity enemy, int amount, bool inside, Vector3 location)
+
+
+        #region Chat Commands
+        internal static string? msgtitle;
+        internal static string? msgbody;
+        internal static string NetCommandPrefix = "<size=0>LCMD:";
+        internal static string NetHostCommandPrefix = "<size=0>LMCMD:";
+        internal static string NetCommandPostfix = "</size>";
+        internal static string? playerwhocalled;
+        internal static bool NonHostCommands(string command)
         {
-            if (location.x != 0f && location.y != 0f && location.z != 0f && inside)
+            bool IsNonHostCommand = true;
+            string[] commandargs = command.Split(' ');
+            int numOfInputs = commandargs.Length;
+
+
+            Plugin.mls.LogInfo($"num: {numOfInputs} | cmd: {command} ");
+
+            if (numOfInputs > 1)
             {
-                try
+                foreach (var cmd in Commands.HelpCmds)
                 {
-                    for (int i = 0; i < amount; i++)
+
+                    if (command.StartsWith("help") && commandargs[1].ToLower().Contains(cmd.Key))
                     {
-                        if (Plugin.currentLevel != null)
-                        {
-                            List<SpawnableEnemyWithRarity> EnemyList = RoundManager.Instance.playersManager.levels
-                                  .SelectMany(level => level.Enemies).ToList();
 
-                            foreach (SpawnableEnemyWithRarity en in EnemyList)
-                            {
-                                Plugin.mls.LogInfo($">>> EnemyList: {en.enemyType.enemyName}");
-                            }
+                        msgtitle = cmd.Key;
+                        msgbody = cmd.Value;
+                        DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
 
-                            Plugin.currentRound?.SpawnEnemyOnServer(location, 0.0f, EnemyList.IndexOf(enemy));
-                        }
+                        return IsNonHostCommand;
                     }
-                    return;
                 }
-                catch (Exception ex)
+
+                switch (commandargs[0])
                 {
-                    Plugin.mls.LogInfo($">>> first check: {ex}");
-                    Plugin.mls.LogInfo("Failed to spawn enemies, check your command.");
-                    return;
-                }
-            }
-            if (location.x != 0f && location.y != 0f && location.z != 0f)
-            {
-                try
-                {
-                    int i = 0;
-                    for (; i < amount; i++)
-                    {
-                        if (Plugin.currentLevel != null)
-                        {
-                            UnityEngine.Object.Instantiate<GameObject>(Plugin.currentLevel.OutsideEnemies[Plugin.currentLevel.OutsideEnemies.IndexOf(enemy)].enemyType.enemyPrefab, location, Quaternion.Euler(Vector3.zero)).gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
-                        }
-                    }
-                    Plugin.mls.LogInfo($"You wanted to spawn: {amount} enemies");
-                    Plugin.mls.LogInfo("Spawned an enemy. Total Spawned: " + i + "at position:" + location);
-                    return;
-                }
-                catch
-                {
-                    Plugin.mls.LogInfo("second check");
-                    Plugin.mls.LogInfo("Failed to spawn enemies, check your command.");
-                    return;
-                }
-            }
-        }
-
-
-        public static string SpawnEnemyFunc(string text)
-        {
-            Plugin.msgtitle = "Spawned Enemies";
-            string[] array = text.Split(' ');
-            string playerID = array[0];
-            string entity = array[1];
-            if (Plugin.currentLevel == null || Plugin.levelEnemySpawns == null || Plugin.currentLevel.Enemies == null)
-            {
-                Plugin.msgtitle = "Command";
-                Plugin.msgbody = (Plugin.currentLevel == null ? "Unable to send command since currentLevel is null." : "Unable to send command since levelEnemySpawns is null.");
-                Plugin.DisplayChatError(Plugin.msgtitle + "\n" + Plugin.msgbody);
-                return Plugin.msgbody + "/" + Plugin.msgtitle;
-            }
-            int amount = 1;
-            Vector3 position = Vector3.zero;
-            position = CalculateSpawnPosition(playerID);
-
-            bool flag = false;
-            string enemyName = "";
-
-            StartOfRound playersManager = RoundManager.Instance.playersManager;
-
-            SpawnableEnemyWithRarity matchingEnemy = playersManager.levels
-                .SelectMany(level => level.Enemies)
-                .FirstOrDefault(enemy => enemy.enemyType.enemyName
-                    .ToLower().Contains(entity.ToLower()));
-
-
-            Plugin.mls.LogInfo(">> below matching");
-            if (matchingEnemy != null)
-            {
-                flag = true;
-                SpawnEnemy(matchingEnemy, amount, inside: true, location: position);
-            }
-            else
-            {
-                Plugin.mls.LogInfo("Could not find enemy matching: " + entity);
-            }
-
-
-            if (!flag)
-            {
-                foreach (SpawnableEnemyWithRarity outsideEnemy in Plugin.currentLevel.OutsideEnemies)
-                {
-                    if (outsideEnemy.enemyType.enemyName.ToLower().Contains(array[1].ToLower()))
-                    {
-                        try
-                        {
-                            flag = true;
-                            enemyName = outsideEnemy.enemyType.enemyName;
-                            Plugin.mls.LogInfo(outsideEnemy.enemyType.enemyName);
-                            Plugin.mls.LogInfo(("The index of " + outsideEnemy.enemyType.enemyName + " is " + Plugin.currentLevel.OutsideEnemies.IndexOf(outsideEnemy)));
-
-                            SpawnEnemy(outsideEnemy, amount, inside: false, location: position);
-                            Plugin.mls.LogInfo(("Spawned " + outsideEnemy.enemyType.enemyName));
-                        }
-                        catch (Exception ex)
-                        {
-                            Plugin.mls.LogInfo("Could not spawn enemy");
-                            Plugin.mls.LogInfo(("The game tossed an error: " + ex.Message));
-                        }
-                        Plugin.msgbody = "Spawned " + amount + " " + enemyName + (amount > 1 ? "s" : "");
+                    case "vote":
+                        Commands.SetVote(commandargs[1]);
                         break;
-                    }
+                    default:
+                        IsNonHostCommand = false;
+                        break;
+
                 }
+
+                return IsNonHostCommand;
             }
 
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+
+            switch (command)
+            {
+                case "help":
+                    Commands.GetHelp();
+                    break;
+                case "hosthelp":
+                    Commands.GetHostHelp();
+                    break;
+                case "ids":
+                    Commands.GetPlayerIDs();
+                    break;
+                case "role":
+                    Commands.GetRole();
+                    break;
+                default:
+                    IsNonHostCommand = false;
+                    break;
+
+            }
+
+
+            return IsNonHostCommand;
         }
 
-
-        public static bool ToggleGodMode()
+        internal static void ProcessCommandInput(string command)
         {
-            Plugin.enableGod = !Plugin.enableGod;
-            return Plugin.enableGod;
+            msgtitle = "default";
+            msgbody = "<color=#FF0000>ERR</color>: unknown";
+            string[] commandarguments = command.Split(' ');
+
+            if (NonHostCommands(command))
+            {
+                return;
+            }
+
+            if (!Plugin.isHost)
+            {
+                msgtitle = "Command";
+                msgbody = "Unable to send command since you are not host.";
+                return;
+            }
+
+            switch (commandarguments[0])
+            {
+                case "set imps":
+                    break;
+            }
         }
+
+
+        internal static void SendHostCommand(string commandInput)
+        {
+            if (!Plugin.isHost)
+            {
+                return;
+            }
+            string commandToClients = NetHostCommandPrefix + commandInput + NetCommandPostfix;
+            HUDManager.Instance.AddTextToChatOnServer(commandToClients, -1);
+        }
+
+        public static void ProcessNetHostCommand(string commandInput)
+        {
+        }
+        public static void ProcessCommand(string commandInput)
+        {
+            ProcessCommandInput(commandInput);
+        }
+
+
+
+
+        public static void DisplayChatMessage(string chatMessage)
+        {
+            string formattedMessage =
+                $"<color=#FF00FF>LM</color>: <color=#FFFF00>{chatMessage}</color>";
+
+            HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
+
+            UpdateChatText();
+        }
+        public static void DisplayChatError(string errorMessage)
+        {
+            string formattedMessage =
+                $"<color=#FF0000>LM: ERROR</color>: <color=#FF0000>{errorMessage}</color>";
+
+            HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
+
+            UpdateChatText();
+        }
+
+        private static void UpdateChatText()
+        {
+            HUDManager.Instance.chatText.text = string.Join("\n", HUDManager.Instance.ChatMessageHistory);
+        }
+
+
+        #endregion Chat Commands
+
 
 
 
@@ -234,32 +246,31 @@ namespace LethalMystery
 
         public static string GetHelp()
         {
-            Plugin.msgtitle = "Available Commands";
-            Plugin.msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID";
-            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+            msgtitle = "Available Commands";
+            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID";
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
         }
         public static string GetHostHelp()
         {
-            Plugin.msgtitle = "Host Commands";
-            Plugin.msgbody = "/set tasks - set the number of tasks (default is 10) \n /set imps - set the number of imposters (default 1)";
-            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+            msgtitle = "Host Commands";
+            msgbody = "/set tasks - set the number of tasks (default is 10) \n /set imps - set the number of imposters (default 1)";
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
         }
 
         public static string GetRole()
         {
-            Plugin.msgtitle = "Role";
-            Plugin.msgbody = "You currently have no role.";
+            msgtitle = "Role";
+            msgbody = "You currently have no role.";
 
             if (Players.Roles.CurrentRole != null)
             {
-                Plugin.msgbody = Players.Roles.CurrentRole.Name + ": " + Players.Roles.CurrentRole.Desc;
+                msgbody = Players.Roles.CurrentRole.Name + ": " + Players.Roles.CurrentRole.Desc;
             }
 
-
-            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
         }
 
         public static string GetPlayerIDs()
@@ -274,24 +285,24 @@ namespace LethalMystery
                 name += $"{player.playerUsername} || ID: {player.playerClientId}\n";
             }
 
-            Plugin.msgtitle = "IDs";
-            Plugin.msgbody = name;
-            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+            msgtitle = "IDs";
+            msgbody = name;
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
         }
 
         public static string SetVote(string vote)
         {
 
-            Plugin.msgtitle = "vote";
+            msgtitle = "vote";
 
             if (GameNetworkManager.Instance.localPlayerController.playersManager.inShipPhase) // temporary, add check for when in meeting instead
             {
-                Plugin.msgbody = "You can only vote in a meeting.";
+                msgbody = "You can only vote in a meeting.";
             }
             else if (vote.ToLower() == "skip")
             {
-                Plugin.msgbody = "You voted to skip!";
+                msgbody = "You voted to skip!";
             }
             else
             {
@@ -299,9 +310,9 @@ namespace LethalMystery
 
                 if (!ulong.TryParse(vote, out playerID) || !StartOfRound.Instance.ClientPlayerList.Keys.Contains(playerID))
                 {
-                    Plugin.msgbody = "Invalid. Type \"/ids\" to see the available IDs \n Type \"/help vote\" to properly use this command";
-                    Plugin.DisplayChatError("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-                    return Plugin.msgbody + "/" + Plugin.msgtitle;
+                    msgbody = "Invalid. Type \"/ids\" to see the available IDs \n Type \"/help vote\" to properly use this command";
+                    DisplayChatError("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+                    return msgbody + "/" + msgtitle;
                 }
 
                 playerID = ulong.Parse(vote);
@@ -309,13 +320,13 @@ namespace LethalMystery
                 {
                     if (player.playerClientId == playerID)
                     {
-                        Plugin.msgbody = "You voted " + player.playerUsername + " (ID: " + playerID + ")";
+                        msgbody = "You voted " + player.playerUsername + " (ID: " + playerID + ")";
                     }
                 }
             }
 
-            Plugin.DisplayChatMessage("<color=#FF00FF>" + Plugin.msgtitle + "</color>\n" + Plugin.msgbody);
-            return Plugin.msgbody + "/" + Plugin.msgtitle;
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
         }
 
         public static bool CheckPrefix(string text)

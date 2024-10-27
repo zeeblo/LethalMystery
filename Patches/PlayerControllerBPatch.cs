@@ -29,6 +29,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)
         {
+            __instance.takingFallDamage = false;
 
             /// <summary>
             /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands

@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static UnityEngine.Rendering.DebugUI;
+
 
 
 
@@ -12,7 +11,6 @@ namespace LethalMystery.Patches
     internal class StartOfRoundPatch
     {
 
-        #region Regular Methods
         private static void SpawnHorn(StartOfRound __instance, GameObject prefab, Vector3 pos, int unlockableIndex)
         {
             GameObject gameObject = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.identity, null);
@@ -28,11 +26,6 @@ namespace LethalMystery.Patches
         }
 
 
-        #endregion Regular Methods
-
-
-
-
         [HarmonyPatch(typeof(StartOfRound), "Start")]
         [HarmonyPostfix]
         private static void StartPatch(StartOfRound __instance)
@@ -41,7 +34,6 @@ namespace LethalMystery.Patches
             // Spawn the meeting horn
             for (int k = 0; k < __instance.unlockablesList.unlockables.Count; k++)
             {
-                Plugin.mls.LogInfo(">>> Unlockable Name ES: " + __instance.unlockablesList.unlockables[k].unlockableName);
                 if (__instance.unlockablesList.unlockables[k].unlockableName.Contains("Loud"))
                 {
 
