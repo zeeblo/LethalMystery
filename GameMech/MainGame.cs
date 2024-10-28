@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LethalMystery.GameMech
 {
     internal class MainGame
     {
-
 
         [HarmonyPatch(typeof(StartMatchLever))]
         internal class CheckPlayerAmount
@@ -36,9 +40,14 @@ namespace LethalMystery.GameMech
         }
 
 
+
+
+
         [HarmonyPatch(typeof(RoundManager))]
         internal class StartGame
         {
+
+
             [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
             [HarmonyPostfix]
             private static void Start()
@@ -51,6 +60,7 @@ namespace LethalMystery.GameMech
                 Commands.SpawnWeapons();
 
             }
+
 
             [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
             [HarmonyPrefix]
@@ -123,7 +133,7 @@ namespace LethalMystery.GameMech
             {
                 if (StartOfRound.Instance.shipHasLanded == false || Plugin.inMeeting == true || Plugin.MeetingNum <= 0)
                     return;
-                if (!(Plugin.MeetingCooldown <= 0)) // If MeetingCooldown is still 1 to (defaultNum) then dont continue
+                if (!(Plugin.MeetingCooldown <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
                     return;
 
                 Plugin.inMeeting = true;

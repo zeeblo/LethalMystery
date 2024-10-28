@@ -31,9 +31,16 @@ namespace LethalMystery.Patches
         {
             __instance.takingFallDamage = false;
 
-            /// <summary>
-            /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
-            /// </summary>
+        }
+
+
+        /// <summary>
+        /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
+        /// </summary>
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPostfix]
+        private static void CheckForWeapon(PlayerControllerB __instance)
+        {
             if (StartOfRound.Instance.shipHasLanded && checkedForWeapon == false && Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.GetWeapon() == "")
@@ -61,7 +68,6 @@ namespace LethalMystery.Patches
 
                 StartOfRound.Instance.StartCoroutine(waitAFew(4));
             }
-
         }
 
         private static IEnumerator waitAFew(float amount)
