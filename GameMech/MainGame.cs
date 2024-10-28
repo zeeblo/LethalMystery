@@ -47,7 +47,6 @@ namespace LethalMystery.GameMech
         internal class StartGame
         {
 
-
             [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
             [HarmonyPostfix]
             private static void Start()
@@ -61,6 +60,13 @@ namespace LethalMystery.GameMech
 
             }
 
+
+            [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.SpawnMapObjects))]
+            [HarmonyPrefix]
+            private static bool RemoveDangerObjects()
+            {
+                return false;
+            }
 
             [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
             [HarmonyPrefix]
