@@ -11,7 +11,7 @@ namespace LethalMystery.Patches
     internal class RoundManagerPatch
     {
 
-
+        /*
         [HarmonyPatch(typeof(RoundManager), "SetToCurrentLevelWeather")]
         [HarmonyPrefix]
         public static bool DisableSetToCurrentLevelWeather()
@@ -19,5 +19,6 @@ namespace LethalMystery.Patches
             TimeOfDay.Instance.currentLevelWeather = LevelWeatherType.None;
             return false;
         }
+        */
     }
 }
