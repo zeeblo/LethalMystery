@@ -45,11 +45,23 @@ namespace LethalMystery.Patches
                         );
                 }
             }
-
-
         }
 
 
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SetPlanetsWeather))]
+        [HarmonyPrefix]
+        private static bool NoBadWeather(ref SelectableLevel[] ___levels)
+        {
+            for (int i = 0; i < ___levels.Length; i++)
+            {
+                ___levels[i].currentWeather = LevelWeatherType.None;
+                if (___levels[i].overrideWeather)
+                {
+                    ___levels[i].currentWeather = ___levels[i].overrideWeatherType;
+                }
+            }
+            return false;
+        }
 
 
 
