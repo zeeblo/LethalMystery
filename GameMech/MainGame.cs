@@ -14,7 +14,7 @@ namespace LethalMystery.GameMech
 {
     internal class MainGame
     {
-
+        
         [HarmonyPatch(typeof(StartMatchLever))]
         internal class CheckPlayerAmount
         {
@@ -61,6 +61,10 @@ namespace LethalMystery.GameMech
             }
 
 
+
+            /// <summary>
+            /// Gets rid of landmines, turrets, etc.
+            /// </summary>
             [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.SpawnMapObjects))]
             [HarmonyPrefix]
             private static bool RemoveDangerObjects()
@@ -127,6 +131,8 @@ namespace LethalMystery.GameMech
             }
             #endregion Chat Commands
         }
+
+
 
 
         [HarmonyPatch(typeof(ShipAlarmCord))]

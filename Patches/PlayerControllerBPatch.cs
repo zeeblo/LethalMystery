@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using GameNetcodeStuff;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.Netcode;
-using UnityEngine.InputSystem;
 using System.Reflection;
-using UnityEngine.UIElements;
-using System.Xml.Linq;
-using System.ComponentModel;
 using System.Collections;
 using LethalMystery.Players;
+using LethalMystery.GameMech;
 
 
 
@@ -41,7 +35,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void CheckForWeapon(PlayerControllerB __instance)
         {
-            if (StartOfRound.Instance.shipHasLanded && checkedForWeapon == false && Roles.CurrentRole != null)
+            if (StartOfRoundPatch.doneGeneratingLevel && checkedForWeapon == false && Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.GetWeapon() == "")
                 {
@@ -66,7 +60,7 @@ namespace LethalMystery.Patches
 
                 }
 
-                StartOfRound.Instance.StartCoroutine(waitAFew(4));
+                StartOfRound.Instance.StartCoroutine(waitAFew(3));
             }
         }
 

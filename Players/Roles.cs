@@ -50,6 +50,7 @@ namespace LethalMystery.Players
         public static List<Role> allRoles = new List<Role>();
         public static void AppendRoles()
         {
+
             allRoles.Add(new Role("Employee",
             "Bring back items to the ship to meet the quota.",
             "employee")

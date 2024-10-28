@@ -5,13 +5,26 @@ using Unity.Netcode;
 using UnityEngine;
 
 
-
-
 namespace LethalMystery.Patches
 {
     [HarmonyPatch(typeof(StartOfRound))]
     internal class StartOfRoundPatch
     {
+
+        public static bool doneGeneratingLevel = false;
+
+
+
+        /// <summary>
+        /// Used for PlayerControllerBPatch's weapon check method
+        /// </summary>
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
+        [HarmonyPostfix]
+        private static void DoneGenerating()
+        {
+            doneGeneratingLevel = true;
+        }
+
 
         [HarmonyPatch(typeof(StartOfRound), "Start")]
         [HarmonyPostfix]
@@ -36,7 +49,6 @@ namespace LethalMystery.Patches
             }
             return false;
         }
-
 
 
     }
