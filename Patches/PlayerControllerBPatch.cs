@@ -35,7 +35,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void CheckForWeapon(PlayerControllerB __instance)
         {
-            if (StartOfRoundPatch.doneGeneratingLevel && checkedForWeapon == false && Roles.CurrentRole != null)
+            if (StartOfRoundPatch.doneSpawningWeapons && checkedForWeapon == false && Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.GetWeapon() == "")
                 {

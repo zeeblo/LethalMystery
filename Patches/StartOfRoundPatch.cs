@@ -11,7 +11,7 @@ namespace LethalMystery.Patches
     internal class StartOfRoundPatch
     {
 
-        public static bool doneGeneratingLevel = false;
+        public static bool doneSpawningWeapons = false;
 
 
 
@@ -22,7 +22,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void DoneGenerating()
         {
-            doneGeneratingLevel = true;
+            doneSpawningWeapons = true;
         }
 
 

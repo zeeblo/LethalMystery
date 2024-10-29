@@ -99,7 +99,7 @@ namespace LethalMystery
             ButlerEnemyAIPatch.spawnedButlerForKnife = false;
             NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
             PlayerControllerBPatch.checkedForWeapon = false;
-            StartOfRoundPatch.doneGeneratingLevel = false;
+            StartOfRoundPatch.doneSpawningWeapons = false;
         }
 
 
