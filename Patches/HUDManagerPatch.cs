@@ -5,6 +5,8 @@ using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering;
 
 namespace LethalMystery.Patches
 {

@@ -91,6 +91,10 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(GameMech.MainGame.StartGame));
             _harmony.PatchAll(typeof(GameMech.MainGame.Meeting));
             _harmony.PatchAll(typeof(GameMech.MainGame.ControlDoors));
+            _harmony.PatchAll(typeof(GameMech.Tasks.Items));
+            _harmony.PatchAll(typeof(GameMech.Tasks.Assignment));
+            _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS));
+            _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS_2));
         }
 
 
