@@ -24,7 +24,7 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(PlayerControllerB __instance)
         {
             __instance.takingFallDamage = false;
-
+            // __instance.carryWeight = 1f; // possibly remove weight so people can't speed check others | or ser carry weight of weapons to 1
         }
 
 
@@ -78,7 +78,7 @@ namespace LethalMystery.Patches
             if (Commands.randomObject != null)
             {
                 Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("currentlyGrabbingObject").SetValue(Commands.randomObject);
-                Plugin.mls.LogInfo($">>> currentlyGrab: {Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("currentlyGrabbingObject").GetValue()}");
+                //Plugin.mls.LogInfo($">>> currentlyGrab: {Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("currentlyGrabbingObject").GetValue()}");
 
                 if (!GameNetworkManager.Instance.gameHasStarted && !Commands.randomObject.itemProperties.canBeGrabbedBeforeGameStart && StartOfRound.Instance.testRoom == null)
                 {
