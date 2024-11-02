@@ -12,6 +12,8 @@ namespace LethalMystery.GameMech
     {
         public static bool checkingForItems = false;
         public static bool droppedItem = false;
+        public static int currentQuota = 0;
+        public static int maxQuota = 120;
 
         [HarmonyPatch(typeof(PlayerControllerB))]
         internal class Items
@@ -36,6 +38,7 @@ namespace LethalMystery.GameMech
                                 HUDManager.Instance.itemSlotIcons[i].enabled = false;
                                 __instance.carryWeight = 1f;
                                 checkingForItems = false;
+                                currentQuota += 10;
                                 break;
                             }
                         }
@@ -69,6 +72,14 @@ namespace LethalMystery.GameMech
         [HarmonyPatch(typeof(HUDManager))]
         internal class Assignment
         {
+
+
+            [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
+            [HarmonyPostfix]
+            private static void UpdatePatch()
+            {
+                StartOfRound.Instance.profitQuotaMonitorText.text = $"PROFIT QUOTA:\n${currentQuota} / ${maxQuota}";
+            }
 
 
             /// <summary>
@@ -108,10 +119,10 @@ namespace LethalMystery.GameMech
             /// </summary>
             [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.DisplayNewScrapFound))]
             [HarmonyPrefix]
-            private static bool DisplayItems(HUDManager __instance)
+            private static bool DisplayItems()
             {
                 checkingForItems = true;
-
+                
                 return true;
             }
 
