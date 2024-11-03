@@ -51,5 +51,15 @@ namespace LethalMystery.Patches
         }
 
 
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.Update))]
+        [HarmonyPostfix]
+        private static void stopSpeaker(StartOfRound __instance)
+        {
+            if (__instance.speakerAudioSource.isPlaying)
+            {
+                __instance.speakerAudioSource.Stop();
+            }
+        }
+
     }
 }
