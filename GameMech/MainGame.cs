@@ -43,7 +43,7 @@ namespace LethalMystery.GameMech
 
 
 
-        [HarmonyPatch(typeof(RoundManager))]
+        [HarmonyPatch]
         internal class StartGame
         {
 
@@ -57,9 +57,18 @@ namespace LethalMystery.GameMech
                 Plugin.ResetVariables();
                 Roles.AssignRole();
                 Commands.SpawnWeapons();
+                CharacterDisplay.ToggleView(false);
 
             }
 
+
+            [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
+            [HarmonyPostfix]
+            private static void IntroScreen()
+            {
+                CharacterDisplay.inIntro = true;
+                StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
+            }
 
 
             /// <summary>
@@ -199,7 +208,7 @@ namespace LethalMystery.GameMech
                     __instance.triggerScript.interactable = true;
 
                     Plugin.inMeeting = false;
-                    Plugin.RemoveEnvironment(view: true);
+                    Plugin.RemoveEnvironment(false);
                     StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
                     Plugin.currentMeetingCountdown = Plugin.defaultMeetingCountdown;
                     Plugin.MeetingCooldown = Plugin.defaultMeetingCooldown;

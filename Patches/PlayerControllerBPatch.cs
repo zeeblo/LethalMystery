@@ -138,7 +138,6 @@ namespace LethalMystery.Patches
 
                     IEnumerator GrabObject = (IEnumerator)GetGrabObject.Invoke(__instance, null);
 
-                    // Start the coroutine using the result
                     Traverse.Create(GameNetworkManager.Instance.localPlayerController)
                             .Field("grabObjectCoroutine")
                             .SetValue(__instance.StartCoroutine(GrabObject));

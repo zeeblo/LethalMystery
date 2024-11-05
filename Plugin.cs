@@ -107,19 +107,19 @@ namespace LethalMystery
         }
 
 
-        public static void RemoveEnvironment(bool view = false)
+        public static void RemoveEnvironment(bool value = true)
         {
             // Environment 
             GameObject OutOfBoundsTerrain = GameObject.Find("OutOfBoundsTerrain").gameObject;
             Scene currentScene = SceneManager.GetSceneAt(1); // might not work on other moons. try getting the current scene
 
-            OutOfBoundsTerrain.SetActive(view);
+            OutOfBoundsTerrain.SetActive(!value);
 
             foreach (GameObject obj in currentScene.GetRootGameObjects())
             {
                 if (obj.name == "Environment")
                 {
-                    obj.SetActive(view);
+                    obj.SetActive(!value);
                     break;
                 }
             }
@@ -128,8 +128,8 @@ namespace LethalMystery
 
         public static void DespawnEnemies()
         {
-            Scene currentScene = SceneManager.GetSceneAt(0);
-            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            Scene SampleScene = SceneManager.GetSceneAt(0);
+            foreach (GameObject obj in SampleScene.GetRootGameObjects())
             {
                 if (obj.name.Contains("Nutcracker"))
                 {
