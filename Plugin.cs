@@ -5,6 +5,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Patches;
 using LethalMystery.Players;
+using System.Reflection;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -79,6 +80,7 @@ namespace LethalMystery
 
         private void PatchAllStuff()
         {
+            /*
             _harmony.PatchAll(typeof(ButlerEnemyAIPatch));
             _harmony.PatchAll(typeof(HUDManagerPatch));
             _harmony.PatchAll(typeof(NutcrackerEnemyAIPatch));
@@ -95,6 +97,10 @@ namespace LethalMystery
             _harmony.PatchAll(typeof(GameMech.Tasks.Assignment));
             _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS));
             _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS_2));
+            _harmony.PatchAll(typeof(GameMech.CharacterDisplay));
+            */
+            _harmony.PatchAll(Assembly.GetExecutingAssembly());
+
         }
 
 

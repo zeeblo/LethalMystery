@@ -9,6 +9,7 @@ using LethalMystery.Players;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace LethalMystery.GameMech
 {
@@ -55,9 +56,9 @@ namespace LethalMystery.GameMech
                 terminal.groupCredits = 9999;
 
                 Plugin.ResetVariables();
-                Roles.AssignRole();
+                //Roles.AssignRole();
                 Commands.SpawnWeapons();
-                CharacterDisplay.ToggleView(false);
+                GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(false); // makes screen black
 
             }
 

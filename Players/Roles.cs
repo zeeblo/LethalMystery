@@ -96,7 +96,7 @@ namespace LethalMystery.Players
             TopText = role.Name;
             BottomText = role.Desc;
             CurrentRole = role;
-            ShowRole(role);
+            
         }
 
 

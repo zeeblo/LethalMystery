@@ -7,6 +7,8 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using LethalMystery.Players;
+using Unity.Netcode;
 
 namespace LethalMystery.GameMech
 {
@@ -14,10 +16,10 @@ namespace LethalMystery.GameMech
     public class CharacterDisplay
     {
 
-        public static Vector3 modelPosition = new Vector3(80f, 20f, 20f);
-        public static Vector3 groundPosition = new Vector3(80f, 18.8f, 20f);
-        public static Vector3 cameraPosition = new Vector3(80f, 31.05f, 26f);
-        public static Vector3 lightPosition = new Vector3(80f, 34f, 20f);
+        public static Vector3 modelPosition = new Vector3(-80f, 20f, 20f);
+        public static Vector3 groundPosition = new Vector3(-80f, 18.8f, 20f);
+        public static Vector3 cameraPosition = new Vector3(-80f, 31.05f, 26f);
+        public static Vector3 lightPosition = new Vector3(-80f, 34f, 20f);
         public static GameObject? lght;
         public static Camera? introCamera;
         public static GameObject? sphere;
@@ -44,7 +46,7 @@ namespace LethalMystery.GameMech
             }
         }
 
-        public static void ToggleMovement(bool value)
+        public static void EnableMovement(bool value)
         {
             if (value)
             {
@@ -61,6 +63,10 @@ namespace LethalMystery.GameMech
 
         }
 
+        /// <summary>
+        /// If user is holding a weapon, switch to the next slot.
+        /// (This doesn't specifically check if it's a weapon but that's how it's used)
+        /// </summary>
         public static void SwitchToNextItem()
         {
             MethodInfo GetFirstEmptyItemSlot = typeof(PlayerControllerB).GetMethod("FirstEmptyItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -84,7 +90,7 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(value);
             GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(value);
         }
-        /*
+
         public static void ResetAnimation()
         {
             GameNetworkManager.Instance.localPlayerController.playerBodyAnimator.SetBool("Walking", value: false);
@@ -92,10 +98,10 @@ namespace LethalMystery.GameMech
             GameNetworkManager.Instance.localPlayerController.playerBodyAnimator.SetBool("Sideways", value: false);
             GameNetworkManager.Instance.localPlayerController.Crouch(crouch: false);
             GameNetworkManager.Instance.localPlayerController.playerBodyAnimator.SetBool("FallNoJump", value: false);
-            GameNetworkManager.Instance.localPlayerController?.CancelSpecialTriggerAnimations();
-            GameNetworkManager.Instance.localPlayerController?.StopPerformingEmoteServerRpc();
+            GameNetworkManager.Instance.localPlayerController.CancelSpecialTriggerAnimations();
+            GameNetworkManager.Instance.localPlayerController.StopPerformingEmoteServerRpc();
         }
-        */
+
 
         public static void EnvironmentLight(bool light)
         {
@@ -171,20 +177,7 @@ namespace LethalMystery.GameMech
             canv.worldCamera = GameObject.Find("UICamera").GetComponent<Camera>();
             canv.renderMode = RenderMode.ScreenSpaceCamera;
 
-            //StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
-        }
-
-        public static void ShowHangarShip(bool value)
-        {
-            GameObject shipObjects = GameObject.Find("Environment/HangarShip");
-            foreach (Transform child in shipObjects.transform)
-            {
-                if ( !(child.name.ToLower().Contains("player")) )
-                {
-                    child.gameObject.SetActive(value);
-                }
-                
-            }
+            StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
         }
 
 
@@ -192,38 +185,45 @@ namespace LethalMystery.GameMech
         public static IEnumerator IntroDisplay()
         {
             ShowSphere(true);
-            ToggleMovement(false);
+            EnableMovement(false);
             LookAtCamera();
-            ShowHangarShip(false);
-
+            ResetAnimation();
             yield return new WaitForSeconds(1.5f);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
-            
-            
+
+
             Plugin.RemoveEnvironment(true);
             EnvironmentLight(false);
             ShowLights(true);
 
+            
             yield return new WaitForSeconds(2f);
-            //ResetAnimation();
+            ToggleView(false);
             IntroCamera();
             SwitchToNextItem();
+            
 
             yield return new WaitForSeconds(8f);
 
-            ShowHangarShip(true);
             ShowSphere(false);
-            ToggleMovement(true);
+            EnableMovement(true);
             LookAtCamera();
             ToggleView(true);
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            //ResetAnimation();
+
             Plugin.RemoveEnvironment(false);
             EnvironmentLight(true);
             ShowLights(false);
 
+
             DisableIntroCamera();
+            if (Roles.CurrentRole != null)
+            {
+                Roles.ShowRole(Roles.CurrentRole);
+            }
+            
+            inIntro = false;
 
         }
 
