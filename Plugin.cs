@@ -124,7 +124,6 @@ namespace LethalMystery
             {
                 if (obj.name == "Environment")
                 {
-                    Plugin.mls.LogInfo(">>> reached h4");
                     obj.SetActive(!value);
                     break;
                 }

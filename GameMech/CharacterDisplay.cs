@@ -26,7 +26,116 @@ namespace LethalMystery.GameMech
         public static bool inIntro = false;
         public static bool disableMovement = false;
         public static bool doneSpawningWeapons = false;
-        
+
+
+
+        #region patches
+
+        [HarmonyPatch(typeof(PlayerControllerB), "PlayerLookInput")]
+        [HarmonyPrefix]
+        private static bool PlayerLookPatch()
+        {
+            if (inIntro)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        private static IEnumerator RemoveMoonInfo(StartOfRound __instance)
+        {
+            __instance.StartNewRoundEvent.Invoke();
+            yield return new WaitForSeconds(1f);
+            HUDManager.Instance.LevellingAudio.Stop();
+            StartMatchLever leverScript = UnityEngine.Object.FindObjectOfType<StartMatchLever>();
+            leverScript.triggerScript.timeToHold = 0.7f;
+            leverScript.triggerScript.interactable = false;
+            __instance.displayedLevelResults = false;
+            __instance.StartTrackingAllPlayerVoices();
+            if (!GameNetworkManager.Instance.gameHasStarted)
+            {
+                GameNetworkManager.Instance.LeaveLobbyAtGameStart();
+                GameNetworkManager.Instance.gameHasStarted = true;
+            }
+            UnityEngine.Object.FindObjectOfType<QuickMenuManager>().DisableInviteFriendsButton();
+            if (!GameNetworkManager.Instance.disableSteam)
+            {
+                GameNetworkManager.Instance.SetSteamFriendGrouping(GameNetworkManager.Instance.steamLobbyName, __instance.connectedPlayersAmount + 1, "Landed on " + __instance.currentLevel.PlanetName);
+            }
+            __instance.SetDiscordStatusDetails();
+            __instance.timeSinceRoundStarted = 0f;
+            __instance.shipLeftAutomatically = false;
+            __instance.ResetStats();
+            __instance.inShipPhase = false;
+            __instance.SwitchMapMonitorPurpose();
+            __instance.SetPlayerObjectExtrapolate(enable: false);
+            __instance.shipAnimatorObject.gameObject.GetComponent<Animator>().SetTrigger("OpenShip");
+            if (__instance.currentLevel.currentWeather != LevelWeatherType.None)
+            {
+                WeatherEffect weatherEffect = TimeOfDay.Instance.effects[(int)__instance.currentLevel.currentWeather];
+                weatherEffect.effectEnabled = true;
+                if (weatherEffect.effectPermanentObject != null)
+                {
+                    weatherEffect.effectPermanentObject.SetActive(value: true);
+                }
+            }
+            yield return null;
+            yield return new WaitForSeconds(0.2f);
+            if (TimeOfDay.Instance.currentLevelWeather != LevelWeatherType.None && !__instance.currentLevel.overrideWeather)
+            {
+                TimeOfDay.Instance.effects[(int)TimeOfDay.Instance.currentLevelWeather].effectEnabled = true;
+            }
+            __instance.shipDoorsEnabled = true;
+            if (__instance.currentLevel.planetHasTime)
+            {
+                TimeOfDay.Instance.currentDayTimeStarted = true;
+                TimeOfDay.Instance.movingGlobalTimeForward = true;
+            }
+            UnityEngine.Object.FindObjectOfType<HangarShipDoor>().SetDoorButtonsEnabled(doorButtonsEnabled: true);
+            //__instance.TeleportPlayerInShipIfOutOfRoomBounds();
+            yield return new WaitForSeconds(0.05f);
+            Debug.Log($"startofround: {__instance.currentLevel.levelID}; {__instance.hoursSinceLastCompanyVisit}");
+            if (__instance.currentLevel.levelID == 3 && __instance.hoursSinceLastCompanyVisit >= 0)
+            {
+                __instance.hoursSinceLastCompanyVisit = 0;
+                TimeOfDay.Instance.TimeOfDayMusic.volume = 0.6f;
+                Debug.Log("Playing time of day music");
+                TimeOfDay.Instance.PlayTimeMusicDelayed(__instance.companyVisitMusic, 1f);
+            }
+            HUDManager.Instance.loadingText.enabled = false;
+            HUDManager.Instance.loadingDarkenScreen.enabled = false;
+            __instance.shipDoorAudioSource.PlayOneShot(__instance.openingHangarDoorAudio, 1f);
+            yield return new WaitForSeconds(0.8f);
+            __instance.shipDoorsAnimator.SetBool("Closed", value: false);
+            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(10f);
+            if (__instance.currentLevel.spawnEnemiesAndScrap && __instance.currentLevel.planetHasTime)
+            {
+                HUDManager.Instance.quotaAnimator.SetBool("visible", value: true);
+                TimeOfDay.Instance.currentDayTime = TimeOfDay.Instance.CalculatePlanetTime(__instance.currentLevel);
+                TimeOfDay.Instance.RefreshClockUI();
+            }
+            yield return new WaitForSeconds(4f);
+            //OnShipLandedMiscEvents();
+            __instance.SetPlayerObjectExtrapolate(enable: false);
+            __instance.shipHasLanded = true;
+            leverScript.triggerScript.animationString = "SA_PushLeverBack";
+            leverScript.triggerScript.interactable = true;
+            leverScript.hasDisplayedTimeWarning = false;
+        }
+
+        [HarmonyPatch(typeof(StartOfRound), "openingDoorsSequence")]
+        [HarmonyPrefix]
+        private static bool openingDoorsSequencePatch(StartOfRound __instance)
+        {
+            StartOfRound.Instance.StartCoroutine(RemoveMoonInfo(__instance));
+            return false;
+        }
+
+
+
+        #endregion patches
 
 
         public static void CreateSphere()
@@ -182,6 +291,16 @@ namespace LethalMystery.GameMech
             StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
         }
 
+        private static void ShowPlayers(bool value)
+        {
+            foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (user.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
+                {
+                    user.gameObject.SetActive(value);
+                }
+            }
+        }
 
 
         public static IEnumerator IntroDisplay()
@@ -192,7 +311,7 @@ namespace LethalMystery.GameMech
             ResetAnimation();
             Commands.SpawnWeapons();
             yield return new WaitForSeconds(1.5f);
-            
+            ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
 
 
@@ -215,8 +334,7 @@ namespace LethalMystery.GameMech
             ShowSphere(false);
             EnableMovement(true);
             LookAtCamera();
-            ToggleView(true);
-
+            ShowPlayers(true);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment(false);
             EnvironmentLight(true);
@@ -229,110 +347,13 @@ namespace LethalMystery.GameMech
             }
             inIntro = false;
 
+            
+            GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
+            yield return new WaitForSeconds(0.5f);
+            GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true);
+            ToggleView(true);
         }
 
-
-        [HarmonyPatch(typeof(PlayerControllerB), "PlayerLookInput")]
-        [HarmonyPrefix]
-        private static bool PlayerLookPatch()
-        {
-            if (inIntro)
-            {
-                return false;
-            }
-            return true;
-        }
-
-
-        private static IEnumerator RemoveMoonInfo(StartOfRound __instance)
-        {
-            __instance.StartNewRoundEvent.Invoke();
-            yield return new WaitForSeconds(1f);
-            HUDManager.Instance.LevellingAudio.Stop();
-            StartMatchLever leverScript = UnityEngine.Object.FindObjectOfType<StartMatchLever>();
-            leverScript.triggerScript.timeToHold = 0.7f;
-            leverScript.triggerScript.interactable = false;
-            __instance.displayedLevelResults = false;
-            __instance.StartTrackingAllPlayerVoices();
-            if (!GameNetworkManager.Instance.gameHasStarted)
-            {
-                GameNetworkManager.Instance.LeaveLobbyAtGameStart();
-                GameNetworkManager.Instance.gameHasStarted = true;
-            }
-            UnityEngine.Object.FindObjectOfType<QuickMenuManager>().DisableInviteFriendsButton();
-            if (!GameNetworkManager.Instance.disableSteam)
-            {
-                GameNetworkManager.Instance.SetSteamFriendGrouping(GameNetworkManager.Instance.steamLobbyName, __instance.connectedPlayersAmount + 1, "Landed on " + __instance.currentLevel.PlanetName);
-            }
-            __instance.SetDiscordStatusDetails();
-            __instance.timeSinceRoundStarted = 0f;
-            __instance.shipLeftAutomatically = false;
-            __instance.ResetStats();
-            __instance.inShipPhase = false;
-            __instance.SwitchMapMonitorPurpose();
-            __instance.SetPlayerObjectExtrapolate(enable: false);
-            __instance.shipAnimatorObject.gameObject.GetComponent<Animator>().SetTrigger("OpenShip");
-            if (__instance.currentLevel.currentWeather != LevelWeatherType.None)
-            {
-                WeatherEffect weatherEffect = TimeOfDay.Instance.effects[(int)__instance.currentLevel.currentWeather];
-                weatherEffect.effectEnabled = true;
-                if (weatherEffect.effectPermanentObject != null)
-                {
-                    weatherEffect.effectPermanentObject.SetActive(value: true);
-                }
-            }
-            yield return null;
-            yield return new WaitForSeconds(0.2f);
-            if (TimeOfDay.Instance.currentLevelWeather != LevelWeatherType.None && !__instance.currentLevel.overrideWeather)
-            {
-                TimeOfDay.Instance.effects[(int)TimeOfDay.Instance.currentLevelWeather].effectEnabled = true;
-            }
-            __instance.shipDoorsEnabled = true;
-            if (__instance.currentLevel.planetHasTime)
-            {
-                TimeOfDay.Instance.currentDayTimeStarted = true;
-                TimeOfDay.Instance.movingGlobalTimeForward = true;
-            }
-            UnityEngine.Object.FindObjectOfType<HangarShipDoor>().SetDoorButtonsEnabled(doorButtonsEnabled: true);
-            //__instance.TeleportPlayerInShipIfOutOfRoomBounds();
-            yield return new WaitForSeconds(0.05f);
-            Debug.Log($"startofround: {__instance.currentLevel.levelID}; {__instance.hoursSinceLastCompanyVisit}");
-            if (__instance.currentLevel.levelID == 3 && __instance.hoursSinceLastCompanyVisit >= 0)
-            {
-                __instance.hoursSinceLastCompanyVisit = 0;
-                TimeOfDay.Instance.TimeOfDayMusic.volume = 0.6f;
-                Debug.Log("Playing time of day music");
-                TimeOfDay.Instance.PlayTimeMusicDelayed(__instance.companyVisitMusic, 1f);
-            }
-            HUDManager.Instance.loadingText.enabled = false;
-            HUDManager.Instance.loadingDarkenScreen.enabled = false;
-            __instance.shipDoorAudioSource.PlayOneShot(__instance.openingHangarDoorAudio, 1f);
-            yield return new WaitForSeconds(0.8f);
-            __instance.shipDoorsAnimator.SetBool("Closed", value: false);
-            yield return new WaitForSeconds(5f);
-            yield return new WaitForSeconds(10f);
-            if (__instance.currentLevel.spawnEnemiesAndScrap && __instance.currentLevel.planetHasTime)
-            {
-                HUDManager.Instance.quotaAnimator.SetBool("visible", value: true);
-                TimeOfDay.Instance.currentDayTime = TimeOfDay.Instance.CalculatePlanetTime(__instance.currentLevel);
-                TimeOfDay.Instance.RefreshClockUI();
-            }
-            yield return new WaitForSeconds(4f);
-            //OnShipLandedMiscEvents();
-            __instance.SetPlayerObjectExtrapolate(enable: false);
-            __instance.shipHasLanded = true;
-            leverScript.triggerScript.animationString = "SA_PushLeverBack";
-            leverScript.triggerScript.interactable = true;
-            leverScript.hasDisplayedTimeWarning = false;
-        }
-
-        [HarmonyPatch(typeof(StartOfRound), "openingDoorsSequence")]
-        [HarmonyPrefix]
-        private static bool openingDoorsSequencePatch(StartOfRound __instance)
-        {
-            StartOfRound.Instance.StartCoroutine(RemoveMoonInfo(__instance));
-            return false;
-        }
 
     }
 }
