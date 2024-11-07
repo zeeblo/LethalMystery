@@ -327,7 +327,7 @@ namespace LethalMystery.GameMech
             ToggleView(false);
             IntroCamera();
             SwitchToNextItem();
-            
+            HUDManager.Instance.DisplayDaysLeft(0);
 
             yield return new WaitForSeconds(8f);
 

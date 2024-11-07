@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
+using LethalMystery.Players;
 
 namespace LethalMystery.Patches
 {
@@ -53,7 +54,7 @@ namespace LethalMystery.Patches
             }
         }
 
-
+        /*
         [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
         [HarmonyPostfix]
         private static void ShowResults()
@@ -61,8 +62,31 @@ namespace LethalMystery.Patches
             HUDManager.Instance.profitQuotaDaysLeftText.text = "Monsters Won";
             HUDManager.Instance.profitQuotaDaysLeftText2.text = "";
         }
+        */
 
+        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
+        [HarmonyPrefix]
+        private static bool ShowRole(HUDManager __instance)
+        {
+            if (Roles.CurrentRole != null)
+            {
+                string text = $"{Roles.CurrentRole.Name}";
+                __instance.profitQuotaDaysLeftText.text = text;
+                __instance.profitQuotaDaysLeftText2.text = text;
+                if (Roles.CurrentRole.Type == "employee")
+                {
+                    __instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
+                    __instance.UIAudio.PlayOneShot(__instance.profitQuotaDaysLeftCalmSFX);
+                }
+                else
+                {
+                    __instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeft");
+                    __instance.UIAudio.PlayOneShot(__instance.OneDayToMeetQuotaSFX);
+                }
+            }
 
+            return false;
+        }
 
     }
 }
