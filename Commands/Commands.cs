@@ -20,7 +20,6 @@ namespace LethalMystery
         public static ShotgunItem? gunObject;
 
 
-
         #region Chat Commands
         internal static string? msgtitle;
         internal static string? msgbody;

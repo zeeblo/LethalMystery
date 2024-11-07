@@ -50,18 +50,18 @@ namespace LethalMystery.Players
         public static List<Role> allRoles = new List<Role>();
         public static void AppendRoles()
         {
-            
+            /*
             allRoles.Add(new Role("Employee",
             "Bring back items to the ship to meet the quota.",
             "employee")
             );
-            
+            */
             allRoles.Add(new Role(
             "Sherif",
             "Kill the monster(s). Guessing wrong will get you killed.",
             "employee"
             ));
-            
+            /*
             allRoles.Add(new Role(
             "Monster",
             "Eliminate all the crew",
@@ -79,7 +79,7 @@ namespace LethalMystery.Players
             "Curse users by disrupting their vision and silencing their voice.",
             "monster"
             ));
-
+            */
         }
 
         public static string? TopText;

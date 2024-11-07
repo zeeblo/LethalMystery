@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.GameMech;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using System.Reflection;
@@ -109,27 +110,25 @@ namespace LethalMystery
             ButlerEnemyAIPatch.spawnedButlerForKnife = false;
             NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
             PlayerControllerBPatch.checkedForWeapon = false;
-            StartOfRoundPatch.doneSpawningWeapons = false;
+            CharacterDisplay.doneSpawningWeapons = false;
         }
 
 
         public static void RemoveEnvironment(bool value = true)
         {
-            // Environment 
-            GameObject OutOfBoundsTerrain = GameObject.Find("OutOfBoundsTerrain").gameObject;
+            // Environment
+            GameObject.Find("OutOfBoundsTerrain")?.gameObject?.SetActive(!value);
             Scene currentScene = SceneManager.GetSceneAt(1); // might not work on other moons. try getting the current scene
-
-            OutOfBoundsTerrain.SetActive(!value);
 
             foreach (GameObject obj in currentScene.GetRootGameObjects())
             {
                 if (obj.name == "Environment")
                 {
+                    Plugin.mls.LogInfo(">>> reached h4");
                     obj.SetActive(!value);
                     break;
                 }
             }
-
         }
 
         public static void DespawnEnemies()

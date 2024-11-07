@@ -56,8 +56,7 @@ namespace LethalMystery.GameMech
                 terminal.groupCredits = 9999;
 
                 Plugin.ResetVariables();
-                //Roles.AssignRole();
-                Commands.SpawnWeapons();
+                Roles.AssignRole();
                 GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(false); // makes screen black
 
             }

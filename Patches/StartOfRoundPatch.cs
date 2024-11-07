@@ -11,20 +11,6 @@ namespace LethalMystery.Patches
     internal class StartOfRoundPatch
     {
 
-        public static bool doneSpawningWeapons = false;
-
-
-
-        /// <summary>
-        /// Used for PlayerControllerBPatch's weapon check method
-        /// </summary>
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
-        [HarmonyPostfix]
-        private static void DoneGenerating()
-        {
-            doneSpawningWeapons = true;
-        }
-
 
         [HarmonyPatch(typeof(StartOfRound), "Start")]
         [HarmonyPostfix]
