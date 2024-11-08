@@ -323,15 +323,18 @@ namespace LethalMystery.GameMech
             EnvironmentLight(false);
             ShowLights(true);
 
-            yield return new WaitForSeconds(2f);
-
+            yield return new WaitForSeconds(1.5f);
             BlackVision(false);
             DisableMainCamera(true);
             IntroCamera();
 
             HUDManager.Instance.DisplayDaysLeft(0);
 
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(2.35f);
+            doneSpawningWeapons = true;
+            GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(false); // disable red scan node that's visible to intro cam
+            
+            yield return new WaitForSeconds(2f);
             ShowSphere(false);
             EnableMovement(true);
             LookAtCamera();
@@ -348,14 +351,17 @@ namespace LethalMystery.GameMech
             }
             inIntro = false;
 
-            doneSpawningWeapons = true;
-            yield return new WaitForSeconds(2f);
+            
+            yield return new WaitForSeconds(1f);
             SwitchToNextItem();
 
+            GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(true);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
+
+
         }
 
 
