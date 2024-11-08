@@ -315,7 +315,7 @@ namespace LethalMystery.GameMech
             ResetAnimation();
             Commands.SpawnWeapons();
             yield return new WaitForSeconds(1.5f);
-            
+
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
 
@@ -324,19 +324,14 @@ namespace LethalMystery.GameMech
             ShowLights(true);
 
             yield return new WaitForSeconds(2f);
-            
+
             BlackVision(false);
             DisableMainCamera(true);
             IntroCamera();
-            
+
             HUDManager.Instance.DisplayDaysLeft(0);
 
-            yield return new WaitForSeconds(6f);
-            doneSpawningWeapons = true;
-
-            yield return new WaitForSeconds(2f);
-
-            SwitchToNextItem();
+            yield return new WaitForSeconds(4f);
             ShowSphere(false);
             EnableMovement(true);
             LookAtCamera();
@@ -353,10 +348,13 @@ namespace LethalMystery.GameMech
             }
             inIntro = false;
 
-            
+            doneSpawningWeapons = true;
+            yield return new WaitForSeconds(2f);
+            SwitchToNextItem();
+
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
-            GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true);
+            GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
         }
 
