@@ -57,7 +57,7 @@ namespace LethalMystery.GameMech
 
                 Plugin.ResetVariables();
                 Roles.AssignRole();
-                GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(false); // makes screen black
+                CharacterDisplay.BlackVision(true);
 
             }
 

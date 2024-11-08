@@ -193,13 +193,18 @@ namespace LethalMystery.GameMech
             GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.localEulerAngles = new Vector3(0, 0, GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.localEulerAngles.z);
         }
 
-        public static void ToggleView(bool value)
+        public static void BlackVision(bool value)
         {
-            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(value); // makes screen black
-            GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(value);
-            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = value;
-            GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(value);
-            GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(value);
+            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value);
+        }
+
+        public static void DisableMainCamera(bool value)
+        {
+            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason fixes the below code to work (using the method above doesn't)
+            GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(!value);
+            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
+            GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
+            GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(!value);
         }
 
         public static void ResetAnimation()
@@ -311,26 +316,28 @@ namespace LethalMystery.GameMech
             ResetAnimation();
             Commands.SpawnWeapons();
             yield return new WaitForSeconds(1.5f);
+            
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
-
 
             Plugin.RemoveEnvironment(true);
             EnvironmentLight(false);
             ShowLights(true);
 
-            yield return new WaitForSeconds(1.5f);
-            doneSpawningWeapons = true;
-
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(2f);
             
-            ToggleView(false);
+            BlackVision(false);
+            DisableMainCamera(true);
             IntroCamera();
-            SwitchToNextItem();
+            
             HUDManager.Instance.DisplayDaysLeft(0);
 
-            yield return new WaitForSeconds(8f);
+            yield return new WaitForSeconds(6f);
+            doneSpawningWeapons = true;
 
+            yield return new WaitForSeconds(2f);
+
+            SwitchToNextItem();
             ShowSphere(false);
             EnableMovement(true);
             LookAtCamera();
@@ -351,7 +358,7 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true);
-            ToggleView(true);
+            DisableMainCamera(false);
         }
 
 
