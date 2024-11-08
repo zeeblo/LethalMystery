@@ -104,7 +104,7 @@ namespace LethalMystery.GameMech
             }
             HUDManager.Instance.loadingText.enabled = false;
             HUDManager.Instance.loadingDarkenScreen.enabled = false;
-            __instance.shipDoorAudioSource.PlayOneShot(__instance.openingHangarDoorAudio, 1f);
+            //__instance.shipDoorAudioSource.PlayOneShot(__instance.openingHangarDoorAudio, 1f);
             yield return new WaitForSeconds(0.8f);
             __instance.shipDoorsAnimator.SetBool("Closed", value: false);
             yield return new WaitForSeconds(5f);
