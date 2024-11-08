@@ -50,6 +50,7 @@ namespace LethalMystery.Patches
                         if (obj.name.Contains(Roles.CurrentRole.GetWeapon()))
                         {
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
+                            Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
                             MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
                             GrabTest.Invoke(__instance, null);
 

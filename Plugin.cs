@@ -67,6 +67,7 @@ namespace LethalMystery
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;
         public static TextMeshProUGUI? sidebarBodyText;
+        public static Sprite? KnifeIcon;
 
         private void Awake()
         {
@@ -75,6 +76,7 @@ namespace LethalMystery
             Roles.AppendRoles();
 
             PrefixSetting = instance?.Config.Bind<string>("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
+            SpriteLoader();
 
         }
 
@@ -146,6 +148,21 @@ namespace LethalMystery
                     Destroy(obj.gameObject);
                 }
             }
+        }
+
+        private static void SpriteLoader()
+        {
+
+            string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+            string BundleDir = MainDir + "\\Assets\\Assetbundles\\items";
+
+            AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
+            Texture2D KnifeTexture = myBundle.LoadAsset<Texture2D>("sprite_knife.png");
+            KnifeIcon = Sprite.Create(
+                KnifeTexture,
+                new Rect(0, 0, KnifeTexture.width, KnifeTexture.height),
+                new Vector2(0, 0)
+            );
         }
 
 

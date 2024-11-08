@@ -1,4 +1,6 @@
-﻿
+﻿using UnityEngine;
+
+
 namespace LethalMystery.Players
 {
     public class Roles
@@ -44,6 +46,18 @@ namespace LethalMystery.Players
                     return "";
                 }
             }
+
+            public Sprite GetIcon(Sprite Icon)
+            {
+                if (Type == "monster" && Plugin.KnifeIcon != null)
+                {
+                    return Plugin.KnifeIcon;
+                }
+                else
+                {
+                    return Icon;
+                }
+            }
         }
 
 
@@ -55,15 +69,15 @@ namespace LethalMystery.Players
             "Bring back items to the ship to meet the quota.",
             "employee")
             );
-            
 
+            
             allRoles.Add(new Role(
             "Sherif",
             "Kill the monster(s). Guessing wrong will get you killed.",
             "employee"
             ));
-           
 
+            
             allRoles.Add(new Role(
             "Monster",
             "Eliminate all the crew",
@@ -81,7 +95,7 @@ namespace LethalMystery.Players
             "Curse users by disrupting their vision and silencing their voice.",
             "monster"
             ));
-        
+
         }
 
         public static string? TopText;

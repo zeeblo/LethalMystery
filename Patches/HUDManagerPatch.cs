@@ -52,6 +52,7 @@ namespace LethalMystery.Patches
                 __instance.Clock.canvasGroup.alpha = 1.0f;
                 __instance.clockNumber.text = $"{(int)Plugin.currentMeetingCountdown}";
             }
+
         }
 
         /*
