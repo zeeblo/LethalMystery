@@ -16,15 +16,14 @@ namespace LethalMystery.GameMech
     public class CharacterDisplay
     {
 
-        public static Vector3 modelPosition = new Vector3(-80f, 20f, 20f);
-        public static Vector3 groundPosition = new Vector3(-80f, 18.8f, 20f);
-        public static Vector3 cameraPosition = new Vector3(-80f, 31.05f, 26f);
-        public static Vector3 lightPosition = new Vector3(-80f, 34f, 20f);
-        public static GameObject? lght;
-        public static Camera? introCamera;
-        public static GameObject? sphere;
+        private static Vector3 modelPosition = new Vector3(-80f, 20f, 20f);
+        private static Vector3 groundPosition = new Vector3(-80f, 18.8f, 20f);
+        private static Vector3 cameraPosition = new Vector3(-80f, 31.05f, 26f);
+        private static Vector3 lightPosition = new Vector3(-80f, 34f, 20f);
+        private static GameObject? lght;
+        private static Camera? introCamera;
+        private static GameObject? sphere;
         public static bool inIntro = false;
-        public static bool disableMovement = false;
         public static bool doneSpawningWeapons = false;
 
 
@@ -138,14 +137,14 @@ namespace LethalMystery.GameMech
         #endregion patches
 
 
-        public static void CreateSphere()
+        private static void CreateSphere()
         {
             sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.position = groundPosition;
             sphere.transform.localScale = new Vector3(20, 20, 20);
         }
 
-        public static void ShowSphere(bool value)
+        private static void ShowSphere(bool value)
         {
             if (sphere != null)
             {
@@ -157,7 +156,7 @@ namespace LethalMystery.GameMech
             }
         }
 
-        public static void EnableMovement(bool value)
+        private static void EnableMovement(bool value)
         {
             if (value)
             {
@@ -178,7 +177,7 @@ namespace LethalMystery.GameMech
         /// If user is holding a weapon, switch to the next slot.
         /// (This doesn't specifically check if it's a weapon but that's how it's used)
         /// </summary>
-        public static void SwitchToNextItem()
+        private static void SwitchToNextItem()
         {
             MethodInfo GetFirstEmptyItemSlot = typeof(PlayerControllerB).GetMethod("FirstEmptyItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
             int FirstEmptyItemSlot = (int)GetFirstEmptyItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, null);
@@ -187,7 +186,7 @@ namespace LethalMystery.GameMech
             SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { FirstEmptyItemSlot, Type.Missing });
         }
 
-        public static void LookAtCamera()
+        private static void LookAtCamera()
         {
             GameNetworkManager.Instance.localPlayerController.thisPlayerBody.rotation = Quaternion.identity;
             GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.localEulerAngles = new Vector3(0, 0, GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.localEulerAngles.z);
@@ -198,7 +197,7 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value);
         }
 
-        public static void DisableMainCamera(bool value)
+        private static void DisableMainCamera(bool value)
         {
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason fixes the below code to work (using the method above doesn't)
             GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(!value);
@@ -207,7 +206,7 @@ namespace LethalMystery.GameMech
             GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(!value);
         }
 
-        public static void ResetAnimation()
+        private static void ResetAnimation()
         {
             GameNetworkManager.Instance.localPlayerController.playerBodyAnimator.SetBool("Walking", value: false);
             GameNetworkManager.Instance.localPlayerController.playerBodyAnimator.SetBool("Sprinting", value: false);
@@ -219,7 +218,7 @@ namespace LethalMystery.GameMech
         }
 
 
-        public static void EnvironmentLight(bool light)
+        private static void EnvironmentLight(bool light)
         {
             GameObject.Find("Systems/Rendering/VolumeMain")?.SetActive(light);
             GameObject.Find("Environment/OutOfBoundsTrigger1")?.SetActive(light);
@@ -247,7 +246,7 @@ namespace LethalMystery.GameMech
         }
 
 
-        public static void IntroCamValues()
+        private static void IntroCamValues()
         {
             if (introCamera != null)
             {
@@ -273,7 +272,7 @@ namespace LethalMystery.GameMech
             StartOfRound.Instance.SwitchCamera(introCamera);
         }
 
-        public static void IntroCamera()
+        private static void IntroCamera()
         {
             if (introCamera != null)
             {
