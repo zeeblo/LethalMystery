@@ -68,6 +68,8 @@ namespace LethalMystery
         public static TextMeshProUGUI? sidebarHeaderText;
         public static TextMeshProUGUI? sidebarBodyText;
         public static Sprite? KnifeIcon;
+        public static Sprite? LethalMysteryLogo;
+        public static Sprite? LethalMysteryBanner;
 
         private void Awake()
         {
@@ -158,9 +160,21 @@ namespace LethalMystery
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
             Texture2D KnifeTexture = myBundle.LoadAsset<Texture2D>("sprite_knife.png");
+            Texture2D LogoTexture = myBundle.LoadAsset<Texture2D>("logo_a.png");
+            Texture2D BannerTexture = myBundle.LoadAsset<Texture2D>("default banner.png");
             KnifeIcon = Sprite.Create(
                 KnifeTexture,
                 new Rect(0, 0, KnifeTexture.width, KnifeTexture.height),
+                new Vector2(0, 0)
+            );
+            LethalMysteryLogo = Sprite.Create(
+                LogoTexture,
+                new Rect(0, 0, LogoTexture.width, LogoTexture.height),
+                new Vector2(0, 0)
+            );
+            LethalMysteryBanner = Sprite.Create(
+                BannerTexture,
+                new Rect(0, 0, BannerTexture.width, BannerTexture.height),
                 new Vector2(0, 0)
             );
         }

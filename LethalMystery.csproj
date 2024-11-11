@@ -16,6 +16,7 @@
 		<PackageReference Include="LethalCompany.GameLibs.Steam" Version="64.0.0-ngd.0" Publicize="true" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Assets\AssetBundles\" />
 	  <Folder Include="Libs\" />
 	</ItemGroup>
 </Project>

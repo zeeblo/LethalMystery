@@ -8,12 +8,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
 using LethalMystery.Players;
+using UnityEngine.UI;
 
 namespace LethalMystery.Patches
 {
     [HarmonyPatch(typeof(HUDManager))]
     internal class HUDManagerPatch
     {
+        
 
         #region Chat Commands
 

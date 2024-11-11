@@ -69,7 +69,7 @@ namespace LethalMystery.Players
             "Bring back items to the ship to meet the quota.",
             "employee")
             );
-
+            
             
             allRoles.Add(new Role(
             "Sherif",
@@ -95,7 +95,7 @@ namespace LethalMystery.Players
             "Curse users by disrupting their vision and silencing their voice.",
             "monster"
             ));
-
+            
         }
 
         public static string? TopText;
