@@ -85,25 +85,6 @@ namespace LethalMystery
 
         private void PatchAllStuff()
         {
-            /*
-            _harmony.PatchAll(typeof(ButlerEnemyAIPatch));
-            _harmony.PatchAll(typeof(HUDManagerPatch));
-            _harmony.PatchAll(typeof(NutcrackerEnemyAIPatch));
-            _harmony.PatchAll(typeof(PlayerControllerBPatch));
-            _harmony.PatchAll(typeof(ShotgunItemPatch));
-            _harmony.PatchAll(typeof(StartOfRoundPatch));
-            _harmony.PatchAll(typeof(TimeOfDayPatch));
-            _harmony.PatchAll(typeof(UnlockableSuitPatch));
-            _harmony.PatchAll(typeof(GameMech.MainGame.CheckPlayerAmount));
-            _harmony.PatchAll(typeof(GameMech.MainGame.StartGame));
-            _harmony.PatchAll(typeof(GameMech.MainGame.Meeting));
-            _harmony.PatchAll(typeof(GameMech.MainGame.ControlDoors));
-            _harmony.PatchAll(typeof(GameMech.Tasks.Items));
-            _harmony.PatchAll(typeof(GameMech.Tasks.Assignment));
-            _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS));
-            _harmony.PatchAll(typeof(GameMech.Tests.AdminCMDS_2));
-            _harmony.PatchAll(typeof(GameMech.CharacterDisplay));
-            */
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
 
         }
