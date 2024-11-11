@@ -28,59 +28,7 @@ namespace LethalMystery.GameMech
         internal class AdminCMDS
         {
 
-            [HarmonyPatch(typeof(MenuManager), nameof(MenuManager.Update))]
-            [HarmonyPostfix]
-            private static void UpdatePatch()
-            {
-                /*
-                HeaderImage = GameObject.Find("Canvas/MenuContainer/MainButtons/HeaderImage");
-                if (HeaderImage != null && Plugin.LethalMysteryLogo != null && BGCanvas != null && BannerImage != null)
-                {
 
-                    BGCanvas.GetComponent<UnityEngine.Canvas>().worldCamera = GameObject.Find("UICamera").GetComponent<UnityEngine.Camera>();
-                    BGCanvas.GetComponent<UnityEngine.Canvas>().renderMode = RenderMode.WorldSpace;
-                    
-
-                    BannerImage.transform.SetParent(BGCanvas.transform);
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.offsetMin = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.offsetMax = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.anchorMin = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.anchorMax = Vector2.one;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.localPosition = Vector3.zero;
-
-
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryBanner;
-                    HeaderImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
-                }
-                */
-                HeaderImage = GameObject.Find("Canvas/MenuContainer/MainButtons/HeaderImage");
-                if (HeaderImage != null && Plugin.LethalMysteryLogo != null && BannerImage != null)
-                {
-
-                    BannerImage.transform.SetParent(GameObject.Find("Canvas/MenuContainer/MainButtons/").transform);
-                    BannerImage.transform.SetAsFirstSibling(); // GetComponent<UnityEngine.UI.Image>().rectTransform.SetAsFirstSibling();
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.offsetMin = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.offsetMax = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.anchorMin = Vector2.zero;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.anchorMax = Vector2.one;
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().rectTransform.localPosition = Vector3.zero;
-                    BannerImage.transform.localScale = new Vector3(1.1125f, 0.9253f, 5.1671f);
-
-
-                    BannerImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryBanner;
-                    HeaderImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
-                }
-            }
-
-            [HarmonyPatch(typeof(MenuManager), nameof(MenuManager.Start))]
-            [HarmonyPostfix]
-            private static void StartPatch()
-            {
-                BannerImage = new GameObject("Banner");
-                BGCanvas = new GameObject("BackgroundCanvas");
-                BannerImage.AddComponent<UnityEngine.UI.Image>();
-                BGCanvas.AddComponent<UnityEngine.Canvas>();
-            }
         }
 
 
