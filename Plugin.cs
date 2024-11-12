@@ -70,7 +70,7 @@ namespace LethalMystery
         {
             ButlerEnemyAIPatch.spawnedButlerForKnife = false;
             NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
-            PlayerControllerBPatch.checkedForWeapon = false;
+            AutoGiveWeapon.checkedForWeapon = false;
             CharacterDisplay.doneSpawningWeapons = false;
         }
 
