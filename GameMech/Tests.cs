@@ -24,6 +24,8 @@ namespace LethalMystery.GameMech
         private static GameObject? BGCanvas;
 
 
+
+
         [HarmonyPatch]
         internal class AdminCMDS
         {
@@ -41,14 +43,6 @@ namespace LethalMystery.GameMech
             [HarmonyPostfix]
             private static void Keys(HUDManager __instance)
             {
-                if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                {
-                    __instance.drunknessFilter.weight = 15f;
-                }
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-                    __instance.insanityScreenFilter.weight = 5f;
-                }
                 if (Keyboard.current.digit3Key.wasPressedThisFrame)
                 {
                     Commands.SpawnScrapFunc("metalsheet", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);

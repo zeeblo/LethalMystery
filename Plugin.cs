@@ -1,17 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.GameMech;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using System.Reflection;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 
 
@@ -79,14 +76,13 @@ namespace LethalMystery
 
             PrefixSetting = instance?.Config.Bind<string>("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
             SpriteLoader();
-
+            Keybinds.InitControls();
         }
 
 
         private void PatchAllStuff()
         {
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
-
         }
 
 

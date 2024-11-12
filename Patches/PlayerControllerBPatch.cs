@@ -9,7 +9,6 @@ using LethalMystery.Players;
 using LethalMystery.GameMech;
 
 
-
 namespace LethalMystery.Patches
 {
 
@@ -18,6 +17,20 @@ namespace LethalMystery.Patches
     {
 
         public static bool checkedForWeapon = false;
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), "OnDisable")]
+        [HarmonyPostfix]
+        private static void OnDisablePatch()
+        {
+            if (Keybinds.SpawnWeaponAction != null)
+            {
+                Keybinds.SpawnWeaponAction.Disable();
+            }
+        }
+
+
+
 
         [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
