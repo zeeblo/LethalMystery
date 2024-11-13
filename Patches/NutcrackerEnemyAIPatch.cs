@@ -24,5 +24,14 @@ namespace LethalMystery.Patches
             return true;
         }
 
+
+
+        [HarmonyPatch(typeof(NutcrackerEnemyAI), nameof(NutcrackerEnemyAI.SpawnShotgunShells))]
+        [HarmonyPrefix]
+        private static bool NoBulletObjects()
+        {
+            return false;
+        }
+
     }
 }
