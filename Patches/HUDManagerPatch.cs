@@ -15,7 +15,7 @@ namespace LethalMystery.Patches
     [HarmonyPatch(typeof(HUDManager))]
     internal class HUDManagerPatch
     {
-        
+
 
         #region Chat Commands
 
@@ -67,27 +67,64 @@ namespace LethalMystery.Patches
         }
         */
 
-        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
-        [HarmonyPrefix]
-        private static bool ShowRole(HUDManager __instance)
+        private static void ShowRole()
         {
             if (Roles.CurrentRole != null)
             {
                 string text = $"{Roles.CurrentRole.Name}";
-                __instance.profitQuotaDaysLeftText.text = text;
-                __instance.profitQuotaDaysLeftText2.text = text;
+                HUDManager.Instance.profitQuotaDaysLeftText.text = text;
+                HUDManager.Instance.profitQuotaDaysLeftText2.text = text;
                 if (Roles.CurrentRole.Type == "employee")
                 {
-                    __instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
-                    __instance.UIAudio.PlayOneShot(__instance.profitQuotaDaysLeftCalmSFX);
+                    HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
+                    HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.profitQuotaDaysLeftCalmSFX);
                 }
                 else
                 {
-                    __instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeft");
-                    __instance.UIAudio.PlayOneShot(__instance.OneDayToMeetQuotaSFX);
+                    HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeft");
+                    HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.OneDayToMeetQuotaSFX);
                 }
             }
+        }
 
+        private static void ShowMeeting(string type)
+        {
+            string text = type == "meeting" ? $"{type.ToUpper()} CALLED" : $"{type.ToUpper()} REPORTED";
+            HUDManager.Instance.profitQuotaDaysLeftText.text = text;
+            HUDManager.Instance.profitQuotaDaysLeftText2.text = text;
+            if (type == "meeting")
+            {
+                HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
+                HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.profitQuotaDaysLeftCalmSFX);
+            }
+            else if (type == "body")
+            {
+                HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeft");
+                HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.OneDayToMeetQuotaSFX);
+            }
+        }
+
+
+        public static void DisplayDaysEdit(string name)
+        {
+            switch (name)
+            {
+                case "role":
+                    ShowRole();
+                    break;
+                case "meeting":
+                    ShowMeeting("meeting");
+                    break;
+                case "body":
+                    ShowMeeting("body");
+                    break;
+            }
+        }
+
+        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
+        [HarmonyPrefix]
+        private static bool DisplayDaysLeftPatch()
+        {
             return false;
         }
 

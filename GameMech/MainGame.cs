@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Patches;
 using LethalMystery.Players;
 using Unity.Netcode;
 using UnityEngine;
@@ -189,6 +190,7 @@ namespace LethalMystery.GameMech
             Plugin.MeetingNum -= 1;
             Plugin.inGracePeriod = true;
             Plugin.currentGracePeriodCountdown = Plugin.defaultMeetingCountdown + 140f;
+            HUDManagerPatch.DisplayDaysEdit("meeting");
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();

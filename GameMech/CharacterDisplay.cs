@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using LethalMystery.Players;
 using Unity.Netcode;
+using LethalMystery.Patches;
 
 namespace LethalMystery.GameMech
 {
@@ -328,7 +329,7 @@ namespace LethalMystery.GameMech
             DisableMainCamera(true);
             IntroCamera();
 
-            HUDManager.Instance.DisplayDaysLeft(0);
+            HUDManagerPatch.DisplayDaysEdit("role");
 
             yield return new WaitForSeconds(2.35f);
             AutoGiveWeapon.doneSpawningWeapons = true;
