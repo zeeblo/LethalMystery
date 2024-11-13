@@ -350,7 +350,7 @@ namespace LethalMystery.GameMech
                 Roles.ShowRole(Roles.CurrentRole);
             }
             inIntro = false;
-
+            Plugin.inGracePeriod = true;
             
             yield return new WaitForSeconds(1f);
             SwitchToNextItem();

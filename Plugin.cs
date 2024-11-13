@@ -39,6 +39,9 @@ namespace LethalMystery
         public static float MeetingCooldown = defaultMeetingCooldown;
         public static int defaultMeetingNum = 1;
         public static int MeetingNum = defaultMeetingNum;
+        public static bool inGracePeriod = false;
+        public static float defaultGracePeriodCountdown = 80f;
+        public static float currentGracePeriodCountdown = defaultGracePeriodCountdown;
 
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;

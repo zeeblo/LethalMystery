@@ -63,6 +63,43 @@ namespace LethalMystery.GameMech
         }
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayer))]
+        [HarmonyPrefix]
+        private static bool GracePeriod()
+        {
+            if (Plugin.inGracePeriod)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPostfix]
+        private static void GracePeriodTime()
+        {
+            if (Plugin.inGracePeriod)
+            {
+                // Countdown from the set grace period time
+                if (Plugin.currentGracePeriodCountdown >= 0)
+                {
+                    Plugin.currentGracePeriodCountdown -= Time.deltaTime;
+                }
+                else
+                {
+                    HUDManager.Instance.loadingText.enabled = false;
+                    Plugin.inGracePeriod = false;
+                }
+
+                // Show GUI that displays the grace period time
+                if (Plugin.inMeeting == false && Plugin.inGracePeriod)
+                {
+                    HUDManager.Instance.loadingText.enabled = true;
+                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)Plugin.currentGracePeriodCountdown}";
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets rid of landmines, turrets, etc.
