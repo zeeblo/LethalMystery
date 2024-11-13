@@ -77,7 +77,7 @@ namespace LethalMystery.Players
             "employee"
             ));
             
-
+            
             allRoles.Add(new Role(
             "Monster",
             "Eliminate all the crew",
@@ -96,6 +96,8 @@ namespace LethalMystery.Players
             "monster"
             ));
             
+
+
         }
 
         public static string? TopText;

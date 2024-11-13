@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using HarmonyLib;
+using LethalMystery.Players;
 namespace LethalMystery.Patches
 {
 
@@ -14,7 +15,11 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void InfiniteBullets(ref int ___shellsLoaded)
         {
-            ___shellsLoaded = 2;
+            if (Roles.CurrentRole != null && Roles.CurrentRole.Name == "Sherif")
+            {
+                ___shellsLoaded = 2;
+            }
+            
         }
     }
 }
