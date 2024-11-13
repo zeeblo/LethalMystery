@@ -70,6 +70,7 @@ namespace LethalMystery
 
         public static void ResetVariables()
         {
+            Plugin.currentGracePeriodCountdown = defaultGracePeriodCountdown;
             AutoGiveWeapon.ResetVariables();
         }
 

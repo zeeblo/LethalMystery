@@ -187,6 +187,8 @@ namespace LethalMystery.GameMech
 
             Plugin.inMeeting = true;
             Plugin.MeetingNum -= 1;
+            Plugin.inGracePeriod = true;
+            Plugin.currentGracePeriodCountdown = Plugin.defaultMeetingCountdown + 140f;
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
