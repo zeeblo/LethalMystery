@@ -70,14 +70,14 @@ namespace LethalMystery.Players
             "employee")
             );
             
-            
+
             allRoles.Add(new Role(
             "Sherif",
             "Kill the monster(s). Guessing wrong will get you killed.",
             "employee"
             ));
-
             
+
             allRoles.Add(new Role(
             "Monster",
             "Eliminate all the crew",

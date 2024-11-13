@@ -24,7 +24,7 @@ namespace LethalMystery.GameMech
         private static Camera? introCamera;
         private static GameObject? sphere;
         public static bool inIntro = false;
-        public static bool doneSpawningWeapons = false;
+        
 
 
 
@@ -313,7 +313,7 @@ namespace LethalMystery.GameMech
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
-            Commands.SpawnWeapons();
+            Commands.SpawnWeapons("all");
             yield return new WaitForSeconds(1.5f);
 
             ShowPlayers(false);
@@ -331,7 +331,7 @@ namespace LethalMystery.GameMech
             HUDManager.Instance.DisplayDaysLeft(0);
 
             yield return new WaitForSeconds(2.35f);
-            doneSpawningWeapons = true;
+            AutoGiveWeapon.doneSpawningWeapons = true;
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(false); // disable red scan node that's visible to intro cam
             
             yield return new WaitForSeconds(2f);
@@ -361,11 +361,11 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
 
-            if (Keybinds.SpawnWeaponAction != null && Roles.CurrentRole != null)
+            if (Controls.SpawnWeaponAction != null && Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.Type == "monster")
                 {
-                    Keybinds.SpawnWeaponAction.Enable();
+                    Controls.SpawnWeaponAction.Enable();
                 }
                 
             }

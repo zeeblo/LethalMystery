@@ -15,9 +15,9 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void OnDisablePatch()
         {
-            if (Keybinds.SpawnWeaponAction != null)
+            if (Controls.SpawnWeaponAction != null)
             {
-                Keybinds.SpawnWeaponAction.Disable();
+                Controls.SpawnWeaponAction.Disable();
             }
         }
 
@@ -27,7 +27,7 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(PlayerControllerB __instance)
         {
             __instance.takingFallDamage = false;
-            // __instance.carryWeight = 1f; // possibly remove weight so people can't speed check others | or ser carry weight of weapons to 1
+            // __instance.carryWeight = 1f; // possibly remove weight so people can't speed check others | or set carry weight of weapons to 1
         }
 
 

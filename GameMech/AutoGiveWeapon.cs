@@ -9,6 +9,7 @@ using System.Text;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using LethalMystery.Patches;
 
 namespace LethalMystery.GameMech
 {
@@ -17,9 +18,9 @@ namespace LethalMystery.GameMech
     internal class AutoGiveWeapon
     {
         public static bool checkedForWeapon = false;
+        public static bool doneSpawningWeapons = false;
 
-
-
+        #region Patches
         /// <summary>
         /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
         /// </summary>
@@ -27,7 +28,7 @@ namespace LethalMystery.GameMech
         [HarmonyPostfix]
         private static void CheckForWeapon(PlayerControllerB __instance)
         {
-            if (CharacterDisplay.doneSpawningWeapons && checkedForWeapon == false && Roles.CurrentRole != null)
+            if (doneSpawningWeapons && checkedForWeapon == false && Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.GetWeapon() == "")
                 {
@@ -45,7 +46,6 @@ namespace LethalMystery.GameMech
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
                             MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
                             GrabTest.Invoke(__instance, null);
-
                             checkedForWeapon = true;
                             break;
                         }
@@ -143,6 +143,19 @@ namespace LethalMystery.GameMech
             return true;
         }
 
+
+        #endregion Patches
+
+
+
+
+        public static void ResetVariables()
+        {
+            ButlerEnemyAIPatch.spawnedButlerForKnife = false;
+            NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
+            checkedForWeapon = false;
+            doneSpawningWeapons = false;
+        }
 
     }
 }

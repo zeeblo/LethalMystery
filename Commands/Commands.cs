@@ -223,19 +223,17 @@ namespace LethalMystery
 
 
 
-        public static void SpawnWeapons()
+        public static void SpawnWeapons(string name)
         {
             Vector3 position = new Vector3(12f, -60f, 15f);
             SelectableLevel currentLevel = RoundManager.Instance.playersManager.levels[6]; // "6" (rend) is the moon butlers will spawn on
 
-            string buttcrack = currentLevel.Enemies[11].enemyType.name;
-            string nutcrack = currentLevel.Enemies[9].enemyType.name;
-            if (buttcrack == "Butler")
+            if (name.ToLower().Contains("knife") || name == "all")
             {
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[11].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }
-            if (nutcrack == "Nutcracker")
+            if (name.ToLower().Contains("shotgun") || name == "all")
             {
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[9].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);

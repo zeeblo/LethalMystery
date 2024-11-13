@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using LethalMystery.GameMech;
-using LethalMystery.Patches;
 using LethalMystery.Players;
 using System.Reflection;
 using TMPro;
@@ -56,7 +55,7 @@ namespace LethalMystery
 
             PrefixSetting = instance?.Config.Bind<string>("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
             SpriteLoader();
-            Keybinds.InitControls();
+            Controls.InitControls();
         }
 
 
@@ -68,10 +67,7 @@ namespace LethalMystery
 
         public static void ResetVariables()
         {
-            ButlerEnemyAIPatch.spawnedButlerForKnife = false;
-            NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
-            AutoGiveWeapon.checkedForWeapon = false;
-            CharacterDisplay.doneSpawningWeapons = false;
+            AutoGiveWeapon.ResetVariables();
         }
 
 
