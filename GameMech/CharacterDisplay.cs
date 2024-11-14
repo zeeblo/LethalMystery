@@ -362,11 +362,11 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
 
-            if (Controls.SpawnWeaponAction != null && Roles.CurrentRole != null)
+            if (Roles.CurrentRole != null)
             {
                 if (Roles.CurrentRole.Type == "monster")
                 {
-                    Controls.SpawnWeaponAction.Enable();
+                    Controls.monsterControls.Enable();
                 }
                 
             }

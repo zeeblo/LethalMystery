@@ -10,15 +10,12 @@ namespace LethalMystery.Patches
     internal class PlayerControllerBPatch
     {
 
-        
+
         [HarmonyPatch(typeof(PlayerControllerB), "OnDisable")]
         [HarmonyPostfix]
         private static void OnDisablePatch()
         {
-            if (Controls.SpawnWeaponAction != null)
-            {
-                Controls.SpawnWeaponAction.Disable();
-            }
+            Controls.monsterControls.Disable();
         }
 
 

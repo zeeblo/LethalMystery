@@ -8,14 +8,21 @@ namespace LethalMystery.Players
     internal class Controls
     {
         public static InputAction? SpawnWeaponAction;
+        public static InputActionMap monsterControls = new InputActionMap("MonsterControls");
         private static bool spawningWeapon = false;
 
-        public static void InitControls ()
+        public static void InitControls()
         {
-            SpawnWeaponAction = new InputAction("SpawnWeapon", InputActionType.Button, "<Keyboard>/5");
-            SpawnWeaponAction.performed += SpawnWeapon_performed;
+            InputAction shapeshift = monsterControls.AddAction("Shapeshift", InputActionType.Button, binding: "<Keyboard>/5");
+            shapeshift.performed += Shapeshift_performed;
+
         }
 
+
+        private static void Shapeshift_performed(InputAction.CallbackContext context)
+        {
+            Plugin.mls.LogInfo(">> Shapeshifted!!");
+        }
 
         private static void SpawnWeapon_performed(InputAction.CallbackContext context)
         {
