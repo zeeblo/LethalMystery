@@ -21,10 +21,10 @@ namespace LethalMystery.Players
 
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + Plugin.shapeshiftBind.Value);
             shapeshift.performed += Shapeshift_performed;
-            monsterControls.Enable();
 
             shapeshiftRef = InputActionReference.Create(shapeshift);
         }
+
 
 
         private static void Shapeshift_performed(InputAction.CallbackContext context)

@@ -11,11 +11,18 @@ namespace LethalMystery.UI
     internal class KeybindsUI
     {
 
+
+        /// <summary>
+        /// Dispaly Keybind options
+        /// </summary>
         [HarmonyPatch(typeof(KepRemapPanel), nameof(KepRemapPanel.LoadKeybindsUI))]
         [HarmonyPrefix]
         private static bool LoadBindsPatch(KepRemapPanel __instance)
         {
+            // Prevent keybinds from being used while in keybind menu
             Controls.monsterControls.Disable();
+
+
             __instance.currentVertical = 0;
             __instance.currentHorizontal = 0;
             int sectionOffset = 0;
@@ -43,7 +50,12 @@ namespace LethalMystery.UI
                 // Show name of the actual button box
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
                 componentInChildren.currentlyUsedKeyText.text = Plugin.AllHotkeys[i].Value;
-                componentInChildren.rebindableAction = Controls.shapeshiftRef;
+                
+                /* placeholder variable to prevent the default PushToTalk from being changed as well
+                 * Setting this to null will throw an error, so im setting it to an arbitrary
+                 * InputActionReference name.
+                 */
+                componentInChildren.rebindableAction = Controls.shapeshiftRef; 
 
                 // move down for next button
                 LMysteryYOffset -= 40;
@@ -111,10 +123,9 @@ namespace LethalMystery.UI
         }
 
 
-
-
-
-
+        /// <summary>
+        /// Set the new keybind and update it in the .cfg
+        /// </summary>
         [HarmonyPatch(typeof(IngamePlayerSettings), nameof(IngamePlayerSettings.CompleteRebind))]
         [HarmonyPostfix]
         private static void CompleteRebindPatch(SettingsOption optionUI)
@@ -125,19 +136,37 @@ namespace LethalMystery.UI
                 {
                     Plugin.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
                     Plugin.AllHotkeys[i].ConfigFile.Save();
-                    Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                    Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
                     
                     
                     Plugin.mls.LogInfo($">>> New Keybind button: {optionUI.currentlyUsedKeyText.text}");
                     Plugin.mls.LogInfo($">>> Name for keybind: {optionUI.textElement.text}");
-                    Controls.monsterControls.Enable();
+                    Plugin.mls.LogInfo($"playerControls: {Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).GetBindingDisplayString()}");
                     break;
                 }
             }
 
-
-           
         }
+
+
+        /// <summary>
+        /// If the user closes the Keybind Menu then re-enable the custom keybinds
+        /// If they're in a game
+        /// </summary>
+        [HarmonyPatch(typeof(KepRemapPanel), nameof(KepRemapPanel.OnDisable))]
+        [HarmonyPostfix]
+        private static void KepOnDisablePatch()
+        {
+            if (Roles.CurrentRole != null && Controls.monsterControls.enabled == false)
+            {
+                if (Roles.CurrentRole.Type == "monster")
+                {
+                    Controls.monsterControls.Enable();
+                }
+            }
+
+        }
+
 
     }
 }

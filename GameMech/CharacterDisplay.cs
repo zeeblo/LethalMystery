@@ -349,6 +349,11 @@ namespace LethalMystery.GameMech
             if (Roles.CurrentRole != null)
             {
                 Roles.ShowRole(Roles.CurrentRole);
+
+                if (Roles.CurrentRole.Type == "monster")
+                {
+                    Controls.monsterControls.Enable();
+                }
             }
             inIntro = false;
             Plugin.inGracePeriod = true;
@@ -362,14 +367,6 @@ namespace LethalMystery.GameMech
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
 
-            if (Roles.CurrentRole != null)
-            {
-                if (Roles.CurrentRole.Type == "monster")
-                {
-                    Controls.monsterControls.Enable();
-                }
-                
-            }
 
         }
 
