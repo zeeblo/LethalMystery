@@ -22,12 +22,15 @@ namespace LethalMystery
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
+        public static ConfigEntry<string>? PrefixSetting;
+        public static ConfigEntry<string>? shapeshiftBind;
+        public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
 
 
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
-        internal static ConfigEntry<string>? PrefixSetting;
+        
         internal static bool usingTerminal = false;
         internal static bool isHost;
 
@@ -56,10 +59,16 @@ namespace LethalMystery
             PatchAllStuff();
             Roles.AppendRoles();
 
-            PrefixSetting = instance?.Config.Bind<string>("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
+            PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
+            shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself as another user");
+            AllHotkeys.Add(PrefixSetting);
+            AllHotkeys.Add(shapeshiftBind);
+
+
             SpriteLoader();
             Controls.InitControls();
         }
+
 
 
         private void PatchAllStuff()

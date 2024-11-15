@@ -2,6 +2,7 @@
 using GameNetcodeStuff;
 using Unity.Netcode;
 using System.Runtime.CompilerServices;
+using LethalMystery.Players;
 
 
 namespace LethalMystery
