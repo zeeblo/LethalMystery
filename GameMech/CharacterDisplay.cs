@@ -242,13 +242,9 @@ namespace LethalMystery.GameMech
 
         private static void ShowLights(bool value)
         {
-            if (value == false)
+            if (lght != null)
             {
-                if (lght != null)
-                {
-                    UnityEngine.Object.Destroy(lght);
-                }
-
+                lght.gameObject.SetActive(value);
             }
             else
             {
