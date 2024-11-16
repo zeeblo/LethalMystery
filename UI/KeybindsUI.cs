@@ -51,7 +51,7 @@ namespace LethalMystery.UI
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
                 componentInChildren.currentlyUsedKeyText.text = Plugin.AllHotkeys[i].Value;
                 
-                /* placeholder variable to prevent the default PushToTalk from being changed as well
+                /* placeholder variable to prevent the default PushToTalk from being changed as well.
                  * Setting this to null will throw an error, so im setting it to an arbitrary
                  * InputActionReference name.
                  */

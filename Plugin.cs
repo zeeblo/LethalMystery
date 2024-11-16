@@ -144,7 +144,7 @@ namespace LethalMystery
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
             Texture2D KnifeTexture = myBundle.LoadAsset<Texture2D>("sprite_knife.png");
             Texture2D LogoTexture = myBundle.LoadAsset<Texture2D>("logo_a.png");
-            Texture2D BannerTexture = myBundle.LoadAsset<Texture2D>("default banner.png");
+            Texture2D BannerTexture = myBundle.LoadAsset<Texture2D>("default_banner.jpg");
             KnifeIcon = Sprite.Create(
                 KnifeTexture,
                 new Rect(0, 0, KnifeTexture.width, KnifeTexture.height),
