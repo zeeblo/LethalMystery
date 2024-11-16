@@ -27,19 +27,16 @@ namespace LethalMystery.GameMech
         {
             if (checkingForItems && StartOfRound.Instance.shipHasLanded)
             {
-                for (int i = 0; i < __instance.ItemSlots.Length; i++)
+                if (__instance.ItemSlots[__instance.currentItemSlot] != null)
                 {
-                    if (__instance.ItemSlots[i] != null)
+                    if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
                     {
-                        if (!(__instance.ItemSlots[i].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[i].name.ToLower().Contains("knife")))
-                        {
-                            __instance.DestroyItemInSlotAndSync(i);
-                            HUDManager.Instance.itemSlotIcons[i].enabled = false;
-                            __instance.carryWeight = 1f;
-                            checkingForItems = false;
-                            currentQuota += 10;
-                            break;
-                        }
+                        Plugin.mls.LogInfo($"<> 2 CurrentItemSlot: {__instance.currentItemSlot}");
+                        __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
+                        HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
+                        __instance.carryWeight = 1f;
+                        checkingForItems = false;
+                        currentQuota += 10;
                     }
                 }
 
