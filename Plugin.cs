@@ -79,8 +79,25 @@ namespace LethalMystery
 
         public static void ResetVariables()
         {
-            Plugin.currentGracePeriodCountdown = defaultGracePeriodCountdown;
+            if (HUDManager.Instance != null)
+            {
+                HUDManager.Instance.loadingText.enabled = false;
+            }
+            currentGracePeriodCountdown = defaultGracePeriodCountdown;
+            MeetingDefaults();
+            Roles.ResetVariables();
+            CharacterDisplay.ResetVariables();
+            Tasks.ResetVariables();
             AutoGiveWeapon.ResetVariables();
+        }
+
+        public static void MeetingDefaults()
+        {
+            inMeeting = false;
+            //RemoveEnvironment(false);
+            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
+            currentMeetingCountdown = defaultMeetingCountdown;
+            MeetingCooldown = defaultMeetingCooldown;
         }
 
 

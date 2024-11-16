@@ -22,10 +22,10 @@ namespace LethalMystery.GameMech
         private static Vector3 cameraPosition = new Vector3(-80f, 31.05f, 26f);
         private static Vector3 lightPosition = new Vector3(-80f, 34f, 20f);
         private static GameObject? lght;
-        private static Camera? introCamera;
+        //private static Camera? introCamera;
         private static GameObject? sphere;
         public static bool inIntro = false;
-        
+
 
 
 
@@ -200,9 +200,12 @@ namespace LethalMystery.GameMech
 
         private static void DisableMainCamera(bool value)
         {
-            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason fixes the below code to work (using the method above doesn't)
-            GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(!value);
-            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
+            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason allows the below code to work (using the method above doesn't)
+            if (GameNetworkManager.Instance.localPlayerController != null)
+            {
+                GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(!value);
+                GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
+            }
             GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
             GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(!value);
         }
@@ -228,42 +231,36 @@ namespace LethalMystery.GameMech
 
         private static void CreateLights()
         {
-            lght = GameObject.Find("Area Light (5)").gameObject;
-            Quaternion rot = Quaternion.Euler(90, 0, 0);
-            UnityEngine.Object.Instantiate(lght, lightPosition, rot);
+            GameObject AreaLight = GameObject.Find("Area Light (5)");
+            if (AreaLight != null)
+            {
+                Quaternion rot = Quaternion.Euler(90, 0, 0);
+                lght = UnityEngine.Object.Instantiate(AreaLight.gameObject, lightPosition, rot);
+            }
+
         }
 
         private static void ShowLights(bool value)
         {
-            if (lght != null)
+            if (value == false)
             {
-                lght.SetActive(value);
+                if (lght != null)
+                {
+                    UnityEngine.Object.Destroy(lght);
+                }
+
             }
             else
             {
                 CreateLights();
             }
-
         }
 
-
-        private static void IntroCamValues()
-        {
-            if (introCamera != null)
-            {
-                introCamera.transform.position = cameraPosition;
-                introCamera.transform.localRotation = Quaternion.Euler(0, 180, 0);
-
-                Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
-                Plugin.mls.LogInfo($"Default Screen: {canv.renderMode}");
-                canv.renderMode = 0;
-                canv.worldCamera = introCamera;
-            }
-        }
 
         private static void CreateCamera()
         {
-            introCamera = new GameObject("IntroCamera").AddComponent<Camera>();
+            Camera introCamera = new GameObject("LM_IntroCamera").AddComponent<Camera>();
+            introCamera.tag = "Player";
             introCamera.transform.position = cameraPosition;
             introCamera.transform.localRotation = Quaternion.Euler(0, 180, 0);
 
@@ -273,38 +270,46 @@ namespace LethalMystery.GameMech
             StartOfRound.Instance.SwitchCamera(introCamera);
         }
 
-        private static void IntroCamera()
-        {
-            if (introCamera != null)
-            {
-                IntroCamValues();
-                StartOfRound.Instance.SwitchCamera(introCamera);
-            }
-            else
-            {
-                CreateCamera();
-            }
-        }
 
         private static void DisableIntroCamera()
         {
-            introCamera?.gameObject.SetActive(false);
+            /* "Hacky" way of removing introCamera if multiple
+             * happen to spawn instead of 1 for some reason
+             */
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Player"))
+            {
+                if (obj.name == "LM_IntroCamera")
+                {
+                    UnityEngine.Object.Destroy(obj.gameObject);
+                }
+            }
+            
             Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
             canv.worldCamera = GameObject.Find("UICamera").GetComponent<Camera>();
             canv.renderMode = RenderMode.ScreenSpaceCamera;
 
-            StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
+            if (GameNetworkManager.Instance.localPlayerController != null)
+            {
+                StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
+            }
+
         }
 
         private static void ShowPlayers(bool value)
         {
+
             foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
             {
-                if (user.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
+                if (user != null && GameNetworkManager.Instance.localPlayerController != null)
                 {
-                    user.gameObject.SetActive(value);
+                    if (user.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
+                    {
+                        user.gameObject.SetActive(value);
+                    }
                 }
+
             }
+
         }
 
 
@@ -327,14 +332,14 @@ namespace LethalMystery.GameMech
             yield return new WaitForSeconds(1.5f);
             BlackVision(false);
             DisableMainCamera(true);
-            IntroCamera();
+            CreateCamera();
 
             HUDManagerPatch.DisplayDaysEdit("role");
 
             yield return new WaitForSeconds(2.35f);
             AutoGiveWeapon.doneSpawningWeapons = true;
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(false); // disable red scan node that's visible to intro cam
-            
+
             yield return new WaitForSeconds(2f);
             ShowSphere(false);
             EnableMovement(true);
@@ -357,7 +362,7 @@ namespace LethalMystery.GameMech
             }
             inIntro = false;
             Plugin.inGracePeriod = true;
-            
+
             yield return new WaitForSeconds(1f);
             SwitchToNextItem();
 
@@ -370,6 +375,19 @@ namespace LethalMystery.GameMech
 
         }
 
+
+        public static void ResetVariables()
+        {
+            StartOfRound.Instance.StopCoroutine(IntroDisplay());
+            inIntro = false;
+            ShowSphere(false);
+            ShowPlayers(true);
+            EnvironmentLight(true);
+            DisableIntroCamera();
+            Plugin.inGracePeriod = false;
+            DisableMainCamera(false);
+
+        }
 
     }
 }

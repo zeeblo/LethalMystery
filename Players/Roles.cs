@@ -133,5 +133,12 @@ namespace LethalMystery.Players
         }
 
 
+        public static void ResetVariables()
+        {
+            TopText = null;
+            BottomText = null;
+            CurrentRole = null;
+        }
+
     }
 }

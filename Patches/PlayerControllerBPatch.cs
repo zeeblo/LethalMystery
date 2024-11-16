@@ -11,14 +11,6 @@ namespace LethalMystery.Patches
     {
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), "OnDisable")]
-        [HarmonyPostfix]
-        private static void OnDisablePatch()
-        {
-            Controls.monsterControls.Disable();
-        }
-
-
         [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)

@@ -236,11 +236,8 @@ namespace LethalMystery.GameMech
                 __instance.overheated = true;
                 __instance.triggerScript.interactable = true;
 
-                Plugin.inMeeting = false;
-                Plugin.RemoveEnvironment(false);
-                StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
-                Plugin.currentMeetingCountdown = Plugin.defaultMeetingCountdown;
-                Plugin.MeetingCooldown = Plugin.defaultMeetingCooldown;
+                Plugin.MeetingDefaults();
+
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }
