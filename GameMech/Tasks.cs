@@ -18,6 +18,7 @@ namespace LethalMystery.GameMech
         public static int maxQuota = 120;
 
         #region Patches
+
         /// <summary>
         /// removes currentlyHeld scrap item if in the ship and updates
         /// the quota
@@ -33,7 +34,10 @@ namespace LethalMystery.GameMech
                     if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
                     {
                         __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
-                        HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
+                        if (HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot] != null)
+                        {
+                            HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
+                        }
                         __instance.carryWeight = 1f;
                         checkingForItems = false;
                         currentQuota += 10;
@@ -63,6 +67,42 @@ namespace LethalMystery.GameMech
             return true;
         }
 
+
+
+        /// <summary>
+        /// Fixes GrabObject from throwing an error if the user tries to pickup an item
+        /// outside the ship, while standing inside the ship.
+        /// (Basically this allows players to pickup items from outside the ship while
+        /// being inside the ship itself)
+        /// </summary>
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.BeginGrabObject))]
+        [HarmonyPrefix]
+        private static bool GrabFix(PlayerControllerB __instance)
+        {
+            if (StartOfRound.Instance.shipHasLanded && GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom)
+            {
+                // Get the object that's being grabbed
+                // Display it
+                // Remove it from scene
+                Ray interactRay = new Ray(__instance.gameplayCamera.transform.position, __instance.gameplayCamera.transform.forward);
+                RaycastHit hit;
+                int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
+
+                if (!Physics.Raycast(interactRay, out hit, __instance.grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || __instance.twoHanded || __instance.sinkingValue > 0.73f || Physics.Linecast(__instance.gameplayCamera.transform.position, hit.collider.transform.position + __instance.transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
+                {
+                    return false;
+                }
+                GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
+                Plugin.mls.LogInfo($"<><> Grabbing: {currentlyGrabbingObject}");
+
+                HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
+                HUDManager.Instance.DisplayNewScrapFound();
+                UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
+                currentQuota += 10;
+                return false;
+            }
+            return true;
+        }
 
 
 
@@ -118,6 +158,8 @@ namespace LethalMystery.GameMech
 
             return true;
         }
+
+
 
         #endregion Patches
 
