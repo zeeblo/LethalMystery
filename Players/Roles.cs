@@ -72,7 +72,7 @@ namespace LethalMystery.Players
             
 
             allRoles.Add(new Role(
-            "Sherif",
+            "Sheriff",
             "Kill the monster(s). Guessing wrong will get you killed.",
             "employee"
             ));
