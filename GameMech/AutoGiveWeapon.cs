@@ -44,6 +44,7 @@ namespace LethalMystery.GameMech
                         {
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
+                            Commands.randomObject.itemProperties.weight = 1f;
                             MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
                             GrabTest.Invoke(__instance, null);
                             checkedForWeapon = true;
