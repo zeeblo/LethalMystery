@@ -19,7 +19,8 @@ namespace LethalMystery.GameMech
 
         #region Patches
         /// <summary>
-        /// Iterates through user's inventory and removes currentlyHeld item
+        /// removes currentlyHeld scrap item if in the ship and updates
+        /// the quota
         /// </summary>
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
