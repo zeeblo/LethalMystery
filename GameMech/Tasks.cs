@@ -31,7 +31,6 @@ namespace LethalMystery.GameMech
                 {
                     if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
                     {
-                        Plugin.mls.LogInfo($"<> 2 CurrentItemSlot: {__instance.currentItemSlot}");
                         __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
                         HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
                         __instance.carryWeight = 1f;
