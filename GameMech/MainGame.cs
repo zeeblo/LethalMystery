@@ -236,6 +236,7 @@ namespace LethalMystery.GameMech
                 __instance.overheated = true;
                 __instance.triggerScript.interactable = true;
 
+                Plugin.RemoveEnvironment(false);
                 Plugin.MeetingDefaults();
 
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");

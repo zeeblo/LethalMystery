@@ -202,7 +202,7 @@ namespace LethalMystery
 
                         component.startFallingPosition = position;
                         component.targetFloorPosition = component.GetItemFloorPosition(position);
-                        component.SetScrapValue(10); // Set Scrap Value
+                        component.SetScrapValue(10);
                         component.NetworkObject.Spawn();
                         spawnable = true;
 
