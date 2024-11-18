@@ -164,7 +164,7 @@ namespace LethalMystery.GameMech
         [HarmonyPrefix]
         private static bool DisplayItems()
         {
-            checkingForItems = true;
+            checkingForItems = true; // Activate TaskUpdate()
 
             return true;
         }
