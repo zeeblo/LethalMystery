@@ -15,7 +15,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void InfiniteBullets(ref int ___shellsLoaded)
         {
-            if (Roles.CurrentRole != null && Roles.CurrentRole.Name == "Sherif")
+            if (Roles.CurrentRole != null && Roles.CurrentRole.Name == "sheriff")
             {
                 ___shellsLoaded = 2;
             }

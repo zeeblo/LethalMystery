@@ -9,6 +9,7 @@ using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
 using LethalMystery.Players;
 using UnityEngine.UI;
+using LethalMystery.Utils;
 
 namespace LethalMystery.Patches
 {
@@ -47,7 +48,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void UpdatePatch(HUDManager __instance)
         {
-
+            
             if (Plugin.inMeeting)
             {
                 __instance.Clock.targetAlpha = 1.0f;
@@ -71,10 +72,10 @@ namespace LethalMystery.Patches
         {
             if (Roles.CurrentRole != null)
             {
-                string text = $"{Roles.CurrentRole.Name}";
+                string text = $"{StringAddons.Title(Roles.CurrentRole.Name)}";
                 HUDManager.Instance.profitQuotaDaysLeftText.text = text;
                 HUDManager.Instance.profitQuotaDaysLeftText2.text = text;
-                if (Roles.CurrentRole.Type == "employee")
+                if (Roles.CurrentRole.Type == "_employee")
                 {
                     HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
                     HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.profitQuotaDaysLeftCalmSFX);

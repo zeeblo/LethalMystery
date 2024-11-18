@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using LethalMystery.Utils;
+using UnityEngine;
 
 
 namespace LethalMystery.Players
@@ -33,7 +34,7 @@ namespace LethalMystery.Players
 
             public string GetItem()
             {
-                if (Type == "monster")
+                if (Type == "_monster")
                 {
                     return "knife";
                 }
@@ -62,15 +63,19 @@ namespace LethalMystery.Players
 
 
         public static List<Role> allRoles = new List<Role>();
+        public static List<string> allItems = new List<string>();
+        public static string? TopText;
+        public static string? BottomText;
+        public static Role? CurrentRole;
         public static void AppendRoles()
         {
-            
+            /*
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
             "_employee")
             );
-            
+            */
 
             allRoles.Add(new Role(
             "sheriff",
@@ -97,13 +102,19 @@ namespace LethalMystery.Players
             "_monster"
             ));
             
-
-
         }
 
-        public static string? TopText;
-        public static string? BottomText;
-        public static Role? CurrentRole;
+
+        public static void AppendItems()
+        {
+            allItems.Add("kitchen knife");
+            allItems.Add("knifeitem");
+            allItems.Add("knife");
+            allItems.Add("shotgun");
+            allItems.Add("shotgunitem");
+            allItems.Add("clipboard");
+
+        }
 
 
         public static void AssignRole()
@@ -125,7 +136,7 @@ namespace LethalMystery.Players
             {
                     new DialogueSegment
                     {
-                        speakerText = role.Name,
+                        speakerText = StringAddons.Title(role.Name),
                         bodyText = role.Desc,
                         waitTime = 14f
                     }

@@ -1,5 +1,7 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Players;
+using LethalMystery.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,10 +37,10 @@ namespace LethalMystery.GameMech
             {
                 return;
             }
-
             if (__instance.ItemSlots[__instance.currentItemSlot] != null)
             {
-                if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
+                string itmName = __instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Replace("(clone)", "");
+                if (!(StringAddons.ContainsWhitelistedItem(itmName)))
                 {
                     __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
                     HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
@@ -59,9 +61,9 @@ namespace LethalMystery.GameMech
         [HarmonyPrefix]
         private static bool CollectItem(PlayerControllerB __instance)
         {
+            string itmName = __instance.currentlyHeldObjectServer.itemProperties.itemName.ToLower().Replace("(clone)", "");
             if ((__instance.isInHangarShipRoom && StartOfRound.Instance.shipHasLanded && __instance.currentlyHeldObjectServer != null)
-                && !(__instance.currentlyHeldObjectServer.itemProperties.itemName.ToLower().Contains("shotgun"))
-                && !(__instance.currentlyHeldObjectServer.itemProperties.itemName.ToLower().Contains("knife")))
+                && !(StringAddons.ContainsWhitelistedItem(itmName)) )
             {
                 HUDManager.Instance.AddNewScrapFoundToDisplay(__instance.currentlyHeldObjectServer);
                 droppedItem = true;
@@ -93,10 +95,9 @@ namespace LethalMystery.GameMech
                     return false;
                 }
                 GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
+                string itmName = currentlyGrabbingObject.itemProperties.itemName.ToLower().Replace("(clone)", "");
 
-                if (!(currentlyGrabbingObject.itemProperties.itemName.ToLower().Contains("shotgun"))
-                    && !(currentlyGrabbingObject.itemProperties.itemName.ToLower().Contains("knife"))
-                    )
+                if ( !(StringAddons.ContainsWhitelistedItem(itmName)) )
                 {
                     HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
                     HUDManager.Instance.DisplayNewScrapFound();
@@ -144,11 +145,8 @@ namespace LethalMystery.GameMech
         [HarmonyPrefix]
         private static bool DontDisplayWeapons(HUDManager __instance, GrabbableObject GObject)
         {
-            if (__instance.itemsToBeDisplayed.Count <= 16
-                && !(GObject.itemProperties.itemName.ToLower().Contains("shotgun"))
-                && !(GObject.itemProperties.itemName.ToLower().Contains("knife"))
-                && !(GObject.itemProperties.itemName.ToLower().Contains("clipboard"))
-                )
+            string itmName = GObject.itemProperties.itemName.ToLower().Replace("(clone)", "");
+            if (__instance.itemsToBeDisplayed.Count <= 16 && !(StringAddons.ContainsWhitelistedItem(itmName)))
             {
                 __instance.itemsToBeDisplayed.Add(GObject);
             }
