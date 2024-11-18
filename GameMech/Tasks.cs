@@ -20,31 +20,34 @@ namespace LethalMystery.GameMech
         #region Patches
 
         /// <summary>
-        /// removes currentlyHeld scrap item if in the ship and updates
-        /// the quota
+        /// removes currentlyHeld scrap item in user's inventory if they're inside
+        /// the ship. This also updates the current quota.
         /// </summary>
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void TaskUpdate(PlayerControllerB __instance)
         {
-            if (checkingForItems && StartOfRound.Instance.shipHasLanded)
+            if (StartOfRound.Instance.shipHasLanded == false && __instance.isInHangarShipRoom == false)
             {
-                if (__instance.ItemSlots[__instance.currentItemSlot] != null)
-                {
-                    if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
-                    {
-                        __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
-                        if (HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot] != null)
-                        {
-                            HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
-                        }
-                        __instance.carryWeight = 1f;
-                        checkingForItems = false;
-                        currentQuota += 10;
-                    }
-                }
-
+                return;
             }
+            if (checkingForItems == false)
+            {
+                return;
+            }
+
+            if (__instance.ItemSlots[__instance.currentItemSlot] != null)
+            {
+                if (!(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("shotgun")) && !(__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains("knife")))
+                {
+                    __instance.DestroyItemInSlotAndSync(__instance.currentItemSlot);
+                    HUDManager.Instance.itemSlotIcons[__instance.currentItemSlot].enabled = false;
+                    __instance.carryWeight = 1f;
+                    checkingForItems = false;
+                    currentQuota += 10;
+                }
+            }
+
 
         }
 
@@ -93,13 +96,19 @@ namespace LethalMystery.GameMech
                     return false;
                 }
                 GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
-                Plugin.mls.LogInfo($"<><> Grabbing: {currentlyGrabbingObject}");
 
-                HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
-                HUDManager.Instance.DisplayNewScrapFound();
-                UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
-                currentQuota += 10;
-                return false;
+                if (!(currentlyGrabbingObject.itemProperties.itemName.ToLower().Contains("shotgun"))
+                    && !(currentlyGrabbingObject.itemProperties.itemName.ToLower().Contains("knife"))
+                    )
+                {
+                    HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
+                    HUDManager.Instance.DisplayNewScrapFound();
+                    checkingForItems = false; // Prevent TaskUpdate() from activating
+                    UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
+                    currentQuota += 10;
+                    return false;
+                }
+
             }
             return true;
         }
@@ -131,19 +140,23 @@ namespace LethalMystery.GameMech
 
 
         /// <summary>
-        /// Removes Guns and Knives from displaying when in the ship
+        /// Remove certain items from displaying when in the ship.
+        /// These will be weapons/custom items given to players.
         /// </summary>
         [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.AddNewScrapFoundToDisplay))]
-        [HarmonyPostfix]
-        private static void DontDisplayWeapons(HUDManager __instance)
+        [HarmonyPrefix]
+        private static bool DontDisplayWeapons(HUDManager __instance, GrabbableObject GObject)
         {
-            for (int i = 0; i < __instance.itemsToBeDisplayed.Count(); i++)
+            if (__instance.itemsToBeDisplayed.Count <= 16
+                && !(GObject.itemProperties.itemName.ToLower().Contains("shotgun"))
+                && !(GObject.itemProperties.itemName.ToLower().Contains("knife"))
+                && !(GObject.itemProperties.itemName.ToLower().Contains("clipboard"))
+                )
             {
-                if (__instance.itemsToBeDisplayed[i].itemProperties.itemName.ToLower().Contains("shotgun") || __instance.itemsToBeDisplayed[i].itemProperties.itemName.ToLower().Contains("knife"))
-                {
-                    __instance.itemsToBeDisplayed.Remove(__instance.itemsToBeDisplayed[i]);
-                }
+                __instance.itemsToBeDisplayed.Add(GObject);
             }
+
+            return false;
         }
 
 
