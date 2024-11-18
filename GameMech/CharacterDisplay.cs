@@ -333,7 +333,7 @@ namespace LethalMystery.GameMech
             HUDManagerPatch.DisplayDaysEdit("role");
 
             yield return new WaitForSeconds(2.35f);
-            AutoGiveWeapon.doneSpawningWeapons = true;
+            AutoGiveItem.doneSpawningWeapons = true;
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(false); // disable red scan node that's visible to intro cam
 
             yield return new WaitForSeconds(2f);

@@ -15,14 +15,14 @@ namespace LethalMystery.GameMech
 {
 
     [HarmonyPatch]
-    internal class AutoGiveWeapon
+    internal class AutoGiveItem
     {
         public static bool checkedForWeapon = false;
         public static bool doneSpawningWeapons = false;
 
         #region Patches
         /// <summary>
-        /// Checks if a role weapon exists in the scene and gives it to the user once the ship lands
+        /// Checks if a role item exists in the scene and gives it to the user once the ship lands
         /// </summary>
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
@@ -30,7 +30,7 @@ namespace LethalMystery.GameMech
         {
             if (doneSpawningWeapons && checkedForWeapon == false && Roles.CurrentRole != null)
             {
-                if (Roles.CurrentRole.GetWeapon() == "")
+                if (Roles.CurrentRole.GetItem() == "")
                 {
                     checkedForWeapon = true;
                     Plugin.mls.LogInfo(">>> No weapon for this role");
@@ -40,7 +40,7 @@ namespace LethalMystery.GameMech
                     Scene currentScene = SceneManager.GetSceneAt(0);
                     foreach (GameObject obj in currentScene.GetRootGameObjects())
                     {
-                        if (obj.name.Contains(Roles.CurrentRole.GetWeapon()))
+                        if (obj.name.Contains(Roles.CurrentRole.GetItem()))
                         {
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);

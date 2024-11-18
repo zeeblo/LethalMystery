@@ -88,7 +88,7 @@ namespace LethalMystery
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();
-            AutoGiveWeapon.ResetVariables();
+            AutoGiveItem.ResetVariables();
         }
 
         public static void MeetingDefaults()

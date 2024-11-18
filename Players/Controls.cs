@@ -47,14 +47,14 @@ namespace LethalMystery.Players
                     yield break;
 
                 spawningWeapon = true;
-                AutoGiveWeapon.ResetVariables();
-                Commands.SpawnWeapons(Roles.CurrentRole.GetWeapon());
+                AutoGiveItem.ResetVariables();
+                Commands.SpawnWeapons(Roles.CurrentRole.GetItem());
 
                 yield return new WaitForSeconds(5f); // butler takes roughly 2.5s or less while nutcracker takes a bit longer
-                AutoGiveWeapon.doneSpawningWeapons = true;
+                AutoGiveItem.doneSpawningWeapons = true;
 
                 yield return new WaitForSeconds(8);
-                AutoGiveWeapon.doneSpawningWeapons = false;
+                AutoGiveItem.doneSpawningWeapons = false;
                 spawningWeapon = false;
             }
         }
