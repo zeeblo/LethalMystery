@@ -84,9 +84,6 @@ namespace LethalMystery.GameMech
         {
             if (StartOfRound.Instance.shipHasLanded && GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom)
             {
-                // Get the object that's being grabbed
-                // Display it
-                // Remove it from scene
                 Ray interactRay = new Ray(__instance.gameplayCamera.transform.position, __instance.gameplayCamera.transform.forward);
                 RaycastHit hit;
                 int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
