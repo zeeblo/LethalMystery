@@ -22,10 +22,10 @@ namespace LethalMystery.Players
             {
                 switch (Name)
                 {
-                    case "Shapeshifter":
+                    case "shapeshifter":
                         // change into another user
                         break;
-                    case "Nightmare":
+                    case "nightmare":
                         // Curse users
                         break;
                 }
@@ -35,11 +35,11 @@ namespace LethalMystery.Players
             {
                 if (Type == "monster")
                 {
-                    return "Knife";
+                    return "knife";
                 }
-                else if (Name == "Sherif")
+                else if (Name == "sheriff")
                 {
-                    return "Shotgun";
+                    return "shotgun";
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace LethalMystery.Players
 
             public Sprite GetIcon(Sprite Icon)
             {
-                if (Type == "monster" && Plugin.KnifeIcon != null)
+                if (Type == "_monster" && Plugin.KnifeIcon != null)
                 {
                     return Plugin.KnifeIcon;
                 }
@@ -65,35 +65,36 @@ namespace LethalMystery.Players
         public static void AppendRoles()
         {
             
-            allRoles.Add(new Role("Employee",
+            allRoles.Add(new Role(
+            "employee",
             "Bring back items to the ship to meet the quota.",
-            "employee")
+            "_employee")
             );
             
 
             allRoles.Add(new Role(
-            "Sherif",
+            "sheriff",
             "Kill the monster(s). Guessing wrong will get you killed.",
-            "employee"
+            "_employee"
             ));
             
             
             allRoles.Add(new Role(
-            "Monster",
+            "monster",
             "Eliminate all the crew",
-            "monster"
+            "_monster"
             ));
 
             allRoles.Add(new Role(
-            "Shapeshifter",
+            "shapeshifter",
             "Eliminate all the crew and press x to shapeshift",
-            "monster"
+            "_monster"
             ));
 
             allRoles.Add(new Role(
-            "Nightmare",
+            "nightmare",
             "Curse users by disrupting their vision and silencing their voice.",
-            "monster"
+            "_monster"
             ));
             
 

@@ -40,7 +40,7 @@ namespace LethalMystery.GameMech
                     Scene currentScene = SceneManager.GetSceneAt(0);
                     foreach (GameObject obj in currentScene.GetRootGameObjects())
                     {
-                        if (obj.name.Contains(Roles.CurrentRole.GetItem()))
+                        if (obj.name.ToLower().Contains(Roles.CurrentRole.GetItem()))
                         {
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
