@@ -20,7 +20,6 @@ namespace LethalMystery.Utils
             {
                 return false;
             }
-            Plugin.mls.LogInfo($"text: {text}");
 
             return text[0] == prefix[0];
         }
