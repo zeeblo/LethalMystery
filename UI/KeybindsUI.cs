@@ -138,10 +138,6 @@ namespace LethalMystery.UI
                     Plugin.AllHotkeys[i].ConfigFile.Save();
                     Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
                     
-                    
-                    Plugin.mls.LogInfo($">>> New Keybind button: {optionUI.currentlyUsedKeyText.text}");
-                    Plugin.mls.LogInfo($">>> Name for keybind: {optionUI.textElement.text}");
-                    Plugin.mls.LogInfo($"playerControls: {Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).GetBindingDisplayString()}");
                     break;
                 }
             }

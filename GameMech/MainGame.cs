@@ -131,7 +131,11 @@ namespace LethalMystery.GameMech
             return true;
         }
 
+
+
         #region Chat Command
+
+
         [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPrefix]
         private static void SetIsHost()
@@ -169,6 +173,8 @@ namespace LethalMystery.GameMech
 
             return true;
         }
+
+
         #endregion Chat Commands
 
 

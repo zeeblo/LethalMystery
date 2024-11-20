@@ -28,20 +28,37 @@ namespace LethalMystery
         internal static string NetHostCommandPrefix = "<size=0>LMCMD:";
         internal static string NetCommandPostfix = "</size>";
         internal static string? playerwhocalled;
+
+
+
+        public static bool CheckPrefix(string text)
+        {
+            string prefix = "/";
+
+            if (Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
+            {
+                prefix = Plugin.PrefixSetting.Value;
+            }
+            if (string.IsNullOrEmpty(text))
+            {
+                return false;
+            }
+
+            return text[0] == prefix[0];
+        }
+
+
         internal static bool NonHostCommands(string command)
         {
             bool IsNonHostCommand = true;
             string[] commandargs = command.Split(' ');
             int numOfInputs = commandargs.Length;
 
-
-            Plugin.mls.LogInfo($"num: {numOfInputs} | cmd: {command} ");
-
             if (numOfInputs > 1)
             {
                 foreach (var cmd in Commands.HelpCmds)
                 {
-
+                    // user typed "/help (command name)"
                     if (command.StartsWith("help") && commandargs[1].ToLower().Contains(cmd.Key))
                     {
 
@@ -98,6 +115,14 @@ namespace LethalMystery
             msgbody = "<color=#FF0000>ERR</color>: unknown";
             string[] commandarguments = command.Split(' ');
 
+            Plugin.mls.LogInfo(">> above process");
+            if (!CheckPrefix(command))
+            {
+                Plugin.mls.LogInfo(">> in process");
+                return;
+            }
+
+
             if (NonHostCommands(command))
             {
                 return;
@@ -142,7 +167,7 @@ namespace LethalMystery
         public static void DisplayChatMessage(string chatMessage)
         {
             string formattedMessage =
-                $"<color=#FF00FF>LM</color>: <color=#FFFF00>{chatMessage}</color>";
+                $"<color=#FFFF00>{chatMessage}</color>";
 
             HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
 
@@ -151,7 +176,7 @@ namespace LethalMystery
         public static void DisplayChatError(string errorMessage)
         {
             string formattedMessage =
-                $"<color=#FF0000>LM: ERROR</color>: <color=#FF0000>{errorMessage}</color>";
+                $"<color=#FF0000>ERROR</color>: <color=#FF0000>{errorMessage}</color>";
 
             HUDManager.Instance.ChatMessageHistory.Add(formattedMessage);
 
@@ -164,7 +189,107 @@ namespace LethalMystery
         }
 
 
+
+
+
+
+
+
+
+
+        public static string GetHelp()
+        {
+            msgtitle = "Available Commands:";
+            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID";
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
+        }
+        public static string GetHostHelp()
+        {
+            msgtitle = "Host Commands:";
+            msgbody = "/set tasks - set the number of tasks (default is 10) \n /set imps - set the number of imposters (default 1)";
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
+        }
+
+        public static string GetRole()
+        {
+            msgtitle = "Role:";
+            msgbody = "You currently have no role.";
+
+            if (Players.Roles.CurrentRole != null)
+            {
+                msgbody = Players.Roles.CurrentRole.Name + ": " + Players.Roles.CurrentRole.Desc;
+            }
+
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
+        }
+
+        public static string GetPlayerIDs()
+        {
+
+            string name = "";
+            PlayerControllerB player;
+
+            foreach (KeyValuePair<ulong, int> clientPlayer in StartOfRound.Instance.ClientPlayerList)
+            {
+                player = StartOfRound.Instance.allPlayerScripts[StartOfRound.Instance.ClientPlayerList[clientPlayer.Key]];
+                name += $"{player.playerUsername} || ID: {player.playerClientId}\n";
+            }
+
+            msgtitle = "IDs:";
+            msgbody = name;
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
+        }
+
+        public static string SetVote(string vote)
+        {
+
+            msgtitle = "Vote:";
+
+            if (GameNetworkManager.Instance.localPlayerController.playersManager.inShipPhase) // temporary, add check for when in meeting instead
+            {
+                msgbody = "You can only vote in a meeting.";
+            }
+            else if (vote.ToLower() == "skip")
+            {
+                msgbody = "You voted to skip!";
+            }
+            else
+            {
+                ulong playerID;
+
+                if (!ulong.TryParse(vote, out playerID) || !StartOfRound.Instance.ClientPlayerList.Keys.Contains(playerID))
+                {
+                    msgbody = "Invalid. Type \"/ids\" to see the available IDs \n Type \"/help vote\" to properly use this command";
+                    DisplayChatError("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+                    return msgbody + "/" + msgtitle;
+                }
+
+                playerID = ulong.Parse(vote);
+                foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+                {
+                    if (player.playerClientId == playerID)
+                    {
+                        msgbody = "You voted " + player.playerUsername + " (ID: " + playerID + ")";
+                    }
+                }
+            }
+
+            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
+            return msgbody + "/" + msgtitle;
+        }
+
+
+
+
+
+
         #endregion Chat Commands
+
+
 
 
 
@@ -242,105 +367,6 @@ namespace LethalMystery
         }
 
 
-        public static string GetHelp()
-        {
-            msgtitle = "Available Commands";
-            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID";
-            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-            return msgbody + "/" + msgtitle;
-        }
-        public static string GetHostHelp()
-        {
-            msgtitle = "Host Commands";
-            msgbody = "/set tasks - set the number of tasks (default is 10) \n /set imps - set the number of imposters (default 1)";
-            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-            return msgbody + "/" + msgtitle;
-        }
-
-        public static string GetRole()
-        {
-            msgtitle = "Role";
-            msgbody = "You currently have no role.";
-
-            if (Players.Roles.CurrentRole != null)
-            {
-                msgbody = Players.Roles.CurrentRole.Name + ": " + Players.Roles.CurrentRole.Desc;
-            }
-
-            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-            return msgbody + "/" + msgtitle;
-        }
-
-        public static string GetPlayerIDs()
-        {
-
-            string name = "";
-            PlayerControllerB player;
-
-            foreach (KeyValuePair<ulong, int> clientPlayer in StartOfRound.Instance.ClientPlayerList)
-            {
-                player = StartOfRound.Instance.allPlayerScripts[StartOfRound.Instance.ClientPlayerList[clientPlayer.Key]];
-                name += $"{player.playerUsername} || ID: {player.playerClientId}\n";
-            }
-
-            msgtitle = "IDs";
-            msgbody = name;
-            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-            return msgbody + "/" + msgtitle;
-        }
-
-        public static string SetVote(string vote)
-        {
-
-            msgtitle = "vote";
-
-            if (GameNetworkManager.Instance.localPlayerController.playersManager.inShipPhase) // temporary, add check for when in meeting instead
-            {
-                msgbody = "You can only vote in a meeting.";
-            }
-            else if (vote.ToLower() == "skip")
-            {
-                msgbody = "You voted to skip!";
-            }
-            else
-            {
-                ulong playerID;
-
-                if (!ulong.TryParse(vote, out playerID) || !StartOfRound.Instance.ClientPlayerList.Keys.Contains(playerID))
-                {
-                    msgbody = "Invalid. Type \"/ids\" to see the available IDs \n Type \"/help vote\" to properly use this command";
-                    DisplayChatError("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-                    return msgbody + "/" + msgtitle;
-                }
-
-                playerID = ulong.Parse(vote);
-                foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
-                {
-                    if (player.playerClientId == playerID)
-                    {
-                        msgbody = "You voted " + player.playerUsername + " (ID: " + playerID + ")";
-                    }
-                }
-            }
-
-            DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
-            return msgbody + "/" + msgtitle;
-        }
-
-        public static bool CheckPrefix(string text)
-        {
-            string prefix = "/";
-
-            if (Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
-            {
-                prefix = Plugin.PrefixSetting.Value;
-            }
-            if (!text.ToLower().StartsWith(prefix.ToLower()))
-            {
-                return false;
-            }
-            return true;
-        }
 
         private static Vector3 CalculateSpawnPosition(string playerID, string place = "none")
         {

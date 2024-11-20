@@ -69,21 +69,21 @@ namespace LethalMystery.Players
         public static Role? CurrentRole;
         public static void AppendRoles()
         {
-            /*
+            
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
             "_employee")
             );
-            */
 
+            
             allRoles.Add(new Role(
             "sheriff",
             "Kill the monster(s). Guessing wrong will get you killed.",
             "_employee"
             ));
-            
-            
+
+
             allRoles.Add(new Role(
             "monster",
             "Eliminate all the crew",
