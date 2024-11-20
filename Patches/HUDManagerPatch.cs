@@ -27,9 +27,10 @@ namespace LethalMystery.Patches
         {
             string nameOfUserWhoTyped = __instance.playersManager.allPlayerScripts[playerId].playerUsername;
             Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
-            if (chatMessage.StartsWith('/'))
+
+            if (StringAddons.CheckPrefix(chatMessage) && Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
             {
-                string[] temp = chatMessage.Split('/');
+                string[] temp = chatMessage.Split(Plugin.PrefixSetting.Value); 
                 string command = temp[1];
 
                 Commands.ProcessCommandInput(command);

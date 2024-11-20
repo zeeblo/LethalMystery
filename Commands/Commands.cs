@@ -3,6 +3,7 @@ using GameNetcodeStuff;
 using Unity.Netcode;
 using System.Runtime.CompilerServices;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 
 
 namespace LethalMystery
@@ -28,24 +29,6 @@ namespace LethalMystery
         internal static string NetHostCommandPrefix = "<size=0>LMCMD:";
         internal static string NetCommandPostfix = "</size>";
         internal static string? playerwhocalled;
-
-
-
-        public static bool CheckPrefix(string text)
-        {
-            string prefix = "/";
-
-            if (Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
-            {
-                prefix = Plugin.PrefixSetting.Value;
-            }
-            if (string.IsNullOrEmpty(text))
-            {
-                return false;
-            }
-
-            return text[0] == prefix[0];
-        }
 
 
         internal static bool NonHostCommands(string command)
@@ -114,14 +97,6 @@ namespace LethalMystery
             msgtitle = "default";
             msgbody = "<color=#FF0000>ERR</color>: unknown";
             string[] commandarguments = command.Split(' ');
-
-            Plugin.mls.LogInfo(">> above process");
-            if (!CheckPrefix(command))
-            {
-                Plugin.mls.LogInfo(">> in process");
-                return;
-            }
-
 
             if (NonHostCommands(command))
             {

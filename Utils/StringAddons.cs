@@ -7,6 +7,25 @@ namespace LethalMystery.Utils
 {
     public class StringAddons
     {
+
+        public static bool CheckPrefix(string text)
+        {
+            string prefix = "/";
+
+            if (Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
+            {
+                prefix = Plugin.PrefixSetting.Value;
+            }
+            if (string.IsNullOrEmpty(text))
+            {
+                return false;
+            }
+            Plugin.mls.LogInfo($"text: {text}");
+
+            return text[0] == prefix[0];
+        }
+
+
         /// <summary>
         /// Capitalize the first letter
         /// </summary>
