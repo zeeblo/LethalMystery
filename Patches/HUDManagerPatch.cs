@@ -26,14 +26,26 @@ namespace LethalMystery.Patches
         private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage, ref int playerId)
         {
             string nameOfUserWhoTyped = __instance.playersManager.allPlayerScripts[playerId].playerUsername;
+            string prefix = "";
+            if (!string.IsNullOrEmpty(chatMessage.Trim()))
+            {
+                prefix = chatMessage[0].ToString();
+            }
+            
             Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
 
-            if (StringAddons.CheckPrefix(chatMessage) && Plugin.PrefixSetting?.Value != "" && Plugin.PrefixSetting != null)
+            if (Plugin.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
             {
-                string[] temp = chatMessage.Split(Plugin.PrefixSetting.Value); 
+                Plugin.mls.LogInfo(">>>1");
+                string cleanedPrefix = StringAddons.CleanPrefix(prefix);
+                Plugin.mls.LogInfo($">>>2 | cleanedPrefix: \"{cleanedPrefix}\"");
+                string[] temp = chatMessage.Split(cleanedPrefix);
+                Plugin.mls.LogInfo(">>>3");
                 string command = temp[1];
+                Plugin.mls.LogInfo(">>>4");
 
                 Commands.ProcessCommandInput(command);
+                Plugin.mls.LogInfo(">>>5");
                 chatMessage = "";
                 return false;
             }
