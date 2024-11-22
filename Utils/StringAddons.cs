@@ -26,6 +26,10 @@ namespace LethalMystery.Utils
 
 
 
+
+        /// <summary>
+        /// Reset the command prefix to the default
+        /// </summary>
         public static string UseDefaultPrefix()
         {
             string defaultPrefix = "/";
@@ -39,7 +43,26 @@ namespace LethalMystery.Utils
             return defaultPrefix;
         }
 
-        public static string StringToPrefix(string input)
+
+        /// <summary>
+        /// Converts the input (;) into a symbol (&/59)
+        /// </summary>
+        public static string ConvertToSymbols(string input)
+        {
+            foreach (char c in convertableChars.Keys)
+            {
+                if (c.ToString() == input)
+                {
+                    return convertableChars[c];
+                }
+            }
+            return input;
+        }
+
+        /// <summary>
+        /// Converts the input (&/59) into a prefix (;)
+        /// </summary>
+        public static string ConvertToPrefix(string input)
         {
             foreach (char c in convertableChars.Keys)
             {
@@ -48,16 +71,20 @@ namespace LethalMystery.Utils
                     return c.ToString();
                 }
             }
-            return "/";
+            return input;
         }
 
 
+        /// <summary>
+        /// Check if the value given is convertable to a symbol or a prefix
+        /// </summary>
         public static bool InConvertableChars(string input = "", string prefix = "")
         {
             Plugin.mls.LogInfo(">>>chk 3");
             if (!string.IsNullOrEmpty(input))
             {
                 Plugin.mls.LogInfo(">>>chk 4");
+                // checks if the "input" matches the value of the key. eg: &/59
                 foreach (char c in convertableChars.Keys)
                 {
                     if (convertableChars[c] == input)
@@ -70,6 +97,7 @@ namespace LethalMystery.Utils
             else if (!string.IsNullOrEmpty(prefix))
             {
                 Plugin.mls.LogInfo(">>>chk 6");
+                // checks if the "prefix" matches the key. eg: ;
                 foreach (char c in convertableChars.Keys)
                 {
                     if (c.ToString() == prefix)
@@ -83,6 +111,9 @@ namespace LethalMystery.Utils
         }
 
 
+        /// <summary>
+        /// Do a number of checks to determine if the prefix is valid
+        /// </summary>
         public static string CleanPrefix(string prefix)
         {
             Plugin.mls.LogInfo(">>>chk 9");
@@ -94,7 +125,7 @@ namespace LethalMystery.Utils
 
             if (InConvertableChars(prefix: prefix.ToString()))
             {
-                Plugin.mls.LogInfo(">>converting from symbol");
+                Plugin.mls.LogInfo(">>using symbol");
                 return prefix;
             }
 
@@ -120,12 +151,12 @@ namespace LethalMystery.Utils
             if (Plugin.PrefixSetting != null && !string.IsNullOrEmpty(prefix.Trim()) )
             {
                 Plugin.mls.LogInfo(">>>chk 2");
-                if ( (prefix == Plugin.PrefixSetting.Value) || (prefix.Length == 4 && StringAddons.InConvertableChars(input: Plugin.PrefixSetting.Value.Substring(0, 5))))
+                if ( (prefix == Plugin.PrefixSetting.Value) || (StringAddons.InConvertableChars(prefix: prefix)))
                 {
                     Plugin.mls.LogInfo(">>>chk 8");
                     prefix = CleanPrefix(prefix);
                     Plugin.mls.LogInfo($">>>chk done | prefix: \"{prefix}\"");
-                    return prefix == Plugin.PrefixSetting.Value;
+                    return ConvertToSymbols(prefix) == Plugin.PrefixSetting.Value;
                 }
             }
 

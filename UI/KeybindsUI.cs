@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 
 
 namespace LethalMystery.UI
@@ -49,7 +50,7 @@ namespace LethalMystery.UI
 
                 // Show name of the actual button box
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
-                componentInChildren.currentlyUsedKeyText.text = Plugin.AllHotkeys[i].Value;
+                componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(Plugin.AllHotkeys[i].Value);
                 
                 /* placeholder variable to prevent the default PushToTalk from being changed as well.
                  * Setting this to null will throw an error, so im setting it to an arbitrary
@@ -134,11 +135,22 @@ namespace LethalMystery.UI
             {
                 if (Plugin.AllHotkeys[i].Definition.Key.ToLower() == optionUI.textElement.text.ToLower())
                 {
-                    Plugin.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
-                    Plugin.AllHotkeys[i].ConfigFile.Save();
-                    Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
-                    
-                    break;
+                    if (StringAddons.InConvertableChars(prefix: optionUI.currentlyUsedKeyText.text))
+                    {
+                        Plugin.mls.LogInfo(">>> blep 1");
+                        Plugin.AllHotkeys[i].Value = StringAddons.ConvertToSymbols(optionUI.currentlyUsedKeyText.text);
+                        Plugin.AllHotkeys[i].ConfigFile.Save();
+                        break;
+                    }
+                    else
+                    {
+                        Plugin.mls.LogInfo(">>> blep2");
+                        Plugin.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
+                        Plugin.AllHotkeys[i].ConfigFile.Save();
+                        Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                        break;
+                    }
+
                 }
             }
 
