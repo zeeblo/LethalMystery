@@ -80,29 +80,24 @@ namespace LethalMystery.Utils
         /// </summary>
         public static bool InConvertableChars(string input = "", string prefix = "")
         {
-            Plugin.mls.LogInfo(">>>chk 3");
             if (!string.IsNullOrEmpty(input))
             {
-                Plugin.mls.LogInfo(">>>chk 4");
                 // checks if the "input" matches the value of the key. eg: &/59
                 foreach (char c in convertableChars.Keys)
                 {
                     if (convertableChars[c] == input)
                     {
-                        Plugin.mls.LogInfo(">>>chk 5");
                         return true;
                     }
                 }
             }
             else if (!string.IsNullOrEmpty(prefix))
             {
-                Plugin.mls.LogInfo(">>>chk 6");
                 // checks if the "prefix" matches the key. eg: ;
                 foreach (char c in convertableChars.Keys)
                 {
                     if (c.ToString() == prefix)
                     {
-                        Plugin.mls.LogInfo(">>>chk 7");
                         return true;
                     }
                 }
@@ -116,25 +111,21 @@ namespace LethalMystery.Utils
         /// </summary>
         public static string CleanPrefix(string prefix)
         {
-            Plugin.mls.LogInfo(">>>chk 9");
             if (string.IsNullOrEmpty(prefix))
             {
-                Plugin.mls.LogInfo(">>prefix is null");
                 return UseDefaultPrefix();
             }
 
             if (InConvertableChars(prefix: prefix.ToString()))
             {
-                Plugin.mls.LogInfo(">>using symbol");
                 return prefix;
             }
 
             if (prefix.Length > 1)
             {
-                Plugin.mls.LogInfo($">>input length is to: {prefix.Length} (too big)");
                 return UseDefaultPrefix();
             }
-            Plugin.mls.LogInfo($">>>chk 10 | prefix: \"{prefix}\"");
+
             return prefix;
 
         }
@@ -147,20 +138,15 @@ namespace LethalMystery.Utils
         /// </summary>
         public static bool CheckPrefix(string prefix)
         {
-            Plugin.mls.LogInfo(">>>chk 1");
             if (Plugin.PrefixSetting != null && !string.IsNullOrEmpty(prefix.Trim()) )
             {
-                Plugin.mls.LogInfo(">>>chk 2");
                 if ( (prefix == Plugin.PrefixSetting.Value) || (StringAddons.InConvertableChars(prefix: prefix)))
                 {
-                    Plugin.mls.LogInfo(">>>chk 8");
                     prefix = CleanPrefix(prefix);
-                    Plugin.mls.LogInfo($">>>chk done | prefix: \"{prefix}\"");
                     return ConvertToSymbols(prefix) == Plugin.PrefixSetting.Value;
                 }
             }
 
-            Plugin.mls.LogInfo(">>>chk 11");
             return false;
         }
 

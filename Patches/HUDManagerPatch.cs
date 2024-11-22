@@ -32,16 +32,11 @@ namespace LethalMystery.Patches
 
             if (Plugin.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
             {
-                Plugin.mls.LogInfo(">>>1");
                 string cleanedPrefix = StringAddons.CleanPrefix(prefix);
-                Plugin.mls.LogInfo($">>>2 | cleanedPrefix: \"{cleanedPrefix}\"");
                 string[] temp = chatMessage.Split(cleanedPrefix);
-                Plugin.mls.LogInfo(">>>3");
                 string command = temp[1];
-                Plugin.mls.LogInfo(">>>4");
 
                 Commands.ProcessCommandInput(command);
-                Plugin.mls.LogInfo(">>>5");
                 chatMessage = "";
                 return false;
             }
