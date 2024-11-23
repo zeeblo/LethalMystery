@@ -16,7 +16,7 @@ namespace LethalMystery
     [BepInPlugin(modGUID, modName, modVersion)]
     public class Plugin : BaseUnityPlugin
     {
-        private const string modGUID = "dev.zeeblo.LethalMystery";
+        private const string modGUID = "LethalMystery.zeeblo.dev";
         private const string modName = "zeeblo.LethalMystery";
         private const string modVersion = "0.1.0";
         private readonly Harmony _harmony = new(modGUID);
