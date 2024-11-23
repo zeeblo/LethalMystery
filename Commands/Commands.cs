@@ -82,6 +82,9 @@ namespace LethalMystery
                 case "role":
                     Commands.GetRole();
                     break;
+                case "clear":
+                    Commands.ClearChat();
+                    break;
                 default:
                     IsNonHostCommand = false;
                     break;
@@ -175,7 +178,7 @@ namespace LethalMystery
         public static string GetHelp()
         {
             msgtitle = "Available Commands:";
-            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID";
+            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID \n /clear - clear the chat";
             DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
             return msgbody + "/" + msgtitle;
         }
@@ -258,6 +261,13 @@ namespace LethalMystery
         }
 
 
+
+
+        public static void ClearChat()
+        {
+            HUDManager.Instance.ChatMessageHistory.Clear();
+            UpdateChatText();
+        }
 
 
 
