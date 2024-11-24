@@ -284,24 +284,20 @@ namespace LethalMystery
 
             Vector3 position = Vector3.zero;
 
-            Plugin.mls.LogInfo(">>> ABOVE CALC <<<");
             if (location != "vnt" || location != "btn")
             {
                 position = CalculateSpawnPosition(playerID: location);
             }
 
-            Plugin.mls.LogInfo(">>> BELOW CALC <<<");
 
             if (Plugin.currentRound != null)
             {
                 int len = Plugin.currentRound.currentLevel.spawnableScrap.Count();
 
-                Plugin.mls.LogInfo(">>> @ LEN THING <<<");
                 bool spawnable = false;
                 for (int i = 0; i < len; i++)
                 {
                     Item scrap = Plugin.currentRound.currentLevel.spawnableScrap[i].spawnableItem;
-                    Plugin.mls.LogInfo($">< Scrap name: {scrap} ");
                     if (scrap.spawnPrefab.name.ToLower().Contains(toSpawn))
                     {
 
@@ -358,8 +354,6 @@ namespace LethalMystery
             Vector3 position = Vector3.zero;
             if (place == "skeldmap")
             {
-                Plugin.mls.LogInfo(">>> REACHED SKELD THING<<<");
-
                 System.Random randomNum = new System.Random();
                 //int index = randomNum.Next(0, scrapLocations.ToArray().Length);
                 //position = scrapLocations[index];
@@ -368,14 +362,13 @@ namespace LethalMystery
             }
             else
             {
-                Plugin.mls.LogInfo(">>> REACHED @PLAYER THING<<<");
                 PlayerControllerB[] allPlayerScripts = StartOfRound.Instance.allPlayerScripts;
                 foreach (PlayerControllerB testedPlayer in allPlayerScripts)
                 {
-                    Plugin.mls.LogInfo($"Checking Playername: {testedPlayer.playerUsername.ToLower()} || {playerID}");
+                    //Plugin.mls.LogInfo($"Checking Playername: {testedPlayer.playerUsername.ToLower()} || {playerID}");
                     if ($"{testedPlayer.playerClientId}" == playerID)
                     {
-                        Plugin.mls.LogInfo($"Found player {testedPlayer.playerUsername}");
+                        //Plugin.mls.LogInfo($"Found player {testedPlayer.playerUsername}");
                         position = testedPlayer.transform.position;
 
                         break;
