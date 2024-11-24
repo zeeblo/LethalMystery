@@ -126,12 +126,10 @@ namespace LethalMystery
             {
                 if (obj.name.Contains("Nutcracker"))
                 {
-                    Plugin.mls.LogInfo($"< Finding nuts \n-------");
                     Destroy(obj.gameObject);
                 }
                 if (obj.name.Contains("Butler"))
                 {
-                    Plugin.mls.LogInfo($"< Finding Butlers");
                     Destroy(obj.gameObject);
                 }
             }
