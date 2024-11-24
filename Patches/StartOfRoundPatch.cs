@@ -12,6 +12,39 @@ namespace LethalMystery.Patches
     {
 
 
+        /// <summary>
+        /// It's the same method except it gets disabled usernames on the map.
+        /// </summary>
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SwitchMapMonitorPurpose))]
+        [HarmonyPrefix]
+        private static bool SwitchMapMonitorPurposePatch(StartOfRound __instance, bool displayInfo)
+        {
+            if (displayInfo)
+            {
+                __instance.screenLevelVideoReel.enabled = true;
+                __instance.screenLevelVideoReel.gameObject.SetActive(value: true);
+                __instance.screenLevelDescription.enabled = true;
+                __instance.mapScreenPlayerName.enabled = false;
+                __instance.mapScreen.overrideCameraForOtherUse = true;
+                __instance.mapScreen.SwitchScreenOn();
+                __instance.mapScreen.cam.enabled = true;
+                Terminal terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
+                terminal.displayingPersistentImage = null;
+                terminal.terminalImage.enabled = false;
+            }
+            else
+            {
+                __instance.screenLevelVideoReel.enabled = false;
+                __instance.screenLevelVideoReel.gameObject.SetActive(value: false);
+                __instance.screenLevelDescription.enabled = false;
+                __instance.mapScreenPlayerName.enabled = false;
+                __instance.mapScreen.overrideCameraForOtherUse = false;
+            }
+            return false;
+        }
+
+
+
         [HarmonyPatch(typeof(StartOfRound), "Start")]
         [HarmonyPostfix]
         private static void SpawnHorn(StartOfRound __instance)

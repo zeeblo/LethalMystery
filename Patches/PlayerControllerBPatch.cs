@@ -16,7 +16,6 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(PlayerControllerB __instance)
         {
             __instance.takingFallDamage = false;
-            // __instance.carryWeight = 1f; // possibly remove weight so people can't speed check others | or set carry weight of weapons to 1
         }
 
 
