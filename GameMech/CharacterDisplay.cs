@@ -201,13 +201,7 @@ namespace LethalMystery.GameMech
         private static void DisableMainCamera(bool value)
         {
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason allows the below code to work (using the method above doesn't)
-            if (GameNetworkManager.Instance.localPlayerController != null)
-            {
-                GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.gameObject?.SetActive(!value);
-                GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
-            }
             GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
-            GameObject.Find("PlayersContainer/Player/Misc/MapDot")?.SetActive(!value);
         }
 
         private static void ResetAnimation()
@@ -259,6 +253,7 @@ namespace LethalMystery.GameMech
             introCamera.tag = "Player";
             introCamera.transform.position = cameraPosition;
             introCamera.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            introCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
 
             Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
             canv.renderMode = 0;
