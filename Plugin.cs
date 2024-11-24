@@ -21,6 +21,7 @@ namespace LethalMystery
         private const string modVersion = "0.1.0";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
+        public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
         public static ConfigEntry<string>? PrefixSetting;
         public static ConfigEntry<string>? shapeshiftBind;
@@ -138,8 +139,6 @@ namespace LethalMystery
 
         private static void SpriteLoader()
         {
-
-            string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
             string BundleDir = MainDir + "\\Assets\\Assetbundles\\items";
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);

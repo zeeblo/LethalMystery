@@ -178,7 +178,7 @@ namespace LethalMystery
         public static string GetHelp()
         {
             msgtitle = "Available Commands:";
-            msgbody = "/help vote - Info on how to vote a user out \n /role - See what your role is \n /hosthelp - see host only commands \n /ids - view everyone's playerID \n /clear - clear the chat";
+            msgbody = Data.GetInfo("help");
             DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
             return msgbody + "/" + msgtitle;
         }

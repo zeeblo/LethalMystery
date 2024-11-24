@@ -1,0 +1,12 @@
+{
+  "help": [
+    "[PX]role - see what your role is",
+    "[PX]hosthelp - see host only commands",
+    "[PX]ids - view everyone's player ID'",
+    "[PX]clear - clear the chat"
+  ],
+  "hosthelp": [
+    "[PX]set_quota - set the number of scraps users have to collect (default is 10)",
+    "[PX]set_imps - set the number of monsters (default 1)"
+  ]
+}
