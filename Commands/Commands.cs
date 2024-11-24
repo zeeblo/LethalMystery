@@ -185,7 +185,7 @@ namespace LethalMystery
         public static string GetHostHelp()
         {
             msgtitle = "Host Commands:";
-            msgbody = "/set tasks - set the number of tasks (default is 10) \n /set imps - set the number of imposters (default 1)";
+            msgbody = Data.GetInfo("hosthelp");
             DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
             return msgbody + "/" + msgtitle;
         }
