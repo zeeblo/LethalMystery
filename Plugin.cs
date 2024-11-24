@@ -57,18 +57,17 @@ namespace LethalMystery
         private void Awake()
         {
 
-            PatchAllStuff();
-            Roles.AppendRoles();
-            Roles.AppendItems();
-
             PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
             shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself as another user");
             AllHotkeys.Add(PrefixSetting);
             AllHotkeys.Add(shapeshiftBind);
 
-
+            PatchAllStuff();
             SpriteLoader();
+            Roles.AppendRoles();
+            Roles.AppendItems();
             Controls.InitControls();
+
         }
 
 
