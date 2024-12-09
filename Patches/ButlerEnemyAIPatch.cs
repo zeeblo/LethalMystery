@@ -14,7 +14,7 @@ namespace LethalMystery.Patches
     {
         public static bool spawnedButlerForKnife = false;
 
-        [HarmonyPatch(typeof(ButlerEnemyAI), nameof(ButlerEnemyAI.Update))]
+        [HarmonyPatch(nameof(ButlerEnemyAI.Update))]
         [HarmonyPrefix]
         private static bool UpdatePatch(ButlerEnemyAI __instance)
         {

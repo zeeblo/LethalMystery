@@ -12,7 +12,7 @@ namespace LethalMystery.Patches
     {
         public static bool spawnedNutForWeapon = false;
 
-        [HarmonyPatch(typeof(NutcrackerEnemyAI), nameof(NutcrackerEnemyAI.Update))]
+        [HarmonyPatch(nameof(NutcrackerEnemyAI.Update))]
         [HarmonyPrefix]
         private static bool UpdatePatch(NutcrackerEnemyAI __instance)
         {
@@ -26,7 +26,7 @@ namespace LethalMystery.Patches
 
 
 
-        [HarmonyPatch(typeof(NutcrackerEnemyAI), nameof(NutcrackerEnemyAI.SpawnShotgunShells))]
+        [HarmonyPatch(nameof(NutcrackerEnemyAI.SpawnShotgunShells))]
         [HarmonyPrefix]
         private static bool NoBulletObjects()
         {

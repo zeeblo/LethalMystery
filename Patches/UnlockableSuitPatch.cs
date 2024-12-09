@@ -9,7 +9,7 @@ namespace LethalMystery.Patches
         /// <summary>
         /// Players can only select a suit before the game begins
         /// </summary>
-        [HarmonyPatch(typeof(UnlockableSuit), "SwitchSuitToThis")]
+        [HarmonyPatch(nameof(UnlockableSuit.SwitchSuitToThis))]
         [HarmonyPrefix]
         private static bool SwitchSuitToThisPatch()
         {

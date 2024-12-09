@@ -11,7 +11,7 @@ namespace LethalMystery.Patches
     {
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
+        [HarmonyPatch(nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)
         {

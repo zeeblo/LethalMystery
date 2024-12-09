@@ -7,7 +7,7 @@ namespace LethalMystery.Patches
     internal class GrabbableObjectPatch
     {
 
-        [HarmonyPatch(typeof(GrabbableObject), "LateUpdate")]
+        [HarmonyPatch(nameof(GrabbableObject.LateUpdate))]
         [HarmonyPostfix]
         private static void HideWeaponOnMonitorPatch(ref Transform ___radarIcon)
         {

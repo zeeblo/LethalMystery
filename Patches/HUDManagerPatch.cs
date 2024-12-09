@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
-using TMPro;
-using UnityEngine;
+﻿using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 
@@ -17,7 +12,7 @@ namespace LethalMystery.Patches
         #region Chat Commands
 
 
-        [HarmonyPatch(typeof(HUDManager), "AddPlayerChatMessageClientRpc")]
+        [HarmonyPatch(nameof(HUDManager.AddPlayerChatMessageClientRpc))]
         [HarmonyPrefix]
         private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage, ref int playerId)
         {
@@ -63,7 +58,7 @@ namespace LethalMystery.Patches
         }
 
         /*
-        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
+        [HarmonyPatch(nameof(HUDManager.DisplayDaysLeft))]
         [HarmonyPostfix]
         private static void ShowResults()
         {
@@ -126,7 +121,7 @@ namespace LethalMystery.Patches
             }
         }
 
-        [HarmonyPatch(typeof(HUDManager), "DisplayDaysLeft")]
+        [HarmonyPatch(nameof(HUDManager.DisplayDaysLeft))]
         [HarmonyPrefix]
         private static bool DisplayDaysLeftPatch()
         {

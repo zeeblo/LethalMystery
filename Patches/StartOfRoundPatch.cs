@@ -15,7 +15,7 @@ namespace LethalMystery.Patches
         /// <summary>
         /// It's the same method except it gets disabled usernames on the map.
         /// </summary>
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SwitchMapMonitorPurpose))]
+        [HarmonyPatch(nameof(StartOfRound.SwitchMapMonitorPurpose))]
         [HarmonyPrefix]
         private static bool SwitchMapMonitorPurposePatch(StartOfRound __instance, bool displayInfo)
         {
@@ -45,7 +45,7 @@ namespace LethalMystery.Patches
 
 
 
-        [HarmonyPatch(typeof(StartOfRound), "Start")]
+        [HarmonyPatch(nameof(StartOfRound.Start))]
         [HarmonyPostfix]
         private static void SpawnHorn(StartOfRound __instance)
         {
@@ -54,7 +54,7 @@ namespace LethalMystery.Patches
         }
 
 
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.SetPlanetsWeather))]
+        [HarmonyPatch(nameof(StartOfRound.SetPlanetsWeather))]
         [HarmonyPrefix]
         private static bool NoBadWeather(ref SelectableLevel[] ___levels)
         {
@@ -70,7 +70,7 @@ namespace LethalMystery.Patches
         }
 
 
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.Update))]
+        [HarmonyPatch(nameof(StartOfRound.Update))]
         [HarmonyPostfix]
         private static void stopSpeaker(StartOfRound __instance)
         {

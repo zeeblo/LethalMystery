@@ -11,7 +11,7 @@ namespace LethalMystery.Patches
     {
 
 
-        [HarmonyPatch(typeof(ShotgunItem), nameof(ShotgunItem.ShootGun))]
+        [HarmonyPatch(nameof(ShotgunItem.ShootGun))]
         [HarmonyPostfix]
         private static void InfiniteBullets(ref int ___shellsLoaded)
         {
