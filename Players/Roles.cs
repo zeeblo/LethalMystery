@@ -6,6 +6,14 @@ namespace LethalMystery.Players
 {
     public class Roles
     {
+
+        public static List<Role> allRoles = new List<Role>();
+        public static List<string> allItems = new List<string>();
+        public static string? TopText;
+        public static string? BottomText;
+        public static Role? CurrentRole;
+
+
         public class Role
         {
             public string Name { get; }
@@ -62,11 +70,6 @@ namespace LethalMystery.Players
         }
 
 
-        public static List<Role> allRoles = new List<Role>();
-        public static List<string> allItems = new List<string>();
-        public static string? TopText;
-        public static string? BottomText;
-        public static Role? CurrentRole;
         public static void AppendRoles()
         {
             /*
