@@ -108,17 +108,6 @@ namespace LethalMystery.Players
         }
 
 
-        public static void AppendItems()
-        {
-            allItems.Add("kitchen knife");
-            allItems.Add("knifeitem");
-            allItems.Add("knife");
-            allItems.Add("shotgun");
-            allItems.Add("shotgunitem");
-            allItems.Add("clipboard");
-
-        }
-
 
         public static void AssignRole()
         {

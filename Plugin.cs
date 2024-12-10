@@ -65,7 +65,6 @@ namespace LethalMystery
             PatchAllStuff();
             SpriteLoader();
             Roles.AppendRoles();
-            Roles.AppendItems();
             Controls.InitControls();
 
         }

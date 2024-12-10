@@ -49,6 +49,7 @@ namespace LethalMystery.GameMech
             terminal.groupCredits = 9999;
 
             Plugin.ResetVariables();
+            Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
 

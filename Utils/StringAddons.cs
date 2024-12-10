@@ -1,4 +1,5 @@
-﻿using LethalMystery.Players;
+﻿using LethalMystery.GameMech;
+using LethalMystery.Players;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -175,9 +176,9 @@ namespace LethalMystery.Utils
                 return false;
             }
 
-            foreach (string item in Roles.allItems)
+            foreach (Item item in Tasks.allScraps)
             {
-                if (item.Contains(input.ToLower()))
+                if (item.itemName.ToLower().Contains(input.ToLower()))
                     return true;
             }
 
