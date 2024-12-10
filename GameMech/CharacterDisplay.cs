@@ -202,6 +202,8 @@ namespace LethalMystery.GameMech
         {
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason allows the below code to work (using the method above doesn't)
             GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
+            if (GameNetworkManager.Instance.localPlayerController == null) return;
+            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
         }
 
         private static void ResetAnimation()
