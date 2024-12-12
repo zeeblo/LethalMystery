@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 
 
 namespace LethalMystery.GameMech
@@ -15,8 +16,11 @@ namespace LethalMystery.GameMech
         private static void EndOfGameClientRpcPatch()
         {
             Controls.monsterControls.Disable();
+            GOTools.ClearInventory();
             Plugin.ResetVariables();
-            MoreSlots.ClearMoreSlots();
+            MoreSlots.DefaultSlots();
+            
+
             Plugin.mls.LogInfo(">>> Reset vars from: EndOfGameClientRpcPatch ");
         }
 
@@ -39,7 +43,7 @@ namespace LethalMystery.GameMech
         {
             Controls.monsterControls.Disable();
             Plugin.ResetVariables();
-            //MoreSlots.ClearMoreSlots();
+            MoreSlots.DefaultSlots();
             Plugin.mls.LogInfo(">>> Reset vars from: DisconnectPatch ");
         }
     }

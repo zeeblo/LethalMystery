@@ -122,7 +122,25 @@ namespace LethalMystery.Players
             TopText = role.Name;
             BottomText = role.Desc;
             CurrentRole = role;
-            
+
+            SlotAmount();
+        }
+
+
+        private static void SlotAmount()
+        {
+            if (CurrentRole?.Name == "sheriff")
+            {
+                MoreSlots.AllowMoreSlots();
+            }
+            else if (CurrentRole?.Type == RoleType.monster)
+            {
+                MoreSlots.AllowMoreSlots();
+            }
+            else
+            {
+                MoreSlots.DefaultSlots();
+            }
         }
 
 

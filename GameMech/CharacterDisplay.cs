@@ -173,13 +173,16 @@ namespace LethalMystery.GameMech
         /// If user is holding a weapon, switch to the next slot.
         /// (This doesn't specifically check if it's a weapon but that's how it's used)
         /// </summary>
-        private static void SwitchToNextItem()
+        private static void SwitchToNextItem(bool lastItem = false)
         {
             MethodInfo GetFirstEmptyItemSlot = typeof(PlayerControllerB).GetMethod("FirstEmptyItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
             int FirstEmptyItemSlot = (int)GetFirstEmptyItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, null);
+            int LastItemSlot = GameNetworkManager.Instance.localPlayerController.ItemSlots.Length - 1;
+
+            int slot = (lastItem) ? LastItemSlot : FirstEmptyItemSlot;
 
             MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
-            SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { FirstEmptyItemSlot, Type.Missing });
+            SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { slot, Type.Missing });
         }
 
         private static void LookAtCamera()
@@ -323,10 +326,10 @@ namespace LethalMystery.GameMech
             CreateCamera();
 
             HUDManagerPatch.DisplayDaysEdit("role");
-            MoreSlots.AllowMoreSlots();
-            //MoreSlots.DisplayMoreSlots();
 
             yield return new WaitForSeconds(2.35f);
+
+            SwitchToNextItem(lastItem: true);
             AutoGiveItem.doneSpawningWeapons = true;
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(false); // disable red scan node that's visible to intro cam
 

@@ -9,10 +9,6 @@ namespace LethalMystery.Players
     internal class MoreSlots
     {
 
-
-        //public static bool alreadyEntered = false;
-
-
         [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Awake))]
         [HarmonyPostfix]
         private static void DisplayMoreSlotsPatch(HUDManager __instance)
@@ -41,7 +37,6 @@ namespace LethalMystery.Players
         }
         
 
-
         public static void AllowMoreSlots()
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
@@ -49,62 +44,11 @@ namespace LethalMystery.Players
         }
 
 
-        public static void ClearMoreSlots()
+        public static void DefaultSlots()
         {
-           // if (alreadyEntered) return;
-            // alreadyEntered = true;
-
-            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-            //localPlayer.DropAllHeldItems(itemsFall: true, disconnecting: true);
-
-            /*
-            GrabbableObject[] array = UnityEngine.Object.FindObjectsOfType<GrabbableObject>();
-            for (int j = 0; j < array.Length; j++)
-            {
-                if (!array[j].isHeld)
-                {
-                    array[j].heldByPlayerOnServer = false;
-                }
-            }
-            */
-            localPlayer.ItemSlots = new GrabbableObject[4];
-
-        }
-
-        /*
-        public static void ClearMoreSlots()
-        {
-            if (alreadyEntered) return;
-            alreadyEntered = true;
-
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
             localPlayer.ItemSlots = new GrabbableObject[4];
-
-            for (int i = 0; i < HUDManager.Instance.itemSlotIconFrames.Length; i++)
-            {
-               Plugin.Destroy(HUDManager.Instance.itemSlotIconFrames[i].gameObject);
-            }
-
-            HUDManager.Instance.itemSlotIconFrames = default_itemSlotIconFrames.ToArray();
-            HUDManager.Instance.itemSlotIcons = default_itemSlotIcons.ToArray();
-
-            for (int i = 0; i < HUDManager.Instance.itemSlotIconFrames.Length; i++)
-            {
-                HUDManager.Instance.itemSlotIconFrames[i].GetComponent<UnityEngine.UI.Image>().gameObject.SetActive(true);
-                HUDManager.Instance.itemSlotIconFrames[i].GetComponent<Animator>().gameObject.SetActive(true);
-                UnityEngine.Object.Instantiate(HUDManager.Instance.itemSlotIconFrames[i], HUDManager.Instance.Inventory.canvasGroup.transform);
-
-                //UnityEngine.Object.Instantiate(HUDManager.Instance.itemSlotIcons[i], HUDManager.Instance.itemSlotIconFrames[i].transform);
-                Plugin.mls.LogInfo($">> current i: {i}");
-            }
-
-            MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
-            SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { 0, Type.Missing });
-
         }
-        */
-
-
 
 
 

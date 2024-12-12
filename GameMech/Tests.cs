@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -52,18 +53,8 @@ namespace LethalMystery.GameMech
                 {
                     Commands.SpawnScrapFunc("ring", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);
                 }
-                if (Keyboard.current.digit5Key.wasPressedThisFrame)
-                {
-                    PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-                    Plugin.mls.LogInfo($">>>inv slots mat: {HUDManager.Instance.itemSlotIconFrames.Count()}");
-                    for (int i = 0; i < localPlayer.ItemSlots.Length; i++)
-                    {
-                        Plugin.mls.LogInfo($"Grabbable objs: {localPlayer.ItemSlots[i]}");
-                    }
-                    
-                }
 
-                
+
             }
         }
     }
