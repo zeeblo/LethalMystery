@@ -20,6 +20,7 @@ namespace LethalMystery.UI
         {
             UnityEngine.UI.Image BannerImage = new GameObject("Banner").AddComponent<UnityEngine.UI.Image>();
             GameObject HeaderImage = GameObject.Find("Canvas/MenuContainer/MainButtons/HeaderImage");
+            GameObject LoadingImage = GameObject.Find("Canvas/MenuContainer/LoadingScreen/Image");
 
             if (HeaderImage != null && Plugin.LethalMysteryLogo != null && BannerImage != null)
             {
@@ -35,6 +36,7 @@ namespace LethalMystery.UI
 
                 BannerImage.sprite = Plugin.LethalMysteryBanner;
                 HeaderImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
+                LoadingImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
             }
 
 
