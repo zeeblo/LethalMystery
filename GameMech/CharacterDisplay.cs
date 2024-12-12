@@ -323,6 +323,8 @@ namespace LethalMystery.GameMech
             CreateCamera();
 
             HUDManagerPatch.DisplayDaysEdit("role");
+            MoreSlots.AllowMoreSlots();
+            //MoreSlots.DisplayMoreSlots();
 
             yield return new WaitForSeconds(2.35f);
             AutoGiveItem.doneSpawningWeapons = true;

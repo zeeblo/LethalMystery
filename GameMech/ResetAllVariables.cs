@@ -16,7 +16,7 @@ namespace LethalMystery.GameMech
         {
             Controls.monsterControls.Disable();
             Plugin.ResetVariables();
-
+            MoreSlots.ClearMoreSlots();
             Plugin.mls.LogInfo(">>> Reset vars from: EndOfGameClientRpcPatch ");
         }
 
@@ -39,7 +39,7 @@ namespace LethalMystery.GameMech
         {
             Controls.monsterControls.Disable();
             Plugin.ResetVariables();
-
+            //MoreSlots.ClearMoreSlots();
             Plugin.mls.LogInfo(">>> Reset vars from: DisconnectPatch ");
         }
     }
