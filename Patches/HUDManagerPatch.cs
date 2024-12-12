@@ -74,7 +74,7 @@ namespace LethalMystery.Patches
                 string text = $"{StringAddons.Title(Roles.CurrentRole.Name)}";
                 HUDManager.Instance.profitQuotaDaysLeftText.text = text;
                 HUDManager.Instance.profitQuotaDaysLeftText2.text = text;
-                if (Roles.CurrentRole.Type == "_employee")
+                if (Roles.CurrentRole.Type == Roles.RoleType.employee)
                 {
                     HUDManager.Instance.reachedProfitQuotaAnimator.SetTrigger("displayDaysLeftCalm");
                     HUDManager.Instance.UIAudio.PlayOneShot(HUDManager.Instance.profitQuotaDaysLeftCalmSFX);

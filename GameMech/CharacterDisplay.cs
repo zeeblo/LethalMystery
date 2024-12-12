@@ -343,7 +343,7 @@ namespace LethalMystery.GameMech
             {
                 Roles.ShowRole(Roles.CurrentRole);
 
-                if (Roles.CurrentRole.Type == "_monster")
+                if (Roles.CurrentRole.Type == Roles.RoleType.monster)
                 {
                     Controls.monsterControls.Enable();
                 }

@@ -202,7 +202,7 @@ namespace LethalMystery.UI
         {
             if (Roles.CurrentRole != null && Controls.monsterControls.enabled == false)
             {
-                if (Roles.CurrentRole.Type == "_monster")
+                if (Roles.CurrentRole.Type == Roles.RoleType.monster)
                 {
                     Controls.monsterControls.Enable();
                 }
