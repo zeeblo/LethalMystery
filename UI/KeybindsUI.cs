@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Utils;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 
 namespace LethalMystery.UI
@@ -12,6 +14,8 @@ namespace LethalMystery.UI
     internal class KeybindsUI
     {
 
+        private static List<string> ControlNames = new List<string>();
+        private static int LMysteryYOffset = 0;
 
         /// <summary>
         /// Dispaly Keybind options
@@ -22,20 +26,26 @@ namespace LethalMystery.UI
         {
             // Prevent keybinds from being used while in keybind menu
             Controls.monsterControls.Disable();
+            GameObject raw1 = GameObject.Find("Canvas/MenuContainer/SettingsPanel/KeybindsPanel/Scroll View");
+            GameObject raw2 = GameObject.Find("Systems/UI/Canvas/QuickMenu/SettingsPanel/KeybindsPanel/Scroll View");
+            GameObject ScrollView = (raw1) ? raw1 : raw2;
 
+            ScrollRect scrollMax = ScrollView.GetComponent<ScrollRect>();
+            
 
             __instance.currentVertical = 0;
             __instance.currentHorizontal = 0;
             int sectionOffset = 0;
-            int LMysteryYOffset = 0;
+            LMysteryYOffset = 0;
             Vector2 anchoredPosition = new Vector2(__instance.horizontalOffset * (float)__instance.currentHorizontal, __instance.verticalOffset * (float)__instance.currentVertical);
-
+            scrollMax.content.anchorMax = new Vector2(scrollMax.content.anchorMax.x, 1); // default scroll max
 
             // Lethal Mystery section at the top
             GameObject LMysterySection = UnityEngine.Object.Instantiate(__instance.sectionTextPrefab, __instance.keyRemapContainer);
+            __instance.keySlots.Add(LMysterySection);
             LMysterySection.GetComponent<RectTransform>().anchoredPosition = new Vector2(-40f, -__instance.verticalOffset * sectionOffset);
             LMysterySection.GetComponentInChildren<TextMeshProUGUI>().text = "Lethal Mystery";
-            __instance.keySlots.Add(LMysterySection);
+
 
             sectionOffset += 1;
             // Add buttons for "Lethal Mystery" section
@@ -51,12 +61,12 @@ namespace LethalMystery.UI
                 // Show name of the actual button box
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
                 componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(Plugin.AllHotkeys[i].Value);
-                
+
                 /* placeholder variable to prevent the default PushToTalk from being changed as well.
                  * Setting this to null will throw an error, so im setting it to an arbitrary
                  * InputActionReference name.
                  */
-                componentInChildren.rebindableAction = Controls.shapeshiftRef; 
+                componentInChildren.rebindableAction = Controls.shapeshiftRef;
 
                 // move down for next button
                 LMysteryYOffset -= 40;
@@ -71,57 +81,84 @@ namespace LethalMystery.UI
 
             // Vanilla keybinds section for the regular game
             GameObject NormalSection = UnityEngine.Object.Instantiate(__instance.sectionTextPrefab, __instance.keyRemapContainer);
+            __instance.keySlots.Add(NormalSection);
             NormalSection.GetComponent<RectTransform>().anchoredPosition = new Vector2(-40f, LMysteryYOffset - 60);
             NormalSection.GetComponentInChildren<TextMeshProUGUI>().text = "Normal";
 
-            bool flag = false;
-            int num = 0;
+            // Increases the range that the scrollwheel can go
+            scrollMax.content.anchorMax = new Vector2(scrollMax.content.anchorMax.x, (scrollMax.content.anchorMax.y) + (float)Math.Abs(LMysteryYOffset) / 100f);
+
+            return true;
+        }
+
+
+
+
+
+        [HarmonyPatch(typeof(KepRemapPanel), nameof(KepRemapPanel.LoadKeybindsUI))]
+        [HarmonyPostfix]
+        private static void PositionBindsPatch(KepRemapPanel __instance)
+        {
+            GameObject raw1 = GameObject.Find("Canvas/MenuContainer/SettingsPanel/KeybindsPanel/Scroll View/Viewport/Content/RemapKeysContainer");
+            GameObject raw2 = GameObject.Find("Systems/UI/Canvas/QuickMenu/SettingsPanel/KeybindsPanel/Scroll View/Viewport/Content/RemapKeysContainer");
+            GameObject raw_binds = (raw1) ? raw1 : raw2;
+
+            List<GameObject> binds = GOTools.GetAllChildren(raw_binds);
+
+            ControlNames.Clear();
             for (int i = 0; i < __instance.remappableKeys.Count; i++)
             {
-                if (__instance.remappableKeys[i].currentInput == null)
+                ControlNames.Add(__instance.remappableKeys[i].ControlName.ToLower());
+            }
+
+
+            foreach (GameObject obj in binds)
+            {
+
+                // Check for the default remappable keys and move them down
+                List<GameObject> objChildren = GOTools.GetAllChildren(obj);
+                foreach (GameObject objChild in objChildren)
                 {
-                    continue;
-                }
-
-
-                GameObject gameObject = UnityEngine.Object.Instantiate(__instance.keyRemapSlotPrefab, __instance.keyRemapContainer);
-                __instance.keySlots.Add(gameObject);
-                gameObject.GetComponentInChildren<TextMeshProUGUI>().text = __instance.remappableKeys[i].ControlName;
-                gameObject.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
-
-                SettingsOption componentInChildren = gameObject.GetComponentInChildren<SettingsOption>();
-                componentInChildren.rebindableAction = __instance.remappableKeys[i].currentInput;
-                componentInChildren.rebindableActionBindingIndex = __instance.remappableKeys[i].rebindingIndex;
-                componentInChildren.gamepadOnlyRebinding = __instance.remappableKeys[i].gamepadOnly;
-
-                int rebindingIndex = __instance.remappableKeys[i].rebindingIndex;
-                int num2 = Mathf.Max(rebindingIndex, 0);
-                componentInChildren.currentlyUsedKeyText.text = InputControlPath.ToHumanReadableString(componentInChildren.rebindableAction.action.bindings[num2].effectivePath, InputControlPath.HumanReadableStringOptions.OmitDevice);
-
-                if (!flag && i + 1 < __instance.remappableKeys.Count && __instance.remappableKeys[i + 1].gamepadOnly)
-                {
-                    num = (int)(__instance.maxVertical + 2f);
-                    __instance.currentVertical = 0;
-                    __instance.currentHorizontal = 0;
-                    GameObject gameObject2 = UnityEngine.Object.Instantiate(__instance.sectionTextPrefab, __instance.keyRemapContainer);
-                    gameObject2.GetComponent<RectTransform>().anchoredPosition = new Vector2(-40f, (0f - __instance.verticalOffset) * (float)(num + sectionOffset));
-                    gameObject2.GetComponentInChildren<TextMeshProUGUI>().text = "REBIND CONTROLLERS";
-                    __instance.keySlots.Add(gameObject2);
-                    flag = true;
-                }
-                else
-                {
-                    __instance.currentVertical++;
-                    if ((float)__instance.currentVertical > __instance.maxVertical)
+                    if (objChild.gameObject.GetComponent<TextMeshProUGUI>() != null)
                     {
-                        __instance.currentVertical = 0;
-                        __instance.currentHorizontal++;
+                        string name = Array.Find(ControlNames.ToArray(), elem => elem.Equals(objChild.gameObject.GetComponent<TextMeshProUGUI>().text.ToLower()));
+
+                        if (string.IsNullOrEmpty(name) != true)
+                        {
+                            RectTransform bindPosition = obj.GetComponent<RectTransform>();
+                            bindPosition.anchoredPosition = new Vector2(bindPosition.anchoredPosition.x, bindPosition.anchoredPosition.y + LMysteryYOffset - 60);
+                        }
                     }
                 }
-                anchoredPosition = new Vector2(__instance.horizontalOffset * (float)__instance.currentHorizontal, (0f - __instance.verticalOffset) * (float)(__instance.currentVertical + num + sectionOffset));
+
+                // Move the "rebind controllers" text down
+                if (obj.gameObject.GetComponent<TextMeshProUGUI>() != null)
+                {
+                    string name = obj.gameObject.GetComponent<TextMeshProUGUI>().text;
+
+                    if (name.ToLower() == "rebind controllers")
+                    {
+                        RectTransform bindPosition = obj.GetComponent<RectTransform>();
+                        bindPosition.anchoredPosition = new Vector2(bindPosition.anchoredPosition.x, bindPosition.anchoredPosition.y + LMysteryYOffset - 60);
+                    }
+                }
+
+                // move everything up
+                RectTransform allKeybindPositions = obj.GetComponent<RectTransform>();
+                allKeybindPositions.anchoredPosition = new Vector2(allKeybindPositions.anchoredPosition.x, allKeybindPositions.anchoredPosition.y - LMysteryYOffset);
+
+                // reposition scroll wheel to be at the top
+                GameObject raw_view1 = GameObject.Find("Canvas/MenuContainer/SettingsPanel/KeybindsPanel/Scroll View/");
+                GameObject raw_view2 = GameObject.Find("Systems/UI/Canvas/QuickMenu/SettingsPanel/KeybindsPanel/Scroll View");
+
+                GameObject ScrollView = (raw_view1) ? raw_view1 : raw_view2;
+                ScrollRect ScrollViewRect = ScrollView.GetComponent<ScrollRect>();
+                ScrollViewRect.normalizedPosition = new Vector2(ScrollViewRect.normalizedPosition.x, 1);
+
             }
-            return false;
+
         }
+
 
 
         /// <summary>
@@ -137,14 +174,12 @@ namespace LethalMystery.UI
                 {
                     if (StringAddons.InConvertableChars(prefix: optionUI.currentlyUsedKeyText.text))
                     {
-                        Plugin.mls.LogInfo(">>> blep 1");
                         Plugin.AllHotkeys[i].Value = StringAddons.ConvertToSymbols(optionUI.currentlyUsedKeyText.text);
                         Plugin.AllHotkeys[i].ConfigFile.Save();
                         break;
                     }
                     else
                     {
-                        Plugin.mls.LogInfo(">>> blep2");
                         Plugin.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
                         Plugin.AllHotkeys[i].ConfigFile.Save();
                         Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
