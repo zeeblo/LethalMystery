@@ -16,10 +16,10 @@ namespace LethalMystery.GameMech
         private static void EndOfGameClientRpcPatch()
         {
             Controls.monsterControls.Disable();
-            GOTools.ClearInventory();
+            //GOTools.ClearInventory();
+            RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
-            
 
             Plugin.mls.LogInfo(">>> Reset vars from: EndOfGameClientRpcPatch ");
         }

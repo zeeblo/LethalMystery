@@ -106,6 +106,7 @@ namespace LethalMystery.GameMech
             return false;
         }
 
+        // Shoutout to peacefulCompany
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
         [HarmonyPrefix]
         private static bool NoEnemiesPatch(ref SelectableLevel newLevel)
