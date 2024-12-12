@@ -9,7 +9,7 @@ namespace LethalMystery.Patches
 
         [HarmonyPatch(nameof(GrabbableObject.LateUpdate))]
         [HarmonyPostfix]
-        private static void HideWeaponOnMonitorPatch(ref Transform ___radarIcon)
+        private static void HideScrapsOnMonitorPatch(ref Transform ___radarIcon)
         {
             if (___radarIcon != null)
             {
