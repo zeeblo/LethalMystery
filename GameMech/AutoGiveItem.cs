@@ -1,11 +1,8 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using UnityEngine;

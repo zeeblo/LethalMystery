@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using GameNetcodeStuff;
 using Unity.Netcode;
-using System.Runtime.CompilerServices;
-using LethalMystery.Players;
 using LethalMystery.Utils;
 
 

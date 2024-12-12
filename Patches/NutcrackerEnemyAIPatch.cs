@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
-using UnityEngine.InputSystem;
+﻿using HarmonyLib;
 
 namespace LethalMystery.Patches
 {

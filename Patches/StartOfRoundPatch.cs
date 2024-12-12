@@ -1,8 +1,5 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.Reflection;
-using Unity.Netcode;
-using UnityEngine;
 
 
 namespace LethalMystery.Patches

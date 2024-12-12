@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using GameNetcodeStuff;
-using LethalMystery.Players;
 
 
 namespace LethalMystery.Patches
