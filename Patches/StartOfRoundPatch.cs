@@ -13,7 +13,7 @@ namespace LethalMystery.Patches
 
 
         /// <summary>
-        /// It's the same method except it gets disabled usernames on the map.
+        /// It's the same method except it disables usernames on the map.
         /// </summary>
         [HarmonyPatch(nameof(StartOfRound.SwitchMapMonitorPurpose))]
         [HarmonyPrefix]
