@@ -103,11 +103,6 @@ namespace LethalMystery.Players
             RoleType.monster
             ));
 
-            allRoles.Add(new Role(
-            "nightmare",
-            "Curse users by disrupting their vision and silencing their voice.",
-            RoleType.monster
-            ));
             
         }
 
