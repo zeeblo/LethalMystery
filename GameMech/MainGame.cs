@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using System.Reflection;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Patches;
 using LethalMystery.Players;
@@ -55,6 +56,17 @@ namespace LethalMystery.GameMech
         {
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
+        }
+
+
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
+        [HarmonyPostfix]
+        private static void SpawnHorn(StartOfRound __instance)
+        {
+            if (!Plugin.isHost) return;
+
+            MethodInfo UnlockShipObject = typeof(StartOfRound).GetMethod("UnlockShipObject", BindingFlags.NonPublic | BindingFlags.Instance);
+            UnlockShipObject.Invoke(__instance, new object[] { 18 });
         }
 
 

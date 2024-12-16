@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using System.Reflection;
-
 
 namespace LethalMystery.Patches
 {
@@ -41,14 +39,6 @@ namespace LethalMystery.Patches
         }
 
 
-
-        [HarmonyPatch(nameof(StartOfRound.Start))]
-        [HarmonyPostfix]
-        private static void SpawnHorn(StartOfRound __instance)
-        {
-            MethodInfo SpawnUnlockable = typeof(StartOfRound).GetMethod("SpawnUnlockable", BindingFlags.NonPublic | BindingFlags.Instance);
-            SpawnUnlockable.Invoke(__instance, new object[] {18});
-        }
 
 
         [HarmonyPatch(nameof(StartOfRound.SetPlanetsWeather))]
