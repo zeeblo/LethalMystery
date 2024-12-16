@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Network;
 using LethalMystery.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -53,7 +54,11 @@ namespace LethalMystery.GameMech
                 {
                     Commands.SpawnScrapFunc("ring", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);
                 }
-
+                if (Keyboard.current.digit5Key.wasPressedThisFrame)
+                {
+                    //NetHandler.instance.ReceiveByServer("hi", GameNetworkManager.Instance.localPlayerController.playerClientId);
+                    Plugin.netHandler.ReceiveByServer("hi", GameNetworkManager.Instance.localPlayerController.playerClientId);
+                }
 
             }
         }

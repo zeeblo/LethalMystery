@@ -3,17 +3,22 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using LethalMystery.GameMech;
+using LethalMystery.Network;
 using LethalMystery.Players;
+using LethalNetworkAPI;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static BepInEx.BepInDependency;
 
 
 
 namespace LethalMystery
 {
+
     [BepInPlugin(modGUID, modName, modVersion)]
+    [BepInDependency(LethalNetworkAPI.MyPluginInfo.PLUGIN_GUID, DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
     {
         private const string modGUID = "LethalMystery.zeeblo.dev";
@@ -53,10 +58,12 @@ namespace LethalMystery
         public static Sprite? KnifeIcon;
         public static Sprite? LethalMysteryLogo;
         public static Sprite? LethalMysteryBanner;
+        public static NetHandler netHandler { get; set; }
+
 
         private void Awake()
         {
-
+            netHandler = new NetHandler();
             PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
             shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself as another user");
             AllHotkeys.Add(PrefixSetting);
@@ -66,6 +73,7 @@ namespace LethalMystery
             SpriteLoader();
             Roles.AppendRoles();
             Controls.InitControls();
+
 
         }
 
@@ -157,6 +165,7 @@ namespace LethalMystery
                 new Vector2(0, 0)
             );
         }
+
 
 
     }
