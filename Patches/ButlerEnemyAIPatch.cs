@@ -7,16 +7,13 @@ namespace LethalMystery.Patches
     {
         public static bool spawnedButlerForKnife = false;
 
-        [HarmonyPatch(nameof(ButlerEnemyAI.Update))]
-        [HarmonyPrefix]
-        private static bool UpdatePatch(ButlerEnemyAI __instance)
+        [HarmonyPatch(nameof(ButlerEnemyAI.Start))]
+        [HarmonyPostfix]
+        private static void StartPatch(ButlerEnemyAI __instance)
         {
-            if (spawnedButlerForKnife == false)
-            {
-                __instance.KillEnemy();
-                spawnedButlerForKnife = true;
-            }
-            return true;
+            if (!Plugin.isHost) return;
+
+            __instance.KillEnemy();
         }
 
     }

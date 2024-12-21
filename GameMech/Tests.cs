@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using System.Reflection;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Network;
 using LethalMystery.Utils;
@@ -56,10 +57,23 @@ namespace LethalMystery.GameMech
                 }
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {
-                    //NetHandler.instance.ReceiveByServer("hi", GameNetworkManager.Instance.localPlayerController.playerClientId);
-                    Plugin.netHandler.ReceiveByServer("hi", GameNetworkManager.Instance.localPlayerController.playerClientId);
-                }
+                    /*
+                    int slot = 1;
+                    MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
+                    SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { slot, Type.Missing });
 
+                    for(int i = 0; i < slot; i++)
+                    {
+                        MethodInfo SwitchItemSlotsServerRpc = typeof(PlayerControllerB).GetMethod("SwitchItemSlotsServerRpc", BindingFlags.NonPublic | BindingFlags.Instance);
+                        SwitchItemSlotsServerRpc.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { true });
+                    }
+                    */
+
+                }
+                if (Keyboard.current.digit6Key.wasPressedThisFrame)
+                {
+
+                }
             }
         }
     }

@@ -8,16 +8,15 @@ namespace LethalMystery.Patches
     {
         public static bool spawnedNutForWeapon = false;
 
-        [HarmonyPatch(nameof(NutcrackerEnemyAI.Update))]
-        [HarmonyPrefix]
-        private static bool UpdatePatch(NutcrackerEnemyAI __instance)
+        [HarmonyPatch(nameof(NutcrackerEnemyAI.Start))]
+        [HarmonyPostfix]
+        private static void StartPatch(NutcrackerEnemyAI __instance)
         {
-            if (spawnedNutForWeapon == false)
-            {
-                __instance.KillEnemy();
-                spawnedNutForWeapon = true;
-            }
-            return true;
+            if (!Plugin.isHost) return;
+
+            __instance.KillEnemy();
+
+
         }
 
 

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using UnityEngine;
 using HarmonyLib;
 
@@ -8,6 +7,22 @@ namespace LethalMystery.Players
     [HarmonyPatch]
     internal class MoreSlots
     {
+
+
+        /*
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.SwitchToItemSlot))]
+        [HarmonyPostfix]
+        private static void SyncSlotPatch(PlayerControllerB __instance)
+        {
+            // Note: Maybe check if user is certain type as well. If they're employee then dont bother syncing.
+            if (Plugin.localPlayer == null) return;
+
+            Dictionary<ulong, bool> slotData = new Dictionary<ulong, bool>();
+            slotData.Add(__instance.playerClientId, __instance.currentlyHeldObjectServer);
+
+            Plugin.netHandler.SyncPlayerSlotsReceive(slotData, __instance.playerClientId);
+        }
+        */
 
         [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Awake))]
         [HarmonyPostfix]
@@ -40,14 +55,16 @@ namespace LethalMystery.Players
         public static void AllowMoreSlots()
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-            localPlayer.ItemSlots = new GrabbableObject[5];
+            //localPlayer.ItemSlots = new GrabbableObject[5];
+            Plugin.netHandler.SlotsReceive(5, localPlayer.playerClientId);
         }
 
 
         public static void DefaultSlots()
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-            localPlayer.ItemSlots = new GrabbableObject[4];
+            //localPlayer.ItemSlots = new GrabbableObject[4];
+            Plugin.netHandler.SlotsReceive(5, localPlayer.playerClientId);
         }
 
 

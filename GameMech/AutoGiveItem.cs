@@ -34,11 +34,15 @@ namespace LethalMystery.GameMech
                 }
                 else
                 {
+                   
                     Scene currentScene = SceneManager.GetSceneAt(0);
                     foreach (GameObject obj in currentScene.GetRootGameObjects())
                     {
-                        if (obj.name.ToLower().Contains(Roles.CurrentRole.GetItem()))
+                        //Plugin.mls.LogInfo($">>> Item: {obj.name}");
+                        GrabbableObject holdableItem = obj.GetComponent<GrabbableObject>();
+                        if (obj.name.ToLower().Contains(Roles.CurrentRole.GetItem()) && holdableItem != null && holdableItem.playerHeldBy == null)
                         {
+                            Plugin.mls.LogInfo(">>> in CheckForWeapon");
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
                             Commands.randomObject.itemProperties.weight = 1f;
@@ -61,7 +65,7 @@ namespace LethalMystery.GameMech
             Plugin.DespawnEnemies();
         }
 
-
+        
         [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject")]
         [HarmonyPrefix]
         private static bool BeginGrabObjectPatch(PlayerControllerB __instance)
@@ -140,6 +144,9 @@ namespace LethalMystery.GameMech
             }
             return true;
         }
+        
+
+
 
 
         #endregion Patches

@@ -120,7 +120,7 @@ namespace LethalMystery.GameMech
             leverScript.hasDisplayedTimeWarning = false;
         }
 
-        [HarmonyPatch(typeof(StartOfRound), "openingDoorsSequence")]
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
         [HarmonyPrefix]
         private static bool openingDoorsSequencePatch(StartOfRound __instance)
         {
@@ -175,14 +175,29 @@ namespace LethalMystery.GameMech
         /// </summary>
         private static void SwitchToNextItem(bool lastItem = false)
         {
-            MethodInfo GetFirstEmptyItemSlot = typeof(PlayerControllerB).GetMethod("FirstEmptyItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
-            int FirstEmptyItemSlot = (int)GetFirstEmptyItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, null);
-            int LastItemSlot = GameNetworkManager.Instance.localPlayerController.ItemSlots.Length - 1;
-
-            int slot = (lastItem) ? LastItemSlot : FirstEmptyItemSlot;
 
             MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo NextItemSlot = typeof(PlayerControllerB).GetMethod("NextItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo SwitchItemSlotsServerRpc = typeof(PlayerControllerB).GetMethod("SwitchItemSlotsServerRpc", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (lastItem == false)
+            {
+                
+                int GetNextItemSlot = (int)NextItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { true });
+                for (int i = 0; i < 1; i++)
+                {
+                    SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { GetNextItemSlot, Type.Missing });
+                    SwitchItemSlotsServerRpc.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { true });
+                }
+                return;
+            }
+
+            int LastItemSlot = GameNetworkManager.Instance.localPlayerController.ItemSlots.Length - 1;
+            int slot = (lastItem) ? LastItemSlot : 1;
+
             SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { slot, Type.Missing });
+
+
+
         }
 
         private static void LookAtCamera()
@@ -271,10 +286,12 @@ namespace LethalMystery.GameMech
             {
                 if (obj.name == "LM_IntroCamera")
                 {
+                    Plugin.mls.LogInfo(">>> attempt to deleted intro camera");
                     UnityEngine.Object.Destroy(obj.gameObject);
+                    Plugin.mls.LogInfo(">>> deleted intro camera");
                 }
             }
-            
+
             Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
             canv.worldCamera = GameObject.Find("UICamera").GetComponent<Camera>();
             canv.renderMode = RenderMode.ScreenSpaceCamera;
@@ -306,11 +323,14 @@ namespace LethalMystery.GameMech
 
         public static IEnumerator IntroDisplay()
         {
+            if (Roles.CurrentRole == null) yield break;
+
             ShowSphere(true);
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
-            Commands.SpawnWeapons("all");
+            //Commands.SpawnWeapons("all");
+            Plugin.netHandler.SpawnWeaponReceive(Roles.CurrentRole, Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
 
             ShowPlayers(false);
@@ -336,6 +356,7 @@ namespace LethalMystery.GameMech
             yield return new WaitForSeconds(2f);
             ShowSphere(false);
             EnableMovement(true);
+            Plugin.localPlayer.currentlyHeldObjectServer.UseItemOnClient();
             LookAtCamera();
             ShowPlayers(true);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
@@ -357,14 +378,13 @@ namespace LethalMystery.GameMech
             Plugin.inGracePeriod = true;
 
             yield return new WaitForSeconds(1f);
-            SwitchToNextItem();
+            SwitchToNextItem(lastItem: false);
 
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(true);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
-
 
         }
 

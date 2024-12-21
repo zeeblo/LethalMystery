@@ -41,6 +41,7 @@ namespace LethalMystery.GameMech
         {
             Terminal terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
             terminal.groupCredits = 9999;
+            Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
             Plugin.ResetVariables();
             Tasks.AppendScraps();

@@ -1,11 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.GameMech;
 using LethalMystery.Network;
 using LethalMystery.Players;
-using LethalNetworkAPI;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -59,6 +59,7 @@ namespace LethalMystery
         public static Sprite? LethalMysteryLogo;
         public static Sprite? LethalMysteryBanner;
         public static NetHandler netHandler { get; set; }
+        public static PlayerControllerB localPlayer;
 
 
         private void Awake()
@@ -127,6 +128,8 @@ namespace LethalMystery
 
         public static void DespawnEnemies()
         {
+            if (!isHost) return;
+
             Scene SampleScene = SceneManager.GetSceneAt(0);
             foreach (GameObject obj in SampleScene.GetRootGameObjects())
             {
