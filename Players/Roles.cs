@@ -9,8 +9,6 @@ namespace LethalMystery.Players
 
         public static List<Role> allRoles = new List<Role>();
         public static List<string> allItems = new List<string>();
-        public static string? TopText;
-        public static string? BottomText;
         public static Role? CurrentRole;
         public enum RoleType
         {
@@ -199,8 +197,6 @@ namespace LethalMystery.Players
 
         public static void ResetVariables()
         {
-            TopText = null;
-            BottomText = null;
             CurrentRole = null;
         }
 
