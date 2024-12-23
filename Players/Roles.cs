@@ -1,6 +1,6 @@
-﻿using LethalMystery.Utils;
+﻿using GameNetcodeStuff;
+using LethalMystery.Utils;
 using UnityEngine;
-
 
 namespace LethalMystery.Players
 {
@@ -17,6 +17,12 @@ namespace LethalMystery.Players
             employee,
             monster
         }
+        public enum MaskType
+        {
+            orig,
+            fear
+        }
+
 
         public class Role
         {
@@ -74,6 +80,7 @@ namespace LethalMystery.Players
         }
 
 
+
         public static void AppendRoles()
         {
             /*
@@ -103,20 +110,69 @@ namespace LethalMystery.Players
             RoleType.monster
             ));
 
-            
+
         }
 
 
 
         public static void AssignRole()
         {
-            System.Random randomNum = new System.Random();
-            int index = randomNum.Next(0, allRoles.Count());
-            Role role = allRoles[index];
+            if (!Plugin.localPlayer.IsHost) return;
 
-            TopText = role.Name;
-            BottomText = role.Desc;
-            CurrentRole = role;
+            Dictionary<ulong, string> rawAllPlayers = new Dictionary<ulong, string>();
+            List<Role> specialRoles = new List<Role>();
+            List<ulong> playerIDS = new List<ulong>();
+
+            foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (playerIDS.Contains(plr.actualClientId)) continue;
+                playerIDS.Add(plr.actualClientId);
+
+                Plugin.mls.LogInfo($">>> actualClientID: {plr.actualClientId}");
+            }
+
+            foreach (Role rl in allRoles)
+            {
+                if (rl.Type == RoleType.monster && rl.Name != "employee")
+                {
+                    specialRoles.Add(rl);
+                    Plugin.mls.LogInfo(">>> Added special role");
+                }
+            }
+
+            Plugin.mls.LogInfo($"default specialRoles count: {specialRoles.Count()}");
+            // Assign Special Roles
+            for (int i = 0; i < specialRoles.Count(); i++)
+            {
+                Plugin.mls.LogInfo($"specialRoles count: {specialRoles.Count()}");
+                System.Random randomNum = new System.Random();
+                System.Random randomPlr = new System.Random();
+                int index = randomNum.Next(0, specialRoles.Count());
+                int plrIndex = randomPlr.Next(0, playerIDS.Count());
+
+                Role role = specialRoles[index];
+                ulong plrID = playerIDS[plrIndex];
+
+                Plugin.mls.LogInfo($">>>AssignRole, plrID: {plrID} | role: {role.Name} ");
+
+                if (rawAllPlayers.ContainsKey(plrID)) continue;
+
+                rawAllPlayers.Add(plrID, role.Name);
+
+                //specialRoles.RemoveAt(index);
+                //playerIDS.RemoveAt(plrIndex);
+                //specialRoles.Remove(specialRoles[index]);
+                playerIDS.Remove(playerIDS[plrIndex]);
+            }
+
+            // Set remaining players to have the employee role
+            foreach (ulong id in playerIDS)
+            {
+                Plugin.mls.LogInfo(">>> Adding employee roles");
+                rawAllPlayers.Add(id, "employee");
+            }
+
+            Plugin.netHandler.SetallPlayerRoles(rawAllPlayers);
 
             SlotAmount();
         }

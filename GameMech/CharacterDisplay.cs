@@ -181,7 +181,7 @@ namespace LethalMystery.GameMech
             MethodInfo SwitchItemSlotsServerRpc = typeof(PlayerControllerB).GetMethod("SwitchItemSlotsServerRpc", BindingFlags.NonPublic | BindingFlags.Instance);
             if (lastItem == false)
             {
-                
+
                 int GetNextItemSlot = (int)NextItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { true });
                 for (int i = 0; i < 1; i++)
                 {
@@ -323,14 +323,16 @@ namespace LethalMystery.GameMech
 
         public static IEnumerator IntroDisplay()
         {
-            if (Roles.CurrentRole == null) yield break;
+            Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
+
+            Plugin.mls.LogInfo($">>> Role is: {Roles.CurrentRole.Name}");
 
             ShowSphere(true);
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
-            //Commands.SpawnWeapons("all");
-            Plugin.netHandler.SpawnWeaponReceive(Roles.CurrentRole, Plugin.localPlayer.playerClientId);
+
+            Plugin.netHandler.SpawnWeaponReceive(Roles.CurrentRole, Plugin.localPlayer.actualClientId);
             yield return new WaitForSeconds(1.5f);
 
             ShowPlayers(false);
@@ -365,15 +367,13 @@ namespace LethalMystery.GameMech
             ShowLights(false);
 
             DisableIntroCamera();
-            if (Roles.CurrentRole != null)
-            {
-                Roles.ShowRole(Roles.CurrentRole);
 
-                if (Roles.CurrentRole.Type == Roles.RoleType.monster)
-                {
-                    Controls.monsterControls.Enable();
-                }
+            Roles.ShowRole(Roles.CurrentRole);
+            if (Roles.CurrentRole.Type == Roles.RoleType.monster)
+            {
+                Controls.monsterControls.Enable();
             }
+
             inIntro = false;
             Plugin.inGracePeriod = true;
 

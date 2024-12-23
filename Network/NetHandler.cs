@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿
+using GameNetcodeStuff;
 using LethalMystery.Players;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -9,31 +10,61 @@ namespace LethalMystery.Network
 {
     public class NetHandler
     {
-        private LNetworkMessage<string> customServerMessage;
+        private static LNetworkVariable<Dictionary<ulong, string>> allPlayerRoles;
         private LNetworkMessage<string> spawnWeapon;
         private LNetworkMessage<int> slots;
-        private LNetworkMessage<string> tst;
+
 
         public NetHandler()
         {
             Plugin.mls.LogInfo(">>> Making network stuff");
-            customServerMessage = LNetworkMessage<string>.Connect("customServ");
+            allPlayerRoles = LNetworkVariable<Dictionary<ulong, string>>.Connect("allPlayerRoles");
+
             spawnWeapon = LNetworkMessage<string>.Connect("SpawnWeapons");
             slots = LNetworkMessage<int>.Connect("Slots");
-            tst = LNetworkMessage<string>.Connect("tst");
-
 
             slots.OnServerReceived += SlotsServer;
             slots.OnClientReceived += SlotsClients;
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
 
-            customServerMessage.OnServerReceived += GreetingsServer;
-            customServerMessage.OnClientReceived += ReceiveFromClient;
-            tst.OnServerReceived += tstServer;
 
         }
 
+        #region Variables
+
+        public void SetallPlayerRoles(Dictionary<ulong, string> roles)
+        {
+            if (allPlayerRoles == null) return;
+            allPlayerRoles.Value = roles;
+        }
+
+        public Role GetallPlayerRoles()
+        {
+            string role = "";
+            Role assignedRole = new Role("boop", "I booped your nose.", RoleType.employee); // this should never register as an actual role
+            foreach (KeyValuePair<ulong, string> plrID in allPlayerRoles.Value)
+            {
+                if (Plugin.localPlayer.actualClientId == plrID.Key)
+                {
+                    role = plrID.Value;
+                    break;
+                }
+            }
+            foreach (Role rl in Roles.allRoles)
+            {
+                if (rl.Name == role)
+                {
+                    assignedRole = rl;
+                    break;
+                }
+            }
+
+            return assignedRole;
+        }
+
+
+        #endregion Variables
 
 
 
@@ -42,15 +73,12 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsServer:");
             slots.SendClients(data);
-
         }
         public void SlotsClients(int data)
         {
-            Plugin.mls.LogInfo($"<><><> I am in the slotsClients:");
             foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
             {
-                Plugin.mls.LogInfo($">>> PlayerID: {plr.playerClientId}");
-                plr.ItemSlots = new GrabbableObject[5];
+                plr.ItemSlots = new GrabbableObject[data];
             }
         }
         public void SlotsReceive(int data, ulong id)
@@ -81,42 +109,6 @@ namespace LethalMystery.Network
 
         }
 
-
-
-        public void GreetingsServer(string data, ulong id)
-        {
-            Plugin.mls.LogInfo($"<><><> I am in the SERVER: {data}");
-            customServerMessage.SendClients(data);
-
-        }
-        public void ReceiveFromClient(string data)
-        {
-            Plugin.mls.LogInfo("<><><> every client has recieved this:");
-        }
-        public void ReceiveByServer(string data, ulong id)
-        {
-            Plugin.mls.LogInfo("<><><> I am in the CLIENT");
-            customServerMessage.SendServer("thing");
-        }
-
-
-        public void tstServer(string data, ulong id)
-        {
-            Plugin.mls.LogInfo($"<><><> I am in the tstServer:");
-            foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
-            {
-                Plugin.mls.LogInfo($">>> PlayerID: {plr.playerClientId}");
-            }
-        }
-        public void tstClients(string data)
-        {
-
-        }
-        public void tstReceive(string data, ulong id)
-        {
-            Plugin.mls.LogInfo($"<><><> I am in the tstReceive:");
-            tst.SendServer(data);
-        }
 
     }
 }

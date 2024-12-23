@@ -1,8 +1,4 @@
-﻿using System.Reflection;
-using GameNetcodeStuff;
-using HarmonyLib;
-using LethalMystery.Network;
-using LethalMystery.Utils;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,23 +53,9 @@ namespace LethalMystery.GameMech
                 }
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {
-                    /*
-                    int slot = 1;
-                    MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
-                    SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { slot, Type.Missing });
-
-                    for(int i = 0; i < slot; i++)
-                    {
-                        MethodInfo SwitchItemSlotsServerRpc = typeof(PlayerControllerB).GetMethod("SwitchItemSlotsServerRpc", BindingFlags.NonPublic | BindingFlags.Instance);
-                        SwitchItemSlotsServerRpc.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { true });
-                    }
-                    */
-
+                    Plugin.mls.LogInfo($">>> Role is: {Plugin.netHandler.GetallPlayerRoles()}");
                 }
-                if (Keyboard.current.digit6Key.wasPressedThisFrame)
-                {
 
-                }
             }
         }
     }
