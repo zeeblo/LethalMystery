@@ -17,12 +17,6 @@ namespace LethalMystery.Players
             employee,
             monster
         }
-        public enum MaskType
-        {
-            orig,
-            fear
-        }
-
 
         public class Role
         {
@@ -83,14 +77,14 @@ namespace LethalMystery.Players
 
         public static void AppendRoles()
         {
-            /*
+            
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
             RoleType.employee)
             );
-            
 
+            /*
             allRoles.Add(new Role(
             "sheriff",
             "Kill the monster(s). Guessing wrong will get you killed.",
@@ -121,6 +115,7 @@ namespace LethalMystery.Players
 
             Dictionary<ulong, string> rawAllPlayers = new Dictionary<ulong, string>();
             List<Role> specialRoles = new List<Role>();
+            List<Role> takenRoles = new List<Role>();
             List<ulong> playerIDS = new List<ulong>();
 
             foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
@@ -128,7 +123,6 @@ namespace LethalMystery.Players
                 if (playerIDS.Contains(plr.actualClientId)) continue;
                 playerIDS.Add(plr.actualClientId);
 
-                Plugin.mls.LogInfo($">>> actualClientID: {plr.actualClientId}");
             }
 
             foreach (Role rl in allRoles)
@@ -136,15 +130,13 @@ namespace LethalMystery.Players
                 if (rl.Type == RoleType.monster && rl.Name != "employee")
                 {
                     specialRoles.Add(rl);
-                    Plugin.mls.LogInfo(">>> Added special role");
                 }
             }
 
-            Plugin.mls.LogInfo($"default specialRoles count: {specialRoles.Count()}");
             // Assign Special Roles
-            for (int i = 0; i < specialRoles.Count(); i++)
+            int specialRoleAmt = specialRoles.Count();
+            for (int i = 0; i < specialRoleAmt ; i++)
             {
-                Plugin.mls.LogInfo($"specialRoles count: {specialRoles.Count()}");
                 System.Random randomNum = new System.Random();
                 System.Random randomPlr = new System.Random();
                 int index = randomNum.Next(0, specialRoles.Count());
@@ -153,15 +145,10 @@ namespace LethalMystery.Players
                 Role role = specialRoles[index];
                 ulong plrID = playerIDS[plrIndex];
 
-                Plugin.mls.LogInfo($">>>AssignRole, plrID: {plrID} | role: {role.Name} ");
-
                 if (rawAllPlayers.ContainsKey(plrID)) continue;
-
                 rawAllPlayers.Add(plrID, role.Name);
 
-                //specialRoles.RemoveAt(index);
-                //playerIDS.RemoveAt(plrIndex);
-                //specialRoles.Remove(specialRoles[index]);
+                specialRoles.Remove(specialRoles[index]);
                 playerIDS.Remove(playerIDS[plrIndex]);
             }
 

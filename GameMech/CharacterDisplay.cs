@@ -286,9 +286,7 @@ namespace LethalMystery.GameMech
             {
                 if (obj.name == "LM_IntroCamera")
                 {
-                    Plugin.mls.LogInfo(">>> attempt to deleted intro camera");
                     UnityEngine.Object.Destroy(obj.gameObject);
-                    Plugin.mls.LogInfo(">>> deleted intro camera");
                 }
             }
 
@@ -358,7 +356,6 @@ namespace LethalMystery.GameMech
             yield return new WaitForSeconds(2f);
             ShowSphere(false);
             EnableMovement(true);
-            Plugin.localPlayer.currentlyHeldObjectServer.UseItemOnClient();
             LookAtCamera();
             ShowPlayers(true);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);

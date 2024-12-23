@@ -42,7 +42,7 @@ namespace LethalMystery.Network
         public Role GetallPlayerRoles()
         {
             string role = "";
-            Role assignedRole = new Role("boop", "I booped your nose.", RoleType.employee); // this should never register as an actual role
+            Role assignedRole = new Role("boop", "I booped your nose.", RoleType.employee); // placeholder, should never register as an actual role.
             foreach (KeyValuePair<ulong, string> plrID in allPlayerRoles.Value)
             {
                 if (Plugin.localPlayer.actualClientId == plrID.Key)
