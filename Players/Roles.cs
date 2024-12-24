@@ -148,8 +148,8 @@ namespace LethalMystery.Players
                 if (rawAllPlayers.ContainsKey(plrID)) continue;
                 rawAllPlayers.Add(plrID, role.Name);
 
-                specialRoles.Remove(specialRoles[index]);
-                playerIDS.Remove(playerIDS[plrIndex]);
+                specialRoles.RemoveAt(index);
+                playerIDS.RemoveAt(plrIndex);
             }
 
             // Set remaining players to have the employee role
