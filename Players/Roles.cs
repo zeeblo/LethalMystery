@@ -135,6 +135,8 @@ namespace LethalMystery.Players
             int specialRoleAmt = specialRoles.Count();
             for (int i = 0; i < specialRoleAmt ; i++)
             {
+                if (playerIDS.Count == 0) break;
+
                 System.Random randomNum = new System.Random();
                 System.Random randomPlr = new System.Random();
                 int index = randomNum.Next(0, specialRoles.Count());
