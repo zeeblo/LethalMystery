@@ -53,7 +53,7 @@ namespace LethalMystery.GameMech
                 }
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {
-                    Plugin.mls.LogInfo($">>> Role is: {Plugin.netHandler.GetallPlayerRoles()}");
+                    Plugin.mls.LogInfo($">>> Role is: {Plugin.netHandler.GetallPlayerRoles().Name}");
                 }
 
             }

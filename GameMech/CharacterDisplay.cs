@@ -323,8 +323,7 @@ namespace LethalMystery.GameMech
         {
             Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
 
-            Plugin.mls.LogInfo($">>> Role is: {Roles.CurrentRole.Name}");
-
+            MoreSlots.SlotAmountForServer();
             ShowSphere(true);
             EnableMovement(false);
             LookAtCamera();

@@ -51,6 +51,7 @@ namespace LethalMystery
         public static bool inGracePeriod = false;
         public static float defaultGracePeriodCountdown = 80f;
         public static float currentGracePeriodCountdown = defaultGracePeriodCountdown;
+        public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
 
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;

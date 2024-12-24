@@ -159,24 +159,6 @@ namespace LethalMystery.Players
 
             Plugin.netHandler.SetallPlayerRoles(rawAllPlayers);
 
-            SlotAmount();
-        }
-
-
-        private static void SlotAmount()
-        {
-            if (CurrentRole?.Name == "sheriff")
-            {
-                MoreSlots.AllowMoreSlots();
-            }
-            else if (CurrentRole?.Type == RoleType.monster)
-            {
-                MoreSlots.AllowMoreSlots();
-            }
-            else
-            {
-                MoreSlots.DefaultSlots();
-            }
         }
 
 

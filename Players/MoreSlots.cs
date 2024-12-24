@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using UnityEngine;
 using HarmonyLib;
+using static LethalMystery.Players.Roles;
 
 namespace LethalMystery.Players
 {
@@ -39,20 +40,25 @@ namespace LethalMystery.Players
         }
         
 
-        public static void AllowMoreSlots()
-        {
-            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-            Plugin.netHandler.SlotsReceive(5, localPlayer.playerClientId);
-        }
-
-
         public static void DefaultSlots()
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-            Plugin.netHandler.SlotsReceive(4, localPlayer.playerClientId);
+            localPlayer.ItemSlots = new GrabbableObject[4];
         }
 
 
+
+        public static void SlotAmountForServer()
+        {
+            Dictionary<ulong, int> slotAmt = new Dictionary<ulong, int>();
+            
+            if (CurrentRole?.Name == "sheriff" || CurrentRole?.Type == RoleType.monster)
+            {
+                slotAmt.Add(Plugin.localPlayer.actualClientId, 5);
+                Plugin.netHandler.SlotsReceive(slotAmt, Plugin.localPlayer.actualClientId);
+            }
+
+        }
 
     }
 }
