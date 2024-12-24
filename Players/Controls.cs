@@ -1,4 +1,4 @@
-﻿using LethalMystery.GameMech;
+﻿using LethalMystery.MainGame;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;

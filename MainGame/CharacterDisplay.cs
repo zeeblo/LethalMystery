@@ -6,7 +6,7 @@ using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
     [HarmonyPatch]
     public class CharacterDisplay

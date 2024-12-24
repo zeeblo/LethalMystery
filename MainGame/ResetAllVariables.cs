@@ -4,7 +4,7 @@ using LethalMystery.Players;
 using LethalMystery.Utils;
 
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
 
     [HarmonyPatch]

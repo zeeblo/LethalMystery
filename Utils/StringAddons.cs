@@ -1,4 +1,4 @@
-﻿using LethalMystery.GameMech;
+﻿using LethalMystery.MainGame;
 
 
 namespace LethalMystery.Utils

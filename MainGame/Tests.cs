@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
 
     internal class Tests

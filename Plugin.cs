@@ -3,7 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalMystery.GameMech;
+using LethalMystery.MainGame;
 using LethalMystery.Network;
 using LethalMystery.Players;
 using System.Reflection;

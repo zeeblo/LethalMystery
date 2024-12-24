@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using LethalMystery.Patches;
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
 
     [HarmonyPatch]

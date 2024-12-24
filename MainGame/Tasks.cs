@@ -3,7 +3,7 @@ using HarmonyLib;
 using LethalMystery.Utils;
 using UnityEngine;
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
 
     [HarmonyPatch]

@@ -6,10 +6,10 @@ using LethalMystery.Players;
 using UnityEngine;
 
 
-namespace LethalMystery.GameMech
+namespace LethalMystery.MainGame
 {
     [HarmonyPatch]
-    internal class MainGame
+    internal class Start
     {
 
 
@@ -37,7 +37,7 @@ namespace LethalMystery.GameMech
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
         [HarmonyPostfix]
-        private static void Start()
+        private static void Begin()
         {
             Terminal terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
             terminal.groupCredits = 9999;
