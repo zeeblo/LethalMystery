@@ -261,18 +261,7 @@ namespace LethalMystery.MainGame
 
             if (StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value) <= 0)
             {
-                /*
-                __instance.PlayDoorAnimation(closed: false);
-                __instance.SetDoorButtonsEnabled(true);
-                __instance.doorPower = 0;
-                __instance.overheated = true;
-                __instance.triggerScript.interactable = true;
-                */
-
-                //Plugin.RemoveEnvironment(false);
                 Plugin.MeetingDefaults();
-                
-
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }

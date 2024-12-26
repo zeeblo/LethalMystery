@@ -34,33 +34,5 @@ namespace LethalMystery.Utils
             }
         }
 
-
-
-        /*
-        public static GameObject GetHangarShipInstance()
-        {
-            Scene SampleScene = SceneManager.GetSceneAt(0);
-            GameObject gameobj = GameObject.Find("");
-            List<GameObject> allObjs = new List<GameObject>();
-            foreach (GameObject obj in SampleScene.GetRootGameObjects())
-            {
-                if (obj.name.ToLower() == "environment")
-                {
-                    allObjs = GetAllChildren(obj);
-                    break;
-                }
-            }
-
-            foreach (GameObject envChild in allObjs)
-            {
-                if (envChild.name.ToLower() == "hangarship")
-                {
-                    gameobj = envChild;
-                    break;
-                }
-            }
-            return gameobj;
-        }
-        */
     }
 }
