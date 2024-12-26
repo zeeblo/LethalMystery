@@ -20,22 +20,11 @@ namespace LethalMystery.MainGame
             RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
+            Plugin.netHandler.RemoveCustomNetEvents();
 
             Plugin.mls.LogInfo(">>> Reset vars from: EndOfGameClientRpcPatch ");
         }
 
-
-        [HarmonyPatch(typeof(PlayerControllerB), "OnEnable")]
-        [HarmonyPostfix]
-        private static void OnEnablePatch()
-        {
-            if (StartOfRound.Instance.inShipPhase)
-            {
-                Controls.monsterControls.Disable();
-                Plugin.ResetVariables();
-                Plugin.mls.LogInfo(">>> Reset vars from: OnEnablePatch ");
-            }
-        }
 
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         [HarmonyPostfix]
@@ -44,7 +33,9 @@ namespace LethalMystery.MainGame
             Controls.monsterControls.Disable();
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
+            Plugin.netHandler.RemoveCustomNetEvents();
             Plugin.mls.LogInfo(">>> Reset vars from: DisconnectPatch ");
         }
+
     }
 }

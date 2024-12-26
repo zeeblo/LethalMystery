@@ -182,6 +182,10 @@ namespace LethalMystery.Players
         public static void ResetVariables()
         {
             CurrentRole = null;
+            if (Plugin.isHost)
+            {
+                Plugin.netHandler.SetallPlayerRoles(new Dictionary<ulong, string>());
+            }
         }
 
     }

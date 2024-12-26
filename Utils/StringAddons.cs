@@ -192,5 +192,35 @@ namespace LethalMystery.Utils
 
             return false;
         }
+
+
+        public static bool ConvertToBool(string input)
+        {
+            if (string.IsNullOrEmpty(input) || input == "false")
+            {
+                return false;
+            }
+
+            if (input.ToLower() == "true")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static int ConvertToInt(string input)
+        {
+            Int32.TryParse(input, out int result);
+            return result;
+        }
+
+        public static float ConvertToFloat(string input)
+        {
+            float.TryParse(input, out float result);
+            return result;
+        }
     }
 }

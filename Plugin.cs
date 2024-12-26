@@ -6,6 +6,7 @@ using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Network;
 using LethalMystery.Players;
+using LethalNetworkAPI;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -36,22 +37,28 @@ namespace LethalMystery
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
-        
-        internal static bool usingTerminal = false;
+
         internal static bool isHost;
+        public static GameObject shipInstance;
 
 
-        public static bool inMeeting = false;
+        //public static bool inMeeting = false;
         public static float defaultMeetingCountdown = 20f;
-        public static float currentMeetingCountdown = defaultMeetingCountdown;
+        //public static float currentMeetingCountdown = defaultMeetingCountdown;
         public static float defaultMeetingCooldown = 10f;
-        public static float MeetingCooldown = defaultMeetingCooldown;
+        //public static float MeetingCooldown = defaultMeetingCooldown;
         public static int defaultMeetingNum = 1;
         public static int MeetingNum = defaultMeetingNum;
-        public static bool inGracePeriod = false;
+        //public static bool inGracePeriod = false;
         public static float defaultGracePeriodCountdown = 80f;
-        public static float currentGracePeriodCountdown = defaultGracePeriodCountdown;
+        //public static float currentGracePeriodCountdown = defaultGracePeriodCountdown;
         public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
+
+        public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
+        public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
+        public static LNetworkVariable<string> currentGracePeriodCountdown = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
+        public static LNetworkVariable<string> currentMeetingCountdown = LNetworkVariable<string>.Connect("currentMeetingCountdown");
+        public static LNetworkVariable<string> MeetingCooldown = LNetworkVariable<string>.Connect("MeetingCooldown");
 
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;
@@ -61,6 +68,7 @@ namespace LethalMystery
         public static Sprite? LethalMysteryBanner;
         public static NetHandler netHandler { get; set; }
         public static PlayerControllerB localPlayer;
+
 
 
         private void Awake()
@@ -93,8 +101,8 @@ namespace LethalMystery
             {
                 HUDManager.Instance.loadingText.enabled = false;
             }
-            currentGracePeriodCountdown = defaultGracePeriodCountdown;
-            MeetingDefaults();
+
+            MeetingDefaults(); //called in Start.cs instead
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();
@@ -103,11 +111,15 @@ namespace LethalMystery
 
         public static void MeetingDefaults()
         {
-            inMeeting = false;
-            //RemoveEnvironment(false);
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
-            currentMeetingCountdown = defaultMeetingCountdown;
-            MeetingCooldown = defaultMeetingCooldown;
+            if (!isHost) return;
+            Plugin.mls.LogInfo(">>> b4inMeetingVal:");
+            
+            Plugin.currentGracePeriodCountdown.Value = $"{Plugin.defaultGracePeriodCountdown}";
+            inMeeting.Value = "false";
+            Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
+            currentMeetingCountdown.Value = $"{defaultMeetingCountdown}";
+            MeetingCooldown.Value = $"{defaultMeetingCooldown}";
         }
 
 
@@ -129,7 +141,7 @@ namespace LethalMystery
 
         public static void DespawnEnemies()
         {
-            if (!isHost) return;
+            if (!Plugin.isHost) return;
 
             Scene SampleScene = SceneManager.GetSceneAt(0);
             foreach (GameObject obj in SampleScene.GetRootGameObjects())
@@ -169,8 +181,6 @@ namespace LethalMystery
                 new Vector2(0, 0)
             );
         }
-
-
 
     }
 }

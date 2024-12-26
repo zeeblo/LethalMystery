@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LethalMystery.Utils
 {
@@ -10,7 +11,7 @@ namespace LethalMystery.Utils
         /// </summary>
         public static List<GameObject> GetAllChildren(GameObject parent)
         {
-            List <GameObject> children = new List<GameObject>();
+            List<GameObject> children = new List<GameObject>();
             foreach (Transform child in parent.transform)
             {
                 children.Add(child.gameObject);
@@ -32,5 +33,34 @@ namespace LethalMystery.Utils
 
             }
         }
+
+
+
+        /*
+        public static GameObject GetHangarShipInstance()
+        {
+            Scene SampleScene = SceneManager.GetSceneAt(0);
+            GameObject gameobj = GameObject.Find("");
+            List<GameObject> allObjs = new List<GameObject>();
+            foreach (GameObject obj in SampleScene.GetRootGameObjects())
+            {
+                if (obj.name.ToLower() == "environment")
+                {
+                    allObjs = GetAllChildren(obj);
+                    break;
+                }
+            }
+
+            foreach (GameObject envChild in allObjs)
+            {
+                if (envChild.name.ToLower() == "hangarship")
+                {
+                    gameobj = envChild;
+                    break;
+                }
+            }
+            return gameobj;
+        }
+        */
     }
 }

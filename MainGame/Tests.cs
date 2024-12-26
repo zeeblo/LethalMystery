@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalNetworkAPI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -54,6 +55,13 @@ namespace LethalMystery.MainGame
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {
                     Plugin.mls.LogInfo($">>> Role is: {Plugin.netHandler.GetallPlayerRoles().Name}");
+
+                    Plugin.mls.LogInfo($">>> InMetting Value: {Plugin.inMeeting.Value}");
+                    Plugin.mls.LogInfo($">>> inGracePeriod Value: {Plugin.inGracePeriod.Value}");
+                    Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Plugin.currentGracePeriodCountdown.Value}");
+                    Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Plugin.currentMeetingCountdown.Value}");
+                    Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Plugin.MeetingCooldown.Value}");
+                    
                 }
 
             }

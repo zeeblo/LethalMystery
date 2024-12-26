@@ -371,10 +371,16 @@ namespace LethalMystery.MainGame
             }
 
             inIntro = false;
-            Plugin.inGracePeriod = true;
 
-            yield return new WaitForSeconds(1f);
+            if(Plugin.isHost)
+            {
+                Plugin.inGracePeriod.Value = "true";
+            }
+
+
             SwitchToNextItem(lastItem: false);
+            yield return new WaitForSeconds(1f);
+            
 
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(true);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);
@@ -393,8 +399,11 @@ namespace LethalMystery.MainGame
             ShowPlayers(true);
             EnvironmentLight(true);
             DisableIntroCamera();
-            Plugin.inGracePeriod = false;
             DisableMainCamera(false);
+            if (Plugin.isHost)
+            {
+                Plugin.inGracePeriod.Value = "false";
+            }
 
         }
 

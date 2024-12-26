@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalMystery.Patches;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace LethalMystery.MainGame
@@ -33,7 +34,12 @@ namespace LethalMystery.MainGame
             */
         }
 
-
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
+        [HarmonyPrefix]
+        private static void SubscribeToHandler()
+        {
+            Plugin.netHandler.AddCustomNetEvents();
+        }
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
         [HarmonyPostfix]
@@ -75,7 +81,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool GracePeriod()
         {
-            if (Plugin.inGracePeriod)
+            if (StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
             {
                 return false;
             }
@@ -86,26 +92,35 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void GracePeriodTime()
         {
-            if (Plugin.inGracePeriod)
+            if (StartOfRound.Instance.inShipPhase) return;
+
+            if (StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
             {
                 // Countdown from the set grace period time
-                if (Plugin.currentGracePeriodCountdown >= 0)
+                if (StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value) >= 0 && Plugin.isHost)
                 {
-                    Plugin.currentGracePeriodCountdown -= Time.deltaTime;
+                    float countdown = StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value);
+                    countdown -= Time.deltaTime;
+                    Plugin.currentGracePeriodCountdown.Value = $"{countdown}";
                 }
                 else
                 {
-                    HUDManager.Instance.loadingText.enabled = false;
-                    Plugin.inGracePeriod = false;
+                    
+                    if (Plugin.isHost)
+                    {
+                        Plugin.inGracePeriod.Value = "false";
+                    }
+
                 }
 
                 // Show GUI that displays the grace period time
-                if (Plugin.inMeeting == false && Plugin.inGracePeriod)
+                if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false && StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
                 {
                     HUDManager.Instance.loadingText.enabled = true;
-                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)Plugin.currentGracePeriodCountdown}";
+                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value)}";
                 }
             }
+
         }
 
 
@@ -195,46 +210,48 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void CallAMeeting()
         {
-            if (StartOfRound.Instance.shipHasLanded == false || Plugin.inMeeting == true || Plugin.MeetingNum <= 0)
+            if (StartOfRound.Instance.shipHasLanded == false || StringAddons.ConvertToBool(Plugin.inMeeting.Value) == true || Plugin.MeetingNum <= 0)
                 return;
-            if (!(Plugin.MeetingCooldown <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
+            if (!(StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value) <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
                 return;
 
-            Plugin.inMeeting = true;
             Plugin.MeetingNum -= 1;
-            Plugin.inGracePeriod = true;
-            Plugin.currentGracePeriodCountdown = Plugin.defaultMeetingCountdown + 140f;
-            HUDManagerPatch.DisplayDaysEdit("meeting");
-
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            Plugin.RemoveEnvironment();
+            Plugin.netHandler.MeetingReceive("meeting", Plugin.localPlayer.actualClientId);
         }
 
 
         [HarmonyPatch(typeof(ShipAlarmCord), nameof(ShipAlarmCord.Update))]
         [HarmonyPostfix]
-        private static void Countdown()
+        private static void Cooldown()
         {
-            if (StartOfRound.Instance.shipHasLanded == false)
+            if (StartOfRound.Instance.shipHasLanded == false || Plugin.isHost == false)
                 return;
 
-            if (Plugin.MeetingCooldown >= 0)
+            if (StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value) >= 0)
             {
-                Plugin.MeetingCooldown -= Time.deltaTime;
+                float countdown = StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value);
+                countdown -= Time.deltaTime;
+                Plugin.MeetingCooldown.Value = $"{countdown}";
             }
         }
 
 
 
 
-        [HarmonyPatch(typeof(HangarShipDoor), "Update")]
+        [HarmonyPatch(typeof(HangarShipDoor), nameof(HangarShipDoor.Update))]
         [HarmonyPostfix]
         private static void DoorsPatch(HangarShipDoor __instance)
         {
+            if (StartOfRound.Instance.inShipPhase || !StartOfRound.Instance.shipHasLanded) return;
 
-            if (Plugin.inMeeting)
+            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value))
             {
-                Plugin.currentMeetingCountdown -= Time.deltaTime;
+                if (Plugin.isHost)
+                {
+                    float countdown = StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value);
+                    countdown -= Time.deltaTime;
+                    Plugin.currentMeetingCountdown.Value = $"{countdown}";
+                }
                 __instance.PlayDoorAnimation(closed: true);
                 __instance.SetDoorButtonsEnabled(false);
                 __instance.doorPower = 1;
@@ -242,20 +259,32 @@ namespace LethalMystery.MainGame
                 __instance.triggerScript.interactable = false;
             }
 
-            if (Plugin.currentMeetingCountdown <= 0)
+            if (StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value) <= 0)
             {
+                /*
                 __instance.PlayDoorAnimation(closed: false);
                 __instance.SetDoorButtonsEnabled(true);
                 __instance.doorPower = 0;
                 __instance.overheated = true;
                 __instance.triggerScript.interactable = true;
+                */
 
-                Plugin.RemoveEnvironment(false);
+                //Plugin.RemoveEnvironment(false);
                 Plugin.MeetingDefaults();
+                
 
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }
+
+
+        [HarmonyPatch(typeof(HangarShipDoor), nameof(HangarShipDoor.Start))]
+        [HarmonyPostfix]
+        private static void SampleSceneObjects()
+        {
+            Plugin.shipInstance = GameObject.Find("Environment/HangarShip/AnimatedShipDoor");
+        }
+
 
 
     }

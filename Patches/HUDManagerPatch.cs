@@ -48,11 +48,11 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(HUDManager __instance)
         {
             
-            if (Plugin.inMeeting)
+            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value))
             {
                 __instance.Clock.targetAlpha = 1.0f;
                 __instance.Clock.canvasGroup.alpha = 1.0f;
-                __instance.clockNumber.text = $"{(int)Plugin.currentMeetingCountdown}";
+                __instance.clockNumber.text = $"{(int)StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value)}";
             }
 
         }
