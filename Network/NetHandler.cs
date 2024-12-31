@@ -37,14 +37,12 @@ namespace LethalMystery.Network
 
         public void AddCustomNetEvents()
         {
-            Plugin.mls.LogInfo("<<< Added atInMeeting");
             Plugin.inMeeting.OnValueChanged += InMeeting_Event;
             Plugin.inGracePeriod.OnValueChanged += InGracePeriod_Event;
         }
 
         public void RemoveCustomNetEvents()
         {
-            Plugin.mls.LogInfo("<<< Removing atInMeeting");
             Plugin.inMeeting.OnValueChanged -= InMeeting_Event;
             Plugin.inGracePeriod.OnValueChanged -= InGracePeriod_Event;
         }
@@ -52,12 +50,8 @@ namespace LethalMystery.Network
 
         private static void InMeeting_Event(string idk, string data)
         {
-            Plugin.mls.LogInfo("<><> In atInMeeting");
-            Plugin.mls.LogInfo($"<><> data: {data}");
-
             if (StringAddons.ConvertToBool(data) == false)
             {
-                Plugin.mls.LogInfo(">>> Attempting to stop MEEEEETING");
                 HangarShipDoor ship = Plugin.shipInstance.GetComponent<HangarShipDoor>();
                 ship.PlayDoorAnimation(closed: false);
                 ship.SetDoorButtonsEnabled(true);

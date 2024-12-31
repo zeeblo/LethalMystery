@@ -102,7 +102,7 @@ namespace LethalMystery
                 HUDManager.Instance.loadingText.enabled = false;
             }
 
-            MeetingDefaults(); //called in Start.cs instead
+            MeetingDefaults();
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();

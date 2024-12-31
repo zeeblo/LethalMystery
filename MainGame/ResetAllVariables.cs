@@ -17,7 +17,10 @@ namespace LethalMystery.MainGame
         {
             Controls.monsterControls.Disable();
             //GOTools.ClearInventory();
-            RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
+            if (Plugin.isHost)
+            {
+                RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
+            }
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
             Plugin.netHandler.RemoveCustomNetEvents();
