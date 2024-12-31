@@ -21,6 +21,8 @@ namespace LethalMystery.MainGame
             {
                 RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
             }
+            GOTools.CleanSlot();
+
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
             Plugin.netHandler.RemoveCustomNetEvents();
