@@ -156,8 +156,6 @@ namespace LethalMystery.MainGame
 
         public static void ResetVariables()
         {
-            ButlerEnemyAIPatch.spawnedButlerForKnife = false;
-            NutcrackerEnemyAIPatch.spawnedNutForWeapon = false;
             checkedForWeapon = false;
             doneSpawningWeapons = false;
         }

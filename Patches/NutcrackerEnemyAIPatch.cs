@@ -6,7 +6,6 @@ namespace LethalMystery.Patches
     [HarmonyPatch(typeof(NutcrackerEnemyAI))]
     internal class NutcrackerEnemyAIPatch
     {
-        public static bool spawnedNutForWeapon = false;
 
         [HarmonyPatch(nameof(NutcrackerEnemyAI.Start))]
         [HarmonyPostfix]
