@@ -47,5 +47,17 @@ namespace LethalMystery.Utils
             }
         }
 
+
+        public static void RemoveItem(int slot)
+        {
+            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
+            GrabbableObject grabbableObject = localPlayer.ItemSlots[slot];
+            localPlayer.currentlyHeldObjectServer.DiscardItemOnClient();
+            localPlayer.currentlyHeldObjectServer = null;
+            localPlayer.ItemSlots[slot] = null;
+
+            //Plugin.netHandler.destroyScrapReceive(grabbableObject, Plugin.localPlayer.actualClientId);
+        }
+
     }
 }

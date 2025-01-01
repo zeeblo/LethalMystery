@@ -61,7 +61,10 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Plugin.currentGracePeriodCountdown.Value}");
                     Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Plugin.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Plugin.MeetingCooldown.Value}");
-                    
+                }
+                if (Keyboard.current.digit6Key.wasPressedThisFrame)
+                {
+                    Plugin.mls.LogInfo($">>> {Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].playerHeldBy.actualClientId}");
                 }
 
             }

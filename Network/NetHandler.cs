@@ -1,7 +1,9 @@
-﻿using LethalMystery.Patches;
+﻿using LethalMystery.MainGame;
+using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using UnityEngine;
 using static LethalMystery.Players.Roles;
 
 
@@ -13,6 +15,8 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> spawnWeapon;
         private LNetworkMessage<Dictionary<ulong, int>> slots;
         private LNetworkMessage<string> meeting;
+        private LNetworkMessage<List<Item>> addScrapsToList;
+        private LNetworkMessage<string> destroyScrap;
 
 
         public NetHandler()
@@ -23,6 +27,8 @@ namespace LethalMystery.Network
             spawnWeapon = LNetworkMessage<string>.Connect("SpawnWeapons");
             slots = LNetworkMessage<Dictionary<ulong, int>>.Connect("Slots");
             meeting = LNetworkMessage<string>.Connect("CallAMeeting");
+            addScrapsToList = LNetworkMessage<List<Item>>.Connect("addScrapsToList");
+            destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
 
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
@@ -30,6 +36,10 @@ namespace LethalMystery.Network
             slots.OnClientReceived += SlotsClients;
             meeting.OnServerReceived += MeetingServer;
             meeting.OnClientReceived += MeetingClients;
+            addScrapsToList.OnServerReceived += addScrapsToListServer;
+            addScrapsToList.OnClientReceived += addScrapsToListClients;
+            destroyScrap.OnServerReceived += destroyScrapServer;
+            destroyScrap.OnClientReceived += destroyScrapClients;
 
         }
 
@@ -180,6 +190,56 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingReceive:");
             meeting.SendServer(data);
+        }
+
+
+
+        public void addScrapsToListServer(List<Item> data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListServer:");
+
+            addScrapsToList.SendClients(data);
+        }
+        public void addScrapsToListClients(List<Item> data)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListClients:");
+            Tasks.allScraps = data;
+
+        }
+        public void addScrapsToListReceive(List<Item> data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListReceive:");
+            addScrapsToList.SendServer(data);
+        }
+
+
+        public void destroyScrapServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the destroyScrapServer:");
+            Plugin.mls.LogInfo($">>> data in svr: {data}");
+
+            destroyScrap.SendClients(data);
+            //StartOfRound.Instance.allPlayerScripts[1].DestroyItemInSlot(0);
+            // data.NetworkObject.Despawn();
+
+
+        }
+        public void destroyScrapClients(string data)
+        {
+            Plugin.mls.LogInfo($"disabling: {data}");
+            string[] splitData = data.Split('/');
+            ulong.TryParse(splitData[0], out ulong playerID);
+            Int32.TryParse(splitData[1], out int slot);
+
+            if (StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer != null)
+            Plugin.Destroy(StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject);
+
+        }
+        public void destroyScrapReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the destroyScrapReceive:");
+            Plugin.mls.LogInfo($">>> data: {data}");
+            destroyScrap.SendServer(data);
         }
 
     }
