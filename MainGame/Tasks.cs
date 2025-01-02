@@ -51,6 +51,7 @@ namespace LethalMystery.MainGame
                 {
                     Plugin.mls.LogInfo(">>> In TaskUpdate()");
                     
+
                     if (Plugin.isHost)
                     {
                         Plugin.localPlayer.DestroyItemInSlotAndSync(Plugin.localPlayer.currentItemSlot);
@@ -64,7 +65,6 @@ namespace LethalMystery.MainGame
 
                     HUDManager.Instance.itemSlotIcons[Plugin.localPlayer.currentItemSlot].enabled = false;
                     
-
                     __instance.carryWeight = 1f;
                     checkingForItems = false;
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
@@ -89,6 +89,9 @@ namespace LethalMystery.MainGame
             if ((__instance.isInHangarShipRoom && StartOfRound.Instance.shipHasLanded && __instance.ItemSlots[__instance.currentItemSlot] != null)
                 && StringAddons.ContainsWhitelistedItem(itmName))
             {
+                string currentItem = $"{Plugin.localPlayer.actualClientId}/{Plugin.localPlayer.currentItemSlot}/CollectItem";
+                Plugin.netHandler.showScrapReceive(currentItem, Plugin.localPlayer.actualClientId);
+
                 HUDManager.Instance.AddNewScrapFoundToDisplay(__instance.ItemSlots[__instance.currentItemSlot]);
                 droppedItem = true; // Activates CheckCollectItem()
                 return false;
@@ -125,6 +128,7 @@ namespace LethalMystery.MainGame
                 {
                     //HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
                     //HUDManager.Instance.DisplayNewScrapFound();
+                    
                     Plugin.netHandler.showScrapReceive($"{Plugin.localPlayer.actualClientId}", Plugin.localPlayer.actualClientId);
                     checkingForItems = false; // Prevent TaskUpdate() from activating
 
@@ -138,8 +142,8 @@ namespace LethalMystery.MainGame
                         Plugin.netHandler.destroyScrapReceive(currentItem, Plugin.localPlayer.actualClientId);
                     }
 
-                    
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
+
                     return false;
                 }
 
