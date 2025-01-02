@@ -123,10 +123,22 @@ namespace LethalMystery.MainGame
 
                 if (StringAddons.ContainsWhitelistedItem(itmName))
                 {
-                    HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
-                    HUDManager.Instance.DisplayNewScrapFound();
+                    //HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
+                    //HUDManager.Instance.DisplayNewScrapFound();
+                    Plugin.netHandler.showScrapReceive($"{Plugin.localPlayer.actualClientId}", Plugin.localPlayer.actualClientId);
                     checkingForItems = false; // Prevent TaskUpdate() from activating
-                    UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
+
+                    if (Plugin.isHost)
+                    {
+                        UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
+                    }
+                    else
+                    {
+                        string currentItem = $"{Plugin.localPlayer.actualClientId}/destroy";
+                        Plugin.netHandler.destroyScrapReceive(currentItem, Plugin.localPlayer.actualClientId);
+                    }
+
+                    
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
                     return false;
                 }

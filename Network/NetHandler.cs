@@ -1,8 +1,10 @@
-﻿using LethalMystery.MainGame;
+﻿using HarmonyLib;
+using LethalMystery.MainGame;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using Unity.Services.Authentication.Internal;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
 
@@ -17,6 +19,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> meeting;
         private LNetworkMessage<List<Item>> addScrapsToList;
         private LNetworkMessage<string> destroyScrap;
+        private LNetworkMessage<string> showScrap;
 
 
         public NetHandler()
@@ -29,6 +32,7 @@ namespace LethalMystery.Network
             meeting = LNetworkMessage<string>.Connect("CallAMeeting");
             addScrapsToList = LNetworkMessage<List<Item>>.Connect("addScrapsToList");
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
+            showScrap = LNetworkMessage<string>.Connect("showScrap");
 
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
@@ -40,6 +44,8 @@ namespace LethalMystery.Network
             addScrapsToList.OnClientReceived += addScrapsToListClients;
             destroyScrap.OnServerReceived += destroyScrapServer;
             destroyScrap.OnClientReceived += destroyScrapClients;
+            showScrap.OnServerReceived += showScrapServer;
+            showScrap.OnClientReceived += showScrapClients;
 
         }
 
@@ -213,26 +219,85 @@ namespace LethalMystery.Network
         }
 
 
+
         public void destroyScrapServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the destroyScrapServer:");
             Plugin.mls.LogInfo($">>> data in svr: {data}");
+            string[] splitData = data.Split('/');
+            ulong.TryParse(splitData[0], out ulong playerID);
+            string input = splitData[1];
 
-            destroyScrap.SendClients(data);
-            //StartOfRound.Instance.allPlayerScripts[1].DestroyItemInSlot(0);
-            // data.NetworkObject.Despawn();
+            if (input == "destroy")
+            {
+                
+                Camera gameplayCamera = StartOfRound.Instance.allPlayerScripts[playerID].gameplayCamera;
+                float grabDistance = StartOfRound.Instance.allPlayerScripts[playerID].grabDistance;
+                bool twoHanded = StartOfRound.Instance.allPlayerScripts[playerID].twoHanded;
+                float sinkingValue = StartOfRound.Instance.allPlayerScripts[playerID].sinkingValue;
+                Transform transform = StartOfRound.Instance.allPlayerScripts[playerID].transform;
 
+                Ray interactRay = new Ray(gameplayCamera.transform.position, gameplayCamera.transform.forward);
+                RaycastHit hit;
+                int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
+
+                if (!Physics.Raycast(interactRay, out hit, grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || twoHanded || sinkingValue > 0.73f || Physics.Linecast(gameplayCamera.transform.position, hit.collider.transform.position + transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
+                {
+                    return;
+                }
+                GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
+                string itmName = currentlyGrabbingObject.itemProperties.itemName.ToLower().Replace("(clone)", "");
+                
+
+                //destroyScrap.SendClients(input);
+                UnityEngine.Object.Destroy(currentlyGrabbingObject.gameObject);
+
+            }
+            else
+            {
+                destroyScrap.SendClients(data);
+            }
 
         }
         public void destroyScrapClients(string data)
         {
-            Plugin.mls.LogInfo($"disabling: {data}");
-            string[] splitData = data.Split('/');
-            ulong.TryParse(splitData[0], out ulong playerID);
-            Int32.TryParse(splitData[1], out int slot);
+            if (data == "destroy")
+            {
+                string[] splitData = data.Split('/');
+                ulong.TryParse(splitData[0], out ulong playerID);
 
-            if (StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer != null)
-            Plugin.Destroy(StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject);
+                Camera gameplayCamera = StartOfRound.Instance.allPlayerScripts[playerID].gameplayCamera;
+                float grabDistance = StartOfRound.Instance.allPlayerScripts[playerID].grabDistance;
+                bool twoHanded = StartOfRound.Instance.allPlayerScripts[playerID].twoHanded;
+                float sinkingValue = StartOfRound.Instance.allPlayerScripts[playerID].sinkingValue;
+                Transform transform = StartOfRound.Instance.allPlayerScripts[playerID].transform;
+
+                Ray interactRay = new Ray(gameplayCamera.transform.position, gameplayCamera.transform.forward);
+                RaycastHit hit;
+                int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
+
+                if (!Physics.Raycast(interactRay, out hit, grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || twoHanded || sinkingValue > 0.73f || Physics.Linecast(gameplayCamera.transform.position, hit.collider.transform.position + transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
+                {
+                    return;
+                }
+                GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
+                string itmName = currentlyGrabbingObject.itemProperties.itemName.ToLower().Replace("(clone)", "");
+
+                HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
+                HUDManager.Instance.DisplayNewScrapFound();
+                Tasks.checkingForItems = false; // Prevent TaskUpdate() from activating
+            }
+            else
+            {
+                // Activated by TaskUpdate()
+                // Destroys gameObject specific user is holding on all clients when they enter the ship
+                string[] splitData = data.Split('/');
+                ulong.TryParse(splitData[0], out ulong playerID);
+                Int32.TryParse(splitData[1], out int slot);
+
+                if (StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer != null)
+                    Plugin.Destroy(StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject);
+            }
 
         }
         public void destroyScrapReceive(string data, ulong id)
@@ -240,6 +305,53 @@ namespace LethalMystery.Network
             Plugin.mls.LogInfo($"<><><> I am in the destroyScrapReceive:");
             Plugin.mls.LogInfo($">>> data: {data}");
             destroyScrap.SendServer(data);
+        }
+
+
+
+
+        public void showScrapServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the showScrapServer:");
+
+            showScrap.SendClients(data);
+        }
+        public void showScrapClients(string data)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the showScrapClients:");
+
+            string[] splitData = data.Split('/');
+            ulong.TryParse(splitData[0], out ulong playerID);
+
+            Camera gameplayCamera = StartOfRound.Instance.allPlayerScripts[playerID].gameplayCamera;
+            float grabDistance = StartOfRound.Instance.allPlayerScripts[playerID].grabDistance;
+            bool twoHanded = StartOfRound.Instance.allPlayerScripts[playerID].twoHanded;
+            float sinkingValue = StartOfRound.Instance.allPlayerScripts[playerID].sinkingValue;
+            Transform transform = StartOfRound.Instance.allPlayerScripts[playerID].transform;
+
+            Ray interactRay = new Ray(gameplayCamera.transform.position, gameplayCamera.transform.forward);
+            RaycastHit hit;
+            int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
+
+            if (!Physics.Raycast(interactRay, out hit, grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || twoHanded || sinkingValue > 0.73f || Physics.Linecast(gameplayCamera.transform.position, hit.collider.transform.position + transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
+            {
+                return;
+            }
+            GrabbableObject currentlyGrabbingObject = hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
+            if (currentlyGrabbingObject != null)
+            {
+                string itmName = currentlyGrabbingObject.itemProperties.itemName.ToLower().Replace("(clone)", "");
+
+                HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
+                HUDManager.Instance.DisplayNewScrapFound();
+
+            }
+
+        }
+        public void showScrapReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the showScrapReceive:");
+            showScrap.SendServer(data);
         }
 
     }
