@@ -4,8 +4,6 @@ using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 
 namespace LethalMystery.MainGame
 {

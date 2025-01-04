@@ -16,8 +16,6 @@ namespace LethalMystery.Utils
             AllHotkeys.Add(PrefixSetting);
             AllHotkeys.Add(shapeshiftBind);
 
-            //cfg.Save();
-            //cfg.SaveOnConfigSet = true;
         }
 
     }
