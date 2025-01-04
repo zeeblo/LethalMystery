@@ -71,10 +71,6 @@ namespace LethalMystery
         private void Awake()
         {
             netHandler = new NetHandler();
-            //PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "Prefix for chat commands");
-            //shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself");
-            //AllHotkeys.Add(PrefixSetting);
-            //AllHotkeys.Add(shapeshiftBind);
 
             LMConfig.AllConfigs(Config);
             PatchAllStuff();
