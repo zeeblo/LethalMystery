@@ -40,9 +40,9 @@ namespace LethalMystery.MainGame
 
         #endregion patches
 
-        private static void ShowGUI(bool value)
+        private static void HideGUI(bool value)
         {
-            int opacity = (value) ? 1 : 0;
+            int opacity = (!value) ? 1 : 0;
             HUDManager.Instance.Chat.targetAlpha = opacity;
             HUDManager.Instance.PlayerInfo.targetAlpha = opacity;
             HUDManager.Instance.Tooltips.targetAlpha = opacity;
@@ -241,7 +241,7 @@ namespace LethalMystery.MainGame
             Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
 
             MoreSlots.SlotAmountForServer();
-            ShowGUI(false);
+            HideGUI(true);
             ShowSphere(true);
             EnableMovement(false);
             LookAtCamera();
@@ -305,7 +305,7 @@ namespace LethalMystery.MainGame
             yield return new WaitForSeconds(0.5f);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
-            ShowGUI(true);
+            HideGUI(false);
 
         }
 
