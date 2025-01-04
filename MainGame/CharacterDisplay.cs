@@ -6,6 +6,7 @@ using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
 
+
 namespace LethalMystery.MainGame
 {
     [HarmonyPatch]
@@ -20,13 +21,14 @@ namespace LethalMystery.MainGame
         //private static Camera? introCamera;
         private static GameObject? sphere;
         public static bool inIntro = false;
+        private static GameObject otherUsersItem;
 
 
 
 
         #region patches
 
-        [HarmonyPatch(typeof(PlayerControllerB), "PlayerLookInput")]
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.PlayerLookInput))]
         [HarmonyPrefix]
         private static bool PlayerLookPatch()
         {
@@ -236,6 +238,9 @@ namespace LethalMystery.MainGame
         }
 
 
+        
+
+
         public static IEnumerator IntroDisplay()
         {
             Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
@@ -290,7 +295,7 @@ namespace LethalMystery.MainGame
 
             inIntro = false;
 
-            if(Plugin.isHost)
+            if (Plugin.isHost)
             {
                 Plugin.inGracePeriod.Value = "true";
             }
@@ -298,7 +303,7 @@ namespace LethalMystery.MainGame
 
             SwitchToNextItem(lastItem: false);
             yield return new WaitForSeconds(1f);
-            
+
 
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(true);
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(false);

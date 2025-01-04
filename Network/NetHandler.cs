@@ -1,10 +1,10 @@
-﻿using HarmonyLib;
+﻿using System.Collections;
+using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
-using Unity.Services.Authentication.Internal;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
 
@@ -20,6 +20,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<List<Item>> addScrapsToList;
         private LNetworkMessage<string> destroyScrap;
         private LNetworkMessage<string> showScrap;
+        private LNetworkMessage<string> hideWeapon;
 
 
         public NetHandler()
@@ -33,6 +34,7 @@ namespace LethalMystery.Network
             addScrapsToList = LNetworkMessage<List<Item>>.Connect("addScrapsToList");
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
             showScrap = LNetworkMessage<string>.Connect("showScrap");
+            hideWeapon = LNetworkMessage<string>.Connect("hideWeapon");
 
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
@@ -46,6 +48,8 @@ namespace LethalMystery.Network
             destroyScrap.OnClientReceived += destroyScrapClients;
             showScrap.OnServerReceived += showScrapServer;
             showScrap.OnClientReceived += showScrapClients;
+            hideWeapon.OnServerReceived += hideWeaponServer;
+            hideWeapon.OnClientReceived += hideWeaponClients;
 
         }
 
@@ -344,5 +348,42 @@ namespace LethalMystery.Network
             showScrap.SendServer(data);
         }
 
+
+
+
+
+        public void hideWeaponServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the hideWeaponServer:");
+
+            hideWeapon.SendClients(data);
+        }
+        public void hideWeaponClients(string data)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the hideWeaponClients:");
+            string[] splitData = data.Split('/');
+            ulong.TryParse(splitData[0], out ulong playerID);
+            bool.TryParse(splitData[1], out bool dataBool);
+
+            if (Plugin.localPlayer.actualClientId == playerID) return;
+
+            Plugin.mls.LogInfo(">>> setting thing to invis");
+            GameObject userItem = StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject;
+            userItem.SetActive(dataBool);
+            StartOfRound.Instance.StartCoroutine(ShowWeaponTimer(userItem));
+        }
+        public void hideWeaponReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the hideWeaponReceive:");
+            hideWeapon.SendServer(data);
+        }
+
+
+        private static IEnumerator ShowWeaponTimer(GameObject itm)
+        {
+            yield return new WaitForSeconds(8);
+            itm.SetActive(true);
+            Plugin.mls.LogInfo("<<< Successfully made item visible");
+        }
     }
 }

@@ -137,7 +137,10 @@ namespace LethalMystery.MainGame
                             .Field("grabObjectCoroutine")
                             .SetValue(__instance.StartCoroutine(GrabObject));
 
-
+                    if (CharacterDisplay.inIntro)
+                    {
+                        Plugin.netHandler.hideWeaponReceive($"{Plugin.localPlayer.actualClientId}/false", Plugin.localPlayer.actualClientId);
+                    }
                     Commands.randomObject = null;
                 }
                 return false;
