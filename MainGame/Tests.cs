@@ -1,8 +1,15 @@
 ﻿using HarmonyLib;
+using LethalMystery.Utils;
 using LethalNetworkAPI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.UIElements;
+using BepInEx;
+using BepInEx.Logging;
+using System;
+using System.Collections.Generic;
+using BepInEx.Bootstrap;
 
 
 namespace LethalMystery.MainGame
@@ -62,9 +69,39 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Plugin.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Plugin.MeetingCooldown.Value}");
                 }
-                if (Keyboard.current.digit6Key.wasPressedThisFrame)
+                if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
-                    Plugin.mls.LogInfo($">>> {Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].playerHeldBy.actualClientId}");
+
+
+                    /*
+                    GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
+                    GameObject PlayerList = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
+                    GameObject VotingMenu = new GameObject("VotingMenu");
+                    GameObject plist = Plugin.Instantiate(PlayerList);
+
+                    VotingMenu.layer = 5;
+                    VotingMenu.transform.SetParent(canvas.transform, false);
+                    VotingMenu.transform.SetSiblingIndex(13);
+
+
+                    plist.transform.SetParent(VotingMenu.transform, false);
+
+                    foreach (GameObject obj in GOTools.GetAllChildren(plist))
+                    {
+                        if (obj.gameObject.name.ToLower() == "image")
+                        {
+                            foreach (GameObject value in GOTools.GetAllChildren(obj))
+                            {
+                                if (value.gameObject.name.ToLower() == "header")
+                                {
+                                    value.GetComponent<TextMeshProUGUI>().text = "VOTE:";
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    */
                 }
 
             }
