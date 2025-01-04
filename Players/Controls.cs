@@ -1,4 +1,5 @@
 ﻿using LethalMystery.MainGame;
+using LethalMystery.Utils;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,12 +15,12 @@ namespace LethalMystery.Players
 
         public static void InitControls()
         {
-            if (Plugin.shapeshiftBind == null)
+            if (LMConfig.shapeshiftBind == null)
             {
                 return;
             }
 
-            InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + Plugin.shapeshiftBind.Value);
+            InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
             shapeshift.performed += Shapeshift_performed;
 
             shapeshiftRef = InputActionReference.Create(shapeshift);

@@ -61,7 +61,6 @@ namespace LethalMystery.UI
             // Note: Optimize / Make readable later
 
             List<GameObject> parentOBJ = GOTools.GetAllChildren(parent);
-            string votes = "Votes: ";
             bool moreCompany = false;
             foreach (var plugin in Chainloader.PluginInfos)
             {
@@ -87,23 +86,18 @@ namespace LethalMystery.UI
                             {
                                 foreach (GameObject playerListSlot in GOTools.GetAllChildren(img))
                                 {
-                                    if (playerListSlot.gameObject.name.ToLower() == "voicevolumeslider")
+                                    if (playerListSlot.gameObject.name.ToLower() == "kickbutton")
                                     {
                                         playerListSlot.SetActive(true);
-                                        foreach (GameObject voiceSlider in GOTools.GetAllChildren(playerListSlot))
-                                        {
-                                            if (voiceSlider.gameObject.name.ToLower() == "image" || voiceSlider.gameObject.name.ToLower() == "slider")
-                                            {
-                                                voiceSlider.SetActive(false);
-                                            }
-                                            if (voiceSlider.gameObject.name.ToLower() == "text (1)")
-                                            {
-                                                voiceSlider.SetActive(true);
-                                                voiceSlider.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
-                                            }
-                                        }
+
+                                        UnityEngine.UI.Button button = playerListSlot.GetComponent<UnityEngine.UI.Button>();
+
+                                        Plugin.mls.LogInfo(">>> added button event");
+                                        int index = 0; // use player id
+                                        button.onClick.AddListener(() => VoteButtonClick(index));
                                     }
                                 }
+
                             }
                         }
                     }
@@ -132,7 +126,7 @@ namespace LethalMystery.UI
                                                     if (obj.gameObject.name.ToLower() == "kickbutton")
                                                     {
                                                         obj.SetActive(true);
-                                                        
+
                                                         UnityEngine.UI.Button button = obj.GetComponent<UnityEngine.UI.Button>();
 
                                                         int index = 0; // use player id

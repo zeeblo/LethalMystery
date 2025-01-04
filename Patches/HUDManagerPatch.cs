@@ -25,7 +25,7 @@ namespace LethalMystery.Patches
             
             Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
 
-            if (Plugin.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
+            if (LMConfig.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
             {
                 string cleanedPrefix = StringAddons.CleanPrefix(prefix);
                 string[] temp = chatMessage.Split(cleanedPrefix);

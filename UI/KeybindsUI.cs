@@ -49,18 +49,18 @@ namespace LethalMystery.UI
 
             sectionOffset += 1;
             // Add buttons for "Lethal Mystery" section
-            for (int i = 0; i < Plugin.AllHotkeys.Count; i++)
+            for (int i = 0; i < LMConfig.AllHotkeys.Count; i++)
             {
                 GameObject LMysteryButtons = UnityEngine.Object.Instantiate(__instance.keyRemapSlotPrefab, __instance.keyRemapContainer);
                 __instance.keySlots.Add(LMysteryButtons);
 
                 // Show name of keybind and set position
-                LMysteryButtons.GetComponentInChildren<TextMeshProUGUI>().text = Plugin.AllHotkeys[i].Definition.Key;
+                LMysteryButtons.GetComponentInChildren<TextMeshProUGUI>().text = LMConfig.AllHotkeys[i].Definition.Key;
                 LMysteryButtons.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, LMysteryYOffset);
 
                 // Show name of the actual button box
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
-                componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(Plugin.AllHotkeys[i].Value);
+                componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(LMConfig.AllHotkeys[i].Value);
 
                 /* placeholder variable to prevent the default PushToTalk from being changed as well.
                  * Setting this to null will throw an error, so im setting it to an arbitrary
@@ -168,21 +168,21 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void CompleteRebindPatch(SettingsOption optionUI)
         {
-            for (int i = 0; i < Plugin.AllHotkeys.Count; i++)
+            for (int i = 0; i < LMConfig.AllHotkeys.Count; i++)
             {
-                if (Plugin.AllHotkeys[i].Definition.Key.ToLower() == optionUI.textElement.text.ToLower())
+                if (LMConfig.AllHotkeys[i].Definition.Key.ToLower() == optionUI.textElement.text.ToLower())
                 {
                     if (StringAddons.InConvertableChars(prefix: optionUI.currentlyUsedKeyText.text))
                     {
-                        Plugin.AllHotkeys[i].Value = StringAddons.ConvertToSymbols(optionUI.currentlyUsedKeyText.text);
-                        Plugin.AllHotkeys[i].ConfigFile.Save();
+                        LMConfig.AllHotkeys[i].Value = StringAddons.ConvertToSymbols(optionUI.currentlyUsedKeyText.text);
+                        LMConfig.AllHotkeys[i].ConfigFile.Save();
                         break;
                     }
                     else
                     {
-                        Plugin.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
-                        Plugin.AllHotkeys[i].ConfigFile.Save();
-                        Controls.monsterControls.FindAction(Plugin.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                        LMConfig.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
+                        LMConfig.AllHotkeys[i].ConfigFile.Save();
+                        Controls.monsterControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
                         break;
                     }
 

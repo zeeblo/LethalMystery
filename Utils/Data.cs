@@ -20,7 +20,7 @@ namespace LethalMystery.Utils
             var data = JsonConvert.DeserializeObject<CMDInfo>(info);
 
             string value = "";
-            string prefix = Plugin.PrefixSetting != null ? Plugin.PrefixSetting.Value : "/";
+            string prefix = LMConfig.PrefixSetting != null ? LMConfig.PrefixSetting.Value : "/";
 
             if (data == null)
             {

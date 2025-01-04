@@ -6,6 +6,7 @@ using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Network;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 using LethalNetworkAPI;
 using System.Reflection;
 using TMPro;
@@ -30,9 +31,9 @@ namespace LethalMystery
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
-        public static ConfigEntry<string>? PrefixSetting;
-        public static ConfigEntry<string>? shapeshiftBind;
-        public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
+        //public static ConfigEntry<string>? PrefixSetting;
+        //public static ConfigEntry<string>? shapeshiftBind;
+        //public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
 
 
         internal static SelectableLevel? currentLevel;
@@ -43,16 +44,11 @@ namespace LethalMystery
         public static GameObject shipInstance;
 
 
-        //public static bool inMeeting = false;
         public static float defaultMeetingCountdown = 20f;
-        //public static float currentMeetingCountdown = defaultMeetingCountdown;
         public static float defaultMeetingCooldown = 10f;
-        //public static float MeetingCooldown = defaultMeetingCooldown;
         public static int defaultMeetingNum = 1;
         public static int MeetingNum = defaultMeetingNum;
-        //public static bool inGracePeriod = false;
         public static float defaultGracePeriodCountdown = 80f;
-        //public static float currentGracePeriodCountdown = defaultGracePeriodCountdown;
         public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
 
         public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
@@ -75,11 +71,12 @@ namespace LethalMystery
         private void Awake()
         {
             netHandler = new NetHandler();
-            PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "An optional prefix for chat commands");
-            shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself as another user");
-            AllHotkeys.Add(PrefixSetting);
-            AllHotkeys.Add(shapeshiftBind);
+            //PrefixSetting = Config.Bind("Command Settings", "Command Prefix", "/", "Prefix for chat commands");
+            //shapeshiftBind = Config.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself");
+            //AllHotkeys.Add(PrefixSetting);
+            //AllHotkeys.Add(shapeshiftBind);
 
+            LMConfig.AllConfigs(Config);
             PatchAllStuff();
             SpriteLoader();
             Roles.AppendRoles();
@@ -103,25 +100,14 @@ namespace LethalMystery
                 HUDManager.Instance.loadingText.enabled = false;
             }
 
-            MeetingDefaults();
+            Meeting.MeetingDefaults();
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();
             AutoGiveItem.ResetVariables();
         }
 
-        public static void MeetingDefaults()
-        {
-            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
-            if (!isHost) return;
-            Plugin.mls.LogInfo(">>> b4inMeetingVal:");
-            
-            Plugin.currentGracePeriodCountdown.Value = $"{Plugin.defaultGracePeriodCountdown}";
-            inMeeting.Value = "false";
-            Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
-            currentMeetingCountdown.Value = $"{defaultMeetingCountdown}";
-            MeetingCooldown.Value = $"{defaultMeetingCooldown}";
-        }
+
 
 
         public static void RemoveEnvironment(bool value = true)

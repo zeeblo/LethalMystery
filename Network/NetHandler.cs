@@ -77,7 +77,7 @@ namespace LethalMystery.Network
                 ship.triggerScript.interactable = true;
 
                 Plugin.RemoveEnvironment(false);
-                Plugin.MeetingDefaults();
+                Meeting.MeetingDefaults();
             }
         }
 

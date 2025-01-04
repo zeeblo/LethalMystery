@@ -31,10 +31,10 @@ namespace LethalMystery.Utils
         public static string UseDefaultPrefix()
         {
             string defaultPrefix = "/";
-            if (Plugin.PrefixSetting != null)
+            if (LMConfig.PrefixSetting != null)
             {
-                Plugin.PrefixSetting.Value = defaultPrefix;
-                Plugin.PrefixSetting.ConfigFile.Save();
+                LMConfig.PrefixSetting.Value = defaultPrefix;
+                LMConfig.PrefixSetting.ConfigFile.Save();
             }
             
             Plugin.mls.LogInfo("setting prefix back to /");
@@ -136,12 +136,12 @@ namespace LethalMystery.Utils
         /// </summary>
         public static bool CheckPrefix(string prefix)
         {
-            if (Plugin.PrefixSetting != null && !string.IsNullOrEmpty(prefix.Trim()) )
+            if (LMConfig.PrefixSetting != null && !string.IsNullOrEmpty(prefix.Trim()) )
             {
-                if ( (prefix == Plugin.PrefixSetting.Value) || (StringAddons.InConvertableChars(prefix: prefix)))
+                if ( (prefix == LMConfig.PrefixSetting.Value) || (StringAddons.InConvertableChars(prefix: prefix)))
                 {
                     prefix = CleanPrefix(prefix);
-                    return ConvertToSymbols(prefix) == Plugin.PrefixSetting.Value;
+                    return ConvertToSymbols(prefix) == LMConfig.PrefixSetting.Value;
                 }
             }
 

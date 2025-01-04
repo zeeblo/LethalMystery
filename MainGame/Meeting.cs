@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using LethalMystery.Utils;
 using UnityEngine;
 
@@ -10,6 +7,20 @@ namespace LethalMystery.MainGame
     [HarmonyPatch]
     internal class Meeting
     {
+
+        public static void MeetingDefaults()
+        {
+            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
+            if (!Plugin.isHost) return;
+            Plugin.mls.LogInfo(">>> b4inMeetingVal:");
+
+            Plugin.currentGracePeriodCountdown.Value = $"{Plugin.defaultGracePeriodCountdown}";
+            Plugin.inMeeting.Value = "false";
+            Plugin.mls.LogInfo($">>> inMeetingVal: {Plugin.inMeeting.Value}");
+            Plugin.currentMeetingCountdown.Value = $"{Plugin.defaultMeetingCountdown}";
+            Plugin.MeetingCooldown.Value = $"{Plugin.defaultMeetingCooldown}";
+        }
+
 
 
         [HarmonyPatch(typeof(ShipAlarmCord), nameof(ShipAlarmCord.StopHorn))]
@@ -65,7 +76,7 @@ namespace LethalMystery.MainGame
 
             if (StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value) <= 0)
             {
-                Plugin.MeetingDefaults();
+                MeetingDefaults();
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }
