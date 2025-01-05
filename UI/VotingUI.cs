@@ -1,10 +1,8 @@
-﻿using BepInEx.Bootstrap;
-using HarmonyLib;
+﻿using HarmonyLib;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.ProBuilder.Shapes;
 
 
 namespace LethalMystery.UI
@@ -64,18 +62,7 @@ namespace LethalMystery.UI
             // Note: Optimize / Make readable later
 
             List<GameObject> parentOBJ = GOTools.GetAllChildren(parent);
-            bool moreCompany = false;
-            foreach (var plugin in Chainloader.PluginInfos)
-            {
-                var metadata = plugin.Value.Metadata;
-                string modGuid = "me.swipez.melonloader.morecompany";
-                if (metadata.GUID.Equals(modGuid))
-                {
-                    Plugin.mls.LogInfo($"Found {modGuid}");
-                    moreCompany = true;
-                    break;
-                }
-            }
+            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
 
             if (moreCompany == false)
             {
@@ -150,16 +137,35 @@ namespace LethalMystery.UI
                                                 {
                                                     if (obj.gameObject.name.ToLower() == "kickbutton")
                                                     {
-                                                        UnityEngine.UI.Image checkSprite = obj.GetComponent<UnityEngine.UI.Image>();
-                                                        checkSprite.sprite = Plugin.CheckboxEmptyIcon;
-                                                        obj.SetActive(true);
+                                                        GameObject playerVoteBtn = obj;
+                                                        playerVoteBtn.SetActive(true);
 
-                                                        obj.SetActive(true);
+                                                        GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
+                                                        RectTransform skipButtonRect = skipButton.GetComponent<RectTransform>();
+                                                        skipButton.transform.SetParent(plistClone.transform, false);
+                                                        skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
 
-                                                        UnityEngine.UI.Button button = obj.GetComponent<UnityEngine.UI.Button>();
+
+                                                        GameObject skipText = Plugin.Instantiate(GetImageHeader(parent));
+                                                        RectTransform skipTextRect = skipText.GetComponent<RectTransform>();
+                                                        TextMeshProUGUI skipTextTXT = skipText.GetComponent<TextMeshProUGUI>();
+                                                        skipTextTXT.fontSize = 17;
+                                                        skipTextTXT.text = "SKIP";
+                                                        skipText.transform.SetParent(plistClone.transform, false);
+                                                        skipTextRect.anchoredPosition = new Vector2(45f, -318f);
+
+
+                                                        UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
+                                                        UnityEngine.UI.Image skipCheckSprite = skipButton.GetComponent<UnityEngine.UI.Image>();
+                                                        plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+                                                        skipCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+
+                                                        UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
+                                                        UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
 
                                                         int index = 0; // use player id
-                                                        button.onClick.AddListener(() => VoteButtonClick(index, checkSprite));
+                                                        plrbutton.onClick.AddListener(() => VoteButtonClick(index, plrCheckSprite));
+                                                        skipBtn.onClick.AddListener(() => SkipButtonClick(index, skipCheckSprite));
                                                     }
                                                 }
                                             }
@@ -195,18 +201,7 @@ namespace LethalMystery.UI
 
             List<GameObject> parentOBJ = GOTools.GetAllChildren(parent);
             string votes = "Votes: ";
-            bool moreCompany = false;
-            foreach (var plugin in Chainloader.PluginInfos)
-            {
-                var metadata = plugin.Value.Metadata;
-                string modGuid = "me.swipez.melonloader.morecompany";
-                if (metadata.GUID.Equals(modGuid))
-                {
-                    Plugin.mls.LogInfo($"Found {modGuid}");
-                    moreCompany = true;
-                    break;
-                }
-            }
+            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
 
             if (moreCompany == false)
             {

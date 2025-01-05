@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
@@ -179,5 +180,19 @@ namespace LethalMystery
             );
         }
 
+
+        public static bool FoundThisMod(string modID)
+        {
+            foreach (var plugin in Chainloader.PluginInfos)
+            {
+                var metadata = plugin.Value.Metadata;
+                if (metadata.GUID.Equals(modID))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
