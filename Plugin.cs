@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -32,9 +31,6 @@ namespace LethalMystery
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
-        //public static ConfigEntry<string>? PrefixSetting;
-        //public static ConfigEntry<string>? shapeshiftBind;
-        //public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
 
 
         internal static SelectableLevel? currentLevel;
