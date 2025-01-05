@@ -4,6 +4,7 @@ using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.Shapes;
 
 
 namespace LethalMystery.UI
@@ -11,7 +12,6 @@ namespace LethalMystery.UI
     [HarmonyPatch]
     internal class VotingUI
     {
-        private static GameObject playerListPanel;
 
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
         [HarmonyPostfix]
@@ -28,24 +28,9 @@ namespace LethalMystery.UI
                 VotingMenu.transform.SetSiblingIndex(13);
 
                 plist.transform.SetParent(VotingMenu.transform, false);
-                playerListPanel = plist;
 
-                foreach (GameObject obj in GOTools.GetAllChildren(plist))
-                {
-                    if (obj.gameObject.name.ToLower() == "image")
-                    {
-                        foreach (GameObject value in GOTools.GetAllChildren(obj))
-                        {
-                            if (value.gameObject.name.ToLower() == "header")
-                            {
-                                value.GetComponent<TextMeshProUGUI>().text = "VOTE:";
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
 
+                GetImageHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
                 ShowVotesForPlayers(plist);
                 VoteButton(plist);
 
@@ -54,6 +39,24 @@ namespace LethalMystery.UI
         }
 
 
+        private static GameObject GetImageHeader(GameObject plist)
+        {
+            foreach (GameObject obj in GOTools.GetAllChildren(plist))
+            {
+                if (obj.gameObject.name.ToLower() == "image")
+                {
+                    foreach (GameObject value in GOTools.GetAllChildren(obj))
+                    {
+                        if (value.gameObject.name.ToLower() == "header")
+                        {
+                            return value;
+                        }
+                    }
+                    break;
+                }
+            }
+            return plist;
+        }
 
 
         public static void VoteButton(GameObject parent)
@@ -88,13 +91,35 @@ namespace LethalMystery.UI
                                 {
                                     if (playerListSlot.gameObject.name.ToLower() == "kickbutton")
                                     {
-                                        playerListSlot.SetActive(true);
+                                        GameObject playerVoteBtn = playerListSlot;
+                                        playerVoteBtn.SetActive(true);
 
-                                        UnityEngine.UI.Button button = playerListSlot.GetComponent<UnityEngine.UI.Button>();
+                                        GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
+                                        RectTransform skipButtonRect = skipButton.GetComponent<RectTransform>();
+                                        skipButton.transform.SetParent(plistClone.transform, false);
+                                        skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
 
-                                        Plugin.mls.LogInfo(">>> added button event");
+        
+                                        GameObject skipText = Plugin.Instantiate(GetImageHeader(parent));
+                                        RectTransform skipTextRect = skipText.GetComponent<RectTransform>();
+                                        TextMeshProUGUI skipTextTXT = skipText.GetComponent<TextMeshProUGUI>();
+                                        skipTextTXT.fontSize = 17;
+                                        skipTextTXT.text = "SKIP";
+                                        skipText.transform.SetParent(plistClone.transform, false);
+                                        skipTextRect.anchoredPosition = new Vector2(45f, -318f);
+
+
+                                        UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
+                                        UnityEngine.UI.Image skipCheckSprite = skipButton.GetComponent<UnityEngine.UI.Image>();
+                                        plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+                                        skipCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+
+                                        UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
+                                        UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
+
                                         int index = 0; // use player id
-                                        button.onClick.AddListener(() => VoteButtonClick(index));
+                                        plrbutton.onClick.AddListener(() => VoteButtonClick(index, plrCheckSprite));
+                                        skipBtn.onClick.AddListener(() => SkipButtonClick(index, skipCheckSprite));
                                     }
                                 }
 
@@ -125,12 +150,16 @@ namespace LethalMystery.UI
                                                 {
                                                     if (obj.gameObject.name.ToLower() == "kickbutton")
                                                     {
+                                                        UnityEngine.UI.Image checkSprite = obj.GetComponent<UnityEngine.UI.Image>();
+                                                        checkSprite.sprite = Plugin.CheckboxEmptyIcon;
+                                                        obj.SetActive(true);
+
                                                         obj.SetActive(true);
 
                                                         UnityEngine.UI.Button button = obj.GetComponent<UnityEngine.UI.Button>();
 
                                                         int index = 0; // use player id
-                                                        button.onClick.AddListener(() => VoteButtonClick(index));
+                                                        button.onClick.AddListener(() => VoteButtonClick(index, checkSprite));
                                                     }
                                                 }
                                             }
@@ -147,9 +176,16 @@ namespace LethalMystery.UI
         }
 
 
-        private static void VoteButtonClick(int index)
+        private static void SkipButtonClick(int index, UnityEngine.UI.Image check)
         {
-            Plugin.mls.LogInfo($"blah blah {index} clicked.");
+            Plugin.mls.LogInfo($"Skip Button {index} clicked.");
+            check.sprite = Plugin.CheckboxEnabledIcon;
+        }
+
+        private static void VoteButtonClick(int index, UnityEngine.UI.Image check)
+        {
+            Plugin.mls.LogInfo($"Vote Button {index} clicked.");
+            check.sprite = Plugin.CheckboxEnabledIcon;
         }
 
 
