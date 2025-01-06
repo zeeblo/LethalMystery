@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -50,20 +51,23 @@ namespace LethalMystery.UI
 
             GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
             GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
+            playerVoteBtn.gameObject.name = "VoteButton";
             playerVoteBtn.SetActive(true);
 
             GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
             RectTransform skipButtonRect = skipButton.GetComponent<RectTransform>();
+            skipButton.gameObject.name = "SkipButton";
             skipButton.transform.SetParent(plistClone.transform, false);
             skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
 
 
-            GameObject skipText = Plugin.Instantiate(GetImageHeader(playerListSlot));
-            RectTransform skipTextRect = skipText.GetComponent<RectTransform>();
-            TextMeshProUGUI skipTextTXT = skipText.GetComponent<TextMeshProUGUI>();
-            skipTextTXT.fontSize = 17;
-            skipTextTXT.text = "SKIP";
-            skipText.transform.SetParent(plistClone.transform, false);
+            GameObject skipObj = Plugin.Instantiate(GetImageHeader(playerListSlot));
+            RectTransform skipTextRect = skipObj.GetComponent<RectTransform>();
+            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
+            skipObj.gameObject.name = "SkipText";
+            skipText.fontSize = 17;
+            skipText.text = "SKIP: " + Voting.skipVotes.Value;
+            skipObj.transform.SetParent(plistClone.transform, false);
             skipTextRect.anchoredPosition = new Vector2(45f, -318f);
 
 
@@ -76,24 +80,19 @@ namespace LethalMystery.UI
             UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
 
             int index = 0; // use player id
-            plrbutton.onClick.AddListener(() => VoteButtonClick(index, plrCheckSprite));
-            skipBtn.onClick.AddListener(() => SkipButtonClick(index, skipCheckSprite));
+            plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
+            skipBtn.onClick.AddListener(() => Voting.SkipButtonClick(index, skipCheckSprite));
 
 
 
         }
 
 
-        private static void SkipButtonClick(int index, UnityEngine.UI.Image check)
+        public static void UpdateSkipText()
         {
-            Plugin.mls.LogInfo($"Skip Button {index} clicked.");
-            check.sprite = Plugin.CheckboxEnabledIcon;
-        }
-
-        private static void VoteButtonClick(int index, UnityEngine.UI.Image check)
-        {
-            Plugin.mls.LogInfo($"Vote Button {index} clicked.");
-            check.sprite = Plugin.CheckboxEnabledIcon;
+            GameObject skipObj = GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/SkipText");
+            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
+            skipText.text = "SKIP: " + Voting.skipVotes.Value;
         }
 
 
@@ -114,11 +113,12 @@ namespace LethalMystery.UI
                 playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Text (1)").gameObject;
             }
 
-            
+
             VolSlider.SetActive(true);
             VolSlider.transform.Find("Image").gameObject.SetActive(false);
             VolSlider.transform.Find("Slider").gameObject.SetActive(false);
 
+            playerVoteObj.name = "Votes";
             playerVoteObj.SetActive(true);
             playerVoteObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
 

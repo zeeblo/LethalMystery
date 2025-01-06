@@ -15,7 +15,7 @@ using BepInEx.Bootstrap;
 namespace LethalMystery.MainGame
 {
 
-    internal class Tests
+    internal class zTests
     {
         public static Vector3 modelPosition = new Vector3(80f, 20f, 20f);
         public static Vector3 groundPosition = new Vector3(80f, 18.8f, 20f);

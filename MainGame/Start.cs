@@ -51,7 +51,7 @@ namespace LethalMystery.MainGame
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
-
+            Voting.VoteSetup();
         }
 
 
@@ -157,7 +157,7 @@ namespace LethalMystery.MainGame
         #region Chat Command
 
 
-        [HarmonyPatch(typeof(RoundManager), "Start")]
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.Start))]
         [HarmonyPrefix]
         private static void SetIsHost()
         {
@@ -167,7 +167,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
         [HarmonyPostfix]
         private static void UpdateNewInfo(ref EnemyVent[] ___allEnemyVents, ref SelectableLevel ___currentLevel)
         {
@@ -177,7 +177,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(RoundManager), "AdvanceHourAndSpawnNewBatchOfEnemies")]
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.AdvanceHourAndSpawnNewBatchOfEnemies))]
         [HarmonyPrefix]
         private static void UpdateCurrentLevelInfo(ref EnemyVent[] ___allEnemyVents, ref SelectableLevel ___currentLevel)
         {
@@ -186,7 +186,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(RoundManager), "LoadNewLevel")]
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.LoadNewLevel))]
         [HarmonyPrefix]
         private static bool ModifyLevel(ref SelectableLevel newLevel)
         {

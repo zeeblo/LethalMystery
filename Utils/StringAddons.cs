@@ -225,7 +225,6 @@ namespace LethalMystery.Utils
 
         public static int AddInts(string a, int b)
         {
-            Int32.TryParse(a, out int c);
             int input = ConvertToInt(a);
             int result = input += b;
 
