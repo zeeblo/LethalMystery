@@ -88,17 +88,9 @@ namespace LethalMystery.UI
         }
 
 
-        public static void UpdateSkipText()
-        {
-            GameObject skipObj = GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/SkipText");
-            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
-            skipText.text = "SKIP: " + Voting.skipVotes.Value;
-        }
-
-
         private static void ShowVotesForPlayers(GameObject playerListSlot)
         {
-            string votes = "Votes: ";
+            string votes = "VOTES: 0";
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
             string path = (moreCompany == false) ? "Image/PlayerListSlot/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 
@@ -127,6 +119,28 @@ namespace LethalMystery.UI
 
 
 
+        public static void UpdateSkipText()
+        {
+            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+            string parentPath = "Systems/UI/Canvas/VotingMenu";
+            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/SkipText" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/SkipText";
+
+            GameObject skipObj = GameObject.Find(path);
+            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
+            skipText.text = "SKIP: " + Voting.skipVotes.Value;
+        }
+
+
+        public static void UpdateVoteText(int index)
+        {
+            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+            string parentPath = "Systems/UI/Canvas/VotingMenu";
+            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/PlayerListSlot/VoiceVolumeSlider/Votes" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Votes";
+
+            GameObject playerVoteObj = GameObject.Find(path);
+            TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
+            playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{index}"];
+        }
 
     }
 }

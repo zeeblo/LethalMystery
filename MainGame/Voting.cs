@@ -40,13 +40,15 @@ namespace LethalMystery.MainGame
             check.sprite = Plugin.CheckboxEnabledIcon;
 
 
-            foreach (KeyValuePair<string, string> plrID in allVotes.Value)
+            foreach (KeyValuePair<string, string> plrID in allVotes.Value.ToList())
             {
                 if (plrID.Key == $"{index}")
                 {
                     allVotes.Value[plrID.Key] =  $"{StringAddons.AddInts(plrID.Value, 1)}";
                 }
             }
+
+            VotingUI.UpdateVoteText(index);
         }
 
 
