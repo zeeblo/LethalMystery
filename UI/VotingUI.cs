@@ -39,30 +39,17 @@ namespace LethalMystery.UI
 
         private static GameObject GetImageHeader(GameObject plist)
         {
-            foreach (GameObject obj in GOTools.GetAllChildren(plist))
-            {
-                if (obj.gameObject.name.ToLower() == "image")
-                {
-                    foreach (GameObject value in GOTools.GetAllChildren(obj))
-                    {
-                        if (value.gameObject.name.ToLower() == "header")
-                        {
-                            return value;
-                        }
-                    }
-                    break;
-                }
-            }
-            return plist;
+            return plist.transform.Find("Image/Header").gameObject;
         }
 
 
         public static void VoteButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+            string path = (moreCompany == false) ? "Image/PlayerListSlot/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
 
             GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
-            GameObject playerVoteBtn = playerListSlot.transform.Find("Image/PlayerListSlot/KickButton").gameObject;
+            GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
             playerVoteBtn.SetActive(true);
 
             GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
@@ -114,9 +101,20 @@ namespace LethalMystery.UI
         {
             string votes = "Votes: ";
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+            string path = (moreCompany == false) ? "Image/PlayerListSlot/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 
-            GameObject VolSlider = playerListSlot.transform.Find("Image/PlayerListSlot/VoiceVolumeSlider").gameObject;
-            GameObject playerVoteObj = playerListSlot.transform.Find("Image/PlayerListSlot/VoiceVolumeSlider/Text (1)").gameObject;
+            GameObject VolSlider = playerListSlot.transform.Find(path).gameObject;
+            GameObject playerVoteObj = playerListSlot; // placeholder
+            if (moreCompany == false)
+            {
+                playerVoteObj = playerListSlot.transform.Find($"{path}/Text (1)").gameObject;
+            }
+            else
+            {
+                playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Text (1)").gameObject;
+            }
+
+            
             VolSlider.SetActive(true);
             VolSlider.transform.Find("Image").gameObject.SetActive(false);
             VolSlider.transform.Find("Slider").gameObject.SetActive(false);
