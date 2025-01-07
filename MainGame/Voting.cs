@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.UI;
 using LethalMystery.Utils;
@@ -24,8 +21,9 @@ namespace LethalMystery.MainGame
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
             foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
             {
-                if (rawAllVotes.ContainsKey($"{user.actualClientId}")) continue;
-                rawAllVotes.Add($"{user.actualClientId}", "0");
+                //if (rawAllVotes.ContainsKey($"{user.actualClientId}")) continue;
+                //rawAllVotes.Add($"{user.actualClientId}", "0");
+                rawAllVotes.Add($"{user.playerClientId}", "0");
             }
 
             allVotes.Value = rawAllVotes;
@@ -34,27 +32,28 @@ namespace LethalMystery.MainGame
 
 
 
-        public static void VoteButtonClick(int index, UnityEngine.UI.Image check)
+        public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)
         {
-            Plugin.mls.LogInfo($"Vote Button {index} clicked.");
+            Plugin.mls.LogInfo($"Voted {userID}.");
             check.sprite = Plugin.CheckboxEnabledIcon;
 
 
             foreach (KeyValuePair<string, string> plrID in allVotes.Value.ToList())
             {
-                if (plrID.Key == $"{index}")
+                if (plrID.Key == $"{userID}")
                 {
                     allVotes.Value[plrID.Key] =  $"{StringAddons.AddInts(plrID.Value, 1)}";
+                    VotingUI.UpdateVoteText(userID);
+                    break;
                 }
             }
 
-            VotingUI.UpdateVoteText(index);
+            
         }
 
 
-        public static void SkipButtonClick(int index, UnityEngine.UI.Image check)
+        public static void SkipButtonClick(UnityEngine.UI.Image check)
         {
-            Plugin.mls.LogInfo($"Skip Button {index} clicked.");
             check.sprite = Plugin.CheckboxEnabledIcon;
 
             skipVotes.Value = $"{StringAddons.AddInts(skipVotes.Value, 1)}";

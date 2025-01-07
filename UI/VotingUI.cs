@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using LethalMystery.MainGame;
-using LethalMystery.Utils;
+using LethalMystery.Players;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,6 +32,7 @@ namespace LethalMystery.UI
                 GetImageHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
                 ShowVotesForPlayers(plist);
                 VoteButton(plist);
+                SkipButton(plist);
 
             }
 
@@ -44,15 +45,14 @@ namespace LethalMystery.UI
         }
 
 
-        public static void VoteButton(GameObject playerListSlot)
+        public static void SkipButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string path = (moreCompany == false) ? "Image/PlayerListSlot/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
+            string path = (moreCompany == false) ? $"Image/PlayerListSlot/VoteButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
 
             GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
             GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
-            playerVoteBtn.gameObject.name = "VoteButton";
-            playerVoteBtn.SetActive(true);
+
 
             GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
             RectTransform skipButtonRect = skipButton.GetComponent<RectTransform>();
@@ -70,20 +70,37 @@ namespace LethalMystery.UI
             skipObj.transform.SetParent(plistClone.transform, false);
             skipTextRect.anchoredPosition = new Vector2(45f, -318f);
 
-
-            UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
             UnityEngine.UI.Image skipCheckSprite = skipButton.GetComponent<UnityEngine.UI.Image>();
-            plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
-            skipCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
-
-            UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
             UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
+            skipCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+            skipBtn.onClick.AddListener(() => Voting.SkipButtonClick(skipCheckSprite));
 
-            int index = 0; // use player id
-            plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
-            skipBtn.onClick.AddListener(() => Voting.SkipButtonClick(index, skipCheckSprite));
+        }
 
 
+        public static void VoteButton(GameObject playerListSlot)
+        {
+            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+
+            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+            {
+                int Index = i; // because apparently using just "i" doesn't work for events
+                string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
+                string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
+
+                GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
+                GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
+                playerVoteBtn.gameObject.name = "VoteButton";
+                playerVoteBtn.SetActive(true);
+
+                UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
+                UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
+                plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+
+                Plugin.mls.LogInfo($">>> Logging num: {i}");
+                plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(Index, plrCheckSprite));
+                
+            }
 
         }
 
@@ -92,29 +109,32 @@ namespace LethalMystery.UI
         {
             string votes = "VOTES: 0";
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string path = (moreCompany == false) ? "Image/PlayerListSlot/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 
-            GameObject VolSlider = playerListSlot.transform.Find(path).gameObject;
-            GameObject playerVoteObj = playerListSlot; // placeholder
-            if (moreCompany == false)
+            for (int i = 0;  i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
-                playerVoteObj = playerListSlot.transform.Find($"{path}/Text (1)").gameObject;
+                string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
+                string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
+
+                GameObject VolSlider = playerListSlot.transform.Find(path).gameObject;
+                GameObject playerVoteObj = playerListSlot; // placeholder
+                if (moreCompany == false)
+                {
+                    playerVoteObj = playerListSlot.transform.Find($"{path}/Text (1)").gameObject;
+                }
+                else
+                {
+                    playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Text (1)").gameObject;
+                }
+
+
+                VolSlider.SetActive(true);
+                VolSlider.transform.Find("Image").gameObject.SetActive(false);
+                VolSlider.transform.Find("Slider").gameObject.SetActive(false);
+
+                playerVoteObj.name = "Votes";
+                playerVoteObj.SetActive(true);
+                playerVoteObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
             }
-            else
-            {
-                playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Text (1)").gameObject;
-            }
-
-
-            VolSlider.SetActive(true);
-            VolSlider.transform.Find("Image").gameObject.SetActive(false);
-            VolSlider.transform.Find("Slider").gameObject.SetActive(false);
-
-            playerVoteObj.name = "Votes";
-            playerVoteObj.SetActive(true);
-            playerVoteObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
-
-
         }
 
 
@@ -131,15 +151,16 @@ namespace LethalMystery.UI
         }
 
 
-        public static void UpdateVoteText(int index)
+        public static void UpdateVoteText(int userID)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
+            string playerBeingVoted = (userID > 0) ? $"PlayerListSlot ({userID})" : "PlayerListSlot";
             string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/PlayerListSlot/VoiceVolumeSlider/Votes" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Votes";
+            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/{playerBeingVoted}/VoiceVolumeSlider/Votes" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Votes";
 
             GameObject playerVoteObj = GameObject.Find(path);
             TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
-            playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{index}"];
+            playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
         }
 
     }
