@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Players;
+using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -48,7 +49,7 @@ namespace LethalMystery.UI
         public static void SkipButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string path = (moreCompany == false) ? $"Image/PlayerListSlot/VoteButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
+            string path = (moreCompany == false) ? $"Image/PlayerListSlot/VoteButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoteButton";
 
             GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
             GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
@@ -99,7 +100,8 @@ namespace LethalMystery.UI
 
                 Plugin.mls.LogInfo($">>> Logging num: {i}");
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(Index, plrCheckSprite));
-                
+
+                if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
             }
 
         }
@@ -110,12 +112,16 @@ namespace LethalMystery.UI
             string votes = "VOTES: 0";
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
 
-            for (int i = 0;  i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 
                 GameObject VolSlider = playerListSlot.transform.Find(path).gameObject;
+                VolSlider.SetActive(true);
+                VolSlider.transform.Find("Image").gameObject.SetActive(false);
+                VolSlider.transform.Find("Slider").gameObject.SetActive(false);
+
                 GameObject playerVoteObj = playerListSlot; // placeholder
                 if (moreCompany == false)
                 {
@@ -123,13 +129,16 @@ namespace LethalMystery.UI
                 }
                 else
                 {
-                    playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Text (1)").gameObject;
+                    playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
+                    foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
+                    {
+                        GameObject plrObj = players.transform.Find("Text (1)").gameObject;
+                        plrObj.name = "Votes";
+                        plrObj.SetActive(true);
+                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
+                    }
+                    break;
                 }
-
-
-                VolSlider.SetActive(true);
-                VolSlider.transform.Find("Image").gameObject.SetActive(false);
-                VolSlider.transform.Find("Slider").gameObject.SetActive(false);
 
                 playerVoteObj.name = "Votes";
                 playerVoteObj.SetActive(true);
@@ -143,7 +152,7 @@ namespace LethalMystery.UI
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
             string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/SkipText" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/SkipText";
+            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/SkipText" : $"{parentPath}/PlayerList(Clone)/Image/SkipText";
 
             GameObject skipObj = GameObject.Find(path);
             TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
@@ -156,11 +165,31 @@ namespace LethalMystery.UI
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
             string playerBeingVoted = (userID > 0) ? $"PlayerListSlot ({userID})" : "PlayerListSlot";
             string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/{playerBeingVoted}/VoiceVolumeSlider/Votes" : $"{parentPath}/Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/Votes";
+            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/{playerBeingVoted}/VoiceVolumeSlider/Votes" : $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
 
-            GameObject playerVoteObj = GameObject.Find(path);
-            TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
-            playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
+            if (moreCompany)
+            {
+
+                GameObject playerVoteObj = GameObject.Find(path);
+                foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
+                {
+                    TextMeshProUGUI pName = players.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
+                    if (pName.text.EndsWith($"#{userID}"))
+                    {
+                        GameObject plrObj = players.transform.Find("Votes").gameObject;
+                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
+                        break;
+                    }
+
+                }
+            }
+            else
+            {
+                GameObject playerVoteObj = GameObject.Find(path);
+                TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
+                playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
+            }
+
         }
 
     }
