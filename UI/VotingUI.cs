@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using LethalMystery.MainGame;
-using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -13,28 +12,15 @@ namespace LethalMystery.UI
     internal class VotingUI
     {
 
+        private static GameObject updatedPlayerList;
+
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
         [HarmonyPostfix]
         private static void UpdatePatch(QuickMenuManager __instance)
         {
             if (Keyboard.current.digit6Key.wasPressedThisFrame)
             {
-                GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
-                GameObject VotingMenu = new GameObject("VotingMenu");
-                GameObject plist = Plugin.Instantiate(__instance.playerListPanel);
-
-                VotingMenu.layer = 5;
-                VotingMenu.transform.SetParent(canvas.transform, false);
-                VotingMenu.transform.SetSiblingIndex(13);
-
-                plist.transform.SetParent(VotingMenu.transform, false);
-
-
-                GetImageHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
-                ShowVotesForPlayers(plist);
-                VoteButton(plist);
-                SkipButton(plist);
-
+                CreateVotingGUI(__instance);
             }
 
             if (Keyboard.current.digit9Key.wasPressedThisFrame)
@@ -79,6 +65,33 @@ namespace LethalMystery.UI
 
         }
 
+
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
+        [HarmonyPostfix]
+        private static void UserLeft(ulong clientId)
+        {
+            UpdatePlayerList(clientId);
+        }
+
+
+        private static GameObject CreateVotingGUI(QuickMenuManager __instance)
+        {
+            GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
+            GameObject VotingMenu = new GameObject("VotingMenu");
+            GameObject plist = Plugin.Instantiate(__instance.playerListPanel);
+
+            VotingMenu.layer = 5;
+            VotingMenu.transform.SetParent(canvas.transform, false);
+            VotingMenu.transform.SetSiblingIndex(13);
+
+            plist.transform.SetParent(VotingMenu.transform, false);
+            
+            GetImageHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
+            ShowVotesForPlayers(plist);
+            VoteButton(plist);
+            SkipButton(plist);
+            return VotingMenu;
+        }
 
         private static GameObject GetImageHeader(GameObject plist)
         {
@@ -125,6 +138,10 @@ namespace LethalMystery.UI
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
+                // If the current playerListSlot gameobject isn't active (because someone disconnected)
+                // Skip this iteration and look for one that is active.
+                //if (!StartOfRound.Instance.allPlayerScripts[i].gameObject.activeSelf) continue;
+
                 int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
@@ -141,6 +158,7 @@ namespace LethalMystery.UI
                 Plugin.mls.LogInfo($">>> Logging num: {i}");
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
+                // If the next playerlistslot is 0 then it's a dummy player script and it should be ignored.
                 if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
             }
 
@@ -232,6 +250,28 @@ namespace LethalMystery.UI
                 playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
             }
 
+        }
+
+
+        private static void UpdatePlayerList(ulong playerLeftID)
+        {
+            string parentPath = "Systems/UI/Canvas/VotingMenu";
+            string path = $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
+            Plugin.mls.LogInfo($">>> PlayerLeftID: {playerLeftID}");
+
+            GameObject playerVoteObj = GameObject.Find(path);
+            foreach (GameObject player in GOTools.GetAllChildren(playerVoteObj))
+            {
+                TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
+                Plugin.mls.LogInfo($">>> PName: {pName.text}");
+                if (pName.text.EndsWith($"#{playerLeftID-1}"))
+                {
+                    Plugin.mls.LogInfo($">>> removing {player.gameObject.name}");
+                    Plugin.Destroy(player.gameObject);
+                    break;
+                }
+
+            }
         }
 
     }

@@ -71,6 +71,9 @@ namespace LethalMystery.MainGame
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
+
+                    Plugin.mls.LogInfo($">>> My ID is: {Plugin.localPlayer.actualClientId}");
+
                     /*
                     foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
                     {

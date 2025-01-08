@@ -1,11 +1,10 @@
 ﻿using GameNetcodeStuff;
-using HarmonyLib;
 using LethalNetworkAPI;
 
 
 namespace LethalMystery.MainGame
 {
-    [HarmonyPatch]
+
     internal class Voting
     {
         public static LNetworkVariable<Dictionary<string, string>> allVotes = LNetworkVariable<Dictionary<string, string>>.Connect("allVotes");
