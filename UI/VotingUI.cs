@@ -132,6 +132,8 @@ namespace LethalMystery.UI
                     foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
                     {
                         GameObject plrObj = players.transform.Find("Text (1)").gameObject;
+                        GameObject plrVolume = players.transform.Find("PlayerVolumeSlider").gameObject;
+                        plrVolume.SetActive(false);
                         plrObj.name = "Votes";
                         plrObj.SetActive(true);
                         plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
