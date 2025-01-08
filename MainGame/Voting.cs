@@ -1,7 +1,5 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using LethalMystery.UI;
-using LethalMystery.Utils;
 using LethalNetworkAPI;
 
 
@@ -42,8 +40,9 @@ namespace LethalMystery.MainGame
             {
                 if (plrID.Key == $"{userID}")
                 {
-                    allVotes.Value[plrID.Key] =  $"{StringAddons.AddInts(plrID.Value, 1)}";
-                    VotingUI.UpdateVoteText(userID);
+                    //allVotes.Value[plrID.Key] =  $"{StringAddons.AddInts(plrID.Value, 1)}";
+                    Plugin.netHandler.playerVotedReceive($"vote/{userID}", Plugin.localPlayer.actualClientId);
+                    //VotingUI.UpdateVoteText(userID);
                     break;
                 }
             }
@@ -56,8 +55,9 @@ namespace LethalMystery.MainGame
         {
             check.sprite = Plugin.CheckboxEnabledIcon;
 
-            skipVotes.Value = $"{StringAddons.AddInts(skipVotes.Value, 1)}";
-            VotingUI.UpdateSkipText();
+            //skipVotes.Value = $"{StringAddons.AddInts(skipVotes.Value, 1)}";
+            Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.actualClientId);
+            //VotingUI.UpdateSkipText();
         }
 
 

@@ -71,8 +71,11 @@ namespace LethalMystery.MainGame
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
-
-
+                    foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
+                    {
+                        Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
+                    }
+                    Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
                     /*
                     GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
                     GameObject PlayerList = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");

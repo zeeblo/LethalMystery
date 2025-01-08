@@ -96,6 +96,7 @@ namespace LethalMystery
             }
 
             Meeting.MeetingDefaults();
+            Voting.VoteSetup();
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();

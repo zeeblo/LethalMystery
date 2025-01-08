@@ -1,8 +1,10 @@
 ﻿using System.Collections;
+using Discord;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Patches;
 using LethalMystery.Players;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -21,6 +23,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> destroyScrap;
         private LNetworkMessage<string> showScrap;
         private LNetworkMessage<string> hideWeapon;
+        private LNetworkMessage<string> playerVoted;
 
 
         public NetHandler()
@@ -35,7 +38,7 @@ namespace LethalMystery.Network
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
             showScrap = LNetworkMessage<string>.Connect("showScrap");
             hideWeapon = LNetworkMessage<string>.Connect("hideWeapon");
-
+            playerVoted = LNetworkMessage<string>.Connect("playerVoted");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -50,6 +53,8 @@ namespace LethalMystery.Network
             showScrap.OnClientReceived += showScrapClients;
             hideWeapon.OnServerReceived += hideWeaponServer;
             hideWeapon.OnClientReceived += hideWeaponClients;
+            playerVoted.OnServerReceived += playerVotedServer;
+            playerVoted.OnClientReceived += playerVotedClients;
 
         }
 
@@ -59,6 +64,8 @@ namespace LethalMystery.Network
         {
             Plugin.inMeeting.OnValueChanged += InMeeting_Event;
             Plugin.inGracePeriod.OnValueChanged += InGracePeriod_Event;
+            //Voting.skipVotes.OnValueChanged += InSkipVotes_Event;
+            //Voting.allVotes.OnValueChanged += InAllVotes_Event;
 
         }
 
@@ -66,6 +73,8 @@ namespace LethalMystery.Network
         {
             Plugin.inMeeting.OnValueChanged -= InMeeting_Event;
             Plugin.inGracePeriod.OnValueChanged -= InGracePeriod_Event;
+            //Voting.skipVotes.OnValueChanged -= InSkipVotes_Event;
+            //Voting.allVotes.OnValueChanged -= InAllVotes_Event;
         }
 
 
@@ -126,6 +135,36 @@ namespace LethalMystery.Network
             return assignedRole;
         }
 
+
+
+        private static void InSkipVotes_Event(string idk, string data)
+        {
+            // StartOfRound.Instance.StartCoroutine(updateVote("skip"));
+        }
+
+
+        private static IEnumerator updateVote(string type, string data = "")
+        {
+            switch (type)
+            {
+                case "skip":
+                    yield return new WaitForSeconds(0.35f);
+                    VotingUI.UpdateSkipText();
+                    break;
+                case "vote":
+                    yield return new WaitForSeconds(0.35f);
+                    //VotingUI.UpdateVoteText(data);
+                    break;
+            }
+
+        }
+
+
+        private static void InAllVotes_Event(Dictionary<string, string> idk, Dictionary<string, string> data)
+        {
+            Plugin.mls.LogInfo($">>> I changed: {data}");
+            //StartOfRound.Instance.StartCoroutine(updateVote("vote", ""));
+        }
 
 
 
@@ -379,11 +418,59 @@ namespace LethalMystery.Network
         }
 
 
+        /// <summary>
+        /// In the intro all items/weapons that other users are holding are hidden
+        /// so that the current player only sees their own weapon, this re-enables
+        /// the weapons so they're shown when the intro screen ends.
+        /// </summary>
         private static IEnumerator ShowWeaponTimer(GameObject itm)
         {
             yield return new WaitForSeconds(8);
             itm.SetActive(true);
             Plugin.mls.LogInfo("<<< Successfully made item visible");
         }
+
+
+
+        public void playerVotedServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the playerVotedServer:");
+                        
+            playerVoted.SendClients(data);
+        }
+        public void playerVotedClients(string data)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the playerVotedClients:");
+
+            string[] splitData = data.Split('/');
+            string type = splitData[0];
+            Int32.TryParse(splitData[1], out int userID);
+            string skipVal = Voting.skipVotes.Value;
+            Dictionary<string, string> votes = Voting.allVotes.Value;
+
+            Plugin.mls.LogInfo($">> type: {type}");
+            Plugin.mls.LogInfo($">> userID: {userID}");
+            Plugin.mls.LogInfo($">> SKIPS: {skipVal}");
+
+            switch (type)
+            {
+                case "vote":
+                    votes[$"{userID}"] = $"{StringAddons.AddInts(votes[$"{userID}"], 1)}";
+                    VotingUI.UpdateVoteText(userID);
+                    break;
+                case "skip":
+                    Voting.skipVotes.Value = $"{StringAddons.AddInts(skipVal, 1)}";
+                    VotingUI.UpdateSkipText();
+                    break;
+            }
+
+        }
+        public void playerVotedReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the playerVotedReceive:");
+            playerVoted.SendServer(data);
+        }
+
+
     }
 }

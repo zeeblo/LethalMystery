@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using LethalMystery.MainGame;
-using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -109,11 +108,11 @@ namespace LethalMystery.UI
 
         private static void ShowVotesForPlayers(GameObject playerListSlot)
         {
-            string votes = "VOTES: 0";
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
+                string votes = "VOTES: " + Voting.allVotes.Value[$"{i}"];
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 

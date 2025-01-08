@@ -51,7 +51,6 @@ namespace LethalMystery.MainGame
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
-            Voting.VoteSetup();
         }
 
 
