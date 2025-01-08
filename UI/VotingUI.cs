@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LethalMystery.MainGame;
+using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -33,6 +34,46 @@ namespace LethalMystery.UI
                 ShowVotesForPlayers(plist);
                 VoteButton(plist);
                 SkipButton(plist);
+
+            }
+
+            if (Keyboard.current.digit9Key.wasPressedThisFrame)
+            {
+                List<int> playerVotes = new List<int>();
+                foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
+                {
+                    int voteNum = StringAddons.ConvertToInt(v.Value);
+                    playerVotes.Add(voteNum);
+                }
+                int skipVotes = StringAddons.ConvertToInt(Voting.skipVotes.Value);
+                playerVotes.Add(skipVotes);
+
+
+                int maxVote = playerVotes.Max(n => n);
+                playerVotes.Remove(maxVote);
+
+                foreach (int vote in playerVotes)
+                {
+                    if (vote == maxVote)
+                    {
+                        Plugin.mls.LogInfo(">>> Skipping Vote <<<");
+                        return;
+                    }
+                }
+
+                foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
+                {
+                    int voteNum = StringAddons.ConvertToInt(v.Value);
+                    if (voteNum == maxVote)
+                    {
+                        int plrID = StringAddons.ConvertToInt(v.Key);
+                        string PlayerName = StartOfRound.Instance.allPlayerScripts[plrID].playerUsername;
+                        Plugin.mls.LogInfo($">>> Voted {PlayerName} <<<");
+                        break;
+                    }
+
+                }
+                
 
             }
 
@@ -84,7 +125,7 @@ namespace LethalMystery.UI
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
-                int Index = i; // because apparently using just "i" doesn't work for events
+                int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
 
@@ -98,7 +139,7 @@ namespace LethalMystery.UI
                 plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
 
                 Plugin.mls.LogInfo($">>> Logging num: {i}");
-                plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(Index, plrCheckSprite));
+                plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
                 if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
             }
