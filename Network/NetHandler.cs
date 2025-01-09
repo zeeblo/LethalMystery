@@ -206,12 +206,20 @@ namespace LethalMystery.Network
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
             HUDManagerPatch.DisplayDaysEdit("meeting");
-            VotingUI.isCalled = true;
+            StartOfRound.Instance.StartCoroutine(votingGUIDelay());
+            
         }
         public void MeetingReceive(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingReceive:");
             meeting.SendServer(data);
+        }
+
+
+        private static IEnumerator votingGUIDelay()
+        {
+            yield return new WaitForSeconds(2f);
+            VotingUI.isCalled = true;
         }
 
 
