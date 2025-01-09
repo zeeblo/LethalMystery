@@ -74,13 +74,13 @@ namespace LethalMystery.MainGame
 
                     Plugin.mls.LogInfo($">>> My ID is: {Plugin.localPlayer.actualClientId}");
 
-                    /*
+                    
                     foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
                     {
                         Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
                     }
                     Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
-                   */
+                   
                     
                     /*
                     GameObject canvas = GameObject.Find("Systems/UI/Canvas/");

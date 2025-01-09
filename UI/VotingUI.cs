@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using TMPro;
@@ -99,6 +100,7 @@ namespace LethalMystery.UI
             ShowVotesForPlayers(plist);
             VoteButton(plist);
             SkipButton(plist);
+            CheckPlayerList();
             return VotingMenu;
         }
 
@@ -262,24 +264,46 @@ namespace LethalMystery.UI
         }
 
 
-        private static void UpdatePlayerList(ulong playerLeftID)
+        /// <summary>
+        /// Refresh playerlist when player leaves or dies
+        /// </summary>
+        private static void UpdatePlayerList(ulong playerID)
         {
             string parentPath = "Systems/UI/Canvas/VotingMenu";
             string path = $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
-            Plugin.mls.LogInfo($">>> PlayerLeftID: {playerLeftID}");
 
             GameObject playerVoteObj = GameObject.Find(path);
             foreach (GameObject player in GOTools.GetAllChildren(playerVoteObj))
             {
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                Plugin.mls.LogInfo($">>> PName: {pName.text}");
-                if (pName.text.EndsWith($"#{playerLeftID-1}"))
+                Plugin.mls.LogInfo($">>> pName: {pName.text}");
+
+                // MoreCompany increases the actualClientID except the host.
+                // Check if the host is being removed first or the other clients.
+                if (pName.text.EndsWith($"#{playerID}") || pName.text.EndsWith($"#{playerID-1}"))
                 {
-                    Plugin.mls.LogInfo($">>> removing {player.gameObject.name}");
                     Plugin.Destroy(player.gameObject);
                     break;
                 }
 
+            }
+        }
+
+
+
+        /// <summary>
+        /// Check if players are dead and remove them from the votelist
+        /// </summary>
+        private static void CheckPlayerList()
+        {
+            foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (plr.isPlayerDead)
+                {
+                    Plugin.mls.LogInfo($">>> PlayerIsDead: {plr.actualClientId}");
+                    UpdatePlayerList(plr.actualClientId);
+                    break;
+                }
             }
         }
 

@@ -14,7 +14,7 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void UpdatePatch(PlayerControllerB __instance)
         {
-            __instance.takingFallDamage = false;
+            //__instance.takingFallDamage = false;
         }
 
 

@@ -11,6 +11,7 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> skipVotes = LNetworkVariable<string>.Connect("skipVotes");
         public static int localPlayerVote = 0;
         public static bool hasVoted = false;
+        public static bool canVote = true;
 
         public static void VoteSetup()
         {
@@ -27,6 +28,7 @@ namespace LethalMystery.MainGame
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
             hasVoted = false;
+            canVote = true;
             localPlayerVote = 0;
         }
 
@@ -34,6 +36,8 @@ namespace LethalMystery.MainGame
 
         public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)
         {
+            if (canVote == false) return;
+
             Plugin.mls.LogInfo($"Voted {userID}.");
             check.sprite = Plugin.CheckboxEnabledIcon;
 
@@ -55,6 +59,8 @@ namespace LethalMystery.MainGame
 
         public static void SkipButtonClick(UnityEngine.UI.Image check)
         {
+            if (canVote == false) return;
+
             check.sprite = Plugin.CheckboxEnabledIcon;
             Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.actualClientId);
             hasVoted = true;
