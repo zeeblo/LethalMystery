@@ -91,6 +91,7 @@ namespace LethalMystery.Network
 
                 Plugin.RemoveEnvironment(false);
                 Meeting.MeetingDefaults();
+                Plugin.Destroy(VotingUI.votingGUI);
             }
         }
 
@@ -135,36 +136,6 @@ namespace LethalMystery.Network
             return assignedRole;
         }
 
-
-
-        private static void InSkipVotes_Event(string idk, string data)
-        {
-            // StartOfRound.Instance.StartCoroutine(updateVote("skip"));
-        }
-
-
-        private static IEnumerator updateVote(string type, string data = "")
-        {
-            switch (type)
-            {
-                case "skip":
-                    yield return new WaitForSeconds(0.35f);
-                    VotingUI.UpdateSkipText();
-                    break;
-                case "vote":
-                    yield return new WaitForSeconds(0.35f);
-                    //VotingUI.UpdateVoteText(data);
-                    break;
-            }
-
-        }
-
-
-        private static void InAllVotes_Event(Dictionary<string, string> idk, Dictionary<string, string> data)
-        {
-            Plugin.mls.LogInfo($">>> I changed: {data}");
-            //StartOfRound.Instance.StartCoroutine(updateVote("vote", ""));
-        }
 
 
 
@@ -235,6 +206,7 @@ namespace LethalMystery.Network
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
             HUDManagerPatch.DisplayDaysEdit("meeting");
+            VotingUI.isCalled = true;
         }
         public void MeetingReceive(string data, ulong id)
         {

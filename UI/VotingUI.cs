@@ -12,57 +12,19 @@ namespace LethalMystery.UI
     [HarmonyPatch]
     internal class VotingUI
     {
-
-        private static GameObject updatedPlayerList;
+        public static bool isCalled = false;
+        public static GameObject votingGUI;
 
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
         [HarmonyPostfix]
         private static void UpdatePatch(QuickMenuManager __instance)
         {
-            if (Keyboard.current.digit6Key.wasPressedThisFrame)
+            if (isCalled)
             {
-                CreateVotingGUI(__instance);
+                votingGUI = CreateVotingGUI(__instance);
+                isCalled = false;
             }
 
-            if (Keyboard.current.digit9Key.wasPressedThisFrame)
-            {
-                List<int> playerVotes = new List<int>();
-                foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
-                {
-                    int voteNum = StringAddons.ConvertToInt(v.Value);
-                    playerVotes.Add(voteNum);
-                }
-                int skipVotes = StringAddons.ConvertToInt(Voting.skipVotes.Value);
-                playerVotes.Add(skipVotes);
-
-
-                int maxVote = playerVotes.Max(n => n);
-                playerVotes.Remove(maxVote);
-
-                foreach (int vote in playerVotes)
-                {
-                    if (vote == maxVote)
-                    {
-                        Plugin.mls.LogInfo(">>> Skipping Vote <<<");
-                        return;
-                    }
-                }
-
-                foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
-                {
-                    int voteNum = StringAddons.ConvertToInt(v.Value);
-                    if (voteNum == maxVote)
-                    {
-                        int plrID = StringAddons.ConvertToInt(v.Key);
-                        string PlayerName = StartOfRound.Instance.allPlayerScripts[plrID].playerUsername;
-                        Plugin.mls.LogInfo($">>> Voted {PlayerName} <<<");
-                        break;
-                    }
-
-                }
-                
-
-            }
 
         }
 
@@ -71,7 +33,7 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void UserLeft(ulong clientId)
         {
-            //if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false) return;
+            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false) return;
 
             UpdatePlayerList(clientId);
 
