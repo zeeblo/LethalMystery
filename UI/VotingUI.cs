@@ -15,6 +15,11 @@ namespace LethalMystery.UI
         public static bool isCalled = false;
         public static GameObject votingGUI;
 
+
+
+        #region Patches
+
+
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
         [HarmonyPostfix]
         private static void UpdatePatch(QuickMenuManager __instance)
@@ -25,6 +30,14 @@ namespace LethalMystery.UI
                 isCalled = false;
             }
 
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
+            {
+                bool condition = LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
+                int vote = StringAddons.ConvertToInt(Meeting.currentMeetingCountdown.Value);
+                int discuss = StringAddons.ConvertToInt(Meeting.discussTime.Value);
+                string value = (condition) ? $"DISCUSS: {discuss}": $"VOTE: {vote}";
+                UpdateTextHeader(value);
+            }
 
         }
 
@@ -33,17 +46,24 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void UserLeft(ulong clientId)
         {
-            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false) return;
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
 
             UpdatePlayerList(clientId);
 
             Plugin.mls.LogInfo($"<<< localPlayerVote: {Voting.localPlayerVote}");
-            if ($"{clientId-1}" == $"{Voting.localPlayerVote}")
+            if ($"{clientId - 1}" == $"{Voting.localPlayerVote}")
             {
                 Plugin.mls.LogInfo(">>> Player has been given back their vote.");
                 Voting.hasVoted = false;
             }
         }
+
+
+
+
+
+
+        #endregion Patches
 
 
         private static GameObject CreateVotingGUI(QuickMenuManager __instance)
@@ -57,13 +77,28 @@ namespace LethalMystery.UI
             VotingMenu.transform.SetSiblingIndex(13);
 
             plist.transform.SetParent(VotingMenu.transform, false);
-            
-            GetTextHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
+
+            string rawHeaderText = (LMConfig.defaultDiscussTime == 0) ? "VOTE: " : "DISCUSS: ";
+            int vote = StringAddons.ConvertToInt(Meeting.currentMeetingCountdown.Value);
+            int discuss = StringAddons.ConvertToInt(Meeting.discussTime.Value);
+            string HeaderText = (rawHeaderText.Equals("VOTE: ")) ? rawHeaderText + $"{vote}" : rawHeaderText + $"{discuss}";
+
+            GetTextHeader(plist).GetComponent<TextMeshProUGUI>().text = HeaderText;
             ShowVotesForPlayers(plist);
             VoteButton(plist);
             SkipButton(plist);
             CheckPlayerList();
             return VotingMenu;
+        }
+
+
+        private static void UpdateTextHeader(string text)
+        {
+            GameObject header = GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/Header");
+            if (header)
+            {
+                header.gameObject.GetComponent<TextMeshProUGUI>().text = text;
+            }
         }
 
         private static GameObject GetTextHeader(GameObject plist)
@@ -239,7 +274,7 @@ namespace LethalMystery.UI
 
                 // MoreCompany increases the actualClientID except the host.
                 // Check if the host is being removed first or the other clients.
-                if (pName.text.EndsWith($"#{playerID}") || pName.text.EndsWith($"#{playerID-1}"))
+                if (pName.text.EndsWith($"#{playerID}") || pName.text.EndsWith($"#{playerID - 1}"))
                 {
                     Plugin.Destroy(player.gameObject);
                     break;
@@ -259,7 +294,6 @@ namespace LethalMystery.UI
             {
                 if (plr.isPlayerDead)
                 {
-                    Plugin.mls.LogInfo($">>> PlayerIsDead: {plr.actualClientId}");
                     UpdatePlayerList(plr.actualClientId);
                     break;
                 }

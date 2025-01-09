@@ -10,6 +10,7 @@ namespace LethalMystery.Players
         public static List<Role> allRoles = new List<Role>();
         public static List<string> allItems = new List<string>();
         public static Role? CurrentRole;
+        public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
         public enum RoleType
         {
             employee,

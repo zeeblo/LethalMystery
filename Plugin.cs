@@ -32,27 +32,12 @@ namespace LethalMystery
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
-
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
 
         internal static bool isHost;
         public static GameObject shipInstance;
-
-
-        public static float defaultMeetingCountdown = 20f;
-        public static float defaultMeetingCooldown = 10f;
-        public static int defaultMeetingNum = 1;
-        public static int MeetingNum = defaultMeetingNum;
-        public static float defaultGracePeriodCountdown = 80f;
-        public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
-
-        public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
-        public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
-        public static LNetworkVariable<string> currentGracePeriodCountdown = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
-        public static LNetworkVariable<string> currentMeetingCountdown = LNetworkVariable<string>.Connect("currentMeetingCountdown");
-        public static LNetworkVariable<string> MeetingCooldown = LNetworkVariable<string>.Connect("MeetingCooldown");
 
         public static GameObject? sidebar;
         public static TextMeshProUGUI? sidebarHeaderText;

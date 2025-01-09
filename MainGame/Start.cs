@@ -3,6 +3,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.Utils;
+using LethalNetworkAPI;
 using UnityEngine;
 
 namespace LethalMystery.MainGame
@@ -11,7 +12,8 @@ namespace LethalMystery.MainGame
     internal class Start
     {
 
-
+        public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
+        public static LNetworkVariable<string> currentGracePeriodCountdown = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
 
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
@@ -78,7 +80,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool GracePeriod()
         {
-            if (StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
+            if (StringAddons.ConvertToBool(inGracePeriod.Value))
             {
                 return false;
             }
@@ -91,30 +93,30 @@ namespace LethalMystery.MainGame
         {
             if (StartOfRound.Instance.inShipPhase) return;
 
-            if (StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
+            if (StringAddons.ConvertToBool(inGracePeriod.Value))
             {
                 // Countdown from the set grace period time
-                if (StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value) >= 0 && Plugin.isHost)
+                if (StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value) >= 0 && Plugin.isHost)
                 {
-                    float countdown = StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value);
+                    float countdown = StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value);
                     countdown -= Time.deltaTime;
-                    Plugin.currentGracePeriodCountdown.Value = $"{countdown}";
+                    currentGracePeriodCountdown.Value = $"{countdown}";
                 }
                 else
                 {
                     
                     if (Plugin.isHost)
                     {
-                        Plugin.inGracePeriod.Value = "false";
+                        inGracePeriod.Value = "false";
                     }
 
                 }
 
                 // Show GUI that displays the grace period time
-                if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false && StringAddons.ConvertToBool(Plugin.inGracePeriod.Value))
+                if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false && StringAddons.ConvertToBool(inGracePeriod.Value))
                 {
                     HUDManager.Instance.loadingText.enabled = true;
-                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(Plugin.currentGracePeriodCountdown.Value)}";
+                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value)}";
                 }
             }
 

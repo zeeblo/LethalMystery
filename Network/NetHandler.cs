@@ -62,8 +62,8 @@ namespace LethalMystery.Network
 
         public void AddCustomNetEvents()
         {
-            Plugin.inMeeting.OnValueChanged += InMeeting_Event;
-            Plugin.inGracePeriod.OnValueChanged += InGracePeriod_Event;
+            Meeting.inMeeting.OnValueChanged += InMeeting_Event;
+            Start.inGracePeriod.OnValueChanged += InGracePeriod_Event;
             //Voting.skipVotes.OnValueChanged += InSkipVotes_Event;
             //Voting.allVotes.OnValueChanged += InAllVotes_Event;
 
@@ -71,8 +71,8 @@ namespace LethalMystery.Network
 
         public void RemoveCustomNetEvents()
         {
-            Plugin.inMeeting.OnValueChanged -= InMeeting_Event;
-            Plugin.inGracePeriod.OnValueChanged -= InGracePeriod_Event;
+            Meeting.inMeeting.OnValueChanged -= InMeeting_Event;
+            Start.inGracePeriod.OnValueChanged -= InGracePeriod_Event;
             //Voting.skipVotes.OnValueChanged -= InSkipVotes_Event;
             //Voting.allVotes.OnValueChanged -= InAllVotes_Event;
         }
@@ -114,7 +114,7 @@ namespace LethalMystery.Network
         {
             string role = "";
             Role assignedRole = new Role("boop", "I booped your nose.", RoleType.employee); // placeholder, should never register as an actual role.
-            Plugin.localPlayerRoles = allPlayerRoles.Value;
+            Roles.localPlayerRoles = allPlayerRoles.Value;
 
             foreach (KeyValuePair<ulong, string> plrID in allPlayerRoles.Value)
             {
@@ -193,9 +193,9 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingServer:");
 
-            Plugin.inMeeting.Value = "true";
-            Plugin.inGracePeriod.Value = "true";
-            Plugin.currentGracePeriodCountdown.Value = $"{Plugin.defaultMeetingCountdown + 140f}";
+            Meeting.inMeeting.Value = "true";
+            Start.inGracePeriod.Value = "true";
+            Start.currentGracePeriodCountdown.Value = $"{LMConfig.defaultMeetingCountdown + 140f}";
 
             meeting.SendClients(data);
         }

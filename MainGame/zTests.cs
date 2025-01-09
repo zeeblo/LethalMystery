@@ -63,11 +63,11 @@ namespace LethalMystery.MainGame
                 {
                     Plugin.mls.LogInfo($">>> Role is: {Plugin.netHandler.GetallPlayerRoles().Name}");
 
-                    Plugin.mls.LogInfo($">>> InMetting Value: {Plugin.inMeeting.Value}");
-                    Plugin.mls.LogInfo($">>> inGracePeriod Value: {Plugin.inGracePeriod.Value}");
-                    Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Plugin.currentGracePeriodCountdown.Value}");
-                    Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Plugin.currentMeetingCountdown.Value}");
-                    Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Plugin.MeetingCooldown.Value}");
+                    Plugin.mls.LogInfo($">>> InMetting Value: {Meeting.inMeeting.Value}");
+                    Plugin.mls.LogInfo($">>> inGracePeriod Value: {Start.inGracePeriod.Value}");
+                    Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Start.currentGracePeriodCountdown.Value}");
+                    Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
+                    Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {

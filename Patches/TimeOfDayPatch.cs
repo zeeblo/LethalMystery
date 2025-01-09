@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalMystery.MainGame;
 
 
 namespace LethalMystery.Patches
@@ -16,7 +17,7 @@ namespace LethalMystery.Patches
             /// Disable Deadline
             /// </summary>
             __instance.timeUntilDeadline = 9;
-            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
+            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Meeting.MeetingNum}";
 
 
         }

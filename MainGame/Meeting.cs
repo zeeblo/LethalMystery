@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LethalMystery.Utils;
+using LethalNetworkAPI;
 using UnityEngine;
 
 namespace LethalMystery.MainGame
@@ -8,17 +9,26 @@ namespace LethalMystery.MainGame
     internal class Meeting
     {
 
+        public static LNetworkVariable<string> discussTime = LNetworkVariable<string>.Connect("discussTime");
+        public static LNetworkVariable<string> voteTime = LNetworkVariable<string>.Connect("voteTime");
+        public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
+        public static LNetworkVariable<string> currentMeetingCountdown = LNetworkVariable<string>.Connect("currentMeetingCountdown");
+        public static LNetworkVariable<string> MeetingCooldown = LNetworkVariable<string>.Connect("MeetingCooldown");
+        public static int MeetingNum = LMConfig.defaultMeetingNum;
+
         public static void MeetingDefaults()
         {
-            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Plugin.MeetingNum}";
+            StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
 
-            Plugin.currentGracePeriodCountdown.Value = $"{Plugin.defaultGracePeriodCountdown}";
-            Plugin.inMeeting.Value = "false";
-            Plugin.mls.LogInfo($">>> inMeetingVal: {Plugin.inMeeting.Value}");
-            Plugin.currentMeetingCountdown.Value = $"{Plugin.defaultMeetingCountdown}";
-            Plugin.MeetingCooldown.Value = $"{Plugin.defaultMeetingCooldown}";
+            Start.currentGracePeriodCountdown.Value = $"{LMConfig.defaultGracePeriodCountdown}";
+            inMeeting.Value = "false";
+            Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
+            currentMeetingCountdown.Value = $"{LMConfig.defaultMeetingCountdown}";
+            MeetingCooldown.Value = $"{LMConfig.defaultMeetingCooldown}";
+            discussTime.Value = $"{LMConfig.defaultDiscussTime}";
+            voteTime.Value = $"{LMConfig.defaultVoteTime}";
         }
 
 
@@ -27,12 +37,12 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void CallAMeeting()
         {
-            if (StartOfRound.Instance.shipHasLanded == false || StringAddons.ConvertToBool(Plugin.inMeeting.Value) == true || Plugin.MeetingNum <= 0)
+            if (StartOfRound.Instance.shipHasLanded == false || StringAddons.ConvertToBool(inMeeting.Value) == true || MeetingNum <= 0)
                 return;
-            if (!(StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value) <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
+            if (!(StringAddons.ConvertToFloat(MeetingCooldown.Value) <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
                 return;
 
-            Plugin.MeetingNum -= 1;
+            MeetingNum -= 1;
             Plugin.netHandler.MeetingReceive("meeting", Plugin.localPlayer.actualClientId);
         }
 
@@ -44,28 +54,30 @@ namespace LethalMystery.MainGame
             if (StartOfRound.Instance.shipHasLanded == false || Plugin.isHost == false)
                 return;
 
-            if (StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value) >= 0)
+            if (StringAddons.ConvertToFloat(MeetingCooldown.Value) >= 0)
             {
-                float countdown = StringAddons.ConvertToFloat(Plugin.MeetingCooldown.Value);
+                float countdown = StringAddons.ConvertToFloat(MeetingCooldown.Value);
                 countdown -= Time.deltaTime;
-                Plugin.MeetingCooldown.Value = $"{countdown}";
+                MeetingCooldown.Value = $"{countdown}";
             }
         }
 
 
         [HarmonyPatch(typeof(HangarShipDoor), nameof(HangarShipDoor.Update))]
         [HarmonyPostfix]
-        private static void DoorsPatch(HangarShipDoor __instance)
+        private static void MeetingTimeLimit(HangarShipDoor __instance)
         {
             if (StartOfRound.Instance.inShipPhase || !StartOfRound.Instance.shipHasLanded) return;
 
-            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value))
+            if (StringAddons.ConvertToBool(inMeeting.Value))
             {
                 if (Plugin.isHost)
                 {
-                    float countdown = StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value);
+                    float countdown = StringAddons.ConvertToFloat(currentMeetingCountdown.Value);
                     countdown -= Time.deltaTime;
-                    Plugin.currentMeetingCountdown.Value = $"{countdown}";
+
+                    VoteCountdown();
+                    currentMeetingCountdown.Value = $"{countdown}";
                 }
                 __instance.PlayDoorAnimation(closed: true);
                 __instance.SetDoorButtonsEnabled(false);
@@ -74,13 +86,32 @@ namespace LethalMystery.MainGame
                 __instance.triggerScript.interactable = false;
             }
 
-            if (StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value) <= 0)
+            if (StringAddons.ConvertToFloat(currentMeetingCountdown.Value) <= 0)
             {
                 MeetingDefaults();
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
         }
 
+
+
+        private static void VoteCountdown()
+        {
+            if (LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(discussTime.Value) > 0)
+            {
+                float countdown = StringAddons.ConvertToFloat(discussTime.Value);
+                countdown -= Time.deltaTime;
+
+                discussTime.Value = $"{countdown}";
+            }
+            else
+            {
+                float countdown = StringAddons.ConvertToFloat(voteTime.Value);
+                countdown -= Time.deltaTime;
+
+                voteTime.Value = $"{countdown}";
+            }
+        }
 
     }
 }

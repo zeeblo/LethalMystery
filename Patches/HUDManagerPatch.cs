@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalMystery.MainGame;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 
@@ -48,11 +49,11 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(HUDManager __instance)
         {
             
-            if (StringAddons.ConvertToBool(Plugin.inMeeting.Value))
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
             {
                 __instance.Clock.targetAlpha = 1.0f;
                 __instance.Clock.canvasGroup.alpha = 1.0f;
-                __instance.clockNumber.text = $"{(int)StringAddons.ConvertToFloat(Plugin.currentMeetingCountdown.Value)}";
+                __instance.clockNumber.text = $"{(int)StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value)}";
             }
 
         }
