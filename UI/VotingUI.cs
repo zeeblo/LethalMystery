@@ -58,7 +58,7 @@ namespace LethalMystery.UI
 
             plist.transform.SetParent(VotingMenu.transform, false);
             
-            GetImageHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
+            GetTextHeader(plist).GetComponent<TextMeshProUGUI>().text = "VOTE:";
             ShowVotesForPlayers(plist);
             VoteButton(plist);
             SkipButton(plist);
@@ -66,7 +66,7 @@ namespace LethalMystery.UI
             return VotingMenu;
         }
 
-        private static GameObject GetImageHeader(GameObject plist)
+        private static GameObject GetTextHeader(GameObject plist)
         {
             return plist.transform.Find("Image/Header").gameObject;
         }
@@ -88,7 +88,7 @@ namespace LethalMystery.UI
             skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
 
 
-            GameObject skipObj = Plugin.Instantiate(GetImageHeader(playerListSlot));
+            GameObject skipObj = Plugin.Instantiate(GetTextHeader(playerListSlot));
             RectTransform skipTextRect = skipObj.GetComponent<RectTransform>();
             TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
             skipObj.gameObject.name = "SkipText";
