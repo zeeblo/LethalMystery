@@ -297,7 +297,7 @@ namespace LethalMystery.MainGame
 
             if (Plugin.isHost)
             {
-                Plugin.inGracePeriod.Value = "true";
+                Start.inGracePeriod.Value = "true";
             }
 
 
@@ -326,7 +326,7 @@ namespace LethalMystery.MainGame
             DisableMainCamera(false);
             if (Plugin.isHost)
             {
-                Plugin.inGracePeriod.Value = "false";
+                Start.inGracePeriod.Value = "false";
             }
 
         }

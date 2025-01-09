@@ -33,9 +33,9 @@ namespace LethalMystery.UI
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
             {
                 bool condition = LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
-                int vote = StringAddons.ConvertToInt(Meeting.currentMeetingCountdown.Value);
-                int discuss = StringAddons.ConvertToInt(Meeting.discussTime.Value);
-                string value = (condition) ? $"DISCUSS: {discuss}": $"VOTE: {vote}";
+                float vote = StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value);
+                float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
+                string value = (condition) ? $"DISCUSS: {(int)discuss}": $"VOTE: {(int)vote}";
                 UpdateTextHeader(value);
             }
 
@@ -79,9 +79,9 @@ namespace LethalMystery.UI
             plist.transform.SetParent(VotingMenu.transform, false);
 
             string rawHeaderText = (LMConfig.defaultDiscussTime == 0) ? "VOTE: " : "DISCUSS: ";
-            int vote = StringAddons.ConvertToInt(Meeting.currentMeetingCountdown.Value);
-            int discuss = StringAddons.ConvertToInt(Meeting.discussTime.Value);
-            string HeaderText = (rawHeaderText.Equals("VOTE: ")) ? rawHeaderText + $"{vote}" : rawHeaderText + $"{discuss}";
+            float vote = StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value);
+            float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
+            string HeaderText = (rawHeaderText.Equals("VOTE: ")) ? rawHeaderText + $"{(int)vote}" : rawHeaderText + $"{(int)discuss}";
 
             GetTextHeader(plist).GetComponent<TextMeshProUGUI>().text = HeaderText;
             ShowVotesForPlayers(plist);
