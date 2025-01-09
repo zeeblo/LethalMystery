@@ -149,9 +149,6 @@ namespace LethalMystery.UI
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
-                // If the current playerListSlot gameobject isn't active (because someone disconnected)
-                // Skip this iteration and look for one that is active.
-                //if (!StartOfRound.Instance.allPlayerScripts[i].gameObject.activeSelf) continue;
 
                 int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
