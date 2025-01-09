@@ -70,7 +70,16 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void UserLeft(ulong clientId)
         {
+            //if (StringAddons.ConvertToBool(Plugin.inMeeting.Value) == false) return;
+
             UpdatePlayerList(clientId);
+
+            Plugin.mls.LogInfo($"<<< localPlayerVote: {Voting.localPlayerVote}");
+            if ($"{clientId-1}" == $"{Voting.localPlayerVote}")
+            {
+                Plugin.mls.LogInfo(">>> Player has been given back their vote.");
+                Voting.hasVoted = false;
+            }
         }
 
 

@@ -9,7 +9,8 @@ namespace LethalMystery.MainGame
     {
         public static LNetworkVariable<Dictionary<string, string>> allVotes = LNetworkVariable<Dictionary<string, string>>.Connect("allVotes");
         public static LNetworkVariable<string> skipVotes = LNetworkVariable<string>.Connect("skipVotes");
-
+        public static int localPlayerVote = 0;
+        public static bool hasVoted = false;
 
         public static void VoteSetup()
         {
@@ -25,6 +26,8 @@ namespace LethalMystery.MainGame
 
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
+            hasVoted = false;
+            localPlayerVote = 0;
         }
 
 
@@ -39,9 +42,9 @@ namespace LethalMystery.MainGame
             {
                 if (plrID.Key == $"{userID}")
                 {
-                    //allVotes.Value[plrID.Key] =  $"{StringAddons.AddInts(plrID.Value, 1)}";
                     Plugin.netHandler.playerVotedReceive($"vote/{userID}", Plugin.localPlayer.actualClientId);
-                    //VotingUI.UpdateVoteText(userID);
+                    localPlayerVote = userID;
+                    hasVoted = true;
                     break;
                 }
             }
@@ -53,10 +56,8 @@ namespace LethalMystery.MainGame
         public static void SkipButtonClick(UnityEngine.UI.Image check)
         {
             check.sprite = Plugin.CheckboxEnabledIcon;
-
-            //skipVotes.Value = $"{StringAddons.AddInts(skipVotes.Value, 1)}";
             Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.actualClientId);
-            //VotingUI.UpdateSkipText();
+            hasVoted = true;
         }
 
 
