@@ -15,6 +15,8 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
         public static LNetworkVariable<string> currentGracePeriodCountdown = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
 
+        #region Patches
+
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
         /// </summary>
@@ -208,6 +210,8 @@ namespace LethalMystery.MainGame
             Plugin.shipInstance = GameObject.Find("Environment/HangarShip/AnimatedShipDoor");
         }
 
+
+        #endregion Patches
 
 
     }

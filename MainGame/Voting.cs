@@ -38,18 +38,8 @@ namespace LethalMystery.MainGame
 
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
             foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
-            {
-                if (rawAllVotes.ContainsKey($"{user.actualClientId}")) continue;
-                if (user.actualClientId == 0)
-                {
-                    rawAllVotes.Add($"{user.actualClientId}", "0");
-                }
-                else
-                {
-                    rawAllVotes.Add($"{user.actualClientId - 1}", "0");
-                }
-                
-               // rawAllVotes.Add($"{user.playerClientId}", "0");
+            {                
+               rawAllVotes.Add($"{user.playerClientId}", "0");
             }
 
             allVotes.Value = rawAllVotes;
@@ -73,7 +63,7 @@ namespace LethalMystery.MainGame
             {
                 if (plrID.Key == $"{userID}")
                 {
-                    Plugin.netHandler.playerVotedReceive($"vote/{userID}", Plugin.localPlayer.actualClientId);
+                    Plugin.netHandler.playerVotedReceive($"vote/{userID}", Plugin.localPlayer.playerClientId);
                     localPlayerVote = userID;
                     hasVoted = true;
                     break;
@@ -89,7 +79,7 @@ namespace LethalMystery.MainGame
             if (canVote == false) return;
 
             check.sprite = Plugin.CheckboxEnabledIcon;
-            Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.actualClientId);
+            Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.playerClientId);
             hasVoted = true;
         }
 

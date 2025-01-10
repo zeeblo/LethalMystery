@@ -143,8 +143,8 @@ namespace LethalMystery.UI
         public static void VoteButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-
-            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+            int amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
+            for (int i = 0; i < amountOfPlayers; i++)
             {
 
                 int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
@@ -164,10 +164,13 @@ namespace LethalMystery.UI
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
                 // If the next playerlistslot is 0 then it's a dummy player script and it should be ignored.
-                if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
+               // if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
             }
 
         }
+
+
+
 
 
         private static void ShowVotesForPlayers(GameObject playerListSlot)
@@ -272,9 +275,7 @@ namespace LethalMystery.UI
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
                 Plugin.mls.LogInfo($">>> pName: {pName.text}");
 
-                // MoreCompany increases the actualClientID except the host.
-                // Check if the host is being removed first or the other clients.
-                if (pName.text.EndsWith($"#{playerID}") || pName.text.EndsWith($"#{playerID - 1}"))
+                if (pName.text.EndsWith($"#{playerID}"))
                 {
                     Plugin.Destroy(player.gameObject);
                     break;
@@ -294,7 +295,7 @@ namespace LethalMystery.UI
             {
                 if (plr.isPlayerDead)
                 {
-                    UpdatePlayerList(plr.actualClientId);
+                    UpdatePlayerList(plr.playerClientId);
                     break;
                 }
             }

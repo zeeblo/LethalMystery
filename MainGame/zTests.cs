@@ -68,11 +68,15 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Start.currentGracePeriodCountdown.Value}");
                     Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
+
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
 
                     Plugin.mls.LogInfo($">>> My ID is: {Plugin.localPlayer.actualClientId}");
+                    Plugin.mls.LogInfo($">>> My PID is: {Plugin.localPlayer.playerClientId}");
+                    Plugin.mls.LogInfo($">>> thisClientPlayerId: {StartOfRound.Instance.thisClientPlayerId}");
+                    Plugin.mls.LogInfo($">>> connectedPlayersAmount: {StartOfRound.Instance.connectedPlayersAmount}");
 
                     
                     foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
@@ -82,35 +86,6 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
                    
                     
-                    /*
-                    GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
-                    GameObject PlayerList = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
-                    GameObject VotingMenu = new GameObject("VotingMenu");
-                    GameObject plist = Plugin.Instantiate(PlayerList);
-
-                    VotingMenu.layer = 5;
-                    VotingMenu.transform.SetParent(canvas.transform, false);
-                    VotingMenu.transform.SetSiblingIndex(13);
-
-
-                    plist.transform.SetParent(VotingMenu.transform, false);
-
-                    foreach (GameObject obj in GOTools.GetAllChildren(plist))
-                    {
-                        if (obj.gameObject.name.ToLower() == "image")
-                        {
-                            foreach (GameObject value in GOTools.GetAllChildren(obj))
-                            {
-                                if (value.gameObject.name.ToLower() == "header")
-                                {
-                                    value.GetComponent<TextMeshProUGUI>().text = "VOTE:";
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    */
                 }
 
             }
