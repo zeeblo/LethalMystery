@@ -2,6 +2,7 @@
 using LethalNetworkAPI;
 using HarmonyLib;
 using LethalMystery.Utils;
+using LethalMystery.UI;
 
 
 namespace LethalMystery.MainGame
@@ -24,6 +25,7 @@ namespace LethalMystery.MainGame
         private static void PlayerDied()
         {
             canVote = false;
+            VotingUI.amountOfPlayers -= 1;
         }
 
 
@@ -34,6 +36,10 @@ namespace LethalMystery.MainGame
 
         public static void VoteSetup()
         {
+            hasVoted = false;
+            canVote = true;
+            localPlayerVote = 0;
+
             if (!Plugin.isHost) return;
 
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
@@ -44,9 +50,6 @@ namespace LethalMystery.MainGame
 
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
-            hasVoted = false;
-            canVote = true;
-            localPlayerVote = 0;
         }
 
 

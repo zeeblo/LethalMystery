@@ -16,6 +16,7 @@ namespace LethalMystery.UI
         public static GameObject votingGUI;
         private static Sprite xButtonSprite;
         public static bool inVoteTime = false;
+        public static int amountOfPlayers;
 
 
         #region Patches
@@ -54,11 +55,12 @@ namespace LethalMystery.UI
         private static void UserLeft(ulong clientId)
         {
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
+            amountOfPlayers -= 1;
 
             UpdatePlayerList(clientId);
 
             Plugin.mls.LogInfo($"<<< localPlayerVote: {Voting.localPlayerVote}");
-            if ($"{clientId - 1}" == $"{Voting.localPlayerVote}")
+            if ($"{clientId / 2}" == $"{Voting.localPlayerVote}")
             {
                 Plugin.mls.LogInfo(">>> Player has been given back their vote.");
                 Voting.hasVoted = false;
