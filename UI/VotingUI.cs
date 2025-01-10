@@ -1,10 +1,10 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
+using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 namespace LethalMystery.UI
@@ -14,7 +14,8 @@ namespace LethalMystery.UI
     {
         public static bool isCalled = false;
         public static GameObject votingGUI;
-
+        private static Sprite xButtonSprite;
+        public static bool inVoteTime = false;
 
 
         #region Patches
@@ -26,8 +27,13 @@ namespace LethalMystery.UI
         {
             if (isCalled)
             {
+                GameObject xButtonObj = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList/Image/PlayerListSlot/KickButton");
+                xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
+
                 votingGUI = CreateVotingGUI(__instance);
                 isCalled = false;
+
+                UpdateVoteButtonSprite();
             }
 
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
@@ -35,8 +41,9 @@ namespace LethalMystery.UI
                 bool condition = LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
                 float vote = StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value);
                 float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
-                string value = (condition) ? $"DISCUSS: {(int)discuss}": $"VOTE: {(int)vote}";
+                string value = (condition) ? $"DISCUSS: {(int)discuss}" : $"VOTE: {(int)vote}";
                 UpdateTextHeader(value);
+
             }
 
         }
@@ -83,7 +90,7 @@ namespace LethalMystery.UI
             float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
             string HeaderText = (rawHeaderText.Equals("VOTE: ")) ? rawHeaderText + $"{(int)vote}" : rawHeaderText + $"{(int)discuss}";
 
-            GetTextHeader(plist).GetComponent<TextMeshProUGUI>().text = HeaderText;
+            plist.transform.Find("Image/Header").gameObject.GetComponent<TextMeshProUGUI>().text = HeaderText;
             ShowVotesForPlayers(plist);
             VoteButton(plist);
             SkipButton(plist);
@@ -99,12 +106,28 @@ namespace LethalMystery.UI
             {
                 header.gameObject.GetComponent<TextMeshProUGUI>().text = text;
             }
+
+            if (text.ToLower().Contains("vote") && inVoteTime == false)
+            {
+                UpdateVoteButtonSprite();
+                inVoteTime = true;
+            }
         }
 
-        private static GameObject GetTextHeader(GameObject plist)
+
+        private static GameObject GetTextHeader()
         {
-            return plist.transform.Find("Image/Header").gameObject;
+            return GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/Header");
         }
+
+
+
+        private static GameObject GetPlayerListSlot()
+        {
+            return GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)");
+        }
+
+
 
 
         public static void SkipButton(GameObject playerListSlot)
@@ -123,7 +146,7 @@ namespace LethalMystery.UI
             skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
 
 
-            GameObject skipObj = Plugin.Instantiate(GetTextHeader(playerListSlot));
+            GameObject skipObj = Plugin.Instantiate(GetTextHeader());
             RectTransform skipTextRect = skipObj.GetComponent<RectTransform>();
             TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
             skipObj.gameObject.name = "SkipText";
@@ -158,19 +181,38 @@ namespace LethalMystery.UI
 
                 UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
                 UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
-                plrCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+                plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : Plugin.CheckboxEmptyIcon;
 
                 Plugin.mls.LogInfo($">>> Logging num: {i}");
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
-                // If the next playerlistslot is 0 then it's a dummy player script and it should be ignored.
-               // if (StartOfRound.Instance.allPlayerScripts[i + 1].actualClientId == 0) break;
             }
 
         }
 
 
+        private static void UpdateVoteButtonSprite()
+        {
+            int amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
 
+            GameObject playerVoteBtn = GetPlayerListSlot().transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
+            foreach (GameObject players in GOTools.GetAllChildren(playerVoteBtn))
+            {
+                // if (StartOfRound.Instance.allPlayerScripts[i].isPlayerDead) continue;
+                GameObject plrObj = players.transform.Find("VoteButton").gameObject;
+                if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
+                {
+                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;
+                }
+                else
+                {
+                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.CheckboxEmptyIcon;
+                }
+
+            }
+
+
+        }
 
 
         private static void ShowVotesForPlayers(GameObject playerListSlot)

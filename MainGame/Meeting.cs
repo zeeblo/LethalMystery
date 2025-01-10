@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace LethalMystery.MainGame
         public static void MeetingDefaults()
         {
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
+            VotingUI.inVoteTime = false;
+            VotingUI.isCalled = false;
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
 
