@@ -77,6 +77,8 @@ namespace LethalMystery.MainGame
 
         public static void VoteSetup()
         {
+            if (Plugin.localPlayer.isPlayerDead) return;
+
             hasVoted = false;
             canVote = true;
             localPlayerVote = 0;
@@ -101,6 +103,10 @@ namespace LethalMystery.MainGame
             skipVotes.Value = "0";
         }
 
+
+        /// <summary>
+        /// Removes dead and disconnected players from the dictionary
+        /// </summary>
         public static void RefreshPlayerVotes(string playerID)
         {
             if (!Plugin.isHost) return;
@@ -112,6 +118,8 @@ namespace LethalMystery.MainGame
 
             allVotes.Value = rawAllVotes;
         }
+
+
 
 
         public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)

@@ -23,6 +23,7 @@ namespace LethalMystery.MainGame
             VotingUI.inVoteTime = false;
             VotingUI.isCalled = false;
             Voting.amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
+            Voting.VoteSetup();
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
 

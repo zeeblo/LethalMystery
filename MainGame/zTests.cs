@@ -77,8 +77,9 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> My PID is: {Plugin.localPlayer.playerClientId}");
                     Plugin.mls.LogInfo($">>> thisClientPlayerId: {StartOfRound.Instance.thisClientPlayerId}");
                     Plugin.mls.LogInfo($">>> connectedPlayersAmount: {StartOfRound.Instance.connectedPlayersAmount}");
+                    Plugin.mls.LogInfo($">>> livingPlayers: {StartOfRound.Instance.livingPlayers}");
+                    //livingPlayers 
 
-                    
                     foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
                     {
                         Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
