@@ -203,6 +203,8 @@ namespace LethalMystery.UI
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
+                if (!Voting.allVotes.Value.ContainsKey($"{i}")) continue;
+
                 string votes = "VOTES: " + Voting.allVotes.Value[$"{i}"];
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
