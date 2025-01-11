@@ -15,17 +15,40 @@ namespace LethalMystery.MainGame
         public static int localPlayerVote = 0;
         public static bool hasVoted = false;
         public static bool canVote = true;
+        public static int amountOfPlayers;
 
 
 
         #region Patches
+
+
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
+        [HarmonyPostfix]
+        private static void UserLeft(ulong clientId)
+        {
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
+            amountOfPlayers -= 1;
+
+            
+            VotingUI.UpdatePlayerList(clientId / 2);
+            RefreshPlayerVotes($"{clientId / 2}");
+
+            Plugin.mls.LogInfo($"<<< localPlayerVote: {localPlayerVote}");
+            if ($"{clientId / 2}" == $"{localPlayerVote}")
+            {
+                Plugin.mls.LogInfo(">>> Player has been given back their vote.");
+                hasVoted = false;
+            }
+        }
+
 
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayer))]
         [HarmonyPostfix]
         private static void PlayerDied()
         {
             canVote = false;
-            VotingUI.amountOfPlayers -= 1;
+            amountOfPlayers -= 1;
+            //RefreshPlayerVotes();
         }
 
 
@@ -44,14 +67,33 @@ namespace LethalMystery.MainGame
 
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
             foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
-            {                
-               rawAllVotes.Add($"{user.playerClientId}", "0");
+            {
+                if (rawAllVotes.ContainsKey($"{user.actualClientId}") || user.isPlayerDead) continue;
+                if (user.actualClientId == 0)
+                {
+                    rawAllVotes.Add($"{user.actualClientId}", "0");
+                }
+                else
+                {
+                    rawAllVotes.Add($"{user.actualClientId / 2}", "0");
+                }
             }
 
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
         }
 
+        public static void RefreshPlayerVotes(string playerID)
+        {
+            if (!Plugin.isHost) return;
+            if (allVotes.Value == null) return;
+
+            Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
+            rawAllVotes = allVotes.Value;
+            rawAllVotes.Remove(playerID);
+
+            allVotes.Value = rawAllVotes;
+        }
 
 
         public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)

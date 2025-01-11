@@ -16,7 +16,6 @@ namespace LethalMystery.UI
         public static GameObject votingGUI;
         private static Sprite xButtonSprite;
         public static bool inVoteTime = false;
-        public static int amountOfPlayers;
 
 
         #region Patches
@@ -48,25 +47,6 @@ namespace LethalMystery.UI
             }
 
         }
-
-
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
-        [HarmonyPostfix]
-        private static void UserLeft(ulong clientId)
-        {
-            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
-            amountOfPlayers -= 1;
-
-            UpdatePlayerList(clientId);
-
-            Plugin.mls.LogInfo($"<<< localPlayerVote: {Voting.localPlayerVote}");
-            if ($"{clientId / 2}" == $"{Voting.localPlayerVote}")
-            {
-                Plugin.mls.LogInfo(">>> Player has been given back their vote.");
-                Voting.hasVoted = false;
-            }
-        }
-
 
 
 
@@ -168,8 +148,7 @@ namespace LethalMystery.UI
         public static void VoteButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            int amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
-            for (int i = 0; i < amountOfPlayers; i++)
+            for (int i = 0; i < Voting.amountOfPlayers; i++)
             {
 
                 int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
@@ -195,8 +174,6 @@ namespace LethalMystery.UI
 
         private static void UpdateVoteButtonSprite()
         {
-            int amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
-
             GameObject playerVoteBtn = GetPlayerListSlot().transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
             foreach (GameObject players in GOTools.GetAllChildren(playerVoteBtn))
             {
@@ -308,7 +285,7 @@ namespace LethalMystery.UI
         /// <summary>
         /// Refresh playerlist when player leaves or dies
         /// </summary>
-        private static void UpdatePlayerList(ulong playerID)
+        public static void UpdatePlayerList(ulong playerID)
         {
             string parentPath = "Systems/UI/Canvas/VotingMenu";
             string path = $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
@@ -317,7 +294,7 @@ namespace LethalMystery.UI
             foreach (GameObject player in GOTools.GetAllChildren(playerVoteObj))
             {
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                Plugin.mls.LogInfo($">>> pName: {pName.text}");
+                Plugin.mls.LogInfo($">>> pName: {pName.text} | playerID: {playerID}");
 
                 if (pName.text.EndsWith($"#{playerID}"))
                 {
