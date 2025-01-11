@@ -468,7 +468,6 @@ namespace LethalMystery.Network
             Int32.TryParse(data, out int userID);
 
             Plugin.mls.LogInfo(">>> in playerDiedClients ");
-            Voting.amountOfPlayers -= 1;
             Voting.RefreshPlayerVotes($"{userID}");
         }
         public void playerDiedReceive(string data, ulong id)

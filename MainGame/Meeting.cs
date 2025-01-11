@@ -22,7 +22,7 @@ namespace LethalMystery.MainGame
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {MeetingNum}";
             VotingUI.inVoteTime = false;
             VotingUI.isCalled = false;
-            Voting.amountOfPlayers = StartOfRound.Instance.connectedPlayersAmount + 1;
+            Voting.amountOfPlayers = StartOfRound.Instance.livingPlayers;
             Voting.VoteSetup();
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
