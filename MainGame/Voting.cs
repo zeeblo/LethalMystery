@@ -50,24 +50,6 @@ namespace LethalMystery.MainGame
             Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
         }
 
-        /*
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayerClientRpc))]
-        [HarmonyPostfix]
-        private static void NotifyPlayerDeathToUsers(int playerId)
-        {
-            if (Plugin.localPlayer.IsHost)
-            {
-                // Because apparently the host will execute this method
-                // multiple times
-                return;
-            }
-
-            Plugin.mls.LogInfo($">>> in KillPlayerClientRpc: {playerId} ");
-            amountOfPlayers -= 1;
-            RefreshPlayerVotes($"{playerId}");
-            Plugin.netHandler.playerDiedReceive($"{playerId}", Plugin.localPlayer.playerClientId);
-        }
-        */
         #endregion Patches
 
 
