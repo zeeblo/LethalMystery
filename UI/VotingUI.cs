@@ -178,7 +178,10 @@ namespace LethalMystery.UI
             foreach (GameObject players in GOTools.GetAllChildren(playerVoteBtn))
             {
                 // if (StartOfRound.Instance.allPlayerScripts[i].isPlayerDead) continue;
-                GameObject plrObj = players.transform.Find("VoteButton").gameObject;
+                Transform rawPlrObj = players.transform.Find("VoteButton");
+                if (rawPlrObj == null) continue;
+
+                GameObject plrObj = rawPlrObj.gameObject;
                 if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
                 {
                     plrObj.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;

@@ -7,6 +7,7 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using Unity.Services.Authentication.Internal;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
 
@@ -24,6 +25,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> showScrap;
         private LNetworkMessage<string> hideWeapon;
         private LNetworkMessage<string> playerVoted;
+        private LNetworkMessage<string> playerDied;
 
 
         public NetHandler()
@@ -39,6 +41,7 @@ namespace LethalMystery.Network
             showScrap = LNetworkMessage<string>.Connect("showScrap");
             hideWeapon = LNetworkMessage<string>.Connect("hideWeapon");
             playerVoted = LNetworkMessage<string>.Connect("playerVoted");
+            playerDied = LNetworkMessage<string>.Connect("playerDied");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -55,6 +58,8 @@ namespace LethalMystery.Network
             hideWeapon.OnClientReceived += hideWeaponClients;
             playerVoted.OnServerReceived += playerVotedServer;
             playerVoted.OnClientReceived += playerVotedClients;
+            playerDied.OnServerReceived += playerDiedServer;
+            playerDied.OnClientReceived += playerDiedClients;
 
         }
 
@@ -450,6 +455,28 @@ namespace LethalMystery.Network
             Plugin.mls.LogInfo($"<><><> I am in the playerVotedReceive:");
             playerVoted.SendServer(data);
         }
+
+
+
+        public void playerDiedServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the playerDiedServer:");
+            playerDied.SendClients(data);
+        }
+        public void playerDiedClients(string data)
+        {
+            Int32.TryParse(data, out int userID);
+
+            Plugin.mls.LogInfo(">>> in playerDiedClients ");
+            Voting.amountOfPlayers -= 1;
+            Voting.RefreshPlayerVotes($"{userID}");
+        }
+        public void playerDiedReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the playerDiedReceive:");
+            playerDied.SendServer(data);
+        }
+
 
 
     }
