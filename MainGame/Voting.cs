@@ -16,7 +16,6 @@ namespace LethalMystery.MainGame
         public static int localPlayerVote = 0;
         public static bool hasVoted = false;
         public static bool canVote = true;
-        public static int amountOfPlayers;
 
 
 
@@ -28,7 +27,8 @@ namespace LethalMystery.MainGame
         private static void UserLeft(ulong clientId)
         {
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
-            
+
+
             VotingUI.UpdatePlayerList(clientId / 2);
             RefreshPlayerVotes($"{clientId / 2}");
 

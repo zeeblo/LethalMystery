@@ -1,7 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
-using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -111,7 +110,6 @@ namespace LethalMystery.UI
 
 
 
-
         public static void SkipButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
@@ -148,7 +146,7 @@ namespace LethalMystery.UI
         public static void VoteButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            for (int i = 0; i < Voting.amountOfPlayers; i++)
+            for (int i = 0; i < StartOfRound.Instance.livingPlayers; i++)
             {
 
                 int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
