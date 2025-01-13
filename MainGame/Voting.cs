@@ -10,6 +10,7 @@ namespace LethalMystery.MainGame
     [HarmonyPatch]
     internal class Voting
     {
+        [PublicNetworkVariable]
         public static LNetworkVariable<Dictionary<string, string>> allVotes = LNetworkVariable<Dictionary<string, string>>.Connect("allVotes");
         public static LNetworkVariable<string> skipVotes = LNetworkVariable<string>.Connect("skipVotes");
         public static int localPlayerVote = 0;

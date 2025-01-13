@@ -515,33 +515,39 @@ namespace LethalMystery.Network
                     rawAllVotes.Add($"{i.Value}", "0");
                     Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
                 }
-
+                Voting.allVotes.Value = rawAllVotes;
+                Voting.skipVotes.Value = "0";
             }
             else if (type == "refresh")
             {
-                string playerID = splitData[0].Trim();
-                Plugin.mls.LogInfo($">>> in refresh: removed playerID: {playerID}");
-                rawAllVotes = Voting.allVotes.Value;
-                rawAllVotes.Remove(playerID);
-
-                foreach (KeyValuePair<string, string> d in rawAllVotes)
-                {
-                    Plugin.mls.LogInfo($">>>rawAllVotes PID: {d.Key} | VoteVal: {d.Value}");
-                }
-
+                setupVotes.SendClients(data);
             }
-            Voting.allVotes.Value = rawAllVotes;
-            Voting.skipVotes.Value = "0";
+            
+
+
+            
+        }
+        public void setupVotesClients(string data)
+        {
+            string[] splitData = data.Split('/');
+            string playerID = splitData[0].Trim();
+            
+            Plugin.mls.LogInfo($">>> in refresh: removed playerID: {playerID}");
+
+            Dictionary<string, string> votes = Voting.allVotes.Value;
+            votes.Remove(playerID);
+
+            Voting.allVotes.Value = votes;
+
+            foreach (KeyValuePair<string, string> d in votes)
+            {
+                Plugin.mls.LogInfo($">>>rawAllVotes PID: {d.Key} | VoteVal: {d.Value}");
+            }
 
             foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
             {
                 Plugin.mls.LogInfo($">>>refr PID: {d.Key} | VoteVal: {d.Value}");
             }
-            //setupVotes.SendClients(data);
-        }
-        public void setupVotesClients(string data)
-        {
-            
         }
         public void setupVotesReceive(string data, ulong id)
         {

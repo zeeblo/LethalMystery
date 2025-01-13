@@ -9,7 +9,7 @@ namespace LethalMystery.Utils
         public static ConfigEntry<string>? shapeshiftBind;
         public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
         public static float defaultDiscussTime = 15f; // 35
-        public static float defaultVoteTime = 25f; // 85
+        public static float defaultVoteTime = 95f; // 85
         public static float defaultMeetingCountdown = defaultDiscussTime + defaultVoteTime + 15f;
         public static float defaultMeetingCooldown = 10f; // 10
         public static int defaultMeetingNum = 3; // 1
