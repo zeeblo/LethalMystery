@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Discord;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Patches;
@@ -26,6 +27,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> hideWeapon;
         private LNetworkMessage<string> playerVoted;
         private LNetworkMessage<string> playerDied;
+        private LNetworkMessage<string> setupVotes;
 
 
         public NetHandler()
@@ -42,6 +44,7 @@ namespace LethalMystery.Network
             hideWeapon = LNetworkMessage<string>.Connect("hideWeapon");
             playerVoted = LNetworkMessage<string>.Connect("playerVoted");
             playerDied = LNetworkMessage<string>.Connect("playerDied");
+            setupVotes = LNetworkMessage<string>.Connect("setupVotes");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -60,7 +63,8 @@ namespace LethalMystery.Network
             playerVoted.OnClientReceived += playerVotedClients;
             playerDied.OnServerReceived += playerDiedServer;
             playerDied.OnClientReceived += playerDiedClients;
-
+            setupVotes.OnServerReceived += setupVotesServer;
+            setupVotes.OnClientReceived += setupVotesClients;
         }
 
         #region Variables
@@ -474,6 +478,75 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the playerDiedReceive:");
             playerDied.SendServer(data);
+        }
+
+
+        public void setupVotesServer(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the setupVotesServer:");
+            Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
+            string[] splitData = data.Split('/');
+            string type = splitData[1];
+            
+            if (type == "setup")
+            {
+                /*
+                rawAllVotes.Add("0", "0");
+                foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
+                {
+                    Plugin.mls.LogInfo($">>> refershhh userPlayerID: {user.playerClientId} |  actualClient: {user.actualClientId} ");
+                    if (rawAllVotes.ContainsKey($"{user.playerClientId}") || user.isPlayerDead || user.actualClientId == 0) continue;
+
+                    rawAllVotes.Add($"{user.playerClientId}", "0");
+                    Plugin.mls.LogInfo($">>> ADDED userPlayerID: {user.playerClientId} |  actualClient: {user.actualClientId} ");
+                }
+                */
+
+                /*
+                for (int i = 0; i < VotingUI.GetPlayerIDs().Count(); i++)
+                {
+                    rawAllVotes.Add($"{VotingUI.GetPlayerIDs()[i]}", "0");
+                    Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {VotingUI.GetPlayerIDs()[i]}");
+                }
+                */
+
+                foreach (KeyValuePair<ulong, int> i in StartOfRound.Instance.ClientPlayerList)
+                {
+                    rawAllVotes.Add($"{i.Value}", "0");
+                    Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
+                }
+
+            }
+            else if (type == "refresh")
+            {
+                string playerID = splitData[0].Trim();
+                Plugin.mls.LogInfo($">>> in refresh: removed playerID: {playerID}");
+                rawAllVotes = Voting.allVotes.Value;
+                rawAllVotes.Remove(playerID);
+
+                foreach (KeyValuePair<string, string> d in rawAllVotes)
+                {
+                    Plugin.mls.LogInfo($">>>rawAllVotes PID: {d.Key} | VoteVal: {d.Value}");
+                }
+
+            }
+            Voting.allVotes.Value = rawAllVotes;
+            Voting.skipVotes.Value = "0";
+
+            foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
+            {
+                Plugin.mls.LogInfo($">>>refr PID: {d.Key} | VoteVal: {d.Value}");
+            }
+            //setupVotes.SendClients(data);
+        }
+        public void setupVotesClients(string data)
+        {
+            
+        }
+        public void setupVotesReceive(string data, ulong id)
+        {
+            Plugin.mls.LogInfo($"<><><> I am in the setupVotesReceive:");
+            setupVotes.SendServer(data);
         }
 
 

@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using Discord;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Utils;
@@ -110,6 +111,25 @@ namespace LethalMystery.UI
 
 
 
+        
+        public static List<int> GetPlayerIDs()
+        {
+            string parentPath = "Systems/UI/Canvas/QuickMenu";
+            string path =  $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
+            List<int> playerIDS = new List<int>();
+
+            GameObject playerVoteObj = GameObject.Find(path);
+            foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
+            {
+                TextMeshProUGUI pName = players.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
+                string actualID = pName.text.Split("#")[1];
+                playerIDS.Add(StringAddons.ConvertToInt(actualID));
+            }
+            return playerIDS;
+        }
+        
+
+
         public static void SkipButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
@@ -146,11 +166,10 @@ namespace LethalMystery.UI
         public static void VoteButton(GameObject playerListSlot)
         {
             bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            for (int i = 0; i < StartOfRound.Instance.livingPlayers; i++)
+            foreach (KeyValuePair<string, string> i in Voting.allVotes.Value)
             {
-
-                int index = i; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
-                string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
+                int index = StringAddons.ConvertToInt(i.Key); // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
+                string playerBeingVoted = (index > 0) ? $"PlayerListSlot ({index})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/KickButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
 
                 GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
@@ -162,7 +181,7 @@ namespace LethalMystery.UI
                 UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
                 plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : Plugin.CheckboxEmptyIcon;
 
-                Plugin.mls.LogInfo($">>> Logging num: {i}");
+                Plugin.mls.LogInfo($">>> Logging num: {index}");
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
             }

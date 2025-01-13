@@ -3,7 +3,6 @@ using LethalNetworkAPI;
 using HarmonyLib;
 using LethalMystery.Utils;
 using LethalMystery.UI;
-using Unity.Services.Authentication.Internal;
 
 
 namespace LethalMystery.MainGame
@@ -26,12 +25,12 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void UserLeft(ulong clientId)
         {
+            Plugin.mls.LogInfo($">>> PlayerLeft: {clientId}");
+            Plugin.mls.LogInfo($">>> PlayerLeftDiv: {clientId / 2}");
+            RefreshPlayerVotes($"{clientId / 2}");
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
 
-
             VotingUI.UpdatePlayerList(clientId / 2);
-            RefreshPlayerVotes($"{clientId / 2}");
-
             Plugin.mls.LogInfo($"<<< localPlayerVote: {localPlayerVote}");
             if ($"{clientId / 2}" == $"{localPlayerVote}")
             {
@@ -54,33 +53,37 @@ namespace LethalMystery.MainGame
 
 
 
-
-        public static void VoteSetup()
+        public static void ResetVars()
         {
             if (Plugin.localPlayer.isPlayerDead) return;
 
             hasVoted = false;
             canVote = true;
             localPlayerVote = 0;
+        }
 
+        public static void VoteSetup()
+        {
+
+            ResetVars();
             if (!Plugin.isHost) return;
 
+            /*
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
+            rawAllVotes.Add("0", "0");
             foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
             {
-                if (rawAllVotes.ContainsKey($"{user.actualClientId}") || user.isPlayerDead) continue;
-                if (user.actualClientId == 0)
-                {
-                    rawAllVotes.Add($"{user.actualClientId}", "0");
-                }
-                else
-                {
-                    rawAllVotes.Add($"{user.actualClientId / 2}", "0");
-                }
+                Plugin.mls.LogInfo($">>> BBBB4 userPlayerID: {user.playerClientId}");
+                if (rawAllVotes.ContainsKey($"{user.playerClientId}") || user.isPlayerDead || user.actualClientId == 0) continue;
+
+                rawAllVotes.Add($"{user.playerClientId}", "0");
+                Plugin.mls.LogInfo($">>>aaaaaa4 userPlayerID: {user.playerClientId}");
             }
 
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
+            */
+            Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);
         }
 
 
@@ -91,12 +94,9 @@ namespace LethalMystery.MainGame
         {
             if (!Plugin.isHost) return;
             if (allVotes.Value == null) return;
+            Plugin.mls.LogInfo(">>> Refreshed dictionary");
 
-            Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
-            rawAllVotes = allVotes.Value;
-            rawAllVotes.Remove(playerID);
-
-            allVotes.Value = rawAllVotes;
+            Plugin.netHandler.setupVotesReceive($"{playerID}/refresh", Plugin.localPlayer.playerClientId);
         }
 
 
@@ -122,13 +122,13 @@ namespace LethalMystery.MainGame
                 }
             }
 
-            
+
         }
 
 
         public static void SkipButtonClick(UnityEngine.UI.Image check)
         {
-            if (canVote == false ) return;
+            if (canVote == false) return;
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
             check.sprite = Plugin.CheckboxEnabledIcon;

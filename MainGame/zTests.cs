@@ -10,6 +10,7 @@ using BepInEx.Logging;
 using System;
 using System.Collections.Generic;
 using BepInEx.Bootstrap;
+using GameNetcodeStuff;
 
 
 namespace LethalMystery.MainGame
@@ -69,6 +70,11 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
 
+                    foreach (KeyValuePair<ulong, int> user in StartOfRound.Instance.ClientPlayerList)
+                    {
+                        Plugin.mls.LogInfo($">>> fullyLoadedID list: {user}");
+                    }
+
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
@@ -78,7 +84,7 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> thisClientPlayerId: {StartOfRound.Instance.thisClientPlayerId}");
                     Plugin.mls.LogInfo($">>> connectedPlayersAmount: {StartOfRound.Instance.connectedPlayersAmount}");
                     Plugin.mls.LogInfo($">>> livingPlayers: {StartOfRound.Instance.livingPlayers}");
-                    //livingPlayers 
+                    //ClientPlayerList.Remove(clientId); (startofround)
 
                     foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
                     {
