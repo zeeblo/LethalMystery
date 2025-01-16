@@ -489,25 +489,6 @@ namespace LethalMystery.Network
             
             if (type == "setup")
             {
-                /*
-                rawAllVotes.Add("0", "0");
-                foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
-                {
-                    Plugin.mls.LogInfo($">>> refershhh userPlayerID: {user.playerClientId} |  actualClient: {user.actualClientId} ");
-                    if (rawAllVotes.ContainsKey($"{user.playerClientId}") || user.isPlayerDead || user.actualClientId == 0) continue;
-
-                    rawAllVotes.Add($"{user.playerClientId}", "0");
-                    Plugin.mls.LogInfo($">>> ADDED userPlayerID: {user.playerClientId} |  actualClient: {user.actualClientId} ");
-                }
-                */
-
-                /*
-                for (int i = 0; i < VotingUI.GetPlayerIDs().Count(); i++)
-                {
-                    rawAllVotes.Add($"{VotingUI.GetPlayerIDs()[i]}", "0");
-                    Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {VotingUI.GetPlayerIDs()[i]}");
-                }
-                */
 
                 foreach (KeyValuePair<ulong, int> i in StartOfRound.Instance.ClientPlayerList)
                 {

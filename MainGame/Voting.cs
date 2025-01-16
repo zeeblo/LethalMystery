@@ -49,20 +49,7 @@ namespace LethalMystery.MainGame
             canVote = false;
             Plugin.mls.LogInfo($">>> KillPlayer: {Plugin.localPlayer.playerClientId}");
             Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
-            //Plugin.netHandler.setupVotesReceive($"{Plugin.localPlayer.actualClientId / 2}/refresh", Plugin.localPlayer.playerClientId);
         }
-
-
-        /*
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayerClientRpc))]
-        [HarmonyPostfix]
-        private static void PlayerDiedClients(int playerId)
-        {
-            Plugin.mls.LogInfo($">>> KillPlayer: {playerId}");
-            //Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
-            Plugin.netHandler.setupVotesReceive($"{playerId}/refresh", Plugin.localPlayer.playerClientId);
-        }
-        */
 
         #endregion Patches
 
@@ -83,22 +70,6 @@ namespace LethalMystery.MainGame
             ResetVars();
             if (!Plugin.isHost) return;
 
-            /*
-            Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
-            rawAllVotes.Add("0", "0");
-            foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
-            {
-                Plugin.mls.LogInfo($">>> BBBB4 userPlayerID: {user.playerClientId}");
-                if (rawAllVotes.ContainsKey($"{user.playerClientId}") || user.isPlayerDead || user.actualClientId == 0) continue;
-
-                rawAllVotes.Add($"{user.playerClientId}", "0");
-                Plugin.mls.LogInfo($">>>aaaaaa4 userPlayerID: {user.playerClientId}");
-            }
-
-            allVotes.Value = rawAllVotes;
-            skipVotes.Value = "0";
-            */
-            // Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);
             Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);
         }
 

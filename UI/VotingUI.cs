@@ -167,12 +167,6 @@ namespace LethalMystery.UI
 
         public static void VoteButton(GameObject playerListSlot)
         {
-            /*
-            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
-            {
-                if (!Voting.allVotes.Value.ContainsKey($"{i}")) continue;
-            }
-            */
             GameObject raw_playerVoteBtn = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
             Dictionary<int, GameObject> playerVoteBtn = new Dictionary<int, GameObject>();
 
@@ -205,26 +199,6 @@ namespace LethalMystery.UI
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
 
             }
-            /*
-            foreach (KeyValuePair<string, string> i in Voting.allVotes.Value)
-            {
-                int index = StringAddons.ConvertToInt(i.Key); // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
-                string path = "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/KickButton";
-
-                //GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
-                GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
-                playerVoteBtn.gameObject.name = "VoteButton";
-                playerVoteBtn.SetActive(true);
-
-                UnityEngine.UI.Image plrCheckSprite = playerVoteBtn.GetComponent<UnityEngine.UI.Image>();
-                UnityEngine.UI.Button plrbutton = playerVoteBtn.GetComponent<UnityEngine.UI.Button>();
-                plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : Plugin.CheckboxEmptyIcon;
-
-                Plugin.mls.LogInfo($">>> Logging num: {index}");
-                plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
-
-            }
-            */
 
 
         }
@@ -343,39 +317,6 @@ namespace LethalMystery.UI
             }
 
         }
-
-
-        public static GameObject ClonedPlayerList(GameObject plist)
-        {
-            string path = "Image/QuickmenuOverride(Clone)/Holder";
-
-            GameObject raw_votelist = Plugin.Instantiate(plist);
-            GameObject votelist = raw_votelist.transform.Find(path).gameObject;
-
-            foreach (GameObject player in GOTools.GetAllChildren(votelist))
-            {
-                TextMeshProUGUI pName = player.transform.Find("PlayerNameButton/PName").GetComponent<TextMeshProUGUI>();
-                string raw_id = pName.text.Split('#')[1];
-                int id = StringAddons.ConvertToInt(raw_id);
-                Plugin.mls.LogInfo($">>>ClonedPlayerList: pName: {pName.text} | playerID: {raw_id}");
-
-                if (StartOfRound.Instance.allPlayerScripts[id].isPlayerDead)
-                {
-                    player.gameObject.SetActive(false);
-                }
-            }
-
-            foreach (GameObject player in GOTools.GetAllChildren(votelist))
-            {
-                TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                string raw_id = pName.text.Split('#')[1];
-                int id = StringAddons.ConvertToInt(raw_id);
-                Plugin.mls.LogInfo($">>>A444ClonedPlayerList: pName: {pName.text} | playerID: {raw_id}");
-            }
-
-            return raw_votelist;
-        }
-
 
 
         /// <summary>
