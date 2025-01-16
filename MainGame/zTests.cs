@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using BepInEx.Bootstrap;
 using GameNetcodeStuff;
+using LethalMystery.UI;
 
 
 namespace LethalMystery.MainGame

@@ -3,6 +3,7 @@ using LethalNetworkAPI;
 using HarmonyLib;
 using LethalMystery.Utils;
 using LethalMystery.UI;
+using Unity.Services.Authentication.Internal;
 
 
 namespace LethalMystery.MainGame
@@ -48,7 +49,20 @@ namespace LethalMystery.MainGame
             canVote = false;
             Plugin.mls.LogInfo($">>> KillPlayer: {Plugin.localPlayer.playerClientId}");
             Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
+            //Plugin.netHandler.setupVotesReceive($"{Plugin.localPlayer.actualClientId / 2}/refresh", Plugin.localPlayer.playerClientId);
         }
+
+
+        /*
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayerClientRpc))]
+        [HarmonyPostfix]
+        private static void PlayerDiedClients(int playerId)
+        {
+            Plugin.mls.LogInfo($">>> KillPlayer: {playerId}");
+            //Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
+            Plugin.netHandler.setupVotesReceive($"{playerId}/refresh", Plugin.localPlayer.playerClientId);
+        }
+        */
 
         #endregion Patches
 
@@ -84,6 +98,7 @@ namespace LethalMystery.MainGame
             allVotes.Value = rawAllVotes;
             skipVotes.Value = "0";
             */
+            // Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);
             Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);
         }
 
@@ -111,8 +126,8 @@ namespace LethalMystery.MainGame
             Plugin.mls.LogInfo($"Voted {userID}.");
             check.sprite = Plugin.CheckboxEnabledIcon;
 
-
-            foreach (KeyValuePair<string, string> plrID in allVotes.Value.ToList())
+            // got rid of .ToList()
+            foreach (KeyValuePair<string, string> plrID in allVotes.Value)
             {
                 if (plrID.Key == $"{userID}")
                 {

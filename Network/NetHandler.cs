@@ -8,7 +8,6 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
-using Unity.Services.Authentication.Internal;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
 
@@ -512,6 +511,8 @@ namespace LethalMystery.Network
 
                 foreach (KeyValuePair<ulong, int> i in StartOfRound.Instance.ClientPlayerList)
                 {
+                    if (StartOfRound.Instance.allPlayerScripts[i.Value].isPlayerDead) continue;
+
                     rawAllVotes.Add($"{i.Value}", "0");
                     Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
                 }
