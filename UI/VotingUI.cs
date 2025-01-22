@@ -173,10 +173,11 @@ namespace LethalMystery.UI
             foreach (GameObject player in GOTools.GetAllChildren(raw_playerVoteBtn))
             {
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton/PName").GetComponent<TextMeshProUGUI>();
-                string raw_id = pName.text.Split('#')[1];
-                int id = StringAddons.ConvertToInt(raw_id);
-                Plugin.mls.LogInfo($">>>ClonedPlayerList: pName: {pName.text} | playerID: {raw_id}");
+                string name = pName.text;
+                int id = StringAddons.NameToID(name);
+                Plugin.mls.LogInfo($">>>ClonedPlayerList: pName: {pName.text} | playerID: {id}");
 
+                if (id == -1) continue;
                 if (StartOfRound.Instance.allPlayerScripts[id].isPlayerDead) continue;
                 if (!Voting.allVotes.Value.ContainsKey($"{id}")) continue;
 

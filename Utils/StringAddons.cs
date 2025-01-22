@@ -230,5 +230,18 @@ namespace LethalMystery.Utils
 
             return result;
         }
+
+        public static int NameToID(string name)
+        {
+            int result = -1;
+            foreach (KeyValuePair<ulong, int> i in StartOfRound.Instance.ClientPlayerList)
+            {
+                if (StartOfRound.Instance.allPlayerScripts[i.Value].playerUsername.ToLower() == name.ToLower())
+                {
+                    return (int)StartOfRound.Instance.allPlayerScripts[i.Value].playerClientId;
+                }
+            }
+            return result;
+        }
     }
 }
