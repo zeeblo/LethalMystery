@@ -156,7 +156,6 @@ namespace LethalMystery.Players
             // Set remaining players to have the employee role
             foreach (ulong id in playerIDS)
             {
-                Plugin.mls.LogInfo(">>> Adding employee roles");
                 rawAllPlayers.Add(id, "employee");
             }
 

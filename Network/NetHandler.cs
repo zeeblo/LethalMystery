@@ -424,7 +424,14 @@ namespace LethalMystery.Network
         public void playerVotedServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the playerVotedServer:");
-                        
+            string[] splitData = data.Split('/');
+            string playerThatVoted = splitData[2];
+
+            Dictionary<string, string> votes = Voting.playersWhoVoted.Value;
+            votes[playerThatVoted] = "voted";
+
+            Voting.playersWhoVoted.Value = votes;
+
             playerVoted.SendClients(data);
         }
         public void playerVotedClients(string data)
@@ -482,6 +489,7 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the setupVotesServer:");
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
+            Dictionary<string, string> rawPlayersWhoVoted = new Dictionary<string, string>();
             string[] splitData = data.Split('/');
             string type = splitData[1];
             
@@ -493,9 +501,11 @@ namespace LethalMystery.Network
                     if (StartOfRound.Instance.allPlayerScripts[i.Value].isPlayerDead) continue;
 
                     rawAllVotes.Add($"{i.Value}", "0");
+                    rawPlayersWhoVoted.Add($"{i.Value}", "0");
                     //Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
                 }
                 Voting.playersWhoGotVoted.Value = rawAllVotes;
+                Voting.playersWhoVoted.Value = rawPlayersWhoVoted;
                 Voting.skipVotes.Value = "0";
             }
             else if (type == "refresh")
@@ -518,16 +528,8 @@ namespace LethalMystery.Network
             votes.Remove(playerID);
 
             Voting.playersWhoGotVoted.Value = votes;
+            Voting.playersWhoVoted.Value = votes;
 
-            foreach (KeyValuePair<string, string> d in votes)
-            {
-                Plugin.mls.LogInfo($">>>rawAllVotes PID: {d.Key} | VoteVal: {d.Value}");
-            }
-
-            foreach (KeyValuePair<string, string> d in Voting.playersWhoGotVoted.Value)
-            {
-                Plugin.mls.LogInfo($">>>refr PID: {d.Key} | VoteVal: {d.Value}");
-            }
         }
         public void setupVotesReceive(string data, ulong id)
         {

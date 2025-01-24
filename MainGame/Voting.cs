@@ -3,7 +3,6 @@ using LethalNetworkAPI;
 using HarmonyLib;
 using LethalMystery.Utils;
 using LethalMystery.UI;
-using Unity.Services.Authentication.Internal;
 
 
 namespace LethalMystery.MainGame
@@ -13,6 +12,7 @@ namespace LethalMystery.MainGame
     {
         [PublicNetworkVariable]
         public static LNetworkVariable<Dictionary<string, string>> playersWhoGotVoted = LNetworkVariable<Dictionary<string, string>>.Connect("playersWhoGotVoted");
+        [PublicNetworkVariable]
         public static LNetworkVariable<Dictionary<string, string>> playersWhoVoted = LNetworkVariable<Dictionary<string, string>>.Connect("playersWhoVoted");
         public static LNetworkVariable<string> skipVotes = LNetworkVariable<string>.Connect("skipVotes");
         public static int localPlayerVote = 0;
@@ -91,10 +91,9 @@ namespace LethalMystery.MainGame
         public static bool EveryoneVoted()
         {
             if (StringAddons.ConvertToFloat(Meeting.voteTime.Value) <= 10) return false;
-            foreach (KeyValuePair<string, string> v in playersWhoGotVoted.Value)
+            foreach (KeyValuePair<string, string> v in playersWhoVoted.Value)
             {
-                int vote = StringAddons.ConvertToInt(v.Value);
-                if (vote == 0) return false;
+                if (v.Value != "voted") return false;
             }
             return true;
         }
@@ -108,12 +107,13 @@ namespace LethalMystery.MainGame
             Plugin.mls.LogInfo($"Voted {userID}.");
             check.sprite = Plugin.CheckboxEnabledIcon;
 
+            ulong PlayerThatVoted = Plugin.localPlayer.playerClientId;
             // got rid of .ToList()
             foreach (KeyValuePair<string, string> plrID in playersWhoGotVoted.Value)
             {
                 if (plrID.Key == $"{userID}")
                 {
-                    Plugin.netHandler.playerVotedReceive($"vote/{userID}", Plugin.localPlayer.playerClientId);
+                    Plugin.netHandler.playerVotedReceive($"vote/{userID}/{PlayerThatVoted}", PlayerThatVoted);
                     localPlayerVote = userID;
                     hasVoted = true;
                     break;
@@ -130,7 +130,8 @@ namespace LethalMystery.MainGame
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
             check.sprite = Plugin.CheckboxEnabledIcon;
-            Plugin.netHandler.playerVotedReceive($"skip/", Plugin.localPlayer.playerClientId);
+            ulong PlayerThatVoted = Plugin.localPlayer.playerClientId;
+            Plugin.netHandler.playerVotedReceive($"skip/skip/{PlayerThatVoted}", PlayerThatVoted);
             hasVoted = true;
         }
 

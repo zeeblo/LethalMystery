@@ -71,11 +71,11 @@ namespace LethalMystery.MainGame
                     //Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
 
-                    foreach (KeyValuePair<ulong, int> user in StartOfRound.Instance.ClientPlayerList)
-                    {
-                        Plugin.mls.LogInfo($">>> fullyLoadedID list: {user}");
-                    }
 
+                    foreach (KeyValuePair<string, string> d in Voting.playersWhoVoted.Value)
+                    {
+                        Plugin.mls.LogInfo($">>> P who voted: {d.Key} | val: {d.Value}");
+                    }
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
