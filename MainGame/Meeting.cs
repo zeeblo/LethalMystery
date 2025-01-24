@@ -113,6 +113,14 @@ namespace LethalMystery.MainGame
                 float countdown = StringAddons.ConvertToFloat(voteTime.Value);
                 countdown -= Time.deltaTime;
 
+                bool plrsVote = Voting.EveryoneVoted();
+                if (plrsVote)
+                {
+                    Plugin.mls.LogInfo(">>> ()() everyone voted ()()");
+                    countdown = 10;
+                    return;
+                }
+
                 voteTime.Value = $"{countdown}";
             }
         }

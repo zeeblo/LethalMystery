@@ -436,9 +436,9 @@ namespace LethalMystery.Network
             string skipVal = Voting.skipVotes.Value;
             Dictionary<string, string> votes = Voting.allVotes.Value;
 
-            Plugin.mls.LogInfo($">> type: {type}");
-            Plugin.mls.LogInfo($">> userID: {userID}");
-            Plugin.mls.LogInfo($">> SKIPS: {skipVal}");
+            //Plugin.mls.LogInfo($">> type: {type}");
+            //Plugin.mls.LogInfo($">> userID: {userID}");
+            //Plugin.mls.LogInfo($">> SKIPS: {skipVal}");
 
             switch (type)
             {
@@ -463,19 +463,16 @@ namespace LethalMystery.Network
 
         public void playerDiedServer(string data, ulong id)
         {
-            Plugin.mls.LogInfo($"<><><> I am in the playerDiedServer:");
             playerDied.SendClients(data);
         }
         public void playerDiedClients(string data)
         {
             Int32.TryParse(data, out int userID);
 
-            Plugin.mls.LogInfo(">>> in playerDiedClients ");
             Voting.RefreshPlayerVotes($"{userID}");
         }
         public void playerDiedReceive(string data, ulong id)
         {
-            Plugin.mls.LogInfo($"<><><> I am in the playerDiedReceive:");
             playerDied.SendServer(data);
         }
 
@@ -495,7 +492,7 @@ namespace LethalMystery.Network
                     if (StartOfRound.Instance.allPlayerScripts[i.Value].isPlayerDead) continue;
 
                     rawAllVotes.Add($"{i.Value}", "0");
-                    Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
+                    //Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
                 }
                 Voting.allVotes.Value = rawAllVotes;
                 Voting.skipVotes.Value = "0";

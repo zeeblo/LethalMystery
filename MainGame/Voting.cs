@@ -86,7 +86,17 @@ namespace LethalMystery.MainGame
             Plugin.netHandler.setupVotesReceive($"{playerID}/refresh", Plugin.localPlayer.playerClientId);
         }
 
-
+        
+        public static bool EveryoneVoted()
+        {
+            if (StringAddons.ConvertToFloat(Meeting.voteTime.Value) <= 10) return false;
+            foreach (KeyValuePair<string, string> v in allVotes.Value)
+            {
+                int vote = StringAddons.ConvertToInt(v.Value);
+                if (vote == 0) return false;
+            }
+            return true;
+        }
 
 
         public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)
