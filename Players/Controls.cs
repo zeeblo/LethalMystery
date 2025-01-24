@@ -26,6 +26,15 @@ namespace LethalMystery.Players
             shapeshiftRef = InputActionReference.Create(shapeshift);
         }
 
+        public static void UnlockCursor(bool value)
+        {
+            Cursor.lockState = (value) ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.SetCursor(HUDManager.Instance.defaultCursorTex, new Vector2(0f, 0f), CursorMode.Auto);
+            if (!StartOfRound.Instance.localPlayerUsingController)
+            {
+                Cursor.visible = value;
+            }
+        }
 
 
         private static void Shapeshift_performed(InputAction.CallbackContext context)
