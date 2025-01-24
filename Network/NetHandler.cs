@@ -435,7 +435,7 @@ namespace LethalMystery.Network
             string type = splitData[0];
             Int32.TryParse(splitData[1], out int userID);
             string skipVal = Voting.skipVotes.Value;
-            Dictionary<string, string> votes = Voting.allVotes.Value;
+            Dictionary<string, string> votes = Voting.playersWhoGotVoted.Value;
 
             //Plugin.mls.LogInfo($">> type: {type}");
             //Plugin.mls.LogInfo($">> userID: {userID}");
@@ -495,7 +495,7 @@ namespace LethalMystery.Network
                     rawAllVotes.Add($"{i.Value}", "0");
                     //Plugin.mls.LogInfo($">>> ADDED ID IN SETUP: {i.Value}");
                 }
-                Voting.allVotes.Value = rawAllVotes;
+                Voting.playersWhoGotVoted.Value = rawAllVotes;
                 Voting.skipVotes.Value = "0";
             }
             else if (type == "refresh")
@@ -514,17 +514,17 @@ namespace LethalMystery.Network
             
             Plugin.mls.LogInfo($">>> in refresh: removed playerID: {playerID}");
 
-            Dictionary<string, string> votes = Voting.allVotes.Value;
+            Dictionary<string, string> votes = Voting.playersWhoGotVoted.Value;
             votes.Remove(playerID);
 
-            Voting.allVotes.Value = votes;
+            Voting.playersWhoGotVoted.Value = votes;
 
             foreach (KeyValuePair<string, string> d in votes)
             {
                 Plugin.mls.LogInfo($">>>rawAllVotes PID: {d.Key} | VoteVal: {d.Value}");
             }
 
-            foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
+            foreach (KeyValuePair<string, string> d in Voting.playersWhoGotVoted.Value)
             {
                 Plugin.mls.LogInfo($">>>refr PID: {d.Key} | VoteVal: {d.Value}");
             }

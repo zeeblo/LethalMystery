@@ -12,7 +12,8 @@ namespace LethalMystery.MainGame
     internal class Voting
     {
         [PublicNetworkVariable]
-        public static LNetworkVariable<Dictionary<string, string>> allVotes = LNetworkVariable<Dictionary<string, string>>.Connect("allVotes");
+        public static LNetworkVariable<Dictionary<string, string>> playersWhoGotVoted = LNetworkVariable<Dictionary<string, string>>.Connect("playersWhoGotVoted");
+        public static LNetworkVariable<Dictionary<string, string>> playersWhoVoted = LNetworkVariable<Dictionary<string, string>>.Connect("playersWhoVoted");
         public static LNetworkVariable<string> skipVotes = LNetworkVariable<string>.Connect("skipVotes");
         public static int localPlayerVote = 0;
         public static bool hasVoted = false;
@@ -80,7 +81,7 @@ namespace LethalMystery.MainGame
         public static void RefreshPlayerVotes(string playerID)
         {
             if (!Plugin.isHost) return;
-            if (allVotes.Value == null) return;
+            if (playersWhoGotVoted.Value == null) return;
             Plugin.mls.LogInfo(">>> Refreshed dictionary");
 
             Plugin.netHandler.setupVotesReceive($"{playerID}/refresh", Plugin.localPlayer.playerClientId);
@@ -90,7 +91,7 @@ namespace LethalMystery.MainGame
         public static bool EveryoneVoted()
         {
             if (StringAddons.ConvertToFloat(Meeting.voteTime.Value) <= 10) return false;
-            foreach (KeyValuePair<string, string> v in allVotes.Value)
+            foreach (KeyValuePair<string, string> v in playersWhoGotVoted.Value)
             {
                 int vote = StringAddons.ConvertToInt(v.Value);
                 if (vote == 0) return false;
@@ -108,7 +109,7 @@ namespace LethalMystery.MainGame
             check.sprite = Plugin.CheckboxEnabledIcon;
 
             // got rid of .ToList()
-            foreach (KeyValuePair<string, string> plrID in allVotes.Value)
+            foreach (KeyValuePair<string, string> plrID in playersWhoGotVoted.Value)
             {
                 if (plrID.Key == $"{userID}")
                 {
@@ -137,7 +138,7 @@ namespace LethalMystery.MainGame
         private static void TallyVotes()
         {
             List<int> playerVotes = new List<int>();
-            foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
+            foreach (KeyValuePair<string, string> v in Voting.playersWhoGotVoted.Value)
             {
                 int voteNum = StringAddons.ConvertToInt(v.Value);
                 playerVotes.Add(voteNum);
@@ -158,7 +159,7 @@ namespace LethalMystery.MainGame
                 }
             }
 
-            foreach (KeyValuePair<string, string> v in Voting.allVotes.Value)
+            foreach (KeyValuePair<string, string> v in Voting.playersWhoGotVoted.Value)
             {
                 int voteNum = StringAddons.ConvertToInt(v.Value);
                 if (voteNum == maxVote)

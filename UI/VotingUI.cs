@@ -179,7 +179,7 @@ namespace LethalMystery.UI
 
                 if (id == -1) continue;
                 if (StartOfRound.Instance.allPlayerScripts[id].isPlayerDead) continue;
-                if (!Voting.allVotes.Value.ContainsKey($"{id}")) continue;
+                if (!Voting.playersWhoGotVoted.Value.ContainsKey($"{id}")) continue;
 
                 playerVoteBtn.Add(id, player);
             }
@@ -236,9 +236,9 @@ namespace LethalMystery.UI
 
             for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
             {
-                if (!Voting.allVotes.Value.ContainsKey($"{i}")) continue;
+                if (!Voting.playersWhoGotVoted.Value.ContainsKey($"{i}")) continue;
 
-                string votes = "VOTES: " + Voting.allVotes.Value[$"{i}"];
+                string votes = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{i}"];
                 string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
                 string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
 
@@ -304,7 +304,7 @@ namespace LethalMystery.UI
                     if (pName.text.EndsWith($"#{userID}"))
                     {
                         GameObject plrObj = players.transform.Find("Votes").gameObject;
-                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
+                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
                         break;
                     }
 
@@ -314,7 +314,7 @@ namespace LethalMystery.UI
             {
                 GameObject playerVoteObj = GameObject.Find(path);
                 TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
-                playerVoteText.text = "VOTES: " + Voting.allVotes.Value[$"{userID}"];
+                playerVoteText.text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
             }
 
         }

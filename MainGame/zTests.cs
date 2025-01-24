@@ -87,7 +87,7 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> livingPlayers: {StartOfRound.Instance.livingPlayers}");
                     //ClientPlayerList.Remove(clientId); (startofround)
 
-                    foreach (KeyValuePair<string, string> d in Voting.allVotes.Value)
+                    foreach (KeyValuePair<string, string> d in Voting.playersWhoGotVoted.Value)
                     {
                         Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
                     }
