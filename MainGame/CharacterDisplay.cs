@@ -252,7 +252,7 @@ namespace LethalMystery.MainGame
             LookAtCamera();
             ResetAnimation();
 
-            Plugin.netHandler.SpawnWeaponReceive(Roles.CurrentRole, Plugin.localPlayer.playerClientId);
+            Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
 
             ShowPlayers(false);

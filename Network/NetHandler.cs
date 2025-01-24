@@ -157,15 +157,18 @@ namespace LethalMystery.Network
             Plugin.mls.LogInfo($"<><><> I am in the SpawnMobServer: {data}");
             Commands.SpawnWeapons(data);
         }
-        public void SpawnWeaponReceive(Role data, ulong id)
+        public void SpawnWeaponReceive(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the SpawnMobReceive");
+            string[] splitData = data.Split('/');
+            string type = splitData[0];
+            string name = splitData[1];
 
-            if (data.Type == RoleType.monster)
+            if (type == "monster")
             {
                 spawnWeapon.SendServer("knife");
             }
-            else if (data.Name == "sheriff")
+            else if (name == "sheriff")
             {
                 spawnWeapon.SendServer("shotgun");
             }

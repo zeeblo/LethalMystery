@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using BepInEx.Bootstrap;
 using GameNetcodeStuff;
 using LethalMystery.UI;
+using LethalMystery.Players;
 
 
 namespace LethalMystery.MainGame
@@ -71,11 +72,11 @@ namespace LethalMystery.MainGame
                     //Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
 
-
-                    foreach (KeyValuePair<string, string> d in Voting.playersWhoVoted.Value)
+                    if (Roles.CurrentRole != null)
                     {
-                        Plugin.mls.LogInfo($">>> P who voted: {d.Key} | val: {d.Value}");
+                        Plugin.mls.LogInfo($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}");
                     }
+                    
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {
