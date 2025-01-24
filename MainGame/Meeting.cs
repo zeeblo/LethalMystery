@@ -90,8 +90,11 @@ namespace LethalMystery.MainGame
                 __instance.doorPower = 1;
                 __instance.overheated = false;
                 __instance.triggerScript.interactable = false;
+
+                Controls.UnlockCursor(true);
             }
 
+            
             if (StringAddons.ConvertToFloat(voteTime.Value) <= 0)
             {
                 MeetingDefaults();

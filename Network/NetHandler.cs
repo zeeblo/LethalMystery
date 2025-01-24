@@ -228,7 +228,6 @@ namespace LethalMystery.Network
         {
             yield return new WaitForSeconds(2f);
             VotingUI.isCalled = true;
-            Controls.UnlockCursor(true);
         }
 
 
