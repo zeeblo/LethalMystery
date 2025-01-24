@@ -29,7 +29,7 @@ namespace LethalMystery.MainGame
             Start.currentGracePeriodCountdown.Value = $"{LMConfig.defaultGracePeriodCountdown}";
             inMeeting.Value = "false";
             Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
-            currentMeetingCountdown.Value = $"{LMConfig.defaultMeetingCountdown}";
+            //currentMeetingCountdown.Value = $"{LMConfig.defaultMeetingCountdown}";
             MeetingCooldown.Value = $"{LMConfig.defaultMeetingCooldown}";
             discussTime.Value = $"{LMConfig.defaultDiscussTime}";
             voteTime.Value = $"{LMConfig.defaultVoteTime}";
@@ -77,11 +77,11 @@ namespace LethalMystery.MainGame
             {
                 if (Plugin.isHost)
                 {
-                    float countdown = StringAddons.ConvertToFloat(currentMeetingCountdown.Value);
-                    countdown -= Time.deltaTime;
+                    //float countdown = StringAddons.ConvertToFloat(currentMeetingCountdown.Value);
+                    //countdown -= Time.deltaTime;
 
                     VoteCountdown();
-                    currentMeetingCountdown.Value = $"{countdown}";
+                    //currentMeetingCountdown.Value = $"{countdown}";
                 }
                 __instance.PlayDoorAnimation(closed: true);
                 __instance.SetDoorButtonsEnabled(false);
@@ -90,7 +90,7 @@ namespace LethalMystery.MainGame
                 __instance.triggerScript.interactable = false;
             }
 
-            if (StringAddons.ConvertToFloat(currentMeetingCountdown.Value) <= 0)
+            if (StringAddons.ConvertToFloat(voteTime.Value) <= 0)
             {
                 MeetingDefaults();
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
@@ -118,7 +118,6 @@ namespace LethalMystery.MainGame
                 {
                     Plugin.mls.LogInfo(">>> ()() everyone voted ()()");
                     countdown = 10;
-                    return;
                 }
 
                 voteTime.Value = $"{countdown}";

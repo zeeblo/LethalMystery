@@ -48,14 +48,14 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void UpdatePatch(HUDManager __instance)
         {
-            
+            /*
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
             {
                 __instance.Clock.targetAlpha = 1.0f;
                 __instance.Clock.canvasGroup.alpha = 1.0f;
                 __instance.clockNumber.text = $"{(int)StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value)}";
             }
-
+            */
         }
 
         /*
