@@ -44,18 +44,22 @@ namespace LethalMystery.Players
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
             localPlayer.ItemSlots = new GrabbableObject[4];
+
+            Plugin.netHandler.SlotsReceive("0/default", Plugin.localPlayer.playerClientId);
         }
 
 
 
         public static void SlotAmountForServer()
         {
-            Dictionary<ulong, int> slotAmt = new Dictionary<ulong, int>();
+            //Dictionary<ulong, int> slotAmt = new Dictionary<ulong, int>();
             
             if (CurrentRole?.Name == "sheriff" || CurrentRole?.Type == RoleType.monster)
             {
-                slotAmt.Add(Plugin.localPlayer.actualClientId, 5);
-                Plugin.netHandler.SlotsReceive(slotAmt, Plugin.localPlayer.actualClientId);
+                //slotAmt.Add(Plugin.localPlayer.actualClientId, 5);
+                ulong playerID = Plugin.localPlayer.playerClientId;
+                string slot_string = $"{playerID}/slots";
+                Plugin.netHandler.SlotsReceive(slot_string, Plugin.localPlayer.playerClientId);
             }
 
         }

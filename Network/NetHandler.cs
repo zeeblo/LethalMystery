@@ -18,7 +18,7 @@ namespace LethalMystery.Network
     {
         private static LNetworkVariable<Dictionary<ulong, string>> allPlayerRoles;
         private LNetworkMessage<string> spawnWeapon;
-        private LNetworkMessage<Dictionary<ulong, int>> slots;
+        private LNetworkMessage<string> slots;
         private LNetworkMessage<string> meeting;
         private LNetworkMessage<List<Item>> addScrapsToList;
         private LNetworkMessage<string> destroyScrap;
@@ -35,7 +35,7 @@ namespace LethalMystery.Network
             allPlayerRoles = LNetworkVariable<Dictionary<ulong, string>>.Connect("allPlayerRoles");
 
             spawnWeapon = LNetworkMessage<string>.Connect("SpawnWeapons");
-            slots = LNetworkMessage<Dictionary<ulong, int>>.Connect("Slots");
+            slots = LNetworkMessage<string>.Connect("Slots");
             meeting = LNetworkMessage<string>.Connect("CallAMeeting");
             addScrapsToList = LNetworkMessage<List<Item>>.Connect("addScrapsToList");
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
@@ -174,22 +174,40 @@ namespace LethalMystery.Network
 
 
 
-        public void SlotsServer(Dictionary<ulong, int> data, ulong id)
+        public void SlotsServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsServer:");
             slots.SendClients(data);
         }
-        public void SlotsClients(Dictionary<ulong, int> data)
+        public void SlotsClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsClients:");
+            string[] splitData = data.Split('/');
+            ulong.TryParse(splitData[0], out ulong playerID);
+            string type = splitData[1];
 
-            foreach (KeyValuePair<ulong, int> d in data)
+            if (type == "default")
             {
-                StartOfRound.Instance.allPlayerScripts[d.Key].ItemSlots = new GrabbableObject[d.Value];
+                for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+                {
+                    StartOfRound.Instance.allPlayerScripts[i].ItemSlots = new GrabbableObject[4];
+                }
+            }
+            else if (type == "slots")
+            {
+                for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+                {
+                    if (StartOfRound.Instance.allPlayerScripts[i].playerClientId == playerID)
+                    {
+                        StartOfRound.Instance.allPlayerScripts[i].ItemSlots = new GrabbableObject[5];
+                        break;
+                    }
+                    
+                }
             }
 
         }
-        public void SlotsReceive(Dictionary<ulong, int> data, ulong id)
+        public void SlotsReceive(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsReceive:");
             slots.SendServer(data);
