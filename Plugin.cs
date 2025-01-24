@@ -85,6 +85,7 @@ namespace LethalMystery
             CharacterDisplay.ResetVariables();
             Tasks.ResetVariables();
             AutoGiveItem.ResetVariables();
+            EjectPlayers.ResetVars();
         }
 
 

@@ -71,12 +71,8 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Start.currentGracePeriodCountdown.Value}");
                     //Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
+                    Plugin.mls.LogInfo($">>> currentlyEjectingPlayer: {EjectPlayers.currentlyEjectingPlayer.Value}");
 
-                    if (Roles.CurrentRole != null)
-                    {
-                        Plugin.mls.LogInfo($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}");
-                    }
-                    
                 }
                 if (Keyboard.current.digit7Key.wasPressedThisFrame)
                 {

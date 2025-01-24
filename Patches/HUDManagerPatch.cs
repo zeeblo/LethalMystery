@@ -2,6 +2,8 @@
 using LethalMystery.MainGame;
 using LethalMystery.Players;
 using LethalMystery.Utils;
+using TMPro;
+using UnityEngine;
 
 namespace LethalMystery.Patches
 {
@@ -23,7 +25,7 @@ namespace LethalMystery.Patches
             {
                 prefix = chatMessage[0].ToString();
             }
-            
+
             Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
 
             if (LMConfig.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
@@ -129,5 +131,17 @@ namespace LethalMystery.Patches
             return false;
         }
 
+
+        [HarmonyPatch(nameof(HUDManager.ShowPlayersFiredScreen))]
+        [HarmonyPrefix]
+        private static void ShowEjectScreen(ref Animator ___playersFiredAnimator)
+        {
+
+            if (StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
+            {
+                ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText").GetComponent<TextMeshProUGUI>().text = "Ejected";
+                ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText (1)").GetComponent<TextMeshProUGUI>().text = "";
+            }
+        }
     }
 }

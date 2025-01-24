@@ -91,13 +91,15 @@ namespace LethalMystery.MainGame
                 __instance.overheated = false;
                 __instance.triggerScript.interactable = false;
 
-                Controls.UnlockCursor(true);
+                if (!StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
+                {
+                    Controls.UnlockCursor(true);
+                }
             }
 
-            
-            if (StringAddons.ConvertToFloat(voteTime.Value) <= 0)
+
+            if (StringAddons.ConvertToFloat(voteTime.Value) <= 0 && !StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
             {
-                Voting.TallyVotes();
                 MeetingDefaults();
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
@@ -116,6 +118,8 @@ namespace LethalMystery.MainGame
             }
             else
             {
+                if (StringAddons.ConvertToFloat(voteTime.Value) <= 0) return;
+
                 float countdown = StringAddons.ConvertToFloat(voteTime.Value);
                 countdown -= Time.deltaTime;
 

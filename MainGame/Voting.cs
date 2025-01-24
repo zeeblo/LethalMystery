@@ -95,6 +95,7 @@ namespace LethalMystery.MainGame
             {
                 if (v.Value != "voted") return false;
             }
+            TallyVotes();
             return true;
         }
 
@@ -167,6 +168,8 @@ namespace LethalMystery.MainGame
                     int plrID = StringAddons.ConvertToInt(v.Key);
                     string PlayerName = StartOfRound.Instance.allPlayerScripts[plrID].playerUsername;
                     Plugin.mls.LogInfo($">>> Voted {PlayerName} <<<");
+
+                    Plugin.netHandler.ejectPlayerReceive($"{plrID}", Plugin.localPlayer.playerClientId);
                     break;
                 }
 

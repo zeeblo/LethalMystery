@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using Discord;
-using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Patches;
@@ -27,7 +25,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> playerVoted;
         private LNetworkMessage<string> playerDied;
         private LNetworkMessage<string> setupVotes;
-
+        private LNetworkMessage<string> ejectPlayer;
 
         public NetHandler()
         {
@@ -44,6 +42,7 @@ namespace LethalMystery.Network
             playerVoted = LNetworkMessage<string>.Connect("playerVoted");
             playerDied = LNetworkMessage<string>.Connect("playerDied");
             setupVotes = LNetworkMessage<string>.Connect("setupVotes");
+            ejectPlayer = LNetworkMessage<string>.Connect("ejectPlayer");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -64,6 +63,8 @@ namespace LethalMystery.Network
             playerDied.OnClientReceived += playerDiedClients;
             setupVotes.OnServerReceived += setupVotesServer;
             setupVotes.OnClientReceived += setupVotesClients;
+            ejectPlayer.OnServerReceived += ejectPlayerServer;
+            ejectPlayer.OnClientReceived += ejectPlayerClients;
         }
 
         #region Variables
@@ -99,7 +100,11 @@ namespace LethalMystery.Network
 
                 Plugin.RemoveEnvironment(false);
                 Meeting.MeetingDefaults();
-                Plugin.Destroy(VotingUI.votingGUI);
+
+                if (VotingUI.votingGUI != null)
+                {
+                    Plugin.Destroy(VotingUI.votingGUI);
+                }
             }
         }
 
@@ -557,6 +562,26 @@ namespace LethalMystery.Network
             setupVotes.SendServer(data);
         }
 
+
+
+        public void ejectPlayerServer(string data, ulong id)
+        {
+            ejectPlayer.SendClients(data);
+        }
+        public void ejectPlayerClients(string data)
+        {
+            if (data == $"{Plugin.localPlayer.playerClientId}")
+            {
+                EjectPlayers.notsafe = true;
+            }
+
+            EjectPlayers.localEject = true;
+        }
+        public void ejectPlayerReceive(string data, ulong id)
+        {
+            EjectPlayers.currentlyEjectingPlayer.Value = "true";
+            ejectPlayer.SendServer(data);
+        }
 
 
     }
