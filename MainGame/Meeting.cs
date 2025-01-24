@@ -97,6 +97,7 @@ namespace LethalMystery.MainGame
             
             if (StringAddons.ConvertToFloat(voteTime.Value) <= 0)
             {
+                Voting.TallyVotes();
                 MeetingDefaults();
                 Plugin.mls.LogInfo(">>> Stopping meeting and opening doors.");
             }
@@ -121,7 +122,6 @@ namespace LethalMystery.MainGame
                 bool plrsVote = Voting.EveryoneVoted();
                 if (plrsVote)
                 {
-                    Plugin.mls.LogInfo(">>> ()() everyone voted ()()");
                     countdown = 10;
                 }
 

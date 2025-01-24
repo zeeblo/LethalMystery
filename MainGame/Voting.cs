@@ -108,7 +108,6 @@ namespace LethalMystery.MainGame
             check.sprite = Plugin.CheckboxEnabledIcon;
 
             ulong PlayerThatVoted = Plugin.localPlayer.playerClientId;
-            // got rid of .ToList()
             foreach (KeyValuePair<string, string> plrID in playersWhoGotVoted.Value)
             {
                 if (plrID.Key == $"{userID}")
@@ -136,7 +135,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        private static void TallyVotes()
+        public static void TallyVotes()
         {
             List<int> playerVotes = new List<int>();
             foreach (KeyValuePair<string, string> v in Voting.playersWhoGotVoted.Value)
