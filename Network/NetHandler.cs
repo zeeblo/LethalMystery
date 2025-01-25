@@ -327,8 +327,11 @@ namespace LethalMystery.Network
             ulong.TryParse(splitData[0], out ulong playerID);
             Int32.TryParse(splitData[1], out int slot);
 
-            if (StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer != null)
-                Plugin.Destroy(StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject);
+            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
+            {
+                if (StartOfRound.Instance.allPlayerScripts[i].playerClientId == playerID && StartOfRound.Instance.allPlayerScripts[i].currentlyHeldObjectServer != null)
+                    Plugin.Destroy(StartOfRound.Instance.allPlayerScripts[i].currentlyHeldObjectServer.gameObject);
+            }
 
 
         }
@@ -359,7 +362,7 @@ namespace LethalMystery.Network
 
                 Plugin.mls.LogInfo(">>> CollectItem part");
                 GrabbableObject itm = StartOfRound.Instance.allPlayerScripts[playerID].ItemSlots[slot];
-                if (itm == null || Plugin.localPlayer.actualClientId == playerID)
+                if (itm == null || Plugin.localPlayer.playerClientId == playerID)
                 {
                     return;
                 }
