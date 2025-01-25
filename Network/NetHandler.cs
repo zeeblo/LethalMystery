@@ -100,6 +100,7 @@ namespace LethalMystery.Network
 
                 Plugin.RemoveEnvironment(false);
                 Meeting.MeetingDefaults();
+                StartOfRound.Instance.mapScreen.SwitchScreenOn(true);
 
                 if (VotingUI.votingGUI != null)
                 {

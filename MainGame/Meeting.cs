@@ -91,6 +91,8 @@ namespace LethalMystery.MainGame
                 __instance.overheated = false;
                 __instance.triggerScript.interactable = false;
 
+
+                StartOfRound.Instance.mapScreen.SwitchScreenOn(false);
                 if (!StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
                 {
                     Controls.UnlockCursor(true);
