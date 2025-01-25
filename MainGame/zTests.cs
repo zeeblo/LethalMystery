@@ -92,6 +92,16 @@ namespace LethalMystery.MainGame
                    
                     
                 }
+                if (Keyboard.current.digit8Key.wasPressedThisFrame)
+                {
+                    //Tasks.DropItems();
+                    Plugin.localPlayer.DropAllHeldItemsAndSync();
+                    
+                    foreach (string itm in Tasks.allScraps)
+                    {
+                        Plugin.mls.LogInfo($">>> ItemName: {itm}");
+                    }
+                }
 
             }
         }

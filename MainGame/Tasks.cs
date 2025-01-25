@@ -1,4 +1,6 @@
-﻿using GameNetcodeStuff;
+﻿using System.Linq;
+using System.Reflection;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
@@ -12,7 +14,7 @@ namespace LethalMystery.MainGame
     {
         public static bool checkingForItems = false;
         public static bool droppedItem = false;
-        public static List<Item> allScraps = new List<Item>();
+        public static List<string> allScraps = new List<string>();
         public static int maxQuota = 120;
         [PublicNetworkVariable]
         public static LNetworkVariable<string> currentQuota = LNetworkVariable<string>.Connect("currentQuota");
@@ -50,7 +52,7 @@ namespace LethalMystery.MainGame
                 if (StringAddons.ContainsWhitelistedItem(itmName))
                 {
                     Plugin.mls.LogInfo(">>> In TaskUpdate()");
-                    
+
 
                     if (Plugin.isHost)
                     {
@@ -64,7 +66,7 @@ namespace LethalMystery.MainGame
                     }
 
                     HUDManager.Instance.itemSlotIcons[Plugin.localPlayer.currentItemSlot].enabled = false;
-                    
+
                     __instance.carryWeight = 1f;
                     checkingForItems = false;
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
@@ -128,7 +130,7 @@ namespace LethalMystery.MainGame
                 {
                     //HUDManager.Instance.AddNewScrapFoundToDisplay(currentlyGrabbingObject);
                     //HUDManager.Instance.DisplayNewScrapFound();
-                    
+
                     Plugin.netHandler.showScrapReceive($"{Plugin.localPlayer.actualClientId}", Plugin.localPlayer.actualClientId);
                     checkingForItems = false; // Prevent TaskUpdate() from activating
 
@@ -210,7 +212,84 @@ namespace LethalMystery.MainGame
 
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DropAllHeldItems))]
+        [HarmonyPrefix]
+        private static bool DropStuff(PlayerControllerB __instance, bool itemsFall, bool disconnecting)
+        {
+            for (int i = 0; i < __instance.ItemSlots.Length; i++)
+            {
+                GrabbableObject grabbableObject = __instance.ItemSlots[i];
+                if (!(grabbableObject != null))
+                {
+                    continue;
+                }
+                if (!allScraps.Contains(__instance.ItemSlots[i].itemProperties.itemName))
+                {
+                    continue;
+                }
+                if (itemsFall)
+                {
+                    grabbableObject.parentObject = null;
+                    grabbableObject.heldByPlayerOnServer = false;
+                    if (__instance.isInElevator)
+                    {
+                        grabbableObject.transform.SetParent(__instance.playersManager.elevatorTransform, worldPositionStays: true);
+                    }
+                    else
+                    {
+                        grabbableObject.transform.SetParent(__instance.playersManager.propsContainer, worldPositionStays: true);
+                    }
+                    __instance.SetItemInElevator(__instance.isInHangarShipRoom, __instance.isInElevator, grabbableObject);
+                    grabbableObject.EnablePhysics(enable: true);
+                    grabbableObject.EnableItemMeshes(enable: true);
+                    grabbableObject.transform.localScale = grabbableObject.originalScale;
+                    grabbableObject.isHeld = false;
+                    grabbableObject.isPocketed = false;
+                    grabbableObject.startFallingPosition = grabbableObject.transform.parent.InverseTransformPoint(grabbableObject.transform.position);
+                    grabbableObject.FallToGround(randomizePosition: true);
+                    grabbableObject.fallTime = UnityEngine.Random.Range(-0.3f, 0.05f);
+                    if (__instance.IsOwner)
+                    {
+                        grabbableObject.DiscardItemOnClient();
+                    }
+                    else if (!grabbableObject.itemProperties.syncDiscardFunction)
+                    {
+                        grabbableObject.playerHeldBy = null;
+                    }
+                }
+                if (__instance.IsOwner && !disconnecting)
+                {
+                    HUDManager.Instance.holdingTwoHandedItem.enabled = false;
+                    HUDManager.Instance.itemSlotIcons[i].enabled = false;
+                    HUDManager.Instance.ClearControlTips();
+                    __instance.activatingItem = false;
+                }
+                __instance.ItemSlots[i] = null;
+            }
+            if (__instance.isHoldingObject)
+            {
+                __instance.isHoldingObject = false;
+                if (__instance.currentlyHeldObjectServer != null)
+                {
+                    MethodInfo SetSpecialGrabAnimationBool = typeof(PlayerControllerB).GetMethod("SetSpecialGrabAnimationBool", BindingFlags.NonPublic | BindingFlags.Instance);
+                    SetSpecialGrabAnimationBool.Invoke(__instance, new object[] { true, __instance.currentlyHeldObjectServer });
+                }
+                __instance.playerBodyAnimator.SetBool("cancelHolding", value: true);
+                __instance.playerBodyAnimator.SetTrigger("Throw");
+            }
+            __instance.activatingItem = false;
+            __instance.twoHanded = false;
+            __instance.carryWeight = 1f;
+            __instance.currentlyHeldObjectServer = null;
+
+            return false;
+        }
+
+
         #endregion Patches
+
+
+
 
 
         /// <summary>
@@ -222,7 +301,7 @@ namespace LethalMystery.MainGame
 
             for (int i = 0; i < Plugin.currentRound.currentLevel.spawnableScrap.Count(); i++)
             {
-                Item scrap = Plugin.currentRound.currentLevel.spawnableScrap[i].spawnableItem;
+                string scrap = Plugin.currentRound.currentLevel.spawnableScrap[i].spawnableItem.itemName;
                 allScraps.Add(scrap);
             }
 

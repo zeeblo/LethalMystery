@@ -18,7 +18,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> spawnWeapon;
         private LNetworkMessage<string> slots;
         private LNetworkMessage<string> meeting;
-        private LNetworkMessage<List<Item>> addScrapsToList;
+        private LNetworkMessage<List<string>> addScrapsToList;
         private LNetworkMessage<string> destroyScrap;
         private LNetworkMessage<string> showScrap;
         private LNetworkMessage<string> hideWeapon;
@@ -35,7 +35,7 @@ namespace LethalMystery.Network
             spawnWeapon = LNetworkMessage<string>.Connect("SpawnWeapons");
             slots = LNetworkMessage<string>.Connect("Slots");
             meeting = LNetworkMessage<string>.Connect("CallAMeeting");
-            addScrapsToList = LNetworkMessage<List<Item>>.Connect("addScrapsToList");
+            addScrapsToList = LNetworkMessage<List<string>>.Connect("addScrapsToList");
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
             showScrap = LNetworkMessage<string>.Connect("showScrap");
             hideWeapon = LNetworkMessage<string>.Connect("hideWeapon");
@@ -259,19 +259,19 @@ namespace LethalMystery.Network
 
 
 
-        public void addScrapsToListServer(List<Item> data, ulong id)
+        public void addScrapsToListServer(List<string> data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListServer:");
 
             addScrapsToList.SendClients(data);
         }
-        public void addScrapsToListClients(List<Item> data)
+        public void addScrapsToListClients(List<string> data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListClients:");
             Tasks.allScraps = data;
 
         }
-        public void addScrapsToListReceive(List<Item> data, ulong id)
+        public void addScrapsToListReceive(List<string> data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListReceive:");
             addScrapsToList.SendServer(data);

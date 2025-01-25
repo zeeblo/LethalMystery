@@ -173,9 +173,9 @@ namespace LethalMystery.Utils
                 return false;
             }
 
-            foreach (Item item in Tasks.allScraps)
+            foreach (string item in Tasks.allScraps)
             {
-                if (item.itemName.ToLower().Contains(input.ToLower()))
+                if (item.ToLower().Contains(input.ToLower()))
                     return true;
             }
 
