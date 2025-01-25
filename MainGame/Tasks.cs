@@ -84,6 +84,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool CollectItem(PlayerControllerB __instance)
         {
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value)) return true;
             if (__instance.ItemSlots[__instance.currentItemSlot] == null) return true;
             if (__instance.ItemSlots[__instance.currentItemSlot].playerHeldBy.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId) return true;
 
@@ -113,6 +114,8 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool GrabFix(PlayerControllerB __instance)
         {
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value)) return true;
+
             if (StartOfRound.Instance.shipHasLanded && GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom)
             {
                 Ray interactRay = new Ray(__instance.gameplayCamera.transform.position, __instance.gameplayCamera.transform.forward);
@@ -214,7 +217,7 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DropAllHeldItems))]
         [HarmonyPrefix]
-        private static bool DropStuff(PlayerControllerB __instance, bool itemsFall, bool disconnecting)
+        private static bool DropItems(PlayerControllerB __instance, bool itemsFall, bool disconnecting)
         {
             for (int i = 0; i < __instance.ItemSlots.Length; i++)
             {

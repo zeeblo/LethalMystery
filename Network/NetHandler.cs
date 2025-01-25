@@ -237,11 +237,7 @@ namespace LethalMystery.Network
         public void MeetingClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingClients:");
-
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            Plugin.RemoveEnvironment();
-            HUDManagerPatch.DisplayDaysEdit("meeting");
-            StartOfRound.Instance.StartCoroutine(votingGUIDelay());
+            StartOfRound.Instance.StartCoroutine(meetingSetup());
             
         }
         public void MeetingReceive(string data, ulong id)
@@ -251,8 +247,24 @@ namespace LethalMystery.Network
         }
 
 
-        private static IEnumerator votingGUIDelay()
+        private static IEnumerator meetingSetup()
         {
+            
+            if (!Plugin.localPlayer.isInHangarShipRoom)
+            {
+                Plugin.localPlayer.DropAllHeldItemsAndSync();
+            }
+
+            yield return new WaitForSeconds(0.4f);
+
+            MoreSlots.SwitchToEmptySlot();
+
+            yield return new WaitForSeconds(0.4f);
+
+            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+            Plugin.RemoveEnvironment();
+            HUDManagerPatch.DisplayDaysEdit("meeting");
+            
             yield return new WaitForSeconds(2f);
             VotingUI.isCalled = true;
         }

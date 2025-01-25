@@ -2,6 +2,7 @@
 using UnityEngine;
 using HarmonyLib;
 using static LethalMystery.Players.Roles;
+using System.Reflection;
 
 namespace LethalMystery.Players
 {
@@ -64,5 +65,31 @@ namespace LethalMystery.Players
 
         }
 
+
+
+        public static void SwitchToEmptySlot()
+        {
+            MethodInfo SwitchToItemSlot = typeof(PlayerControllerB).GetMethod("SwitchToItemSlot", BindingFlags.NonPublic | BindingFlags.Instance);
+            int result = -1;
+            if (Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot] == null || 
+                !Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].itemProperties.itemName.ToLower().Contains(Roles.CurrentRole?.GetItem()) )
+            {
+                result = Plugin.localPlayer.currentItemSlot;
+            }
+            else
+            {
+                for (int i = 0; i < Plugin.localPlayer.ItemSlots.Length; i++)
+                {
+                    if (Plugin.localPlayer.ItemSlots[i] == null)
+                    {
+                        result = i;
+                        break;
+                    }
+                }
+            }
+
+            SwitchToItemSlot.Invoke(GameNetworkManager.Instance.localPlayerController, new object[] { result, Type.Missing });
+
+        }
     }
 }
