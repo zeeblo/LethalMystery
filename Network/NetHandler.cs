@@ -229,7 +229,7 @@ namespace LethalMystery.Network
 
             Meeting.inMeeting.Value = "true";
             Start.inGracePeriod.Value = "true";
-            Start.currentGracePeriodCountdown.Value = $"{LMConfig.defaultMeetingCountdown + 140f}";
+            Start.currentGracePeriodTime.Value = $"{LMConfig.defaultMeetingTime + 140f}";
 
             meeting.SendClients(data);
         }

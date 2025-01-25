@@ -14,7 +14,7 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> discussTime = LNetworkVariable<string>.Connect("discussTime");
         public static LNetworkVariable<string> voteTime = LNetworkVariable<string>.Connect("voteTime");
         public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
-        public static LNetworkVariable<string> currentMeetingCountdown = LNetworkVariable<string>.Connect("currentMeetingCountdown");
+        public static LNetworkVariable<string> currentMeetingTime = LNetworkVariable<string>.Connect("currentMeetingCountdown");
         public static LNetworkVariable<string> MeetingCooldown = LNetworkVariable<string>.Connect("MeetingCooldown");
         public static int MeetingNum = LMConfig.defaultMeetingNum;
 
@@ -28,7 +28,7 @@ namespace LethalMystery.MainGame
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
 
-            Start.currentGracePeriodCountdown.Value = $"{LMConfig.defaultGracePeriodCountdown}";
+            Start.currentGracePeriodTime.Value = $"{LMConfig.defaultGracePeriodTime}";
             inMeeting.Value = "false";
             Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
             //currentMeetingCountdown.Value = $"{LMConfig.defaultMeetingCountdown}";

@@ -68,7 +68,7 @@ namespace LethalMystery.MainGame
 
                     Plugin.mls.LogInfo($">>> InMetting Value: {Meeting.inMeeting.Value}");
                     Plugin.mls.LogInfo($">>> inGracePeriod Value: {Start.inGracePeriod.Value}");
-                    Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Start.currentGracePeriodCountdown.Value}");
+                    Plugin.mls.LogInfo($">>> currentGracePeriodCountdown Value: {Start.currentGracePeriodTime.Value}");
                     //Plugin.mls.LogInfo($">>> currentMeetingCountdown Value: {Meeting.currentMeetingCountdown.Value}");
                     Plugin.mls.LogInfo($">>> MeetingCooldown Value: {Meeting.MeetingCooldown.Value}");
                     Plugin.mls.LogInfo($">>> currentlyEjectingPlayer: {EjectPlayers.currentlyEjectingPlayer.Value}");

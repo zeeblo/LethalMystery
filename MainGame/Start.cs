@@ -13,7 +13,7 @@ namespace LethalMystery.MainGame
     {
 
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
-        public static LNetworkVariable<string> currentGracePeriodCountdown = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
+        public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
 
         #region Patches
 
@@ -98,11 +98,11 @@ namespace LethalMystery.MainGame
             if (StringAddons.ConvertToBool(inGracePeriod.Value))
             {
                 // Countdown from the set grace period time
-                if (StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value) >= 0 && Plugin.isHost)
+                if (StringAddons.ConvertToFloat(currentGracePeriodTime.Value) >= 0 && Plugin.isHost)
                 {
-                    float countdown = StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value);
+                    float countdown = StringAddons.ConvertToFloat(currentGracePeriodTime.Value);
                     countdown -= Time.deltaTime;
-                    currentGracePeriodCountdown.Value = $"{countdown}";
+                    currentGracePeriodTime.Value = $"{countdown}";
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace LethalMystery.MainGame
                 if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false && StringAddons.ConvertToBool(inGracePeriod.Value))
                 {
                     HUDManager.Instance.loadingText.enabled = true;
-                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(currentGracePeriodCountdown.Value)}";
+                    HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(currentGracePeriodTime.Value)}";
                 }
             }
 
