@@ -14,6 +14,7 @@ namespace LethalMystery.Utils
         public static float defaultMeetingCooldown = 10f; // 10
         public static int defaultMeetingNum = 3; // 1
         public static float defaultGracePeriodTime = 20f; //80f;
+        public static float defaultKillCooldown = 20f;
 
         public static void AllConfigs(ConfigFile cfg)
         {

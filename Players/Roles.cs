@@ -11,6 +11,7 @@ namespace LethalMystery.Players
         public static List<string> allItems = new List<string>();
         public static Role? CurrentRole;
         public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
+
         public enum RoleType
         {
             employee,
@@ -178,6 +179,16 @@ namespace LethalMystery.Players
             HUDManager.Instance.ReadDialogue(array);
         }
 
+
+        public static bool NameIsMonsterType(string name)
+        {
+            foreach (Role r in allRoles)
+            {
+                Plugin.mls.LogInfo($"name: {name.ToLower()} | roleName: {r.Name.ToLower()} ");
+                if ( (name.ToLower() == r.Name.ToLower()) && (r.Type == RoleType.monster) ) return true;
+            }
+            return false;
+        }
 
         public static void ResetVariables()
         {
