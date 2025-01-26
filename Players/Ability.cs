@@ -11,7 +11,14 @@ namespace LethalMystery.Players
     internal class Ability
     {
         public static bool killedPlayer = false;
-        public static float killCooldown = LMConfig.defaultKillCooldown;
+        public static float killCooldown = 0;
+
+        public static void ResetVars()
+        {
+            killedPlayer = false;
+            killCooldown = 0;
+        }
+
 
         [HarmonyPatch(typeof(KnifeItem), nameof(KnifeItem.HitKnife))]
         [HarmonyPrefix]
@@ -22,12 +29,18 @@ namespace LethalMystery.Players
             if (Roles.CurrentRole?.Type != Roles.RoleType.monster) return true;
             if (killList.Count <= 0) return true;
 
+            if (killCooldown > 0)
+            {
+                HUDManager.Instance.DisplayTip("Kill Cooldown!", "Can't kill someone right now.", isWarning: true);
+            }
+
             foreach (ulong plrID in killList)
             {
                 if (!Roles.NameIsMonsterType(Roles.localPlayerRoles[plrID]) && killedPlayer == false)
                 {
                     ___knifeHitForce = 9999;
                     killedPlayer = true;
+                    killCooldown = LMConfig.defaultKillCooldown;
                     return true;
                 }
             }
@@ -62,10 +75,12 @@ namespace LethalMystery.Players
             return killList;
         }
 
-        //[HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
-        //[HarmonyPostfix]
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPostfix]
         private static void killCooldownFunc()
         {
+            if (!killedPlayer) return;
+
             killCooldown -= Time.deltaTime;
             if (killCooldown <= 0f)
             {
