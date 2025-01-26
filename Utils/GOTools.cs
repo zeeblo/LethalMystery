@@ -59,5 +59,21 @@ namespace LethalMystery.Utils
             //Plugin.netHandler.destroyScrapReceive(grabbableObject, Plugin.localPlayer.actualClientId);
         }
 
+
+        /// <summary>
+        /// Convert Ulong ID to PlayerID, if there's no match
+        /// then -1 indicates it's an invalid id.
+        /// </summary>
+        public static int UlongToPlayerID(ulong id)
+        {
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (player.actualClientId == id)
+                {
+                    return (int)player.playerClientId;
+                }
+            }
+            return -1;
+        }
     }
 }

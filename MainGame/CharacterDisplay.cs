@@ -5,6 +5,12 @@ using HarmonyLib;
 using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
+using static LethalMystery.Players.Roles;
+using System.Xml.Linq;
+using LethalMystery.Utils;
+using Unity.Services.Authentication.Internal;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 
 namespace LethalMystery.MainGame
@@ -238,7 +244,79 @@ namespace LethalMystery.MainGame
         }
 
 
-        
+        private static void TurnMonsterNamesRed()
+        {
+            if (Roles.CurrentRole == null) return;
+            if (Roles.CurrentRole.Type != Roles.RoleType.monster) return;
+
+
+            foreach (KeyValuePair<ulong, string> id in Roles.localPlayerRoles)
+            {
+                if (NameIsMonsterType(id.Value))
+                {
+                    int playerID = GOTools.UlongToPlayerID(id.Key);
+                    if (playerID != -1)
+                    {
+                        Plugin.mls.LogInfo(">>> attempting to set name to red");
+                        FindMonsterName(playerID);
+                    }
+                }
+            }
+        }
+
+
+        private static void FindMonsterName(int playerID, bool reset = false)
+        {
+            Scene targetScene = SceneManager.GetSceneByName("SampleSceneRelay");
+            string PlayerString = (playerID == 0) ? "Player" : $"Player ({playerID})";
+            string usernameCanvas = (playerID == 0) ? "PlayerNameCanvas" : "PlayerUsernameCanvas";
+
+            foreach (GameObject obj in targetScene.GetRootGameObjects())
+            {
+                if (obj.name == "Environment")
+                {
+                    Transform username = obj.transform.Find($"HangarShip/{PlayerString}/{usernameCanvas}/Text (TMP)");
+                    if (username == null) return;
+
+                    TextMeshProUGUI colorChange = username.gameObject.GetComponent<TextMeshProUGUI>();
+                    colorChange.color = Color.red;
+
+                    if (reset)
+                    {
+                        colorChange.color = Color.white;
+                    }
+                    return;
+
+                }
+            }
+
+            foreach (GameObject obj in targetScene.GetRootGameObjects())
+            {
+                if (obj.name == "PlayersContainer")
+                {
+                    Transform username = obj.transform.Find($"{PlayerString}/{usernameCanvas}/Text (TMP)");
+                    if (username == null) return;
+
+                    TextMeshProUGUI colorChange = username.gameObject.GetComponent<TextMeshProUGUI>();
+                    colorChange.color = Color.red;
+
+                    if (reset)
+                    {
+                        colorChange.color = Color.white;
+                    }
+                }
+            }
+        }
+
+        private static void ResetMonsterNames()
+        {
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                int playerID = (int)player.playerClientId;
+                FindMonsterName(playerID, reset: true);
+            }
+        }
+
 
 
         public static IEnumerator IntroDisplay()
@@ -311,7 +389,7 @@ namespace LethalMystery.MainGame
             GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD").gameObject.SetActive(true); // plays spawn animation when enabled
             DisableMainCamera(false);
             HideGUI(false);
-
+            TurnMonsterNamesRed();
         }
 
 
@@ -324,6 +402,7 @@ namespace LethalMystery.MainGame
             EnvironmentLight(true);
             DisableIntroCamera();
             DisableMainCamera(false);
+            ResetMonsterNames();
             if (Plugin.isHost)
             {
                 Start.inGracePeriod.Value = "false";
