@@ -6,11 +6,8 @@ using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
 using static LethalMystery.Players.Roles;
-using System.Xml.Linq;
 using LethalMystery.Utils;
-using Unity.Services.Authentication.Internal;
-using TMPro;
-using UnityEngine.SceneManagement;
+
 
 
 namespace LethalMystery.MainGame
@@ -43,6 +40,28 @@ namespace LethalMystery.MainGame
                 return false;
             }
             return true;
+        }
+
+
+        //[HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        //[HarmonyPostfix]
+        private static void ChangeNameColor(PlayerControllerB __instance)
+        {
+            if (Roles.CurrentRole == null) return;
+            if (Roles.CurrentRole.Type != Roles.RoleType.monster) return;
+
+
+            foreach (KeyValuePair<ulong, string> id in Roles.localPlayerRoles)
+            {
+                if (NameIsMonsterType(id.Value))
+                {
+                    int playerID = GOTools.UlongToPlayerID(id.Key);
+                    if (playerID != -1)
+                    {
+                        StartOfRound.Instance.allPlayerScripts[playerID].usernameBillboardText.color = Color.red;
+                    }
+                }
+            }
         }
 
 
@@ -244,27 +263,32 @@ namespace LethalMystery.MainGame
         }
 
 
+        
         private static void TurnMonsterNamesRed()
         {
             if (Roles.CurrentRole == null) return;
             if (Roles.CurrentRole.Type != Roles.RoleType.monster) return;
 
-
+            int playerID = -1;
             foreach (KeyValuePair<ulong, string> id in Roles.localPlayerRoles)
             {
-                if (NameIsMonsterType(id.Value))
+
+                if (Roles.NameIsMonsterType(id.Value))
                 {
-                    int playerID = GOTools.UlongToPlayerID(id.Key);
-                    if (playerID != -1)
-                    {
-                        Plugin.mls.LogInfo(">>> attempting to set name to red");
-                        FindMonsterName(playerID);
-                    }
+                    playerID = GOTools.UlongToPlayerID(id.Key);
+                }
+            }
+
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (playerID != -1)
+                {
+                    player.usernameBillboardText.color = Color.red;
                 }
             }
         }
 
-
+        /*
         private static void FindMonsterName(int playerID, bool reset = false)
         {
             Scene targetScene = SceneManager.GetSceneByName("SampleSceneRelay");
@@ -307,13 +331,20 @@ namespace LethalMystery.MainGame
                 }
             }
         }
+        */
 
         private static void ResetMonsterNames()
         {
+            /*
             foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
             {
                 int playerID = (int)player.playerClientId;
                 FindMonsterName(playerID, reset: true);
+            }
+            */
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                player.usernameBillboardText.color = Color.white;
             }
         }
 
