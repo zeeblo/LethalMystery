@@ -17,21 +17,15 @@ namespace LethalMystery.Players
         [HarmonyPrefix]
         private static bool KnifeKill(KnifeItem __instance, ref int ___knifeHitForce)
         {
-            Plugin.mls.LogInfo(">>> 1");
-            List<ulong> killList = KnifeHitList(__instance);
-            Plugin.mls.LogInfo(">>> 4");
-            if (Roles.CurrentRole?.Type != Roles.RoleType.monster) return true;
-            Plugin.mls.LogInfo(">>> 5");
-            if (killList.Count <= 0) return true;
 
-            Plugin.mls.LogInfo(">>> in KnifeKill");
+            List<ulong> killList = KnifeHitList(__instance);
+            if (Roles.CurrentRole?.Type != Roles.RoleType.monster) return true;
+            if (killList.Count <= 0) return true;
 
             foreach (ulong plrID in killList)
             {
-                Plugin.mls.LogInfo(">>> 6");
                 if (!Roles.NameIsMonsterType(Roles.localPlayerRoles[plrID]) && killedPlayer == false)
                 {
-                    Plugin.mls.LogInfo(">>> 7");
                     ___knifeHitForce = 9999;
                     killedPlayer = true;
                     return true;
@@ -54,14 +48,11 @@ namespace LethalMystery.Players
             objectsHitByKnifeList = objectsHitByKnife.OrderBy((RaycastHit x) => x.distance).ToList();
             foreach (RaycastHit i in objectsHitByKnife)
             {
-                Plugin.mls.LogInfo(">>> 2");
                 PlayerControllerB player = i.transform.gameObject.GetComponent<PlayerControllerB>();
                 if (player != null)
                 {
-                    Plugin.mls.LogInfo(">>> 3");
                     if (Plugin.localPlayer.playerUsername != player.playerUsername)
                     {
-                        Plugin.mls.LogInfo($">>> Added {player.actualClientId}");
                         killList.Add(player.actualClientId);
                     }
                 }

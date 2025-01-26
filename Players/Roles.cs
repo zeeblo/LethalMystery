@@ -184,7 +184,6 @@ namespace LethalMystery.Players
         {
             foreach (Role r in allRoles)
             {
-                Plugin.mls.LogInfo($"name: {name.ToLower()} | roleName: {r.Name.ToLower()} ");
                 if ( (name.ToLower() == r.Name.ToLower()) && (r.Type == RoleType.monster) ) return true;
             }
             return false;
