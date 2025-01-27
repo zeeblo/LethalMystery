@@ -118,10 +118,14 @@ namespace LethalMystery.Players
             List<Role> takenRoles = new List<Role>();
             List<ulong> playerIDS = new List<ulong>();
 
+            playerIDS.Add(0); // adds host id
             foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
             {
-                if (playerIDS.Contains(plr.actualClientId)) continue;
-                playerIDS.Add(plr.actualClientId);
+                if (plr.actualClientId == 0) continue;
+
+                // add rest of client ids
+                playerIDS.Add(plr.playerClientId);
+
 
             }
 

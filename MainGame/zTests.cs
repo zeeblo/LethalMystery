@@ -93,6 +93,25 @@ namespace LethalMystery.MainGame
                     
                 }
 
+                if (Keyboard.current.digit8Key.wasPressedThisFrame)
+                {
+
+                    foreach (PlayerControllerB d in StartOfRound.Instance.allPlayerScripts)
+                    {
+                        Plugin.mls.LogInfo($">>> actualClientID: {d.actualClientId}");
+                    }
+
+                    foreach (PlayerControllerB d in StartOfRound.Instance.allPlayerScripts)
+                    {
+                        Plugin.mls.LogInfo($">>> playerClientID: {d.playerClientId}");
+                    }
+
+                    foreach (KeyValuePair<ulong,string> d in Roles.localPlayerRoles)
+                    {
+                        Plugin.mls.LogInfo($">>> player Role ID: {d.Key}");
+                    }
+                }
+
             }
         }
     }

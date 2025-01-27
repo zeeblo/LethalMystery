@@ -66,7 +66,7 @@ namespace LethalMystery.Players
                 {
                     if (Plugin.localPlayer.playerUsername != player.playerUsername)
                     {
-                        killList.Add(player.actualClientId);
+                        killList.Add(player.playerClientId);
                     }
                 }
 

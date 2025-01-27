@@ -132,7 +132,7 @@ namespace LethalMystery.Network
 
             foreach (KeyValuePair<ulong, string> plrID in allPlayerRoles.Value)
             {
-                if (Plugin.localPlayer.actualClientId == plrID.Key)
+                if (Plugin.localPlayer.playerClientId == plrID.Key)
                 {
                     role = plrID.Value;
                     break;
@@ -434,7 +434,7 @@ namespace LethalMystery.Network
             ulong.TryParse(splitData[0], out ulong playerID);
             bool.TryParse(splitData[1], out bool dataBool);
 
-            if (Plugin.localPlayer.actualClientId == playerID) return;
+            if (Plugin.localPlayer.playerClientId == playerID) return;
 
             Plugin.mls.LogInfo(">>> setting thing to invis");
             GameObject userItem = StartOfRound.Instance.allPlayerScripts[playerID].currentlyHeldObjectServer.gameObject;

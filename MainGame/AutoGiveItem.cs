@@ -139,7 +139,7 @@ namespace LethalMystery.MainGame
 
                     if (CharacterDisplay.inIntro)
                     {
-                        Plugin.netHandler.hideWeaponReceive($"{Plugin.localPlayer.actualClientId}/false", Plugin.localPlayer.actualClientId);
+                        Plugin.netHandler.hideWeaponReceive($"{Plugin.localPlayer.playerClientId}/false", Plugin.localPlayer.actualClientId);
                     }
                     Commands.randomObject = null;
                 }
