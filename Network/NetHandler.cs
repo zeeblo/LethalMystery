@@ -34,7 +34,7 @@ namespace LethalMystery.Network
 
             spawnWeapon = LNetworkMessage<string>.Connect("SpawnWeapons");
             slots = LNetworkMessage<string>.Connect("Slots");
-            meeting = LNetworkMessage<string>.Connect("CallAMeeting");
+            meeting = LNetworkMessage<string>.Connect("meeting");
             addScrapsToList = LNetworkMessage<List<string>>.Connect("addScrapsToList");
             destroyScrap = LNetworkMessage<string>.Connect("destroyScrap");
             showScrap = LNetworkMessage<string>.Connect("showScrap");

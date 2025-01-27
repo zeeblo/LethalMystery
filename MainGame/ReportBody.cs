@@ -11,12 +11,18 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(RagdollGrabbableObject), nameof(RagdollGrabbableObject.EquipItem))]
         [HarmonyPostfix]
-        private static void StartMeeting()
+        private static void StartMeeting(RagdollGrabbableObject __instance)
         {
             if (StartOfRound.Instance.inShipPhase || StringAddons.ConvertToBool(Meeting.inMeeting.Value))
                 return;
 
-            Plugin.netHandler.MeetingReceive("body", Plugin.localPlayer.playerClientId);
+            PlayerControllerB previousPlayerHeldBy = (PlayerControllerB)Traverse.Create(__instance).Field("previousPlayerHeldBy").GetValue();
+
+            if (previousPlayerHeldBy != null && previousPlayerHeldBy.playerClientId == Plugin.localPlayer.playerClientId)
+            {
+                Plugin.mls.LogInfo(">>> Picked up Body");
+                Plugin.netHandler.MeetingReceive("body", Plugin.localPlayer.actualClientId);
+            }
         }
     }
 }
