@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -74,6 +75,42 @@ namespace LethalMystery.Utils
                 }
             }
             return -1;
+        }
+
+
+        /// <summary>
+        /// Returns the GameObject the user is currently looking at
+        /// </summary>
+        public static GameObject GetObjectPlayerIsLookingAt()
+        {
+            Camera gameplayCamera = Plugin.localPlayer.gameplayCamera;
+            float grabDistance = Plugin.localPlayer.grabDistance;
+            bool twoHanded = Plugin.localPlayer.twoHanded;
+            float sinkingValue = Plugin.localPlayer.sinkingValue;
+            Transform transform = Plugin.localPlayer.transform;
+
+            Ray interactRay = new Ray(gameplayCamera.transform.position, gameplayCamera.transform.forward);
+            RaycastHit hit;
+            int interactableObjectsMask = (int)Traverse.Create(GameNetworkManager.Instance.localPlayerController).Field("interactableObjectsMask").GetValue();
+
+            if (!Physics.Raycast(interactRay, out hit, grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || twoHanded || sinkingValue > 0.73f || Physics.Linecast(gameplayCamera.transform.position, hit.collider.transform.position + transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
+            {
+                return Plugin.localPlayer.gameObject;
+            }
+
+            return hit.collider.transform.gameObject;
+        }
+
+
+
+        public static void RemoveGameObject(string name)
+        {
+            GameObject[] go = GameObject.FindGameObjectsWithTag(name);
+
+            foreach (GameObject obj in go)
+            {
+                Plugin.Destroy(obj);
+            }
         }
     }
 }
