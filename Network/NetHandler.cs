@@ -264,11 +264,6 @@ namespace LethalMystery.Network
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
             HUDManagerPatch.DisplayDaysEdit(data);
-
-            if (data == "body")
-            {
-                GOTools.RemoveGameObject("PlayerRagdoll");
-            }
             
             yield return new WaitForSeconds(2f);
             VotingUI.isCalled = true;
