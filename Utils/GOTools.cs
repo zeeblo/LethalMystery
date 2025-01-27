@@ -103,13 +103,18 @@ namespace LethalMystery.Utils
 
 
 
-        public static void RemoveGameObject(string name)
+        public static void RemoveGameObject(string tag, string name)
         {
-            GameObject[] go = GameObject.FindGameObjectsWithTag(name);
+            GameObject[] go = GameObject.FindGameObjectsWithTag(tag);
 
             foreach (GameObject obj in go)
             {
-                Plugin.Destroy(obj);
+                string new_name = name.ToLower().Replace("(clone)", "");
+                string go_name = obj.name.ToLower().Replace("(clone)", "");
+                if (new_name == go_name)
+                {
+                    Plugin.Destroy(obj);
+                }
             }
         }
     }

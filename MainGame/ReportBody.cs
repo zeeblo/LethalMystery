@@ -20,7 +20,6 @@ namespace LethalMystery.MainGame
 
             if (previousPlayerHeldBy != null && previousPlayerHeldBy.playerClientId == Plugin.localPlayer.playerClientId)
             {
-                Plugin.mls.LogInfo(">>> Picked up Body");
                 Plugin.netHandler.MeetingReceive("body", Plugin.localPlayer.actualClientId);
             }
         }

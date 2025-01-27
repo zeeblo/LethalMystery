@@ -45,7 +45,7 @@ namespace LethalMystery.Players
                 }
             }
 
-            
+            ___knifeHitForce = 1;
             return true;
         }
 

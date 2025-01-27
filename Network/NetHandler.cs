@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Patches;
@@ -101,10 +102,28 @@ namespace LethalMystery.Network
                 Plugin.RemoveEnvironment(false);
                 Meeting.MeetingDefaults();
                 StartOfRound.Instance.mapScreen.SwitchScreenOn(true);
+                GOTools.RemoveGameObject("PhysicsProp", "RagdollGrabbableObject");
+                StartOfRound.Instance.StartCoroutine(cleanSlot());
 
                 if (VotingUI.votingGUI != null)
                 {
                     Plugin.Destroy(VotingUI.votingGUI);
+                }
+
+            }
+        }
+
+
+        private static IEnumerator cleanSlot()
+        {
+            yield return new WaitForSeconds(2f);
+
+            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
+            for (int i = 0; i < localPlayer.ItemSlots.Count(); i++)
+            {
+                if (localPlayer.ItemSlots[i] == null)
+                {
+                    HUDManager.Instance.itemSlotIcons[i].enabled = false;
                 }
             }
         }
