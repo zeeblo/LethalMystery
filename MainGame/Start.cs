@@ -14,8 +14,7 @@ namespace LethalMystery.MainGame
 
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
         public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
-
-        #region Patches
+        
 
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
@@ -211,7 +210,8 @@ namespace LethalMystery.MainGame
         }
 
 
-        #endregion Patches
+
+
 
 
     }

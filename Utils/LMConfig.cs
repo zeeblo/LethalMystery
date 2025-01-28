@@ -7,6 +7,7 @@ namespace LethalMystery.Utils
     {
         public static ConfigEntry<string>? PrefixSetting;
         public static ConfigEntry<string>? shapeshiftBind;
+        public static ConfigEntry<string> selfcleanBind;
         public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
         public static float defaultDiscussTime = 15f; // 35
         public static float defaultVoteTime = 95f; // 85
@@ -20,8 +21,11 @@ namespace LethalMystery.Utils
         {
             PrefixSetting = cfg.Bind("Command Settings", "Command Prefix", "/", "Prefix for chat commands");
             shapeshiftBind = cfg.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself");
+            selfcleanBind = cfg.Bind("Gameplay Controls", "Self Clean", "e", "Clean the blood on you");
+            
             AllHotkeys.Add(PrefixSetting);
             AllHotkeys.Add(shapeshiftBind);
+            AllHotkeys.Add(selfcleanBind);
 
         }
 

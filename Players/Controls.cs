@@ -12,6 +12,7 @@ namespace LethalMystery.Players
         public static InputActionMap monsterControls = actionAsset.AddActionMap("MonsterControls");
         public static InputActionReference? shapeshiftRef;
         private static bool spawningWeapon = false;
+        public static bool cleaningBody = false;
 
         public static void InitControls()
         {
@@ -20,10 +21,23 @@ namespace LethalMystery.Players
                 return;
             }
 
+            
+            InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
+
+
+            selfclean.performed += Selfclean_performed;
+            selfclean.canceled += Selfclean_canceled;
             shapeshift.performed += Shapeshift_performed;
 
-            shapeshiftRef = InputActionReference.Create(shapeshift);
+
+            shapeshiftRef = InputActionReference.Create(shapeshift); // just for one specific KeybindsUI section, the other kebinds dont need to do this
+        }
+
+
+        public static void ResetVars()
+        {
+            cleaningBody = false;
         }
 
         public static void UnlockCursor(bool value)
@@ -37,10 +51,35 @@ namespace LethalMystery.Players
         }
 
 
+
+        private static void Selfclean_performed(InputAction.CallbackContext context)
+        {
+            Plugin.mls.LogInfo(">> Cleaning Blood");
+            cleaningBody = true;
+            HUDManager.Instance.holdInteractionCanvasGroup.alpha = 1;
+        }
+
+        private static void Selfclean_canceled(InputAction.CallbackContext context)
+        {
+            Plugin.mls.LogInfo(">> Stopped cleaning");
+            StopCleaning();
+        }
+
+
+        public static void StopCleaning()
+        {
+            cleaningBody = false;
+            Ability.cleaningBloodAmt = 0f;
+            HUDManager.Instance.holdFillAmount = 0f;
+            HUDManager.Instance.holdInteractionCanvasGroup.alpha = 0;
+        }
+
+
         private static void Shapeshift_performed(InputAction.CallbackContext context)
         {
             Plugin.mls.LogInfo(">> Shapeshifted!!");
         }
+
 
         private static void SpawnWeapon_performed(InputAction.CallbackContext context)
         {

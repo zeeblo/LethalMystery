@@ -93,7 +93,7 @@ namespace LethalMystery.MainGame
                     
                 }
 
-                if (Keyboard.current.digit8Key.wasPressedThisFrame)
+                if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
 
                     foreach (PlayerControllerB d in StartOfRound.Instance.allPlayerScripts)
