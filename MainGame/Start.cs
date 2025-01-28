@@ -100,7 +100,7 @@ namespace LethalMystery.MainGame
                 if (StringAddons.ConvertToFloat(currentGracePeriodTime.Value) >= 0 && Plugin.isHost)
                 {
                     float countdown = StringAddons.ConvertToFloat(currentGracePeriodTime.Value);
-                    countdown -= Time.deltaTime;
+                    countdown -= 1 * Time.deltaTime;
                     currentGracePeriodTime.Value = $"{countdown}";
                 }
                 else

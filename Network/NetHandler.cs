@@ -253,7 +253,7 @@ namespace LethalMystery.Network
 
             Meeting.inMeeting.Value = "true";
             Start.inGracePeriod.Value = "true";
-            Start.currentGracePeriodTime.Value = $"{LMConfig.defaultMeetingTime + 140f}";
+            Start.currentGracePeriodTime.Value = $"{LMConfig.defaultMeetingTime + 40f}";
 
             meeting.SendClients(data);
         }
