@@ -6,6 +6,7 @@ using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
 using LethalMystery.Utils;
+using System.Xml.Linq;
 
 
 
@@ -271,6 +272,24 @@ namespace LethalMystery.MainGame
         }
 
 
+        /// <summary>
+        /// Hide every weapon
+        /// </summary>
+        private static void ShowWeapons(bool value)
+        {
+            GameObject[] go = GameObject.FindGameObjectsWithTag("PhysicsProp");
+
+            foreach (GameObject obj in go)
+            {
+                string go_name = obj.name.ToLower().Replace("(clone)", "");
+                if (go_name.Contains("knife") || go_name.Contains("gun"))
+                {
+                    obj.GetComponent<MeshRenderer>().enabled = value;
+                }
+            }
+        }
+
+
 
         public static IEnumerator IntroDisplay()
         {
@@ -282,6 +301,7 @@ namespace LethalMystery.MainGame
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
+            ShowWeapons(false);
 
             Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
@@ -343,6 +363,7 @@ namespace LethalMystery.MainGame
             DisableMainCamera(false);
             HideGUI(false);
             TurnMonsterNamesRed();
+            //ShowWeapons(true);
         }
 
 

@@ -164,7 +164,7 @@ namespace LethalMystery.Utils
 
 
         /// <summary>
-        /// Check if the INPUT is a whitelisted item
+        /// Check if the INPUT is a scrap item
         /// </summary>
         public static bool ContainsWhitelistedItem(string input)
         {
