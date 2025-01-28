@@ -21,7 +21,7 @@ namespace LethalMystery.Utils
         {
             PrefixSetting = cfg.Bind("Command Settings", "Command Prefix", "/", "Prefix for chat commands");
             shapeshiftBind = cfg.Bind("Gameplay Controls", "Shapeshift", "8", "Disguise yourself");
-            selfcleanBind = cfg.Bind("Gameplay Controls", "Self Clean", "e", "Clean the blood on you");
+            selfcleanBind = cfg.Bind("Gameplay Controls", "Self Clean", "f", "Clean the blood on you");
             
             AllHotkeys.Add(PrefixSetting);
             AllHotkeys.Add(shapeshiftBind);

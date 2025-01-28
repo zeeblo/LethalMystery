@@ -48,7 +48,6 @@ namespace LethalMystery.MainGame
         private static void PlayerDied()
         {
             canVote = false;
-            Plugin.mls.LogInfo($">>> KillPlayer: {Plugin.localPlayer.playerClientId}");
             Plugin.netHandler.playerDiedReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
         }
 
@@ -82,7 +81,6 @@ namespace LethalMystery.MainGame
         {
             if (!Plugin.isHost) return;
             if (playersWhoGotVoted.Value == null) return;
-            Plugin.mls.LogInfo(">>> Refreshed dictionary");
 
             Plugin.netHandler.setupVotesReceive($"{playerID}/refresh", Plugin.localPlayer.playerClientId);
         }

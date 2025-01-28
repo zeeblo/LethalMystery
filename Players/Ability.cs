@@ -44,8 +44,12 @@ namespace LethalMystery.Players
                 if (!Roles.NameIsMonsterType(Roles.localPlayerRoles[plrID]) && killedPlayer == false)
                 {
                     ___knifeHitForce = 9999;
+                    Plugin.netHandler.playerBloodReceive($"{Plugin.localPlayer.playerClientId}/blood", Plugin.localPlayer.playerClientId);
                     killedPlayer = true;
                     killCooldown = LMConfig.defaultKillCooldown;
+
+                    HUDManager.Instance.DisplayTip("Remove Blood!", $"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself", isWarning: true);
+                    Commands.DisplayChatMessage($"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself");
                     return true;
                 }
             }
@@ -111,7 +115,8 @@ namespace LethalMystery.Players
             if (cleaningBloodAmt > timeToHold)
             {
                 Controls.StopCleaning();
-                Plugin.localPlayer.RemoveBloodFromBody();
+                //Plugin.localPlayer.RemoveBloodFromBody();
+                Plugin.netHandler.playerBloodReceive($"{Plugin.localPlayer.playerClientId}/clean", Plugin.localPlayer.playerClientId);
                 Plugin.localPlayer.movementAudio.PlayOneShot(StartOfRound.Instance.changeSuitSFX);
             }
         }

@@ -27,6 +27,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> playerDied;
         private LNetworkMessage<string> setupVotes;
         private LNetworkMessage<string> ejectPlayer;
+        private LNetworkMessage<string> playerBlood;
 
         public NetHandler()
         {
@@ -44,6 +45,7 @@ namespace LethalMystery.Network
             playerDied = LNetworkMessage<string>.Connect("playerDied");
             setupVotes = LNetworkMessage<string>.Connect("setupVotes");
             ejectPlayer = LNetworkMessage<string>.Connect("ejectPlayer");
+            playerBlood = LNetworkMessage<string>.Connect("playerBlood");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -66,6 +68,8 @@ namespace LethalMystery.Network
             setupVotes.OnClientReceived += setupVotesClients;
             ejectPlayer.OnServerReceived += ejectPlayerServer;
             ejectPlayer.OnClientReceived += ejectPlayerClients;
+            playerBlood.OnServerReceived += playerBloodServer;
+            playerBlood.OnClientReceived += playerBloodClients;
         }
 
         #region Variables
@@ -582,8 +586,6 @@ namespace LethalMystery.Network
             string[] splitData = data.Split('/');
             string playerID = splitData[0].Trim();
             
-            Plugin.mls.LogInfo($">>> in refresh: removed playerID: {playerID}");
-
             Dictionary<string, string> votes = Voting.playersWhoGotVoted.Value;
             votes.Remove(playerID);
 
@@ -616,6 +618,37 @@ namespace LethalMystery.Network
         {
             EjectPlayers.currentlyEjectingPlayer.Value = "true";
             ejectPlayer.SendServer(data);
+        }
+
+
+        public void playerBloodServer(string data, ulong id)
+        {
+            playerBlood.SendClients(data);
+        }
+        public void playerBloodClients(string data)
+        {
+            string[] splitData = data.Split('/');
+            string type = splitData[1];
+            ulong.TryParse(splitData[0], out ulong playerID);
+
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (type == "clean")
+                {
+                    if (player.playerClientId != playerID) continue;
+                    player.RemoveBloodFromBody();
+                }
+                else if (type == "blood")
+                {
+                    if (player.playerClientId != playerID) continue;
+                    player.AddBloodToBody();
+                }
+            }
+
+        }
+        public void playerBloodReceive(string data, ulong id)
+        {
+            playerBlood.SendServer(data);
         }
 
 
