@@ -15,18 +15,24 @@ namespace LethalMystery.Patches
         #region Chat Commands
 
 
-        [HarmonyPatch(nameof(HUDManager.AddPlayerChatMessageClientRpc))]
+        [HarmonyPatch(nameof(HUDManager.AddPlayerChatMessageServerRpc))]
         [HarmonyPrefix]
-        private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage, ref int playerId)
+        private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage)
         {
-            string nameOfUserWhoTyped = __instance.playersManager.allPlayerScripts[playerId].playerUsername;
             string prefix = "";
             if (!string.IsNullOrEmpty(chatMessage.Trim()))
             {
                 prefix = chatMessage[0].ToString();
             }
 
-            Plugin.mls.LogInfo("Chat Message: " + chatMessage + " sent by: " + nameOfUserWhoTyped);
+            if (chatMessage.Length > 150)
+            {
+                // possible overflow attack or smthing? idk im paranoid.
+                return true;
+            }
+
+
+           // Plugin.netHandler.chatMsgReceive("", 0);
 
             if (LMConfig.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
             {
