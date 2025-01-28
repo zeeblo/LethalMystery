@@ -86,7 +86,7 @@ namespace LethalMystery.Players
         {
             if (!killedPlayer) return;
 
-            killCooldown -= Time.deltaTime;
+            killCooldown -= 1 * Time.deltaTime;
             if (killCooldown <= 0f)
             {
                 HUDManager.Instance.DisplayTip("Kill Cooldown Reset!", "You can now attack someone", false);
