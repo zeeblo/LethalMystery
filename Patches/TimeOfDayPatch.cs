@@ -19,7 +19,15 @@ namespace LethalMystery.Patches
             __instance.timeUntilDeadline = 9;
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Meeting.MeetingNum}";
 
+        }
 
+
+
+        [HarmonyPatch(nameof(TimeOfDay.VoteShipToLeaveEarly))]
+        [HarmonyPrefix]
+        private static bool NoDeadVotes()
+        {
+            return false;
         }
 
 
