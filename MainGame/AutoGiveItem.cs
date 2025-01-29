@@ -55,17 +55,21 @@ namespace LethalMystery.MainGame
 
                 }
 
-                StartOfRound.Instance.StartCoroutine(DespawnTimer());
+                //StartOfRound.Instance.StartCoroutine(DespawnTimer());
+                Plugin.netHandler.despawnGOReceive("basic", Plugin.localPlayer.playerClientId);
             }
         }
 
+        /*
+         * Old method for deleting butler or nuts when spawned
         private static IEnumerator DespawnTimer()
         {
             yield return new WaitForSeconds(3);
             Plugin.DespawnEnemies();
         }
-
+        */
         
+
         [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject")]
         [HarmonyPrefix]
         private static bool BeginGrabObjectPatch(PlayerControllerB __instance)

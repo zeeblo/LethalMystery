@@ -28,6 +28,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> setupVotes;
         private LNetworkMessage<string> ejectPlayer;
         private LNetworkMessage<string> playerBlood;
+        private LNetworkMessage<string> despawnGO;
 
         public NetHandler()
         {
@@ -46,6 +47,7 @@ namespace LethalMystery.Network
             setupVotes = LNetworkMessage<string>.Connect("setupVotes");
             ejectPlayer = LNetworkMessage<string>.Connect("ejectPlayer");
             playerBlood = LNetworkMessage<string>.Connect("playerBlood");
+            despawnGO = LNetworkMessage<string>.Connect("despawnGO");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -70,6 +72,7 @@ namespace LethalMystery.Network
             ejectPlayer.OnClientReceived += ejectPlayerClients;
             playerBlood.OnServerReceived += playerBloodServer;
             playerBlood.OnClientReceived += playerBloodClients;
+            despawnGO.OnServerReceived += despawnGOServer;
         }
 
         #region Variables
@@ -651,6 +654,25 @@ namespace LethalMystery.Network
             playerBlood.SendServer(data);
         }
 
+
+
+
+        public void despawnGOServer(string data, ulong id)
+        {
+            StartOfRound.Instance.StartCoroutine(DespawnTimer());
+        }
+
+        public void despawnGOReceive(string data, ulong id)
+        {
+            despawnGO.SendServer(data);
+        }
+
+
+        private static IEnumerator DespawnTimer()
+        {
+            yield return new WaitForSeconds(3);
+            Plugin.DespawnEnemies();
+        }
 
 
     }

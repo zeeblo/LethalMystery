@@ -319,7 +319,7 @@ namespace LethalMystery.MainGame
                 bool weaponFound = GOTools.CheckForExistingWeapon();
                 if (!weaponFound)
                 {
-                    Commands.DisplayChatMessage($"Press <color=#FF0000>\"{LMConfig.spawnItemBind.Value.ToUpper()}\"</color> to spawn equip your weapon");
+                    Commands.DisplayChatMessage($"Press <color=#FF0000>\"{LMConfig.spawnItemBind.Value.ToUpper()}\"</color> to spawn equip your weapon. (this takes a few seconds)");
                 }
             }
         }
@@ -400,7 +400,7 @@ namespace LethalMystery.MainGame
             DisableMainCamera(false);
             HideGUI(false);
             TurnMonsterNamesRed();
-            //ShowWeapons(true);
+            CheckForWeaponInInventory();
         }
 
 
