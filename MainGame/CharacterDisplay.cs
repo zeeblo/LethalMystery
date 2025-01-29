@@ -43,6 +43,16 @@ namespace LethalMystery.MainGame
         }
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPostfix]
+        private static void HideWeaponsPatch()
+        {
+            if (inIntro)
+            {
+                HideWeapons();
+            }
+        }
+
         #endregion patches
 
         private static void HideGUI(bool value)
@@ -275,7 +285,7 @@ namespace LethalMystery.MainGame
         /// <summary>
         /// Hide every weapon
         /// </summary>
-        private static void ShowWeapons(bool value)
+        private static void HideWeapons()
         {
             GameObject[] go = GameObject.FindGameObjectsWithTag("PhysicsProp");
 
@@ -284,7 +294,19 @@ namespace LethalMystery.MainGame
                 string go_name = obj.name.ToLower().Replace("(clone)", "");
                 if (go_name.Contains("knife") || go_name.Contains("gun"))
                 {
-                    obj.GetComponent<MeshRenderer>().enabled = value;
+                    GrabbableObject weapon = obj.GetComponent<GrabbableObject>();
+
+                    if ((weapon.playerHeldBy != null) && Plugin.localPlayer.playerClientId == weapon.playerHeldBy.playerClientId)
+                    {
+                        Plugin.mls.LogInfo(">>made own weapon visible");
+                        obj.GetComponent<MeshRenderer>().enabled = true;
+                    }
+                    else
+                    {
+                        Plugin.mls.LogInfo(">>hide other weapons");
+                        obj.GetComponent<MeshRenderer>().enabled = false;
+                    }
+
                 }
             }
         }
@@ -301,7 +323,7 @@ namespace LethalMystery.MainGame
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
-            ShowWeapons(false);
+            HideWeapons();
 
             Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
