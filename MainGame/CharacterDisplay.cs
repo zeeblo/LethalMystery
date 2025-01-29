@@ -298,12 +298,10 @@ namespace LethalMystery.MainGame
 
                     if ((weapon.playerHeldBy != null) && Plugin.localPlayer.playerClientId == weapon.playerHeldBy.playerClientId)
                     {
-                        Plugin.mls.LogInfo(">>made own weapon visible");
                         obj.GetComponent<MeshRenderer>().enabled = true;
                     }
                     else
                     {
-                        Plugin.mls.LogInfo(">>hide other weapons");
                         obj.GetComponent<MeshRenderer>().enabled = false;
                     }
 
