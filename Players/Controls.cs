@@ -10,6 +10,7 @@ namespace LethalMystery.Players
     {
         private static InputActionAsset actionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
         public static InputActionMap monsterControls = actionAsset.AddActionMap("MonsterControls");
+        public static InputActionMap playerControls = actionAsset.AddActionMap("PlayerControls");
         public static InputActionReference? shapeshiftRef;
         private static bool spawningWeapon = false;
         public static bool cleaningBody = false;
@@ -21,11 +22,13 @@ namespace LethalMystery.Players
                 return;
             }
 
-            
+
+            InputAction spawnItem = playerControls.AddAction("spawn item", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.spawnItemBind.Value);
             InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
 
 
+            spawnItem.performed += SpawnItem_performed;
             selfclean.performed += Selfclean_performed;
             selfclean.canceled += Selfclean_canceled;
             shapeshift.performed += Shapeshift_performed;
@@ -38,6 +41,7 @@ namespace LethalMystery.Players
         public static void ResetVars()
         {
             cleaningBody = false;
+            spawningWeapon = false;
         }
 
         public static void UnlockCursor(bool value)
@@ -48,6 +52,13 @@ namespace LethalMystery.Players
             {
                 Cursor.visible = value;
             }
+        }
+
+
+
+        private static void SpawnItem_performed(InputAction.CallbackContext context)
+        {
+            StartOfRound.Instance.StartCoroutine(SpawnWeapon());
         }
 
 
@@ -81,23 +92,23 @@ namespace LethalMystery.Players
         }
 
 
-        private static void SpawnWeapon_performed(InputAction.CallbackContext context)
-        {
-            StartOfRound.Instance.StartCoroutine(SpawnWeapon());
-        }
 
         private static IEnumerator SpawnWeapon()
         {
             if (spawningWeapon == false && Roles.CurrentRole != null)
             {
-                bool weaponInInventory = CheckForExistingWeapon();
+                bool weaponInInventory = GOTools.CheckForExistingWeapon();
 
                 if (weaponInInventory)
+                {
+                    HUDManager.Instance.DisplayTip("Weapon Detected!", "You already have a weapon in your inventory.", isWarning: true);
                     yield break;
+                }
+                    
 
                 spawningWeapon = true;
                 AutoGiveItem.ResetVariables();
-                Commands.SpawnWeapons(Roles.CurrentRole.GetItem());
+                Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
 
                 yield return new WaitForSeconds(5f); // butler takes roughly 2.5s or less while nutcracker takes a bit longer
                 AutoGiveItem.doneSpawningWeapons = true;
@@ -108,21 +119,6 @@ namespace LethalMystery.Players
             }
         }
 
-        private static bool CheckForExistingWeapon()
-        {
-            for (int i = 0; i < GameNetworkManager.Instance.localPlayerController.ItemSlots.Length; i++)
-            {
-                if (GameNetworkManager.Instance.localPlayerController.ItemSlots[i] != null)
-                {
-                    if ((GameNetworkManager.Instance.localPlayerController.ItemSlots[i].name.ToLower().Contains("shotgun")) || (GameNetworkManager.Instance.localPlayerController.ItemSlots[i].name.ToLower().Contains("knife")))
-                    {
-                        HUDManager.Instance.DisplayTip("Weapon Detected!", "You already have a weapon in your inventory.", isWarning: true);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
 
     }
 }

@@ -49,7 +49,7 @@ namespace LethalMystery.Players
                     killCooldown = LMConfig.defaultKillCooldown;
 
                     HUDManager.Instance.DisplayTip("Remove Blood!", $"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself", isWarning: true);
-                    Commands.DisplayChatMessage($"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself");
+                    Commands.DisplayChatMessage($"Hold <color=#FF0000>\"{LMConfig.selfcleanBind.Value.ToUpper()}\"</color> to clean yourself");
                     return true;
                 }
             }

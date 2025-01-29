@@ -16,6 +16,7 @@ namespace LethalMystery.MainGame
         private static void EndOfGameClientRpcPatch()
         {
             Controls.monsterControls.Disable();
+            Controls.playerControls.Disable();
             //GOTools.ClearInventory();
             if (Plugin.isHost)
             {
@@ -36,6 +37,7 @@ namespace LethalMystery.MainGame
         private static void DisconnectPatch()
         {
             Controls.monsterControls.Disable();
+            Controls.playerControls.Disable();
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
             Plugin.netHandler.RemoveCustomNetEvents();

@@ -7,6 +7,23 @@ namespace LethalMystery.Utils
 {
     public class GOTools
     {
+
+        public static bool CheckForExistingWeapon()
+        {
+            for (int i = 0; i < GameNetworkManager.Instance.localPlayerController.ItemSlots.Length; i++)
+            {
+                if (GameNetworkManager.Instance.localPlayerController.ItemSlots[i] != null)
+                {
+                    if ((GameNetworkManager.Instance.localPlayerController.ItemSlots[i].name.ToLower().Contains("shotgun")) || (GameNetworkManager.Instance.localPlayerController.ItemSlots[i].name.ToLower().Contains("knife")))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
         /// <summary>
         /// Get child objects of GameObject
         /// </summary>

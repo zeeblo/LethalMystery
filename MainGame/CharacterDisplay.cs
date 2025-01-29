@@ -310,6 +310,21 @@ namespace LethalMystery.MainGame
         }
 
 
+        private static void CheckForWeaponInInventory()
+        {
+            if (Roles.CurrentRole == null) return;
+
+            if (Roles.CurrentRole.Type == Roles.RoleType.monster || Roles.CurrentRole.Name == "sheriff")
+            {
+                bool weaponFound = GOTools.CheckForExistingWeapon();
+                if (!weaponFound)
+                {
+                    Commands.DisplayChatMessage($"Press <color=#FF0000>\"{LMConfig.spawnItemBind.Value.ToUpper()}\"</color> to spawn equip your weapon");
+                }
+            }
+        }
+
+
 
         public static IEnumerator IntroDisplay()
         {
@@ -363,6 +378,8 @@ namespace LethalMystery.MainGame
             {
                 Controls.monsterControls.Enable();
             }
+            Controls.playerControls.Enable();
+
 
             inIntro = false;
 

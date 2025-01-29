@@ -26,12 +26,14 @@ namespace LethalMystery.UI
         {
             // Prevent keybinds from being used while in keybind menu
             Controls.monsterControls.Disable();
+            Controls.playerControls.Disable();
+
             GameObject raw1 = GameObject.Find("Canvas/MenuContainer/SettingsPanel/KeybindsPanel/Scroll View");
             GameObject raw2 = GameObject.Find("Systems/UI/Canvas/QuickMenu/SettingsPanel/KeybindsPanel/Scroll View");
             GameObject ScrollView = (raw1) ? raw1 : raw2;
 
             ScrollRect scrollMax = ScrollView.GetComponent<ScrollRect>();
-            
+
 
             __instance.currentVertical = 0;
             __instance.currentHorizontal = 0;
@@ -58,7 +60,7 @@ namespace LethalMystery.UI
                 LMysteryButtons.GetComponentInChildren<TextMeshProUGUI>().text = LMConfig.AllHotkeys[i].Definition.Key;
                 LMysteryButtons.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, LMysteryYOffset);
 
-                // Show name of the actual button box
+                // Show keybind of the actual button box
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
                 componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(LMConfig.AllHotkeys[i].Value);
 
@@ -183,6 +185,7 @@ namespace LethalMystery.UI
                         LMConfig.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
                         LMConfig.AllHotkeys[i].ConfigFile.Save();
                         Controls.monsterControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                        Controls.playerControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
                         break;
                     }
 
@@ -200,12 +203,15 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void KepOnDisablePatch()
         {
-            if (Roles.CurrentRole != null && Controls.monsterControls.enabled == false)
+            if (Roles.CurrentRole == null) return;
+
+            if ((Controls.monsterControls.enabled == false) && Roles.CurrentRole.Type == Roles.RoleType.monster)
             {
-                if (Roles.CurrentRole.Type == Roles.RoleType.monster)
-                {
-                    Controls.monsterControls.Enable();
-                }
+                Controls.monsterControls.Enable();
+            }
+            if ((Controls.playerControls.enabled == false))
+            {
+                Controls.playerControls.Enable();
             }
 
         }
