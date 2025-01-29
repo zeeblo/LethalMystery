@@ -184,8 +184,17 @@ namespace LethalMystery.UI
                     {
                         LMConfig.AllHotkeys[i].Value = optionUI.currentlyUsedKeyText.text; // Set new keybind button
                         LMConfig.AllHotkeys[i].ConfigFile.Save();
-                        Controls.monsterControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
-                        Controls.playerControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+
+                        var monsterControl = Controls.monsterControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower());
+                        var playerControls = Controls.playerControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower());
+                        if (monsterControl != null)
+                        {
+                            Controls.monsterControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                        }
+                        if (playerControls != null)
+                        {
+                            Controls.playerControls.FindAction(LMConfig.AllHotkeys[i].Definition.Key.ToLower()).ApplyBindingOverride($"<Keyboard>/{optionUI.currentlyUsedKeyText.text.ToLower()}");
+                        }
                         break;
                     }
 
