@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using System.Reflection;
+using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
@@ -133,6 +135,84 @@ namespace LethalMystery.MainGame
 
                 voteTime.Value = $"{countdown}";
             }
+        }
+
+
+
+        /// <summary>
+        /// Drop all scrap items when being teleported in the ship
+        /// </summary>
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DropAllHeldItems))]
+        [HarmonyPrefix]
+        private static bool DropItems(PlayerControllerB __instance, bool itemsFall, bool disconnecting)
+        {
+            for (int i = 0; i < __instance.ItemSlots.Length; i++)
+            {
+                GrabbableObject grabbableObject = __instance.ItemSlots[i];
+                if (!(grabbableObject != null))
+                {
+                    continue;
+                }
+                if (!Tasks.allScraps.Contains(__instance.ItemSlots[i].itemProperties.itemName))
+                {
+                    continue;
+                }
+                if (itemsFall)
+                {
+                    grabbableObject.parentObject = null;
+                    grabbableObject.heldByPlayerOnServer = false;
+                    if (__instance.isInElevator)
+                    {
+                        grabbableObject.transform.SetParent(__instance.playersManager.elevatorTransform, worldPositionStays: true);
+                    }
+                    else
+                    {
+                        grabbableObject.transform.SetParent(__instance.playersManager.propsContainer, worldPositionStays: true);
+                    }
+                    __instance.SetItemInElevator(__instance.isInHangarShipRoom, __instance.isInElevator, grabbableObject);
+                    grabbableObject.EnablePhysics(enable: true);
+                    grabbableObject.EnableItemMeshes(enable: true);
+                    grabbableObject.transform.localScale = grabbableObject.originalScale;
+                    grabbableObject.isHeld = false;
+                    grabbableObject.isPocketed = false;
+                    grabbableObject.startFallingPosition = grabbableObject.transform.parent.InverseTransformPoint(grabbableObject.transform.position);
+                    grabbableObject.FallToGround(randomizePosition: true);
+                    grabbableObject.fallTime = UnityEngine.Random.Range(-0.3f, 0.05f);
+                    if (__instance.IsOwner)
+                    {
+                        grabbableObject.DiscardItemOnClient();
+                    }
+                    else if (!grabbableObject.itemProperties.syncDiscardFunction)
+                    {
+                        grabbableObject.playerHeldBy = null;
+                    }
+                }
+                if (__instance.IsOwner && !disconnecting)
+                {
+                    HUDManager.Instance.holdingTwoHandedItem.enabled = false;
+                    HUDManager.Instance.itemSlotIcons[i].enabled = false;
+                    HUDManager.Instance.ClearControlTips();
+                    __instance.activatingItem = false;
+                }
+                __instance.ItemSlots[i] = null;
+            }
+            if (__instance.isHoldingObject)
+            {
+                __instance.isHoldingObject = false;
+                if (__instance.currentlyHeldObjectServer != null)
+                {
+                    MethodInfo SetSpecialGrabAnimationBool = typeof(PlayerControllerB).GetMethod("SetSpecialGrabAnimationBool", BindingFlags.NonPublic | BindingFlags.Instance);
+                    SetSpecialGrabAnimationBool.Invoke(__instance, new object[] { true, __instance.currentlyHeldObjectServer });
+                }
+                __instance.playerBodyAnimator.SetBool("cancelHolding", value: true);
+                __instance.playerBodyAnimator.SetTrigger("Throw");
+            }
+            __instance.activatingItem = false;
+            __instance.twoHanded = false;
+            __instance.carryWeight = 1f;
+            __instance.currentlyHeldObjectServer = null;
+
+            return false;
         }
 
     }
