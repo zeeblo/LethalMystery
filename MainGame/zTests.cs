@@ -95,20 +95,13 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
+                    Plugin.mls.LogInfo($">>> spawnRef: {Controls.spawnItemRef.name}");
+                    Plugin.mls.LogInfo($">>> cleanRef: {Controls.selfcleanRef.name}");
+                    Plugin.mls.LogInfo($">>> shapeREf: {Controls.shapeshiftRef.name}");
 
-                    foreach (PlayerControllerB d in StartOfRound.Instance.allPlayerScripts)
+                    foreach(KeyValuePair<string, InputActionReference> n in Controls.inputRefs)
                     {
-                        Plugin.mls.LogInfo($">>> actualClientID: {d.actualClientId}");
-                    }
-
-                    foreach (PlayerControllerB d in StartOfRound.Instance.allPlayerScripts)
-                    {
-                        Plugin.mls.LogInfo($">>> playerClientID: {d.playerClientId}");
-                    }
-
-                    foreach (KeyValuePair<ulong,string> d in Roles.localPlayerRoles)
-                    {
-                        Plugin.mls.LogInfo($">>> player Role ID: {d.Key}");
+                        Plugin.mls.LogInfo($"RefKey: {n.Key} | RefVal: {n.Value}");
                     }
                 }
 

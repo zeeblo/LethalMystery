@@ -64,11 +64,22 @@ namespace LethalMystery.UI
                 SettingsOption componentInChildren = LMysteryButtons.GetComponentInChildren<SettingsOption>();
                 componentInChildren.currentlyUsedKeyText.text = StringAddons.ConvertToPrefix(LMConfig.AllHotkeys[i].Value);
 
-                /* placeholder variable to prevent the default PushToTalk from being changed as well.
-                 * Setting this to null will throw an error, so im setting it to an arbitrary
-                 * InputActionReference name.
-                 */
-                componentInChildren.rebindableAction = Controls.shapeshiftRef;
+                string inputKeyName = LMConfig.AllHotkeys[i].Definition.Key.ToLower();
+                if (Controls.inputRefs.ContainsKey(inputKeyName))
+                {
+                    Plugin.mls.LogInfo($">> Found |  Key: {inputKeyName}");
+                    componentInChildren.rebindableAction = Controls.inputRefs[inputKeyName];
+                }
+                else
+                {
+                    /* placeholder variable to prevent the default PushToTalk from being changed as well.
+                    * Setting this to null will throw an error, so im setting it to an arbitrary
+                    * InputActionReference name.
+                    */
+                    Plugin.mls.LogInfo($">>Placeholder |  Key: {inputKeyName}");
+                    componentInChildren.rebindableAction = Controls.shapeshiftRef;
+                }
+
 
                 // move down for next button
                 LMysteryYOffset -= 40;

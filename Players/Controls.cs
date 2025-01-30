@@ -11,22 +11,19 @@ namespace LethalMystery.Players
         private static InputActionAsset actionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
         public static InputActionMap monsterControls = actionAsset.AddActionMap("MonsterControls");
         public static InputActionMap playerControls = actionAsset.AddActionMap("PlayerControls");
-        public static InputActionReference? shapeshiftRef;
+        public static InputActionReference spawnItemRef;
+        public static InputActionReference selfcleanRef;
+        public static InputActionReference shapeshiftRef;
+        public static Dictionary<string, InputActionReference> inputRefs = new Dictionary<string, InputActionReference>();
         private static bool spawningWeapon = false;
         public static bool cleaningBody = false;
 
         public static void InitControls()
         {
-            if (LMConfig.shapeshiftBind == null)
-            {
-                return;
-            }
-
 
             InputAction spawnItem = playerControls.AddAction("spawn item", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.spawnItemBind.Value);
             InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
-
 
             spawnItem.performed += SpawnItem_performed;
             selfclean.performed += Selfclean_performed;
@@ -34,7 +31,19 @@ namespace LethalMystery.Players
             shapeshift.performed += Shapeshift_performed;
 
 
-            shapeshiftRef = InputActionReference.Create(shapeshift); // just for one specific KeybindsUI section, the other kebinds dont need to do this
+            spawnItemRef = InputActionReference.Create(spawnItem);
+            selfcleanRef = InputActionReference.Create(selfclean);
+            shapeshiftRef = InputActionReference.Create(shapeshift);
+
+            AddInputRefs();
+        }
+
+
+        private static void AddInputRefs()
+        {
+            inputRefs.Add(spawnItemRef.name.Split("/")[1], spawnItemRef);
+            inputRefs.Add(selfcleanRef.name.Split("/")[1], selfcleanRef);
+            inputRefs.Add(shapeshiftRef.name.Split("/")[1], shapeshiftRef);
         }
 
 

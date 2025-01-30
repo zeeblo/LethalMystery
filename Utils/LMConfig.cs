@@ -5,8 +5,8 @@ namespace LethalMystery.Utils
 {
     public class LMConfig
     {
-        public static ConfigEntry<string>? PrefixSetting;
-        public static ConfigEntry<string>? shapeshiftBind;
+        public static ConfigEntry<string> PrefixSetting;
+        public static ConfigEntry<string> shapeshiftBind;
         public static ConfigEntry<string> selfcleanBind;
         public static ConfigEntry<string> spawnItemBind;
         public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
