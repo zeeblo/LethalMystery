@@ -322,7 +322,7 @@ namespace LethalMystery.Network
             Plugin.mls.LogInfo($"<><><> I am in the destroyScrapServer:");
             Plugin.mls.LogInfo($">>> data in svr: {data}");
             string[] splitData = data.Split('/');
-            ulong.TryParse(splitData[0], out ulong playerID);
+            Int32.TryParse(splitData[0], out int playerID);
             string input = splitData[1];
 
             if (input == "destroy")
@@ -395,11 +395,12 @@ namespace LethalMystery.Network
             if (data.EndsWith("CollectItem"))
             {
                 string[] splitData = data.Split('/');
+                Int32.TryParse(splitData[0], out int playerIndex);
                 ulong.TryParse(splitData[0], out ulong playerID);
                 Int32.TryParse(splitData[1], out int slot);
 
                 Plugin.mls.LogInfo(">>> CollectItem part");
-                GrabbableObject itm = StartOfRound.Instance.allPlayerScripts[playerID].ItemSlots[slot];
+                GrabbableObject itm = StartOfRound.Instance.allPlayerScripts[playerIndex].ItemSlots[slot];
                 if (itm == null || Plugin.localPlayer.playerClientId == playerID)
                 {
                     return;
@@ -409,7 +410,7 @@ namespace LethalMystery.Network
             else
             {
                 string[] splitData = data.Split('/');
-                ulong.TryParse(splitData[0], out ulong playerID);
+                Int32.TryParse(splitData[0], out int playerID);
 
                 Camera gameplayCamera = StartOfRound.Instance.allPlayerScripts[playerID].gameplayCamera;
                 float grabDistance = StartOfRound.Instance.allPlayerScripts[playerID].grabDistance;

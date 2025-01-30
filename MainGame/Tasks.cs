@@ -10,7 +10,6 @@ namespace LethalMystery.MainGame
     [HarmonyPatch]
     internal class Tasks
     {
-        public static bool checkingForItems = false;
         public static bool droppedItem = false;
         public static List<string> allScraps = new List<string>();
         public static int maxQuota = 120;
@@ -27,50 +26,42 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void TaskUpdate(PlayerControllerB __instance)
         {
-            if (StartOfRound.Instance.shipHasLanded == false && __instance.isInHangarShipRoom == false)
+            if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.shipHasLanded == false || Plugin.localPlayer.isInHangarShipRoom == false) return;
+            if (Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot] == null) return;
+
+            string itmName = Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].itemProperties.itemName.ToLower().Replace("(clone)", "");
+            if (!StringAddons.ContainsWhitelistedItem(itmName))
             {
-                checkingForItems = false;
                 return;
             }
-            if (checkingForItems == false)
+
+            Plugin.mls.LogInfo(">>> In TaskUpdate()");
+            CollectScrapInSlot(__instance);
+        }
+
+
+
+
+
+        private static void CollectScrapInSlot(PlayerControllerB __instance)
+        {
+            Plugin.mls.LogInfo(">>> In CollectScrapInSlot()");
+            if (Plugin.isHost)
             {
-                return;
+                Plugin.localPlayer.DestroyItemInSlotAndSync(Plugin.localPlayer.currentItemSlot);
             }
-            if (Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot] == null || Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].playerHeldBy == null)
+            else
             {
-                Plugin.mls.LogInfo(">>> item is somehow null");
-                checkingForItems = false;
-                return;
-            }
-            Plugin.mls.LogInfo(">>> abv abv above taskup");
-            if (Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].playerHeldBy.playerClientId == Plugin.localPlayer.playerClientId)
-            {
-                string itmName = Plugin.localPlayer.ItemSlots[Plugin.localPlayer.currentItemSlot].itemProperties.itemName.ToLower().Replace("(clone)", "");
-                Plugin.mls.LogInfo(">>> above taskup");
-                if (StringAddons.ContainsWhitelistedItem(itmName))
-                {
-                    Plugin.mls.LogInfo(">>> In TaskUpdate()");
-
-
-                    if (Plugin.isHost)
-                    {
-                        Plugin.localPlayer.DestroyItemInSlotAndSync(Plugin.localPlayer.currentItemSlot);
-                    }
-                    else
-                    {
-                        string currentItem = $"{Plugin.localPlayer.playerClientId}/{Plugin.localPlayer.currentItemSlot}";
-                        Plugin.localPlayer.DestroyItemInSlot(Plugin.localPlayer.currentItemSlot);
-                        Plugin.netHandler.destroyScrapReceive(currentItem, Plugin.localPlayer.playerClientId);
-                    }
-
-                    HUDManager.Instance.itemSlotIcons[Plugin.localPlayer.currentItemSlot].enabled = false;
-
-                    __instance.carryWeight = 1f;
-                    checkingForItems = false;
-                    currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
-                }
+                string currentItem = $"{Plugin.localPlayer.playerClientId}/{Plugin.localPlayer.currentItemSlot}";
+                Plugin.localPlayer.DestroyItemInSlot(Plugin.localPlayer.currentItemSlot);
+                Plugin.netHandler.destroyScrapReceive(currentItem, Plugin.localPlayer.playerClientId);
             }
 
+            HUDManager.Instance.itemSlotIcons[Plugin.localPlayer.currentItemSlot].enabled = false;
+
+            __instance.carryWeight = 1f;
+            currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
         }
 
 
@@ -94,6 +85,7 @@ namespace LethalMystery.MainGame
 
                 HUDManager.Instance.AddNewScrapFoundToDisplay(__instance.ItemSlots[__instance.currentItemSlot]);
                 droppedItem = true; // Activates CheckCollectItem()
+                CollectScrapInSlot(__instance);
                 return false;
             }
             return true;
@@ -132,7 +124,6 @@ namespace LethalMystery.MainGame
                     //HUDManager.Instance.DisplayNewScrapFound();
 
                     Plugin.netHandler.showScrapReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
-                    checkingForItems = false; // Prevent TaskUpdate() from activating
 
                     if (Plugin.isHost)
                     {
@@ -197,20 +188,6 @@ namespace LethalMystery.MainGame
         }
 
 
-        /// <summary>
-        /// if DisplayNewScrapFound is called then remove currently selected item
-        /// </summary>
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.DisplayNewScrapFound))]
-        [HarmonyPrefix]
-        private static bool DisplayItems()
-        {
-            Plugin.mls.LogInfo(">>> DisplayItems: set to true");
-            checkingForItems = true; // Activates TaskUpdate()
-
-            return true;
-        }
-
-
 
 
 
@@ -242,7 +219,6 @@ namespace LethalMystery.MainGame
 
         public static void ResetVariables()
         {
-            checkingForItems = false;
             droppedItem = false;
             currentQuota.Value = "0";
             maxQuota = 120;
