@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using LethalMystery.Utils;
 using UnityEngine;
 
 namespace LethalMystery.UI
@@ -23,7 +24,7 @@ namespace LethalMystery.UI
             GameObject HeaderImage = GameObject.Find("Canvas/MenuContainer/MainButtons/HeaderImage");
             GameObject LoadingImage = GameObject.Find("Canvas/MenuContainer/LoadingScreen/Image");
 
-            if (HeaderImage != null && Plugin.LethalMysteryLogo != null && BannerImage != null)
+            if (HeaderImage != null && LMAssets.LethalMysteryLogo != null && BannerImage != null)
             {
 
                 BannerImage.transform.SetParent(GameObject.Find("Canvas/MenuContainer/MainButtons/").transform);
@@ -35,9 +36,9 @@ namespace LethalMystery.UI
                 BannerImage.rectTransform.localPosition = Vector3.zero;
                 BannerImage.transform.localScale = new Vector3(1.1125f, 0.9253f, 5.1671f);
 
-                BannerImage.sprite = Plugin.LethalMysteryBanner;
-                HeaderImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
-                LoadingImage.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.LethalMysteryLogo;
+                BannerImage.sprite = LMAssets.LethalMysteryBanner;
+                HeaderImage.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.LethalMysteryLogo;
+                LoadingImage.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.LethalMysteryLogo;
             }
 
 

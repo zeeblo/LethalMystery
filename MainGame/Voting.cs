@@ -104,7 +104,7 @@ namespace LethalMystery.MainGame
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
             Plugin.mls.LogInfo($"Voted {userID}.");
-            check.sprite = Plugin.CheckboxEnabledIcon;
+            check.sprite = LMAssets.CheckboxEnabledIcon;
 
             ulong PlayerThatVoted = Plugin.localPlayer.playerClientId;
             foreach (KeyValuePair<string, string> plrID in playersWhoGotVoted.Value)
@@ -127,7 +127,7 @@ namespace LethalMystery.MainGame
             if (canVote == false) return;
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
-            check.sprite = Plugin.CheckboxEnabledIcon;
+            check.sprite = LMAssets.CheckboxEnabledIcon;
             ulong PlayerThatVoted = Plugin.localPlayer.playerClientId;
             Plugin.netHandler.playerVotedReceive($"skip/skip/{PlayerThatVoted}", PlayerThatVoted);
             hasVoted = true;

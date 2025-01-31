@@ -62,9 +62,9 @@ namespace LethalMystery.Players
 
             public Sprite GetIcon(Sprite Icon)
             {
-                if (Type == RoleType.monster && Plugin.KnifeIcon != null)
+                if (Type == RoleType.monster && LMAssets.KnifeIcon != null)
                 {
-                    return Plugin.KnifeIcon;
+                    return LMAssets.KnifeIcon;
                 }
                 else
                 {

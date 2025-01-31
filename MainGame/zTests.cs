@@ -13,6 +13,7 @@ using BepInEx.Bootstrap;
 using GameNetcodeStuff;
 using LethalMystery.UI;
 using LethalMystery.Players;
+using UnityEngine.Rendering;
 
 
 namespace LethalMystery.MainGame
@@ -95,7 +96,17 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    Commands.SpawnBaby();
+                    
+                    float xpos = Plugin.localPlayer.transform.position.x;
+                    float ypos = Plugin.localPlayer.transform.position.y + 50;
+                    float zpos = Plugin.localPlayer.transform.position.z;
+                    Vector3 pos = new Vector3(xpos, ypos, zpos);
+                    Plugin.Instantiate(LMAssets.SkeldMap, pos, Quaternion.identity);
+                    
+                    string pipline = GraphicsSettings.renderPipelineAsset.name;
+                    string skeldPip = LMAssets.SkeldMap.transform.Find("Cube").GetComponentInChildren<Renderer>().material.shader.name;
+                    Plugin.mls.LogInfo($"Active Render Pipeline: {pipline}");
+                    Plugin.mls.LogInfo($"Skeld Pipeline: {skeldPip}");
                 }
 
             }

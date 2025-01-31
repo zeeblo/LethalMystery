@@ -159,7 +159,7 @@ namespace LethalMystery.UI
 
             UnityEngine.UI.Image skipCheckSprite = skipButton.GetComponent<UnityEngine.UI.Image>();
             UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
-            skipCheckSprite.sprite = Plugin.CheckboxEmptyIcon;
+            skipCheckSprite.sprite = LMAssets.CheckboxEmptyIcon;
             skipBtn.onClick.AddListener(() => Voting.SkipButtonClick(skipCheckSprite));
 
         }
@@ -194,7 +194,7 @@ namespace LethalMystery.UI
 
                 UnityEngine.UI.Image plrCheckSprite = VoteBtn.GetComponent<UnityEngine.UI.Image>();
                 UnityEngine.UI.Button plrbutton = VoteBtn.GetComponent<UnityEngine.UI.Button>();
-                plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : Plugin.CheckboxEmptyIcon;
+                plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : LMAssets.CheckboxEmptyIcon;
 
                 Plugin.mls.LogInfo($">>> Logging num: {index}");
                 plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
@@ -221,7 +221,7 @@ namespace LethalMystery.UI
                 }
                 else
                 {
-                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = Plugin.CheckboxEmptyIcon;
+                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.CheckboxEmptyIcon;
                 }
 
             }
