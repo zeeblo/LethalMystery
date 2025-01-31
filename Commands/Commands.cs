@@ -2,6 +2,7 @@
 using GameNetcodeStuff;
 using Unity.Netcode;
 using LethalMystery.Utils;
+using System.Xml.Linq;
 
 
 namespace LethalMystery
@@ -345,6 +346,25 @@ namespace LethalMystery
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[9].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }
+        }
+
+
+        public static void SpawnBaby()
+        {
+            Vector3 position = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y + 4, Plugin.localPlayer.transform.position.z);
+            SelectableLevel[] currentLevel = RoundManager.Instance.playersManager.levels;
+
+            for (int i = 0; i < currentLevel.Length; i++)
+            {
+                foreach (SpawnableEnemyWithRarity v in currentLevel[i].Enemies)
+                {
+                    if (v.enemyType.enemyName.Contains("Maneater"))
+                    {
+                        UnityEngine.Object.Instantiate<GameObject>(v.enemyType.enemyPrefab, position, Quaternion.identity).gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
+                    }
+                }
+            }
+
         }
 
 
