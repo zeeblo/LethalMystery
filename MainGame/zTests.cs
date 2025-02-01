@@ -97,10 +97,7 @@ namespace LethalMystery.MainGame
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
                     
-                    float xpos = Plugin.localPlayer.transform.position.x;
-                    float ypos = Plugin.localPlayer.transform.position.y + 50;
-                    float zpos = Plugin.localPlayer.transform.position.z;
-                    Vector3 pos = new Vector3(xpos, ypos, zpos);
+                    Vector3 pos = new Vector3(0f, -90, 0f);
                     Plugin.Instantiate(LMAssets.SkeldMap, pos, Quaternion.identity);
                     
                     string pipline = GraphicsSettings.renderPipelineAsset.name;

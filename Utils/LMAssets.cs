@@ -20,7 +20,7 @@ namespace LethalMystery.Utils
         public static void LoadAllAssets()
         {
             SpriteLoader();
-            MapLoader();
+            DefaultMapLoader();
         }
 
 
@@ -63,7 +63,7 @@ namespace LethalMystery.Utils
 
 
 
-        private static void MapLoader()
+        private static void DefaultMapLoader()
         {
             string BundleDir = Plugin.MainDir + "\\Assets\\Assetbundles\\lm_maps";
 
