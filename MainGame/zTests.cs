@@ -38,11 +38,40 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch]
+        [HarmonyPatch(typeof(Terminal))]
         internal class AdminCMDS
         {
 
-
+            [HarmonyPatch(nameof(Terminal.Update))]
+            [HarmonyPostfix]
+            private static void UpdatePatch(Terminal __instance)
+            {
+                if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+                    Plugin.mls.LogInfo(">>> Pressed 2");
+                    foreach (TerminalNode twords in __instance.terminalNodes.specialNodes)
+                    {
+                            Plugin.mls.LogInfo($">>> displayText: {twords.displayText}");
+                            Plugin.mls.LogInfo($">>> terminalEvent: {twords.terminalEvent}");
+                            Plugin.mls.LogInfo($">>> clearPreviousText: {twords.clearPreviousText}");
+                            Plugin.mls.LogInfo($">>> maxCharactersToType: {twords.maxCharactersToType}");
+                            Plugin.mls.LogInfo($">>> buyVehicleIndex: {twords.buyVehicleIndex}");
+                            Plugin.mls.LogInfo($">>> isConfirmationNode: {twords.isConfirmationNode}");
+                            Plugin.mls.LogInfo($">>> buyRerouteToMoon: {twords.buyRerouteToMoon}");
+                            Plugin.mls.LogInfo($">>> displayPlanetInfo: {twords.displayPlanetInfo}");
+                            Plugin.mls.LogInfo($">>> shipUnlockableID: {twords.shipUnlockableID}");
+                            Plugin.mls.LogInfo($">>> buyUnlockable: {twords.buyUnlockable}");
+                            Plugin.mls.LogInfo($">>> returnFromStorage: {twords.returnFromStorage}");
+                            Plugin.mls.LogInfo($">>> itemCost: {twords.itemCost}");
+                            Plugin.mls.LogInfo($">>> creatureFileID: {twords.creatureFileID}");
+                            Plugin.mls.LogInfo($">>> creatureName: {twords.creatureName}");
+                            Plugin.mls.LogInfo($">>> storyLogFileID: {twords.storyLogFileID}");
+                            Plugin.mls.LogInfo($">>> overrideOptions: {twords.overrideOptions}");
+                            Plugin.mls.LogInfo($">>> acceptAnything: {twords.acceptAnything}");
+                        
+                    }
+                }
+            }
         }
 
 
@@ -94,6 +123,7 @@ namespace LethalMystery.MainGame
                     
                 }
 
+                /*
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
                     
@@ -105,7 +135,7 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($"Active Render Pipeline: {pipline}");
                     Plugin.mls.LogInfo($"Skeld Pipeline: {skeldPip}");
                 }
-
+                */
             }
         }
     }
