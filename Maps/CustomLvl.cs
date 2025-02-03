@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LethalMystery.Utils;
+using UnityEngine;
 
 
 namespace LethalMystery.Maps
@@ -10,7 +11,7 @@ namespace LethalMystery.Maps
     {
         public static List<SelectableLevel> customMoons = new List<SelectableLevel>();
         public static List<TerminalKeyword> customKeywords = new List<TerminalKeyword>();
-        public static List<TerminalNode> customNodes = new List<TerminalNode>();
+        public static GameObject CurrentInside;
 
         private class NewSelectableLevel : SelectableLevel
         {
@@ -43,30 +44,16 @@ namespace LethalMystery.Maps
         {
             public NewTerminalNode(
                 string displayText = "",
+                string terminalEvent = "",
                 bool clearPreviousText = true,
-                int maxCharactersToType = 25,
-                int buyItemIndex = -1,
-                int buyVehicleIndex = -1,
                 bool isConfirmationNode = false,
-                int buyRerouteToMoon = -1,
-                int displayPlanetInfo = -1,
-                int shipUnlockableID = -1,
-                int itemCost = 0,
-                bool buyUnlockable = false,
-                bool returnFromStorage = false)
+                int itemCost = 0)
             {
                 this.displayText = displayText;
+                this.terminalEvent = terminalEvent;
                 this.clearPreviousText = clearPreviousText;
-                this.maxCharactersToType = maxCharactersToType;
-                this.buyItemIndex = buyItemIndex;
-                this.buyVehicleIndex = buyVehicleIndex;
                 this.isConfirmationNode = isConfirmationNode;
-                this.buyRerouteToMoon = buyRerouteToMoon;
-                this.displayPlanetInfo = displayPlanetInfo;
-                this.shipUnlockableID = shipUnlockableID;
                 this.itemCost = itemCost;
-                this.buyUnlockable = buyUnlockable;
-                this.returnFromStorage = returnFromStorage;
             }
         }
 
@@ -80,16 +67,21 @@ namespace LethalMystery.Maps
 
         private static void AppendNewTerminalKeyword()
         {
-            customKeywords.Add(new NewTerminalKeyword("skeld", false, new NewTerminalNode("Interior will now be Skeld\n\n")));
+            NewTerminalNode node = new NewTerminalNode(
+                    displayText: "Interior will now be Skeld\n\n",
+                    terminalEvent: "skeld");
+
+            customKeywords.Add(new NewTerminalKeyword(
+                word: "skeld",
+                isVerb: false,
+                specialKeywordResult: node ));
         }
 
-        private static void AppendNewTerminalNode()
+
+        private static void DefaultSetup()
         {
-            customNodes.Add(new NewTerminalNode());
+            CurrentInside = LMAssets.SkeldMap;
         }
-
-
-
 
 
 
@@ -99,23 +91,15 @@ namespace LethalMystery.Maps
         {
             customMoons.Clear();
             customKeywords.Clear();
-            customNodes.Clear();
             AppendNewSelectableLevel();
             AppendNewTerminalKeyword();
-            AppendNewTerminalNode();
-            
+            DefaultSetup();
 
             foreach (TerminalKeyword words in __instance.terminalNodes.allKeywords)
             {
                 customKeywords.Add(words);
             }
 
-            /*
-            foreach (TerminalNode node in __instance.terminalNodes.specialNodes)
-            {
-                customKeywords.Add(words);
-            }
-            */
             __instance.moonsCatalogueList = customMoons.ToArray();
             __instance.terminalNodes.allKeywords = customKeywords.ToArray();
 
@@ -144,7 +128,40 @@ namespace LethalMystery.Maps
                     break;
                 }
             }
+        }
 
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
+        [HarmonyPrefix]
+        private static bool TerminalCommand(TerminalNode node)
+        {
+
+            switch (node.terminalEvent)
+            {
+                case "skeld":
+                    ChangeMap();
+                    break;
+            }
+
+            return true;
+        }
+
+
+        private static void ChangeMap()
+        {
+            if (!Plugin.isHost)
+            {
+                HUDManager.Instance.DisplayTip("Oops", "Only the host can change maps");
+                return;
+            }
+            if (!StartOfRound.Instance.inShipPhase)
+            {
+                HUDManager.Instance.DisplayTip("Oops", "Can only do this while in orbit.");
+                return;
+            }
+
+            CurrentInside = LMAssets.SkeldMap;
         }
 
     }
