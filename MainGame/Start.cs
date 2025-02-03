@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Maps;
 using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
@@ -50,6 +51,7 @@ namespace LethalMystery.MainGame
             terminal.groupCredits = 9999;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
+            InsideMap.SpawnInterior();
             Plugin.ResetVariables();
             Tasks.AppendScraps();
             Roles.AssignRole();
