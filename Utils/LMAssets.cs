@@ -68,7 +68,8 @@ namespace LethalMystery.Utils
             string BundleDir = Plugin.MainDir + "\\Assets\\Assetbundles\\lm_maps";
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
-            SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
+            //SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
+            SkeldMap = myBundle.LoadAsset<GameObject>("Skeld_tst.prefab");
 
         }
     }

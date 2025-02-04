@@ -90,14 +90,14 @@ namespace LethalMystery.MainGame
                         Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
                     }
                     Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
-                   
-                    
+
+
                 }
 
-                /*
+
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    
+                    /*
                     Vector3 pos = new Vector3(0f, -90, 0f);
                     Plugin.Instantiate(LMAssets.SkeldMap, pos, Quaternion.identity);
                     
@@ -105,8 +105,16 @@ namespace LethalMystery.MainGame
                     string skeldPip = LMAssets.SkeldMap.transform.Find("Cube").GetComponentInChildren<Renderer>().material.shader.name;
                     Plugin.mls.LogInfo($"Active Render Pipeline: {pipline}");
                     Plugin.mls.LogInfo($"Skeld Pipeline: {skeldPip}");
-                }
                 */
+
+                    GameObject AreaLight = GameObject.Find("Area Light (5)");
+                    if (AreaLight != null)
+                    {
+                        Quaternion rot = Quaternion.Euler(90, 0, 0);
+                        lght = UnityEngine.Object.Instantiate(AreaLight.gameObject, Plugin.localPlayer.transform.position, rot);
+                    }
+                }
+
             }
         }
     }
