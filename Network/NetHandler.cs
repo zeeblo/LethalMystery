@@ -189,7 +189,7 @@ namespace LethalMystery.Network
 
 
 
-        public void SpawnWeaponServer(string data, ulong id)
+        private void SpawnWeaponServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the SpawnMobServer: {data}");
             Commands.SpawnWeapons(data);
@@ -214,12 +214,12 @@ namespace LethalMystery.Network
 
 
 
-        public void SlotsServer(string data, ulong id)
+        private void SlotsServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsServer:");
             slots.SendClients(data);
         }
-        public void SlotsClients(string data)
+        private void SlotsClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the slotsClients:");
             string[] splitData = data.Split('/');
@@ -255,7 +255,7 @@ namespace LethalMystery.Network
 
 
 
-        public void MeetingServer(string data, ulong id)
+        private void MeetingServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingServer:");
 
@@ -265,7 +265,7 @@ namespace LethalMystery.Network
 
             meeting.SendClients(data);
         }
-        public void MeetingClients(string data)
+        private void MeetingClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingClients:");
             StartOfRound.Instance.StartCoroutine(meetingSetup(data));
@@ -302,13 +302,13 @@ namespace LethalMystery.Network
 
 
 
-        public void addScrapsToListServer(List<string> data, ulong id)
+        private void addScrapsToListServer(List<string> data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListServer:");
 
             addScrapsToList.SendClients(data);
         }
-        public void addScrapsToListClients(List<string> data)
+        private void addScrapsToListClients(List<string> data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the addScrapsToListClients:");
             Tasks.allScraps = data;
@@ -322,7 +322,7 @@ namespace LethalMystery.Network
 
 
 
-        public void destroyScrapServer(string data, ulong id)
+        private void destroyScrapServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the destroyScrapServer:");
             Plugin.mls.LogInfo($">>> data in svr: {data}");
@@ -361,7 +361,7 @@ namespace LethalMystery.Network
             }
 
         }
-        public void destroyScrapClients(string data)
+        private void destroyScrapClients(string data)
         {
 
             // Activated by TaskUpdate()
@@ -388,12 +388,12 @@ namespace LethalMystery.Network
 
 
 
-        public void showScrapServer(string data, ulong id)
+        private void showScrapServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the showScrapServer:");
             showScrap.SendClients(data);
         }
-        public void showScrapClients(string data)
+        private void showScrapClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the showScrapClients:");
 
@@ -453,13 +453,13 @@ namespace LethalMystery.Network
 
 
 
-        public void hideWeaponServer(string data, ulong id)
+        private void hideWeaponServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the hideWeaponServer:");
 
             hideWeapon.SendClients(data);
         }
-        public void hideWeaponClients(string data)
+        private void hideWeaponClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the hideWeaponClients:");
             string[] splitData = data.Split('/');
@@ -494,7 +494,7 @@ namespace LethalMystery.Network
 
 
 
-        public void playerVotedServer(string data, ulong id)
+        private void playerVotedServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the playerVotedServer:");
             string[] splitData = data.Split('/');
@@ -507,7 +507,7 @@ namespace LethalMystery.Network
 
             playerVoted.SendClients(data);
         }
-        public void playerVotedClients(string data)
+        private void playerVotedClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the playerVotedClients:");
 
@@ -542,11 +542,11 @@ namespace LethalMystery.Network
 
 
 
-        public void playerDiedServer(string data, ulong id)
+        private void playerDiedServer(string data, ulong id)
         {
             playerDied.SendClients(data);
         }
-        public void playerDiedClients(string data)
+        private void playerDiedClients(string data)
         {
             Int32.TryParse(data, out int userID);
 
@@ -558,7 +558,7 @@ namespace LethalMystery.Network
         }
 
 
-        public void setupVotesServer(string data, ulong id)
+        private void setupVotesServer(string data, ulong id)
         {
             Plugin.mls.LogInfo($"<><><> I am in the setupVotesServer:");
             Dictionary<string, string> rawAllVotes = new Dictionary<string, string>();
@@ -590,7 +590,7 @@ namespace LethalMystery.Network
 
             
         }
-        public void setupVotesClients(string data)
+        private void setupVotesClients(string data)
         {
             string[] splitData = data.Split('/');
             string playerID = splitData[0].Trim();
@@ -610,11 +610,11 @@ namespace LethalMystery.Network
 
 
 
-        public void ejectPlayerServer(string data, ulong id)
+        private void ejectPlayerServer(string data, ulong id)
         {
             ejectPlayer.SendClients(data);
         }
-        public void ejectPlayerClients(string data)
+        private void ejectPlayerClients(string data)
         {
             if (data == $"{Plugin.localPlayer.playerClientId}")
             {
@@ -630,11 +630,11 @@ namespace LethalMystery.Network
         }
 
 
-        public void playerBloodServer(string data, ulong id)
+        private void playerBloodServer(string data, ulong id)
         {
             playerBlood.SendClients(data);
         }
-        public void playerBloodClients(string data)
+        private void playerBloodClients(string data)
         {
             string[] splitData = data.Split('/');
             string type = splitData[1];
