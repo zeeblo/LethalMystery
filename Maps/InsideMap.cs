@@ -27,6 +27,9 @@ namespace LethalMystery.Maps
         public static void TeleportInside()
         {
             Vector3 spawn_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
+            GameNetworkManager.Instance.localPlayerController.isInElevator = false;
+            GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
+            GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
         }
 
