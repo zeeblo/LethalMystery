@@ -332,6 +332,12 @@ namespace LethalMystery.MainGame
         }
 
 
+        private static void ReverseRotation()
+        {
+            GameNetworkManager.Instance.localPlayerController.thisPlayerBody.transform.Rotate(0, 180, 0);
+        }
+
+
         public static IEnumerator IntroDisplay()
         {
             Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
@@ -411,6 +417,7 @@ namespace LethalMystery.MainGame
             TurnMonsterNamesRed();
             CheckForWeaponInInventory();
             InfiniteTime();
+            ReverseRotation();
         }
 
 
