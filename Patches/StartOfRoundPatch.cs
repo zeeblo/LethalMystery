@@ -16,7 +16,7 @@ namespace LethalMystery.Patches
         {
             if (displayInfo)
             {
-                __instance.screenLevelVideoReel.enabled = true;
+                __instance.screenLevelVideoReel.enabled = false;
                 __instance.screenLevelVideoReel.gameObject.SetActive(value: true);
                 __instance.screenLevelDescription.enabled = true;
                 __instance.mapScreenPlayerName.enabled = false;

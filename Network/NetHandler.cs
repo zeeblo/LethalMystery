@@ -2,6 +2,7 @@
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
+using LethalMystery.Maps;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.UI;
@@ -29,6 +30,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> ejectPlayer;
         private LNetworkMessage<string> playerBlood;
         private LNetworkMessage<string> despawnGO;
+        private LNetworkMessage<string> currentMap;
 
         public NetHandler()
         {
@@ -48,6 +50,7 @@ namespace LethalMystery.Network
             ejectPlayer = LNetworkMessage<string>.Connect("ejectPlayer");
             playerBlood = LNetworkMessage<string>.Connect("playerBlood");
             despawnGO = LNetworkMessage<string>.Connect("despawnGO");
+            currentMap = LNetworkMessage<string>.Connect("currentMap");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -73,6 +76,8 @@ namespace LethalMystery.Network
             playerBlood.OnServerReceived += playerBloodServer;
             playerBlood.OnClientReceived += playerBloodClients;
             despawnGO.OnServerReceived += despawnGOServer;
+            currentMap.OnServerReceived += currentMapServer;
+            currentMap.OnClientReceived += currentMapClients;
         }
 
         #region Variables
@@ -658,7 +663,7 @@ namespace LethalMystery.Network
 
 
 
-        public void despawnGOServer(string data, ulong id)
+        private void despawnGOServer(string data, ulong id)
         {
             StartOfRound.Instance.StartCoroutine(DespawnTimer());
         }
@@ -673,6 +678,33 @@ namespace LethalMystery.Network
         {
             yield return new WaitForSeconds(3);
             Plugin.DespawnEnemies();
+        }
+
+
+
+        private void currentMapServer(string data, ulong id)
+        {
+            CustomLvl.mapName.Value = data;
+            currentMap.SendClients(data);
+        }
+        private void currentMapClients(string data)
+        {
+            switch (data)
+            {
+                case "skeld":
+                    CustomLvl.CurrentInside = LMAssets.SkeldMap;
+                    break;
+                case "office":
+                    CustomLvl.CurrentInside = LMAssets.OfficeMap;
+                    break;
+            }
+
+            StartOfRound.Instance.screenLevelDescription.text = $"Map: {data.ToUpper()}";
+        }
+
+        public void currentMapReceive(string data, ulong id)
+        {
+            currentMap.SendServer(data);
         }
 
 

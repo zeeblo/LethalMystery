@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using JetBrains.Annotations;
 using LethalMystery.Utils;
+using LethalNetworkAPI;
 using UnityEngine;
 
 
@@ -12,6 +12,7 @@ namespace LethalMystery.Maps
     {
         public static List<SelectableLevel> customMoons = new List<SelectableLevel>();
         public static List<TerminalKeyword> customKeywords = new List<TerminalKeyword>();
+        public static LNetworkVariable<string> mapName = LNetworkVariable<string>.Connect("mapName");
         public static GameObject CurrentInside;
 
         private class NewSelectableLevel : SelectableLevel
@@ -91,6 +92,7 @@ namespace LethalMystery.Maps
         private static void DefaultSetup()
         {
             CurrentInside = LMAssets.SkeldMap;
+            StartOfRound.Instance.screenLevelDescription.text = $"Map: SKELD";
         }
 
 
@@ -171,16 +173,7 @@ namespace LethalMystery.Maps
             }
 
 
-            switch (map)
-            {
-                case "skeld":
-                    CurrentInside = LMAssets.SkeldMap;
-                    break;
-                case "office":
-                    CurrentInside = LMAssets.OfficeMap;
-                    break;
-            }
-            
+            Plugin.netHandler.currentMapReceive(map, 0u);
         }
 
     }
