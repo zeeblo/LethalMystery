@@ -56,6 +56,7 @@ namespace LethalMystery.MainGame
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
+            
         }
 
 
@@ -66,6 +67,7 @@ namespace LethalMystery.MainGame
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
         }
+
 
 
         [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]

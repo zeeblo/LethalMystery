@@ -323,6 +323,14 @@ namespace LethalMystery.MainGame
         }
 
 
+        private static void InfiniteTime()
+        {
+            float currentDayTime = 850f;
+            float normalizedTimeOfDay = currentDayTime / TimeOfDay.Instance.totalTime;
+            TimeOfDay.Instance.currentDayTime = currentDayTime;
+            TimeOfDay.Instance.sunAnimator.SetFloat("timeOfDay", Mathf.Clamp(normalizedTimeOfDay, 0f, 0.99f));
+        }
+
 
         public static IEnumerator IntroDisplay()
         {
@@ -340,7 +348,7 @@ namespace LethalMystery.MainGame
 
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
-
+            TimeOfDay.Instance.currentDayTimeStarted = false;
 
             //Plugin.RemoveEnvironment(true);
             GOTools.HideEnvironment(true);
@@ -402,6 +410,7 @@ namespace LethalMystery.MainGame
             HideGUI(false);
             TurnMonsterNamesRed();
             CheckForWeaponInInventory();
+            InfiniteTime();
         }
 
 
