@@ -14,6 +14,7 @@ using GameNetcodeStuff;
 using LethalMystery.UI;
 using LethalMystery.Players;
 using UnityEngine.Rendering;
+using LethalMystery.Maps;
 
 
 namespace LethalMystery.MainGame
@@ -106,12 +107,22 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($"Active Render Pipeline: {pipline}");
                     Plugin.mls.LogInfo($"Skeld Pipeline: {skeldPip}");
                 */
+                    int opacity = 0;
+                    HUDManager.Instance.Chat.targetAlpha = opacity;
+                    HUDManager.Instance.PlayerInfo.targetAlpha = opacity;
+                    HUDManager.Instance.Tooltips.targetAlpha = opacity;
+                    HUDManager.Instance.Clock.targetAlpha = opacity;
+                    HUDManager.Instance.Inventory.targetAlpha = opacity;
 
                     GameObject AreaLight = GameObject.Find("Area Light (5)");
                     if (AreaLight != null)
                     {
-                        Quaternion rot = Quaternion.Euler(90, 0, 0);
-                        lght = UnityEngine.Object.Instantiate(AreaLight.gameObject, Plugin.localPlayer.transform.position, rot);
+
+                        //Quaternion rot = Quaternion.Euler(90, 0, 0);
+                        //lght = UnityEngine.Object.Instantiate(AreaLight.gameObject, Plugin.localPlayer.transform.position, rot);
+
+                        Vector3 spawn_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
+                        GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
                     }
                 }
 

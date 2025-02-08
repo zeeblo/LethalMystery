@@ -134,5 +134,29 @@ namespace LethalMystery.Utils
                 }
             }
         }
+
+
+
+        public static void HideEnvironment(bool value, string ignore = "")
+        {
+            GameObject.Find("OutOfBoundsTerrain")?.gameObject?.SetActive(!value);
+            Scene currentScene = SceneManager.GetSceneAt(1);
+
+            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            {
+                if (obj.name == "Environment")
+                {
+                    foreach(GameObject child in GetAllChildren(obj))
+                    {
+                        if (child.name == ignore)
+                        {
+                            child.SetActive(value);
+                            continue;
+                        } 
+                        child.SetActive(!value);
+                    }
+                }
+            }
+        }
     }
 }

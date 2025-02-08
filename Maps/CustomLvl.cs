@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using JetBrains.Annotations;
 using LethalMystery.Utils;
 using UnityEngine;
 
@@ -69,12 +70,21 @@ namespace LethalMystery.Maps
         {
             NewTerminalNode node = new NewTerminalNode(
                     displayText: "Interior will now be Skeld\n\n",
-                    terminalEvent: "skeld");
+                    terminalEvent: "custom_map/skeld");
+
+            NewTerminalNode node2 = new NewTerminalNode(
+                    displayText: "Interior will now be Office\n\n",
+                    terminalEvent: "custom_map/office");
 
             customKeywords.Add(new NewTerminalKeyword(
                 word: "skeld",
                 isVerb: false,
                 specialKeywordResult: node ));
+
+            customKeywords.Add(new NewTerminalKeyword(
+                word: "office",
+                isVerb: false,
+                specialKeywordResult: node2));
         }
 
 
@@ -136,19 +146,18 @@ namespace LethalMystery.Maps
         [HarmonyPrefix]
         private static bool TerminalCommand(TerminalNode node)
         {
+            string cmd = node.terminalEvent.Split('/')[0];
 
-            switch (node.terminalEvent)
+            if (node.terminalEvent.Contains("custom_map"))
             {
-                case "skeld":
-                    ChangeMap();
-                    break;
+                ChangeMap(node.terminalEvent.Split('/')[1]);
             }
-
+            
             return true;
         }
 
 
-        private static void ChangeMap()
+        private static void ChangeMap(string map)
         {
             if (!Plugin.isHost)
             {
@@ -161,7 +170,17 @@ namespace LethalMystery.Maps
                 return;
             }
 
-            CurrentInside = LMAssets.SkeldMap;
+
+            switch (map)
+            {
+                case "skeld":
+                    CurrentInside = LMAssets.SkeldMap;
+                    break;
+                case "office":
+                    CurrentInside = LMAssets.OfficeMap;
+                    break;
+            }
+            
         }
 
     }

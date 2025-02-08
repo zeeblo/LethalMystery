@@ -14,6 +14,7 @@ namespace LethalMystery.Utils
         public static Sprite? CheckboxEmptyIcon;
         public static Sprite? CheckboxEnabledIcon;
         public static GameObject SkeldMap;
+        public static GameObject OfficeMap;
 
 
 
@@ -69,8 +70,8 @@ namespace LethalMystery.Utils
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
             //SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
-            SkeldMap = myBundle.LoadAsset<GameObject>("Skeld_tst.prefab");
-
+            SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
+            OfficeMap = myBundle.LoadAsset<GameObject>("Office.prefab");
         }
     }
 }

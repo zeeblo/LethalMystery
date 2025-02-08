@@ -15,6 +15,7 @@ namespace LethalMystery.Patches
         private static void UpdatePatch(PlayerControllerB __instance)
         {
             //__instance.takingFallDamage = false;
+            __instance.sprintMeter = 100;
         }
 
 

@@ -6,9 +6,7 @@ using UnityEngine;
 using LethalMystery.Players;
 using LethalMystery.Patches;
 using LethalMystery.Utils;
-using System.Xml.Linq;
-
-
+using LethalMystery.Maps;
 
 namespace LethalMystery.MainGame
 {
@@ -343,7 +341,9 @@ namespace LethalMystery.MainGame
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
 
-            Plugin.RemoveEnvironment(true);
+
+            //Plugin.RemoveEnvironment(true);
+            GOTools.HideEnvironment(true);
             EnvironmentLight(false);
             ShowLights(true);
 
@@ -365,8 +365,10 @@ namespace LethalMystery.MainGame
             EnableMovement(true);
             LookAtCamera();
             ShowPlayers(true);
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
-            Plugin.RemoveEnvironment(false);
+            //GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+            //Plugin.RemoveEnvironment(false);
+            GOTools.HideEnvironment(true, ignore: "Lighting"); // re-enables lighting
+            InsideMap.TeleportInside();
             EnvironmentLight(true);
             ShowLights(false);
 
