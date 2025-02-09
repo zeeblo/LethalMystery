@@ -2,6 +2,8 @@
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.SocialPlatforms;
 
 namespace LethalMystery.Utils
 {
@@ -155,6 +157,19 @@ namespace LethalMystery.Utils
                         } 
                         child.SetActive(!value);
                     }
+                }
+            }
+        }
+
+
+        public static void HideDungeon(bool value = true)
+        {
+            Scene currentScene = SceneManager.GetSceneAt(1);
+            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            {
+                if (obj.name == "Systems")
+                {
+                    obj.transform.Find("LevelGeneration").gameObject.SetActive(!value);
                 }
             }
         }
