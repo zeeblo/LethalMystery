@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
 using UnityEngine;
 
 namespace LethalMystery.Maps
@@ -8,25 +9,12 @@ namespace LethalMystery.Maps
     internal class InsideMap
     {
 
-        /*
-        [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.TeleportPlayer))]
-        [HarmonyPrefix]
-        private static bool EnterFacility(EntranceTeleport __instance)
-        {
-            Vector3 spawn_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
-            GameNetworkManager.Instance.localPlayerController.isInElevator = false;
-            GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
-            __instance.timeAtLastUse = Time.realtimeSinceStartup;
-            GameNetworkManager.Instance.localPlayerController.isInsideFactory = __instance.isEntranceToBuilding;
-
-            return false;
-        }
-        */
 
         public static void TeleportInside()
         {
-            Vector3 spawn_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
+            GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos");
+            if (map == null) return;
+            Vector3 spawn_pos = map.transform.position;
             GameNetworkManager.Instance.localPlayerController.isInElevator = false;
             GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
             GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
@@ -39,6 +27,42 @@ namespace LethalMystery.Maps
             Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
         }
 
+
+        
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
+        [HarmonyPostfix]
+        private static void TeleportToDungeon()
+        {
+            GameObject outsideShip = GameObject.Find("Environment/HangarShip/ReverbTriggers/OutsideShip");
+            GameObject enter = Plugin.Instantiate(outsideShip);
+            enter.name = "ShipExit";
+            enter.transform.SetParent(GameObject.Find("Environment/HangarShip").transform);
+            enter.AddComponent<LMEntrance>();
+            enter.GetComponent<Collider>().enabled = true;
+            enter.GetComponent<AudioReverbTrigger>().enabled = false;
+            enter.transform.position = outsideShip.transform.position;
+        }
+        
+
+
+        public class LMEntrance : MonoBehaviour
+        {
+
+            private void OnTriggerEnter(Collider other)
+            {
+                if (!(other.tag == "Player"))
+                {
+                    return;
+                }
+                PlayerControllerB component = other.GetComponent<PlayerControllerB>();
+                if (GameNetworkManager.Instance.localPlayerController != component)
+                {
+                    return;
+                }
+                component.ResetFallGravity();
+                TeleportInside();
+            }
+        }
 
     }
 }

@@ -98,7 +98,7 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    Plugin.mls.LogInfo($">>> currentDayTime: {TimeOfDay.Instance.currentDayTime}");
+                    GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
                 }
 
 
