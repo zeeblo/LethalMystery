@@ -117,6 +117,8 @@ namespace LethalMystery.MainGame
 
                 }
 
+                HUDManager.Instance.Clock.targetAlpha = 0f; // Hide clock GUI
+
                 // Show GUI that displays the grace period time
                 if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false && StringAddons.ConvertToBool(inGracePeriod.Value))
                 {

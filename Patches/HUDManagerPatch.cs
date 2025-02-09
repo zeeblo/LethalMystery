@@ -52,20 +52,6 @@ namespace LethalMystery.Patches
         #endregion Chat Commands
 
 
-        [HarmonyPatch(typeof(HUDManager), "Update")]
-        [HarmonyPostfix]
-        private static void UpdatePatch(HUDManager __instance)
-        {
-            /*
-            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
-            {
-                __instance.Clock.targetAlpha = 1.0f;
-                __instance.Clock.canvasGroup.alpha = 1.0f;
-                __instance.clockNumber.text = $"{(int)StringAddons.ConvertToFloat(Meeting.currentMeetingCountdown.Value)}";
-            }
-            */
-        }
-
         /*
         [HarmonyPatch(nameof(HUDManager.DisplayDaysLeft))]
         [HarmonyPostfix]
