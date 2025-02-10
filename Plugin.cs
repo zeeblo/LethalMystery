@@ -22,11 +22,12 @@ namespace LethalMystery
 
     [BepInPlugin(modGUID, modName, modVersion)]
     [BepInDependency(LethalNetworkAPI.MyPluginInfo.PLUGIN_GUID, DependencyFlags.HardDependency)]
+    [BepInDependency(LethalLevelLoader.Plugin.ModGUID, DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
-        private const string modGUID = "LethalMystery.zeeblo.dev";
-        private const string modName = "zeeblo.LethalMystery";
-        private const string modVersion = "0.1.0";
+        public const string modGUID = "LethalMystery.zeeblo.dev";
+        public const string modName = "zeeblo.LethalMystery";
+        public const string modVersion = "0.1.0";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");

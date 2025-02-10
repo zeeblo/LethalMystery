@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+//using LethalLevelLoader;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace LethalMystery.Maps
     internal class CustomLvl
     {
         public static List<SelectableLevel> customMoons = new List<SelectableLevel>();
+        public static List<string> LMmoons = new List<string>();
         public static List<TerminalKeyword> customKeywords = new List<TerminalKeyword>();
         public static LNetworkVariable<string> mapName = LNetworkVariable<string>.Connect("mapName");
         public static GameObject CurrentInside;
@@ -67,6 +69,12 @@ namespace LethalMystery.Maps
             customMoons.Add(new NewSelectableLevel("skeld"));
         }
 
+        private static void AppendLMMoons()
+        {
+            LMmoons.Add("skeld");
+            LMmoons.Add("office");
+        }
+
         private static void AppendNewTerminalKeyword()
         {
             NewTerminalNode node = new NewTerminalNode(
@@ -103,7 +111,9 @@ namespace LethalMystery.Maps
         {
             customMoons.Clear();
             customKeywords.Clear();
-            AppendNewSelectableLevel();
+            LMmoons.Clear();
+            AppendLMMoons();
+            //AppendNewSelectableLevel();
             AppendNewTerminalKeyword();
             DefaultSetup();
 
@@ -112,7 +122,7 @@ namespace LethalMystery.Maps
                 customKeywords.Add(words);
             }
 
-            __instance.moonsCatalogueList = customMoons.ToArray();
+            //__instance.moonsCatalogueList = customMoons.ToArray();
             __instance.terminalNodes.allKeywords = customKeywords.ToArray();
 
             return true;
@@ -121,6 +131,7 @@ namespace LethalMystery.Maps
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyPrefix]
+        [HarmonyAfter("imabatby.lethallevelloader")]
         private static void StartPatch(Terminal __instance)
         {
 
@@ -130,16 +141,50 @@ namespace LethalMystery.Maps
                 if (twords.word == "moons")
                 {
                     string raw_result = twords.specialKeywordResult.displayText.Substring(0, 219);
-                    string result = "";
-                    foreach (SelectableLevel moon in __instance.moonsCatalogueList)
+                    string result = raw_result;
+                    foreach (string moon in LMmoons)
                     {
-                        result += raw_result + $"\n* {StringAddons.Title(moon.PlanetName)} [planetTime]\n\n";
+                        result +=  $"\n* {StringAddons.Title(moon)} [planetTime]\n";
                     }
 
-                    twords.specialKeywordResult.displayText = result;
+                    twords.specialKeywordResult.displayText = result + "\n\n";
                     break;
                 }
             }
+            /*
+            string lll_result = "";
+            foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
+            {
+                if (twords.word == "moons")
+                {
+                    foreach (ExtendedDungeonFlow extendedDungeonFlow in PatchedContent.ExtendedDungeonFlows)
+                    {
+                        if ($"{extendedDungeonFlow.ContentType}".ToLower() == "custom")
+                        {
+                            Plugin.mls.LogInfo($">>> {extendedDungeonFlow.DungeonName}");
+                            string raw_result = twords.specialKeywordResult.displayText;
+                            lll_result += raw_result + $"\n* {extendedDungeonFlow.DungeonName} [planetTime]\n\n";
+                            
+
+                            NewTerminalNode node = new NewTerminalNode(
+                                    displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
+                                    terminalEvent: "lll");
+
+                            customKeywords.Add(new NewTerminalKeyword(
+                                word: extendedDungeonFlow.DungeonName.ToLower(),
+                                isVerb: false,
+                                specialKeywordResult: node));
+                        }
+                    }
+                    twords.specialKeywordResult.displayText = lll_result;
+                    break;
+                }
+
+            }
+            */
+
+
+
         }
 
 
@@ -154,7 +199,7 @@ namespace LethalMystery.Maps
             {
                 ChangeMap(node.terminalEvent.Split('/')[1]);
             }
-            
+            Plugin.mls.LogInfo($">>>chs: {node.name}");
             return true;
         }
 

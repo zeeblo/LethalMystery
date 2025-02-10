@@ -15,7 +15,7 @@ using LethalMystery.UI;
 using LethalMystery.Players;
 using UnityEngine.Rendering;
 using LethalMystery.Maps;
-
+//using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
 {
@@ -98,7 +98,8 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+                        
+                    
                 }
 
 
