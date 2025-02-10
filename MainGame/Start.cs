@@ -212,7 +212,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void SampleSceneObjects()
         {
-            Plugin.shipInstance = GameObject.Find("Environment/HangarShip/AnimatedShipDoor");
+            Plugin.shipInstance = GameObject.Find("Environment/HangarShip");
         }
 
 

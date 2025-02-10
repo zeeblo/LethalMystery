@@ -131,7 +131,6 @@ namespace LethalMystery.Maps
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyPrefix]
-        [HarmonyAfter("imabatby.lethallevelloader")]
         private static void StartPatch(Terminal __instance)
         {
 
@@ -189,6 +188,12 @@ namespace LethalMystery.Maps
 
 
 
+        private static void DisplayCustomMoons()
+        {
+
+        }
+
+
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
         [HarmonyPrefix]
         private static bool TerminalCommand(TerminalNode node)
@@ -199,7 +204,10 @@ namespace LethalMystery.Maps
             {
                 ChangeMap(node.terminalEvent.Split('/')[1]);
             }
-            Plugin.mls.LogInfo($">>>chs: {node.name}");
+            else if (node.name.ToLower() == "MoonsCatalogue")
+            {
+
+            }
             return true;
         }
 

@@ -104,7 +104,7 @@ namespace LethalMystery.Network
         {
             if (StringAddons.ConvertToBool(data) == false)
             {
-                HangarShipDoor ship = Plugin.shipInstance.GetComponent<HangarShipDoor>();
+                HangarShipDoor ship = Plugin.shipInstance.transform.Find("AnimatedShipDoor").gameObject.GetComponent<HangarShipDoor>();
                 ship.PlayDoorAnimation(closed: false);
                 ship.SetDoorButtonsEnabled(true);
                 ship.doorPower = 0;
