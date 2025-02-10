@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-//using LethalLevelLoader;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -28,7 +27,7 @@ namespace LethalMystery.Maps
         }
 
 
-        
+
 
         private class NewTerminalKeyword : TerminalKeyword
         {
@@ -41,7 +40,7 @@ namespace LethalMystery.Maps
             }
 
         }
-        
+
 
 
         private class NewTerminalNode : TerminalNode
@@ -85,15 +84,24 @@ namespace LethalMystery.Maps
                     displayText: "Interior will now be Office\n\n",
                     terminalEvent: "custom_map/office");
 
+            NewTerminalNode node3 = new NewTerminalNode(
+                    displayText: "Custom Maps:\n\n",
+                    terminalEvent: "cmd");
+
             customKeywords.Add(new NewTerminalKeyword(
                 word: "skeld",
                 isVerb: false,
-                specialKeywordResult: node ));
+                specialKeywordResult: node));
 
             customKeywords.Add(new NewTerminalKeyword(
                 word: "office",
                 isVerb: false,
                 specialKeywordResult: node2));
+
+            customKeywords.Add(new NewTerminalKeyword(
+                word: "moons",
+                isVerb: false,
+                specialKeywordResult: node3));
         }
 
 
@@ -110,22 +118,33 @@ namespace LethalMystery.Maps
         private static bool MoonsInTerminal(Terminal __instance)
         {
             customMoons.Clear();
-            customKeywords.Clear();
             LMmoons.Clear();
             AppendLMMoons();
-            //AppendNewSelectableLevel();
-            AppendNewTerminalKeyword();
             DefaultSetup();
+            RefreshCustomKeywords();
 
-            foreach (TerminalKeyword words in __instance.terminalNodes.allKeywords)
+            return true;
+        }
+
+
+        private static void RefreshCustomKeywords()
+        {
+            customKeywords.Clear();
+            AppendNewTerminalKeyword();
+            Terminal term = GameObject.Find("Environment/HangarShip/Terminal/TerminalTrigger/TerminalScript").gameObject.GetComponent<Terminal>();
+            foreach (TerminalKeyword words in term.terminalNodes.allKeywords)
             {
                 customKeywords.Add(words);
             }
 
-            //__instance.moonsCatalogueList = customMoons.ToArray();
-            __instance.terminalNodes.allKeywords = customKeywords.ToArray();
+            AddNewKeywords();
 
-            return true;
+        }
+
+        private static void AddNewKeywords()
+        {
+            Terminal term = GameObject.Find("Environment/HangarShip/Terminal/TerminalTrigger/TerminalScript").gameObject.GetComponent<Terminal>();
+            term.terminalNodes.allKeywords = customKeywords.ToArray();
         }
 
 
@@ -133,70 +152,101 @@ namespace LethalMystery.Maps
         [HarmonyPrefix]
         private static void StartPatch(Terminal __instance)
         {
+            string default_maps = "";
+            string lll_maps = "";
+
+            foreach (string moon in LMmoons)
+            {
+                default_maps += $"\n* {StringAddons.Title(moon)}\n";
+            }
+
+
+            // Player is using LethalLevelLoader, show custom maps
+            if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
+            {
+                foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
+                {
+                    if ($"{extendedDungeonFlow.ContentType}".ToLower() == "custom")
+                    {
+                        lll_maps += $"\n* {extendedDungeonFlow.DungeonName}\n\n";
+
+                        NewTerminalNode node = new NewTerminalNode(
+                                displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
+                                terminalEvent: "lll");
+
+                        customKeywords.Add(new NewTerminalKeyword(
+                            word: extendedDungeonFlow.DungeonName.ToLower(),
+                            isVerb: false,
+                            specialKeywordResult: node));
+                    }
+                }
+            }
+
 
 
             foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
             {
                 if (twords.word == "moons")
                 {
-                    string raw_result = twords.specialKeywordResult.displayText.Substring(0, 219);
+                    string raw_result = twords.specialKeywordResult.displayText.Substring(0, 13);
                     string result = raw_result;
-                    foreach (string moon in LMmoons)
-                    {
-                        result +=  $"\n* {StringAddons.Title(moon)} [planetTime]\n";
-                    }
 
-                    twords.specialKeywordResult.displayText = result + "\n\n";
+
+                    //twords.specialKeywordResult.displayText = result + "\n\n";
                     break;
                 }
             }
-            /*
-            string lll_result = "";
-            foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
+
+
+
+            if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
-                if (twords.word == "moons")
+                string lll_result = "";
+                foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
                 {
-                    foreach (ExtendedDungeonFlow extendedDungeonFlow in PatchedContent.ExtendedDungeonFlows)
+                    if (twords.word == "moons")
                     {
-                        if ($"{extendedDungeonFlow.ContentType}".ToLower() == "custom")
+                        foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
                         {
-                            Plugin.mls.LogInfo($">>> {extendedDungeonFlow.DungeonName}");
-                            string raw_result = twords.specialKeywordResult.displayText;
-                            lll_result += raw_result + $"\n* {extendedDungeonFlow.DungeonName} [planetTime]\n\n";
-                            
+                            if ($"{extendedDungeonFlow.ContentType}".ToLower() == "custom")
+                            {
+                                Plugin.mls.LogInfo($">>> {extendedDungeonFlow.DungeonName}");
+                                int max = twords.specialKeywordResult.displayText.Length;
+                                string raw_result = twords.specialKeywordResult.displayText.Substring(0, );
+                                lll_result += $"\n* {extendedDungeonFlow.DungeonName}\n\n";
 
-                            NewTerminalNode node = new NewTerminalNode(
-                                    displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
-                                    terminalEvent: "lll");
 
-                            customKeywords.Add(new NewTerminalKeyword(
-                                word: extendedDungeonFlow.DungeonName.ToLower(),
-                                isVerb: false,
-                                specialKeywordResult: node));
+                                NewTerminalNode node = new NewTerminalNode(
+                                        displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
+                                        terminalEvent: "lll");
+
+                                customKeywords.Add(new NewTerminalKeyword(
+                                    word: extendedDungeonFlow.DungeonName.ToLower(),
+                                    isVerb: false,
+                                    specialKeywordResult: node));
+
+
+                            }
                         }
+                        AddNewKeywords();
+                        twords.specialKeywordResult.displayText = lll_result;
+                        break;
                     }
-                    twords.specialKeywordResult.displayText = lll_result;
-                    break;
+
                 }
-
             }
-            */
 
 
 
-        }
-
-
-
-        private static void DisplayCustomMoons()
-        {
 
         }
+
 
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
-        [HarmonyPrefix]
-        private static bool TerminalCommand(TerminalNode node)
+        [HarmonyPostfix]
+        [HarmonyAfter("imabatby.lethallevelloader")]
+        private static void TerminalCommand(TerminalNode node)
         {
             string cmd = node.terminalEvent.Split('/')[0];
 
@@ -204,12 +254,9 @@ namespace LethalMystery.Maps
             {
                 ChangeMap(node.terminalEvent.Split('/')[1]);
             }
-            else if (node.name.ToLower() == "MoonsCatalogue")
-            {
 
-            }
-            return true;
         }
+
 
 
         private static void ChangeMap(string map)
