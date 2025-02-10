@@ -180,6 +180,7 @@ namespace LethalMystery.Maps
                             specialKeywordResult: node));
                     }
                 }
+                AddNewKeywords();
             }
 
 
@@ -188,55 +189,11 @@ namespace LethalMystery.Maps
             {
                 if (twords.word == "moons")
                 {
-                    string raw_result = twords.specialKeywordResult.displayText.Substring(0, 13);
-                    string result = raw_result;
-
-
-                    //twords.specialKeywordResult.displayText = result + "\n\n";
+                    string result = twords.specialKeywordResult.displayText.Substring(0,13) + default_maps + lll_maps;
+                    twords.specialKeywordResult.displayText = result + "\n\n";
                     break;
                 }
             }
-
-
-
-            if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
-            {
-                string lll_result = "";
-                foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
-                {
-                    if (twords.word == "moons")
-                    {
-                        foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
-                        {
-                            if ($"{extendedDungeonFlow.ContentType}".ToLower() == "custom")
-                            {
-                                Plugin.mls.LogInfo($">>> {extendedDungeonFlow.DungeonName}");
-                                int max = twords.specialKeywordResult.displayText.Length;
-                                string raw_result = twords.specialKeywordResult.displayText.Substring(0, );
-                                lll_result += $"\n* {extendedDungeonFlow.DungeonName}\n\n";
-
-
-                                NewTerminalNode node = new NewTerminalNode(
-                                        displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
-                                        terminalEvent: "lll");
-
-                                customKeywords.Add(new NewTerminalKeyword(
-                                    word: extendedDungeonFlow.DungeonName.ToLower(),
-                                    isVerb: false,
-                                    specialKeywordResult: node));
-
-
-                            }
-                        }
-                        AddNewKeywords();
-                        twords.specialKeywordResult.displayText = lll_result;
-                        break;
-                    }
-
-                }
-            }
-
-
 
 
         }
