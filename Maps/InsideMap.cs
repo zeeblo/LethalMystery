@@ -45,10 +45,10 @@ namespace LethalMystery.Maps
         
 
 
-        public class LMEntrance : MonoBehaviour
+        private class LMEntrance : MonoBehaviour
         {
 
-            private void OnTriggerEnter(Collider other)
+            public void OnTriggerEnter(Collider other)
             {
                 if (!(other.tag == "Player"))
                 {
