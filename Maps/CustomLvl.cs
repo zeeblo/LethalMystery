@@ -87,7 +87,7 @@ namespace LethalMystery.Maps
                     terminalEvent: "custom_map/office");
 
             NewTerminalNode node3 = new NewTerminalNode(
-                    displayText: "Custom Maps:\n\n",
+                    displayText: "Ignore spaces in map names. Eg. \"My map\" should be typed \"mymap\".\n\nCustom Maps:\n\n\n\n",
                     terminalEvent: "cmd");
 
             customKeywords.Add(new NewTerminalKeyword(
@@ -187,8 +187,10 @@ namespace LethalMystery.Maps
                                 displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
                                 terminalEvent: "lll");
 
+                        string dungeon_name = extendedDungeonFlow.DungeonName.Replace(" ", "");
+
                         customKeywords.Add(new NewTerminalKeyword(
-                            word: extendedDungeonFlow.DungeonName.ToLower(),
+                            word: dungeon_name.ToLower(),
                             isVerb: false,
                             specialKeywordResult: node));
                     }
@@ -206,7 +208,7 @@ namespace LethalMystery.Maps
             {
                 if (twords.word == "moons")
                 {
-                    string result = twords.specialKeywordResult.displayText.Substring(0, 13) + default_maps + lll_maps;
+                    string result = twords.specialKeywordResult.displayText.Substring(0, 83) + default_maps + lll_maps;
                     twords.specialKeywordResult.displayText = result + "\n\n";
                     break;
                 }
