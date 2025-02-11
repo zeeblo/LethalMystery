@@ -9,12 +9,22 @@ namespace LethalMystery.Maps
     internal class InsideMap
     {
 
+        private static Vector3 lll_pos = Vector3.zero;
 
         public static void TeleportInside()
         {
-            GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos");
-            if (map == null) return;
-            Vector3 spawn_pos = map.transform.position;
+            Vector3 spawn_pos = Vector3.zero;
+            if (CustomLvl.mapName.Value != "lll_map")
+            {
+                GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos");
+                spawn_pos = map.transform.position;
+            }
+            else if (CustomLvl.mapName.Value == "lll_map")
+            {
+                spawn_pos = lll_pos;
+
+            }
+
             GameNetworkManager.Instance.localPlayerController.isInElevator = false;
             GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
             GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
@@ -23,6 +33,7 @@ namespace LethalMystery.Maps
 
         public static void SpawnInterior()
         {
+            if (CustomLvl.mapName.Value == "lll_map") return;
             Vector3 pos = new Vector3(0f, -150, 0f);
             Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
         }
@@ -42,7 +53,16 @@ namespace LethalMystery.Maps
             enter.GetComponent<AudioReverbTrigger>().enabled = false;
             enter.transform.position = outsideShip.transform.position;
         }
-        
+
+
+
+        [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.Update))]
+        [HarmonyPostfix]
+        private static void UpdatePatch(EntranceTeleport __instance)
+        {
+            lll_pos = __instance.entrancePoint.position;
+        }
+
 
 
         private class LMEntrance : MonoBehaviour

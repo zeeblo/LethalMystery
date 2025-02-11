@@ -2,6 +2,8 @@
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
+using BepInEx.Configuration;
+using BepInEx;
 
 
 namespace LethalMystery.Maps
@@ -185,7 +187,7 @@ namespace LethalMystery.Maps
 
                         NewTerminalNode node = new NewTerminalNode(
                                 displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
-                                terminalEvent: "lll");
+                                terminalEvent: $"lll/{extendedDungeonFlow.DungeonName}");
 
                         string dungeon_name = extendedDungeonFlow.DungeonName.Replace(" ", "");
 
@@ -223,6 +225,8 @@ namespace LethalMystery.Maps
         private static Exception ShowMapsInTerminalHandler(Exception __exception)
         {
 
+            // Error was thrown because LethalLevelLoader mod was not loaded
+            // use default custom maps instead.
             if (__exception != null)
             {
                 if (__exception.GetType() == typeof(System.IO.FileNotFoundException))
@@ -242,16 +246,69 @@ namespace LethalMystery.Maps
         [HarmonyAfter("imabatby.lethallevelloader")]
         private static void TerminalCommand(TerminalNode node)
         {
-            string cmd = node.terminalEvent.Split('/')[0];
-
-            if (node.terminalEvent.Contains("custom_map"))
-            {
-                ChangeMap(node.terminalEvent.Split('/')[1]);
-            }
-
+            defaultInteriorCMD(node);
+            LLLInteriorCMD(node);
         }
 
 
+
+        private static void defaultInteriorCMD(TerminalNode node)
+        {
+            string cmd = node.terminalEvent.Split('/')[0];
+
+            if (cmd.Contains("custom_map"))
+            {
+                ChangeMap(node.terminalEvent);
+            }
+        }
+
+
+        private static void LLLInteriorCMD(TerminalNode node)
+        {
+            string cmd = node.terminalEvent.Split('/')[0];
+
+            if (cmd.Contains("lll"))
+            {
+                UpdateLLLConfig(node.terminalEvent, 9999);
+                ChangeMap(node.terminalEvent);
+            }
+        }
+
+
+        private static void UpdateLLLConfig(string cmd, int weight = 0)
+        {
+            string mapName = cmd.Split("/")[1];
+            Plugin.mls.LogInfo($">>> MapName: {mapName}");
+
+            ConfigFile LLLConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "LethalLevelLoader.cfg"), false);
+            ConfigEntry<bool> enableContentConfiguration = LLLConfigFile.Bind($"Custom Dungeon:  {mapName}", "Enable Content Configuration", false);
+            ConfigEntry<string> manualLevelNames = LLLConfigFile.Bind($"Custom Dungeon:  {mapName}", "Manual Level Names List", "Experimentation: 0");
+
+            enableContentConfiguration.Value = true;
+            manualLevelNames.Value = $"Experimentation:{weight}";
+
+            LLLConfigFile.Save();
+        }
+
+
+        /*
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
+        [HarmonyFinalizer]
+        private static Exception TerminalCommandHandler(Exception __exception)
+        {
+            // Error was thrown because LethalLevelLoader mod was not loaded
+            // use default custom maps instead.
+            if (__exception != null)
+            {
+                if (__exception.GetType() == typeof(System.IO.FileNotFoundException))
+                {
+
+                }
+            }
+
+            return null;
+        }
+        */
 
 
         private static void ChangeMap(string map)

@@ -10,6 +10,7 @@ using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
+using static Unity.Audio.Handle;
 
 
 namespace LethalMystery.Network
@@ -684,22 +685,37 @@ namespace LethalMystery.Network
 
         private void currentMapServer(string data, ulong id)
         {
-            CustomLvl.mapName.Value = data;
+            if (data.Split('/')[0].Contains("custom_map"))
+            {
+                CustomLvl.mapName.Value = data.Split('/')[1];
+            }
+            else
+            {
+                CustomLvl.mapName.Value = "lll_map";
+            }
+                
             currentMap.SendClients(data);
         }
+
         private void currentMapClients(string data)
         {
-            switch (data)
+            string mapName = data.Split('/')[1];
+
+            if (data.Split('/')[0].Contains("custom_map"))
             {
-                case "skeld":
-                    CustomLvl.CurrentInside = LMAssets.SkeldMap;
-                    break;
-                case "office":
-                    CustomLvl.CurrentInside = LMAssets.OfficeMap;
-                    break;
+                switch (mapName)
+                {
+                    case "skeld":
+                        CustomLvl.CurrentInside = LMAssets.SkeldMap;
+                        break;
+                    case "office":
+                        CustomLvl.CurrentInside = LMAssets.OfficeMap;
+                        break;
+                }
             }
 
-            StartOfRound.Instance.screenLevelDescription.text = $"Map: {data.ToUpper()}";
+
+            StartOfRound.Instance.screenLevelDescription.text = $"Map: {mapName.ToUpper()}";
         }
 
         public void currentMapReceive(string data, ulong id)
