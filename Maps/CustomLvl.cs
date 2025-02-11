@@ -15,6 +15,8 @@ namespace LethalMystery.Maps
         public static List<TerminalKeyword> customKeywords = new List<TerminalKeyword>();
         public static LNetworkVariable<string> mapName = LNetworkVariable<string>.Connect("mapName");
         public static GameObject CurrentInside;
+        private static string default_maps = "";
+        private static string lll_maps = "";
 
         private class NewSelectableLevel : SelectableLevel
         {
@@ -149,18 +151,29 @@ namespace LethalMystery.Maps
 
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
-        [HarmonyPrefix]
-        private static void StartPatch(Terminal __instance)
+        [HarmonyPostfix]
+        private static void ShowMapsInTerminal()
         {
-            string default_maps = "";
-            string lll_maps = "";
+            DefaultMapsInTerminal();
+            LLLMapsInTerminal();
+            CombineMapsInTerminal();
+        }
 
+
+        private static void DefaultMapsInTerminal()
+        {
+            default_maps = "";
             foreach (string moon in LMmoons)
             {
                 default_maps += $"\n* {StringAddons.Title(moon)}\n";
             }
 
+        }
 
+
+        private static void LLLMapsInTerminal()
+        {
+            lll_maps = "";
             // Player is using LethalLevelLoader, show custom maps
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
@@ -183,19 +196,41 @@ namespace LethalMystery.Maps
                 AddNewKeywords();
             }
 
+        }
 
 
-            foreach (TerminalKeyword twords in __instance.terminalNodes.allKeywords)
+        private static void CombineMapsInTerminal()
+        {
+            Terminal term = GameObject.Find("Environment/HangarShip/Terminal/TerminalTrigger/TerminalScript").gameObject.GetComponent<Terminal>();
+            foreach (TerminalKeyword twords in term.terminalNodes.allKeywords)
             {
                 if (twords.word == "moons")
                 {
-                    string result = twords.specialKeywordResult.displayText.Substring(0,13) + default_maps + lll_maps;
+                    string result = twords.specialKeywordResult.displayText.Substring(0, 13) + default_maps + lll_maps;
                     twords.specialKeywordResult.displayText = result + "\n\n";
                     break;
                 }
             }
 
+        }
 
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
+        [HarmonyFinalizer]
+        private static Exception ShowMapsInTerminalHandler(Exception __exception)
+        {
+
+            if (__exception != null)
+            {
+                if (__exception.GetType() == typeof(System.IO.FileNotFoundException))
+                {
+                    DefaultMapsInTerminal();
+                    CombineMapsInTerminal();
+                }
+            }
+
+            return null;
         }
 
 
@@ -213,6 +248,7 @@ namespace LethalMystery.Maps
             }
 
         }
+
 
 
 
