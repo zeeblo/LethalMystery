@@ -340,33 +340,58 @@ namespace LethalMystery.MainGame
 
         public static IEnumerator IntroDisplay()
         {
+            Plugin.mls.LogInfo(">>> 1");
             Roles.CurrentRole = Plugin.netHandler.GetallPlayerRoles();
+            Plugin.mls.LogInfo(">>> 2");
 
             MoreSlots.SlotAmountForServer();
+            Plugin.mls.LogInfo(">>> 3");
+
             HideGUI(true);
+            Plugin.mls.LogInfo(">>> 4");
             ShowSphere(true);
+
+            Plugin.mls.LogInfo(">>> 5");
             EnableMovement(false);
+
+            Plugin.mls.LogInfo(">>> 6");
             LookAtCamera();
+
+            Plugin.mls.LogInfo(">>> 7");
             ResetAnimation();
 
+            Plugin.mls.LogInfo(">>> 8");
             Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
+            Plugin.mls.LogInfo(">>> 9");
             yield return new WaitForSeconds(1.5f);
 
+            Plugin.mls.LogInfo(">>> 10");
             ShowPlayers(false);
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
-            TimeOfDay.Instance.currentDayTimeStarted = false;
 
+            Plugin.mls.LogInfo(">>> 11");
+            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
+            Plugin.mls.LogInfo(">>> 12");
+            TimeOfDay.Instance.currentDayTimeStarted = false;
+            Plugin.mls.LogInfo(">>> 13");
             //Plugin.RemoveEnvironment(true);
             GOTools.HideEnvironment(true);
+            Plugin.mls.LogInfo(">>> 14");
             GOTools.HideDungeon();
+            Plugin.mls.LogInfo(">>> 15");
             EnvironmentLight(false);
+            Plugin.mls.LogInfo(">>> 16");
             ShowLights(true);
-
+            Plugin.mls.LogInfo(">>> 17");
             yield return new WaitForSeconds(1.5f);
+            Plugin.mls.LogInfo(">>> 18");
             BlackVision(false);
-            DisableMainCamera(true);
-            CreateCamera();
 
+            Plugin.mls.LogInfo(">>> 19");
+            DisableMainCamera(true);
+
+            Plugin.mls.LogInfo(">>> 20");
+            CreateCamera();
+            Plugin.mls.LogInfo(">>> 21");
             HUDManagerPatch.DisplayDaysEdit("role");
 
             yield return new WaitForSeconds(2.35f);

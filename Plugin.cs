@@ -22,7 +22,6 @@ namespace LethalMystery
 
     [BepInPlugin(modGUID, modName, modVersion)]
     [BepInDependency(LethalNetworkAPI.MyPluginInfo.PLUGIN_GUID, DependencyFlags.HardDependency)]
-    [BepInDependency(LethalLevelLoader.Plugin.ModGUID, DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
         public const string modGUID = "LethalMystery.zeeblo.dev";

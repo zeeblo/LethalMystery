@@ -64,6 +64,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void IntroScreen()
         {
+            Plugin.mls.LogInfo(">>> in IntroScreen"); //posibly shipInstance thing too tho?
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
         }

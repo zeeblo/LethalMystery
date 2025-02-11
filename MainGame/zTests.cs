@@ -15,6 +15,7 @@ using LethalMystery.UI;
 using LethalMystery.Players;
 using UnityEngine.Rendering;
 using LethalMystery.Maps;
+using Unity.Burst.Intrinsics;
 //using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
@@ -98,8 +99,12 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                        
-                    
+
+                    var patchInfo = Harmony.GetPatchInfo(AccessTools.Method(typeof(StartOfRound), "openingDoorsSequence"));
+                    if (patchInfo != null)
+                    {
+                        Plugin.mls.LogInfo($"Owners of the patch: {string.Join(", ", patchInfo.Owners)}");
+                    }
                 }
 
 

@@ -219,7 +219,7 @@ namespace LethalMystery.Maps
         }
 
 
-
+        /*
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyFinalizer]
         private static Exception ShowMapsInTerminalHandler(Exception __exception)
@@ -238,7 +238,7 @@ namespace LethalMystery.Maps
 
             return null;
         }
-
+        */
 
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
