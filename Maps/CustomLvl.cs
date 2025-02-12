@@ -157,7 +157,7 @@ namespace LethalMystery.Maps
         private static void ShowMapsInTerminal()
         {
             DefaultMapsInTerminal();
-            LLLMapsInTerminal();
+            //LLLMapsInTerminal();
             CombineMapsInTerminal();
         }
 
@@ -247,7 +247,7 @@ namespace LethalMystery.Maps
         private static void TerminalCommand(TerminalNode node)
         {
             defaultInteriorCMD(node);
-            LLLInteriorCMD(node);
+            //LLLInteriorCMD(node);
         }
 
 
@@ -269,12 +269,12 @@ namespace LethalMystery.Maps
 
             if (cmd.Contains("lll"))
             {
-                UpdateLLLConfig(node.terminalEvent, 9999);
+                //UpdateLLLConfig(node.terminalEvent, 9999);
                 ChangeMap(node.terminalEvent);
             }
         }
 
-
+        /*
         private static void UpdateLLLConfig(string cmd, int weight = 0)
         {
             string mapName = cmd.Split("/")[1];
@@ -289,7 +289,7 @@ namespace LethalMystery.Maps
 
             LLLConfigFile.Save();
         }
-
+        */
 
         /*
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]

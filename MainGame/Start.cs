@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Maps;
@@ -57,6 +58,11 @@ namespace LethalMystery.MainGame
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
             
+            if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
+            {
+                Plugin.mls.LogInfo(">>> In Begin() method & found LLL");
+                StartOfRound.Instance.StartCoroutine(LLLFound());
+            }
         }
 
 
@@ -64,7 +70,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void IntroScreen()
         {
-            Plugin.mls.LogInfo(">>> in IntroScreen"); //posibly shipInstance thing too tho?
+            Plugin.mls.LogInfo(">>> in IntroScreen");
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
         }
@@ -73,12 +79,9 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
         [HarmonyPostfix]
-        private static void SpawnHorn(StartOfRound __instance)
+        private static void SpawnHornPatch(StartOfRound __instance)
         {
-            if (!Plugin.isHost) return;
-
-            MethodInfo UnlockShipObject = typeof(StartOfRound).GetMethod("UnlockShipObject", BindingFlags.NonPublic | BindingFlags.Instance);
-            UnlockShipObject.Invoke(__instance, new object[] { 18 });
+            SpawnHorn();
         }
 
 
@@ -138,6 +141,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool RemoveDangerObjects()
         {
+            Plugin.mls.LogInfo(">>> RemoveDangerObjects()");
             return false;
         }
 
@@ -146,6 +150,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool NoEnemiesPatch(ref SelectableLevel newLevel)
         {
+            Plugin.mls.LogInfo(">>> NoEnemiesPatch()");
             foreach (SpawnableEnemyWithRarity enemy in newLevel.Enemies)
             {
                 enemy.rarity = 0;
@@ -217,6 +222,28 @@ namespace LethalMystery.MainGame
         }
 
 
+
+        private static void SpawnHorn()
+        {
+            if (!Plugin.isHost) return;
+            MethodInfo UnlockShipObject = typeof(StartOfRound).GetMethod("UnlockShipObject", BindingFlags.NonPublic | BindingFlags.Instance);
+            UnlockShipObject.Invoke(StartOfRound.Instance, new object[] { 18 });
+        }
+
+
+        /// <summary>
+        /// Things to run since LLL stops certain methods from being
+        /// patched
+        /// </summary>
+        private static IEnumerator LLLFound()
+        {
+            yield return new WaitForSeconds(2f);
+            SpawnHorn();
+
+            CharacterDisplay.inIntro = true;
+            StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
+
+        }
 
 
     }
