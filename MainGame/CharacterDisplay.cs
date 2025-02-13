@@ -383,6 +383,10 @@ namespace LethalMystery.MainGame
             ShowPlayers(true);
             //GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             //Plugin.RemoveEnvironment(false);
+            if (CustomLvl.mapName.Value == "lll_map")
+            {
+                GOTools.HideDungeon(false);
+            }
             GOTools.HideEnvironment(true, ignore: "Lighting"); // re-enables lighting
             InsideMap.TeleportInside();
             EnvironmentLight(true);

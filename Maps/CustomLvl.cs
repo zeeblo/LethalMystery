@@ -157,7 +157,7 @@ namespace LethalMystery.Maps
         private static void ShowMapsInTerminal()
         {
             DefaultMapsInTerminal();
-            //LLLMapsInTerminal();
+            LLLMapsInTerminal();
             CombineMapsInTerminal();
         }
 
@@ -186,7 +186,7 @@ namespace LethalMystery.Maps
                         lll_maps += $"\n* {extendedDungeonFlow.DungeonName}\n\n";
 
                         NewTerminalNode node = new NewTerminalNode(
-                                displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\n",
+                                displayText: $"Interior will now be {extendedDungeonFlow.DungeonName}\n\nIMPORTANT: Restart the game and type this dungeon name again (If you've done it already then just start the ship)\n\n",
                                 terminalEvent: $"lll/{extendedDungeonFlow.DungeonName}");
 
                         string dungeon_name = extendedDungeonFlow.DungeonName.Replace(" ", "");
@@ -219,7 +219,7 @@ namespace LethalMystery.Maps
         }
 
 
-        /*
+        
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyFinalizer]
         private static Exception ShowMapsInTerminalHandler(Exception __exception)
@@ -238,7 +238,7 @@ namespace LethalMystery.Maps
 
             return null;
         }
-        */
+        
 
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
@@ -247,7 +247,7 @@ namespace LethalMystery.Maps
         private static void TerminalCommand(TerminalNode node)
         {
             defaultInteriorCMD(node);
-            //LLLInteriorCMD(node);
+            LLLInteriorCMD(node);
         }
 
 
@@ -269,32 +269,59 @@ namespace LethalMystery.Maps
 
             if (cmd.Contains("lll"))
             {
-                //UpdateLLLConfig(node.terminalEvent, 9999);
+                UpdateLLLConfig(node.terminalEvent, 9999);
                 ChangeMap(node.terminalEvent);
             }
         }
 
-        /*
+        
+
+        /// <summary>
+        /// Set the typed interior to be guaranteed to spawn
+        /// Set every other interior to 0
+        /// </summary>
         private static void UpdateLLLConfig(string cmd, int weight = 0)
         {
             string mapName = cmd.Split("/")[1];
+            string mapSection = "​​​​​​​​​Custom Dungeon:  " + mapName;
+            string defaultFacility = "​​​​​​​Vanilla Dungeon:  Facility (Level1Flow)";
             Plugin.mls.LogInfo($">>> MapName: {mapName}");
 
             ConfigFile LLLConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "LethalLevelLoader.cfg"), false);
-            ConfigEntry<bool> enableContentConfiguration = LLLConfigFile.Bind($"Custom Dungeon:  {mapName}", "Enable Content Configuration", false);
-            ConfigEntry<string> manualLevelNames = LLLConfigFile.Bind($"Custom Dungeon:  {mapName}", "Manual Level Names List", "Experimentation: 0");
+            ConfigEntry<bool> enableContentConfiguration = LLLConfigFile.Bind(mapSection, "Enable Content Configuration", false);
+            ConfigEntry<string> manualLevelNames = LLLConfigFile.Bind(mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
+
+            ConfigEntry<bool> defaultFacility_enableContentConfiguration = LLLConfigFile.Bind(defaultFacility, "Enable Content Configuration", false);
+            ConfigEntry<string> defaultFacility_manualLevelNames = LLLConfigFile.Bind(defaultFacility, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
+
+
+            foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
+            {
+                if (extendedDungeonFlow.DungeonName == mapName) continue;
+
+                string other_mapSection = "​​​​​​​​​Custom Dungeon:  " + extendedDungeonFlow.DungeonName;
+                ConfigEntry<bool> other_enableContentConfiguration = LLLConfigFile.Bind(other_mapSection, "Enable Content Configuration", false);
+                ConfigEntry<string> other_manualLevelNames = LLLConfigFile.Bind(other_mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
+
+                other_enableContentConfiguration.Value = true;
+                other_manualLevelNames.Value = "Experimentation:0";
+            }
+
 
             enableContentConfiguration.Value = true;
             manualLevelNames.Value = $"Experimentation:{weight}";
 
+            defaultFacility_enableContentConfiguration.Value = true;
+            defaultFacility_manualLevelNames.Value = "Experimentation:0";
+
+
             LLLConfigFile.Save();
         }
-        */
 
-        /*
+
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
         [HarmonyFinalizer]
-        private static Exception TerminalCommandHandler(Exception __exception)
+        private static Exception TerminalCommandHandler(Exception __exception, TerminalNode node)
         {
             // Error was thrown because LethalLevelLoader mod was not loaded
             // use default custom maps instead.
@@ -302,13 +329,14 @@ namespace LethalMystery.Maps
             {
                 if (__exception.GetType() == typeof(System.IO.FileNotFoundException))
                 {
-
+                    Plugin.mls.LogInfo(">>> LLL wasn't loaded so using doing default stuff");
+                    defaultInteriorCMD(node);
                 }
             }
 
             return null;
         }
-        */
+
 
 
         private static void ChangeMap(string map)
