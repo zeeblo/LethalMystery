@@ -31,6 +31,7 @@ namespace LethalMystery.Maps
         private static void TeleportToDungeon()
         {
             TPDungeon();
+            MakeLMDoorInteractive();
         }
 
 
@@ -39,7 +40,10 @@ namespace LethalMystery.Maps
         [HarmonyPostfix]
         private static void UpdatePatch(EntranceTeleport __instance)
         {
-            lll_pos = __instance.entrancePoint.position;
+            if (CustomLvl.mapName.Value == "lll_map")
+            {
+                lll_pos = __instance.entrancePoint.position;
+            }
         }
 
 
@@ -65,6 +69,26 @@ namespace LethalMystery.Maps
             Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
         }
 
+
+        private static void MakeLMDoorInteractive()
+        {
+            GameObject intr = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos");
+            if (intr == null) return;
+            Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
+            intr.tag = "InteractTrigger";
+            intr.layer = LayerMask.NameToLayer("InteractableObject");
+            InteractTrigger exitDoor = intr.AddComponent<InteractTrigger>();
+            exitDoor.hoverTip = "EXIT : [LMB]";
+            exitDoor.holdInteraction = true;
+            exitDoor.hoverIcon = hoverSprite;
+            exitDoor.holdingInteractEvent = new InteractEventFloat();
+            exitDoor.onInteractEarlyOtherClients = new InteractEvent();
+            exitDoor.onInteract = new InteractEvent();
+            exitDoor.onInteractEarly = new InteractEvent();
+            exitDoor.onStopInteract = new InteractEvent();
+            exitDoor.onCancelAnimation = new InteractEvent();
+            intr.AddComponent<EntranceTeleport>();
+        }
 
 
         public static void TeleportInside()
