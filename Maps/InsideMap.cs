@@ -30,14 +30,7 @@ namespace LethalMystery.Maps
         [HarmonyPostfix]
         private static void TeleportToDungeon()
         {
-            GameObject outsideShip = GameObject.Find("Environment/HangarShip/ReverbTriggers/OutsideShip");
-            GameObject enter = Plugin.Instantiate(outsideShip);
-            enter.name = "ShipExit";
-            enter.transform.SetParent(GameObject.Find("Environment/HangarShip").transform);
-            enter.AddComponent<LMEntrance>();
-            enter.GetComponent<Collider>().enabled = true;
-            enter.GetComponent<AudioReverbTrigger>().enabled = false;
-            enter.transform.position = outsideShip.transform.position;
+            TPDungeon();
         }
 
 
@@ -47,6 +40,21 @@ namespace LethalMystery.Maps
         private static void UpdatePatch(EntranceTeleport __instance)
         {
             lll_pos = __instance.entrancePoint.position;
+        }
+
+
+
+        public static void TPDungeon()
+        {
+            if (GameObject.Find("Environment/HangarShip/ShipExit") != null) return;
+            GameObject outsideShip = GameObject.Find("Environment/HangarShip/ReverbTriggers/OutsideShip");
+            GameObject enter = Plugin.Instantiate(outsideShip);
+            enter.name = "ShipExit";
+            enter.transform.SetParent(GameObject.Find("Environment/HangarShip").transform);
+            enter.AddComponent<LMEntrance>();
+            enter.GetComponent<Collider>().enabled = true;
+            enter.GetComponent<AudioReverbTrigger>().enabled = false;
+            enter.transform.position = outsideShip.transform.position;
         }
 
 
