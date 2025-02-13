@@ -11,35 +11,21 @@ namespace LethalMystery.Maps
 
         private static Vector3 lll_pos = Vector3.zero;
 
-        public static void TeleportInside()
+
+
+        [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.TeleportPlayer))]
+        [HarmonyPrefix]
+        private static bool EntrancePatch()
         {
-            Vector3 spawn_pos = Vector3.zero;
-            if (CustomLvl.mapName.Value != "lll_map")
+            if (Plugin.localPlayer.isInsideFactory)
             {
-                GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos");
-                spawn_pos = map.transform.position;
+                GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+                return false;
             }
-            else if (CustomLvl.mapName.Value == "lll_map")
-            {
-                spawn_pos = lll_pos;
-
-            }
-
-            GameNetworkManager.Instance.localPlayerController.isInElevator = false;
-            GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
-            GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
-            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
-        }
-
-        public static void SpawnInterior()
-        {
-            if (CustomLvl.mapName.Value == "lll_map") return;
-            Vector3 pos = new Vector3(0f, -150, 0f);
-            Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
+            return true;
         }
 
 
-        
         [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.openingDoorsSequence))]
         [HarmonyPostfix]
         private static void TeleportToDungeon()
@@ -63,6 +49,35 @@ namespace LethalMystery.Maps
             lll_pos = __instance.entrancePoint.position;
         }
 
+
+        public static void SpawnInterior()
+        {
+            if (CustomLvl.mapName.Value == "lll_map") return;
+            Vector3 pos = new Vector3(0f, -150, 0f);
+            Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
+        }
+
+
+
+        public static void TeleportInside()
+        {
+            Vector3 spawn_pos = Vector3.zero;
+            if (CustomLvl.mapName.Value != "lll_map")
+            {
+                GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos");
+                spawn_pos = map.transform.position;
+            }
+            else if (CustomLvl.mapName.Value == "lll_map")
+            {
+                spawn_pos = lll_pos;
+
+            }
+
+            GameNetworkManager.Instance.localPlayerController.isInElevator = false;
+            GameNetworkManager.Instance.localPlayerController.isInHangarShipRoom = false;
+            GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
+            GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
+        }
 
 
         private class LMEntrance : MonoBehaviour
