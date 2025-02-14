@@ -121,32 +121,6 @@ namespace LethalMystery.Maps
             exitDoor.onStopInteract = new InteractEvent();
             exitDoor.onCancelAnimation = new InteractEvent();
 
-
-            /*
-            EntranceTeleport exitDoorTP = intr.AddComponent<EntranceTeleport>();
-            exitDoorTP.audioReverbPreset = 1;
-
-            Scene currentScene = SceneManager.GetSceneAt(1);
-            foreach (GameObject obj in currentScene.GetRootGameObjects())
-            {
-                if (obj.name == "EntranceTeleportA(Clone)")
-                {
-                    exitDoorTP.doorAudios = obj.GetComponent<EntranceTeleport>().doorAudios;
-                    exitDoorTP.inter = obj.GetComponent<EntranceTeleport>().doorAudios;
-                    foreach (GameObject child in GOTools.GetAllChildren(obj))
-                    {
-                        if (child.name == "telePoint")
-                        {
-                            exitDoorTP.entrancePoint = child.transform;
-                        }
-                    }
-                    break;
-                }
-            }
-            */
-            // door audios = gameobject.find(EntranceTeleportA(Clone))
-            // checkforenemiesinterval = 10
-            // entrancePoint = gameobject.find(telepoint)
         }
 
 
