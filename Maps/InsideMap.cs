@@ -44,8 +44,7 @@ namespace LethalMystery.Maps
 
             if (__instance.currentCooldownValue > 0f)
             {
-                if (GOTools.GetObjectPlayerIsLookingAt().name.ToLower() == "exit_pos")
-                    GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+                ExitFacility();
             }
         }
 
@@ -58,6 +57,13 @@ namespace LethalMystery.Maps
             {
                 lll_pos = __instance.entrancePoint.position;
             }
+        }
+
+
+        private static void ExitFacility()
+        {
+            if (GOTools.GetObjectPlayerIsLookingAt().name.ToLower() == "exit_pos")
+                GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
         }
 
 
@@ -83,6 +89,16 @@ namespace LethalMystery.Maps
             if (CustomLvl.mapName.Value == "lll_map") return;
             Vector3 pos = new Vector3(0f, -150, 0f);
             Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
+        }
+
+
+        public static void SpawnVents()
+        {
+            //Environment/HangarShip/VentEntrance
+            Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y, Plugin.localPlayer.transform.position.z);
+            GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
+            GameObject vent = Plugin.Instantiate(shipvent, pos, shipvent.transform.rotation);
+
         }
 
 
