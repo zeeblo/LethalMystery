@@ -243,6 +243,7 @@ namespace LethalMystery.MainGame
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
             InsideMap.TPDungeon();
+            InsideMap.SpawnVents();
         }
 
 

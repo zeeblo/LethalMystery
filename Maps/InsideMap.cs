@@ -34,6 +34,7 @@ namespace LethalMystery.Maps
         {
             TPDungeon();
             MakeLMDoorInteractive();
+            SpawnVents();
         }
 
 
@@ -94,10 +95,24 @@ namespace LethalMystery.Maps
 
         public static void SpawnVents()
         {
-            //Environment/HangarShip/VentEntrance
-            Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y, Plugin.localPlayer.transform.position.z);
-            GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
-            GameObject vent = Plugin.Instantiate(shipvent, pos, shipvent.transform.rotation);
+            GameObject map_vents = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents");
+            if (map_vents == null) return;
+
+            foreach (GameObject link in GOTools.GetAllChildren(map_vents))
+            {
+                if (!link.name.ToLower().Contains("link")) continue;
+                foreach (GameObject link_vent in GOTools.GetAllChildren(link))
+                {
+                    if (!link_vent.name.ToLower().Contains("vent")) continue;
+                    Vector3 pos = new Vector3(link_vent.transform.position.x, link_vent.transform.position.y, link_vent.transform.position.z);
+                    GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
+                    GameObject vent = Plugin.Instantiate(shipvent, pos, link_vent.transform.localRotation);
+                    vent.transform.SetParent(link_vent.transform);
+                    vent.transform.localRotation = link_vent.transform.localRotation;
+                    vent.transform.localScale = new Vector3(1f, 2f, 3f);
+                }
+            }
+
 
         }
 
