@@ -135,5 +135,7 @@ namespace LethalMystery.Patches
                 ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText (1)").GetComponent<TextMeshProUGUI>().text = "";
             }
         }
+
+
     }
 }

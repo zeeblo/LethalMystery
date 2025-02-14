@@ -116,7 +116,9 @@ namespace LethalMystery.Maps
                     scannode.headerText = "Vent";
                     scannode.subText = "Crawl in";
                     scannode.nodeType = 1;
-                    
+                    scannode.maxRange = 17;
+                    scannode.minRange = 2;
+                    scannode.requiresLineOfSight = true;
                     
                 }
             }
