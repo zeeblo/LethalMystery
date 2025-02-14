@@ -110,6 +110,14 @@ namespace LethalMystery.Maps
                     vent.transform.SetParent(link_vent.transform);
                     vent.transform.localRotation = link_vent.transform.localRotation;
                     vent.transform.localScale = new Vector3(1f, 2f, 3f);
+                    vent.layer = LayerMask.NameToLayer("ScanNode");
+                    vent.AddComponent<BoxCollider>();
+                    ScanNodeProperties scannode = vent.AddComponent<ScanNodeProperties>();
+                    scannode.headerText = "Vent";
+                    scannode.subText = "Crawl in";
+                    scannode.nodeType = 1;
+                    
+                    
                 }
             }
 
