@@ -61,7 +61,9 @@ namespace LethalMystery.Maps
         }
 
 
-
+        /// <summary>
+        /// Attaches to ship door and teleports player inside the facility
+        /// </summary>
         public static void TPDungeon()
         {
             if (GameObject.Find("Environment/HangarShip/ShipExit") != null) return;
@@ -132,6 +134,9 @@ namespace LethalMystery.Maps
         }
 
 
+        /// <summary>
+        /// Instantly teleports player inside the facility when the game first starts
+        /// </summary>
         public static void TeleportInside()
         {
             Vector3 spawn_pos = Vector3.zero;
@@ -143,7 +148,6 @@ namespace LethalMystery.Maps
             else if (CustomLvl.mapName.Value == "lll_map")
             {
                 spawn_pos = lll_pos;
-
             }
 
             GameNetworkManager.Instance.localPlayerController.isInElevator = false;
