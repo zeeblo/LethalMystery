@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using UnityEngine;
+using LethalMystery.Utils;
 
 namespace LethalMystery.Maps
 {
@@ -17,6 +18,7 @@ namespace LethalMystery.Maps
         [HarmonyPrefix]
         private static bool EntrancePatch()
         {
+            Plugin.mls.LogInfo(">>> Attempted to teleport");
             if (Plugin.localPlayer.isInsideFactory)
             {
                 GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
@@ -34,6 +36,18 @@ namespace LethalMystery.Maps
             MakeLMDoorInteractive();
         }
 
+
+        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.StopInteraction))]
+        [HarmonyPostfix]
+        private static void HoldPatch(InteractTrigger __instance)
+        {
+
+            if (__instance.currentCooldownValue > 0f)
+            {
+                if (GOTools.GetObjectPlayerIsLookingAt().name.ToLower() == "exit_pos")
+                    GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+            }
+        }
 
 
         [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.Update))]
@@ -77,6 +91,7 @@ namespace LethalMystery.Maps
             Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
             intr.tag = "InteractTrigger";
             intr.layer = LayerMask.NameToLayer("InteractableObject");
+
             InteractTrigger exitDoor = intr.AddComponent<InteractTrigger>();
             exitDoor.hoverTip = "EXIT : [LMB]";
             exitDoor.holdInteraction = true;
@@ -87,7 +102,33 @@ namespace LethalMystery.Maps
             exitDoor.onInteractEarly = new InteractEvent();
             exitDoor.onStopInteract = new InteractEvent();
             exitDoor.onCancelAnimation = new InteractEvent();
-            intr.AddComponent<EntranceTeleport>();
+
+
+            /*
+            EntranceTeleport exitDoorTP = intr.AddComponent<EntranceTeleport>();
+            exitDoorTP.audioReverbPreset = 1;
+
+            Scene currentScene = SceneManager.GetSceneAt(1);
+            foreach (GameObject obj in currentScene.GetRootGameObjects())
+            {
+                if (obj.name == "EntranceTeleportA(Clone)")
+                {
+                    exitDoorTP.doorAudios = obj.GetComponent<EntranceTeleport>().doorAudios;
+                    exitDoorTP.inter = obj.GetComponent<EntranceTeleport>().doorAudios;
+                    foreach (GameObject child in GOTools.GetAllChildren(obj))
+                    {
+                        if (child.name == "telePoint")
+                        {
+                            exitDoorTP.entrancePoint = child.transform;
+                        }
+                    }
+                    break;
+                }
+            }
+            */
+            // door audios = gameobject.find(EntranceTeleportA(Clone))
+            // checkforenemiesinterval = 10
+            // entrancePoint = gameobject.find(telepoint)
         }
 
 
@@ -130,6 +171,8 @@ namespace LethalMystery.Maps
                 TeleportInside();
             }
         }
+
+
 
     }
 }

@@ -97,16 +97,6 @@ namespace LethalMystery.MainGame
                 }
 
 
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-
-                    var patchInfo = Harmony.GetPatchInfo(AccessTools.Method(typeof(StartOfRound), "openingDoorsSequence"));
-                    if (patchInfo != null)
-                    {
-                        Plugin.mls.LogInfo($"Owners of the patch: {string.Join(", ", patchInfo.Owners)}");
-                    }
-                }
-
 
             }
         }

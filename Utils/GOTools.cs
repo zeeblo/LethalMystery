@@ -102,6 +102,8 @@ namespace LethalMystery.Utils
         /// </summary>
         public static GameObject GetObjectPlayerIsLookingAt()
         {
+            if (Plugin.localPlayer == null) return Plugin.shipInstance.gameObject;
+
             Camera gameplayCamera = Plugin.localPlayer.gameplayCamera;
             float grabDistance = Plugin.localPlayer.grabDistance;
             bool twoHanded = Plugin.localPlayer.twoHanded;
@@ -114,7 +116,11 @@ namespace LethalMystery.Utils
 
             if (!Physics.Raycast(interactRay, out hit, grabDistance, interactableObjectsMask) || hit.collider.gameObject.layer == 8 || !(hit.collider.tag == "PhysicsProp") || twoHanded || sinkingValue > 0.73f || Physics.Linecast(gameplayCamera.transform.position, hit.collider.transform.position + transform.up * 0.16f, 1073741824, QueryTriggerInteraction.Ignore))
             {
-                return Plugin.localPlayer.gameObject;
+                if (hit.collider != null)
+                {
+                    return hit.collider.transform.gameObject;
+                }
+                return Plugin.shipInstance.gameObject;
             }
 
             return hit.collider.transform.gameObject;
