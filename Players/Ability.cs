@@ -172,5 +172,52 @@ namespace LethalMystery.Players
 
         #endregion Hold To Clean
 
+
+
+        #region Enter Vent
+
+
+        public static bool isInVent = false;
+        public static float currentRotationX = 180f;
+        private static GameObject ventCamera;
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPostfix]
+        private static void VentChecks(PlayerControllerB __instance)
+        {
+            if (isInVent)
+            {
+                if (ventCamera == null)
+                {
+                    ventCamera = GameObject.Find("LM_ventCamera");
+                }
+                float sensitivity = 10f;
+                float minRotation = 180 - 20; // -60
+                float maxRotation = 180 + 20; // -100
+                //float mouseX = __instance.gameplayCamera.transform.localRotation.x; yes
+                //float mouseX = __instance.gameplayCamera.transform.localRotation.y; no
+                //float mouseX = __instance.gameplayCamera.transform.localRotation.z; no
+                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.y; no
+                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.x; //eh
+                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.z; mo
+                //float mouseX = (float)Traverse.Create(__instance).Field("targetLookRot").GetValue(); no
+                //float mouseX = __instance.playerGlobalHead.transform.position.x;
+                float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
+                Plugin.mls.LogInfo($">>> mouseX: {mouseX}");
+
+                //currentRotationX = mouseX;
+                currentRotationX += mouseX;
+                currentRotationX = Mathf.Clamp(currentRotationX, minRotation, maxRotation);
+
+                Plugin.mls.LogInfo($">>> currentRotationX: {currentRotationX}");
+
+                ventCamera.transform.Rotate(0f, currentRotationX, 0f);
+
+            }
+        }
+
+
+
+        #endregion Enter Vent
     }
 }
