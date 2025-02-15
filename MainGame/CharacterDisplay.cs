@@ -308,6 +308,10 @@ namespace LethalMystery.MainGame
         }
 
 
+        /// <summary>
+        /// If their weapon is for some reason not spawned in their inventory
+        /// notify them in chat on how to spawn it
+        /// </summary>
         private static void CheckForWeaponInInventory()
         {
             if (Roles.CurrentRole == null) return;
@@ -323,13 +327,6 @@ namespace LethalMystery.MainGame
         }
 
 
-        private static void InfiniteTime()
-        {
-            float currentDayTime = 850f;
-            float normalizedTimeOfDay = currentDayTime / TimeOfDay.Instance.totalTime;
-            TimeOfDay.Instance.currentDayTime = currentDayTime;
-            TimeOfDay.Instance.sunAnimator.SetFloat("timeOfDay", Mathf.Clamp(normalizedTimeOfDay, 0f, 0.99f));
-        }
 
 
         private static void ReverseRotation()
@@ -422,7 +419,7 @@ namespace LethalMystery.MainGame
             HideGUI(false);
             TurnMonsterNamesRed();
             CheckForWeaponInInventory();
-            InfiniteTime();
+            Start.InfiniteTime();
             ReverseRotation();
         }
 

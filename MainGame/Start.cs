@@ -197,6 +197,16 @@ namespace LethalMystery.MainGame
             UnlockShipObject.Invoke(StartOfRound.Instance, new object[] { 18 });
         }
 
+        public static void InfiniteTime()
+        {
+            float currentDayTime = 850f;
+            //float normalizedTimeOfDay = currentDayTime / TimeOfDay.Instance.totalTime;
+            float normalizedTimeOfDay = currentDayTime / 1080;
+            TimeOfDay.Instance.currentDayTime = currentDayTime;
+            TimeOfDay.Instance.sunAnimator.SetFloat("timeOfDay", Mathf.Clamp(normalizedTimeOfDay, 0f, 0.99f));
+        }
+
+
 
         /// <summary>
         /// Things to run since LLL stops certain methods from being

@@ -109,11 +109,14 @@ namespace LethalMystery.MainGame
                     Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
                     ventCamera.tag = "ventcam";
                     GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
-                    //ventCamera.transform.SetParent(vent1.transform);
+                    //ventCamera.transform.SetParent(vent1.transform); 
 
-                    ventCamera.transform.position = vent1.transform.position;
-                    ventCamera.transform.Rotate(vent1.transform.localEulerAngles);
-                    //ventCamera.transform.rotation = Quaternion.LookRotation(vent1.transform.position);
+                    Vector3 vent1pos = new Vector3(vent1.transform.position.x - 0.8f, vent1.transform.position.y, vent1.transform.position.z);
+                    ventCamera.transform.position = vent1pos; // new Vector3(-7.2306f, -164.6483f, 28.589f) | vent1.transform.position
+
+
+                    ventCamera.transform.LookAt(vent1.transform);
+                    ventCamera.transform.Rotate(0, 180, 0);
                     ventCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
 
                     Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
