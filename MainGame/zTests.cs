@@ -16,6 +16,8 @@ using LethalMystery.Players;
 using UnityEngine.Rendering;
 using LethalMystery.Maps;
 using Unity.Burst.Intrinsics;
+using static UnityEngine.Rendering.DebugUI;
+using static UnityEngine.GraphicsBuffer;
 //using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
@@ -98,7 +100,26 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
+                    bool value = true;
+                    GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason allows the below code to work (using the method above doesn't)
+                    GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
+                    if (GameNetworkManager.Instance.localPlayerController == null) return;
+                    GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
 
+                    Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
+                    ventCamera.tag = "ventcam";
+                    GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
+                    //ventCamera.transform.SetParent(vent1.transform);
+
+                    ventCamera.transform.position = vent1.transform.position;
+                    ventCamera.transform.Rotate(vent1.transform.localEulerAngles);
+                    //ventCamera.transform.rotation = Quaternion.LookRotation(vent1.transform.position);
+                    ventCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
+
+                    Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
+                    canv.renderMode = 0;
+                    canv.worldCamera = ventCamera;
+                    StartOfRound.Instance.SwitchCamera(ventCamera);
                 }
 
             }
