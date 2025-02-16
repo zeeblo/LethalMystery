@@ -233,7 +233,7 @@ namespace LethalMystery.Players
         private static void CreateVentCamera()
         {
             Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
-            ventCamera.tag = "lm_cam";
+            ventCamera.tag = "PhysicsProp";
             GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
             //ventCamera.transform.SetParent(vent1.transform); 
 
@@ -253,7 +253,7 @@ namespace LethalMystery.Players
 
         private static void RemoveVentCamera()
         {
-            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("lm_cam"))
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("PhysicsProp"))
             {
                 if (obj.name == "LM_ventCamera")
                 {
@@ -292,6 +292,7 @@ namespace LethalMystery.Players
 
         private static void ExitVent()
         {
+            Plugin.mls.LogInfo(">>> Exited vent");
             RemoveVentCamera();
             GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
             isInVent = false;
