@@ -100,33 +100,7 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    bool value = true;
-                    GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(!value); // for some reason allows the below code to work (using the method above doesn't)
-                    /*
-                    GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
-                    if (GameNetworkManager.Instance.localPlayerController == null) return;
-                    GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
-                    */
 
-                    Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
-                    ventCamera.tag = "ventcam";
-                    GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
-                    //ventCamera.transform.SetParent(vent1.transform); 
-
-                    Vector3 vent1pos = new Vector3(vent1.transform.position.x - 0.5f, vent1.transform.position.y, vent1.transform.position.z);
-                    ventCamera.transform.position = vent1pos;
-
-
-                    ventCamera.transform.LookAt(vent1.transform);
-                    ventCamera.transform.Rotate(0, 180, 0);
-                    ventCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
-
-                    Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
-                    canv.renderMode = 0;
-                    canv.worldCamera = ventCamera;
-                    StartOfRound.Instance.SwitchCamera(ventCamera);
-
-                    Ability.isInVent = true;
                 }
 
             }

@@ -11,6 +11,7 @@ namespace LethalMystery.Maps
     {
 
         private static Vector3 lll_pos = Vector3.zero;
+        public static Dictionary<string, List<string>> allVents = new Dictionary<string, List<string>>();
 
 
 
@@ -96,7 +97,10 @@ namespace LethalMystery.Maps
         public static void SpawnVents()
         {
             GameObject map_vents = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents");
+            List<string> innerVent = new List<string>();
+            allVents.Clear();
             if (map_vents == null) return;
+
 
             foreach (GameObject link in GOTools.GetAllChildren(map_vents))
             {
@@ -104,6 +108,8 @@ namespace LethalMystery.Maps
                 foreach (GameObject link_vent in GOTools.GetAllChildren(link))
                 {
                     if (!link_vent.name.ToLower().Contains("vent")) continue;
+
+                    // Find vent model in hangarship and spawn it around the loaded map
                     Vector3 pos = new Vector3(link_vent.transform.position.x, link_vent.transform.position.y, link_vent.transform.position.z);
                     GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
                     GameObject vent = Plugin.Instantiate(shipvent, pos, link_vent.transform.localRotation);
@@ -112,6 +118,23 @@ namespace LethalMystery.Maps
                     vent.transform.localScale = new Vector3(1f, 2f, 3f);
                     vent.layer = LayerMask.NameToLayer("ScanNode");
                     vent.AddComponent<BoxCollider>();
+
+                    // Allow user to enter vent
+                    Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
+                    link_vent.tag = "InteractTrigger";
+                    link_vent.layer = LayerMask.NameToLayer("InteractableObject");
+                    InteractTrigger useVent = link_vent.AddComponent<InteractTrigger>();
+                    useVent.hoverTip = "ENTER : [LMB]";
+                    useVent.holdInteraction = true;
+                    useVent.hoverIcon = hoverSprite;
+                    useVent.holdingInteractEvent = new InteractEventFloat();
+                    useVent.onInteractEarlyOtherClients = new InteractEvent();
+                    useVent.onInteract = new InteractEvent();
+                    useVent.onInteractEarly = new InteractEvent();
+                    useVent.onStopInteract = new InteractEvent();
+                    useVent.onCancelAnimation = new InteractEvent();
+
+                    // Allow users to scan the vent
                     ScanNodeProperties scannode = vent.AddComponent<ScanNodeProperties>();
                     scannode.headerText = "Vent";
                     scannode.subText = "Crawl in";
@@ -119,8 +142,11 @@ namespace LethalMystery.Maps
                     scannode.maxRange = 17;
                     scannode.minRange = 2;
                     scannode.requiresLineOfSight = true;
+
+                    innerVent.Add(link_vent.name.ToLower());
                     
                 }
+                allVents.Add(link.name.ToLower(), innerVent);
             }
 
 

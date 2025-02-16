@@ -193,25 +193,7 @@ namespace LethalMystery.Players
                 }
                 float minRotation = 180 - 20;
                 float maxRotation = 180 + 20;
-                //float mouseX = __instance.gameplayCamera.transform.localRotation.x; yes
-                //float mouseX = __instance.gameplayCamera.transform.localRotation.y; no
-                //float mouseX = __instance.gameplayCamera.transform.localRotation.z; no
-                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.y; no
-                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.x; //eh
-                //float mouseX = __instance.gameplayCamera.transform.localEulerAngles.z; mo
-                //float mouseX = (float)Traverse.Create(__instance).Field("targetLookRot").GetValue(); no
-                //float mouseX = __instance.playerGlobalHead.transform.position.x;
                 float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
-                Plugin.mls.LogInfo($">>> mouseX: {mouseX}");
-
-
-                //currentRotationX += mouseX;
-                //currentRotationX = Mathf.Clamp(currentRotationX, minRotation, maxRotation);
-
-                //Plugin.mls.LogInfo($">>> currentRotationX: {currentRotationX}");
-
-                //ventCamera.transform.Rotate(0f, currentRotationX, 0f);
-                //ventCamera.transform.rotation = Quaternion.Euler(0, currentRotationX, 0);
 
                 float newRotation = currentRotationX + mouseX;
                 newRotation = Mathf.Clamp(newRotation, minRotation, maxRotation);
@@ -224,6 +206,96 @@ namespace LethalMystery.Players
             }
         }
 
+
+        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.StopInteraction))]
+        [HarmonyPostfix]
+        private static void EnterVentPatch(InteractTrigger __instance)
+        {
+
+            if (__instance.currentCooldownValue > 0f)
+            {
+                EnterVent();
+            }
+        }
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Interact_performed))]
+        [HarmonyPostfix]
+        private static void ExitVentPatch()
+        {
+            if (isInVent)
+            {
+                ExitVent();
+            }
+        }
+
+
+        private static void CreateVentCamera()
+        {
+            Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
+            ventCamera.tag = "lm_cam";
+            GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
+            //ventCamera.transform.SetParent(vent1.transform); 
+
+            Vector3 vent1pos = new Vector3(vent1.transform.position.x - 0.5f, vent1.transform.position.y, vent1.transform.position.z);
+            ventCamera.transform.position = vent1pos;
+
+
+            ventCamera.transform.LookAt(vent1.transform);
+            ventCamera.transform.Rotate(0, 180, 0);
+            ventCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
+
+            Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
+            canv.renderMode = 0;
+            canv.worldCamera = ventCamera;
+            StartOfRound.Instance.SwitchCamera(ventCamera);
+        }
+
+        private static void RemoveVentCamera()
+        {
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("lm_cam"))
+            {
+                if (obj.name == "LM_ventCamera")
+                {
+                    UnityEngine.Object.Destroy(obj.gameObject);
+                }
+            }
+
+            Canvas canv = GameObject.Find("Systems/UI/Canvas/").GetComponent<Canvas>();
+            canv.worldCamera = GameObject.Find("UICamera").GetComponent<Camera>();
+            canv.renderMode = RenderMode.ScreenSpaceCamera;
+
+            if (GameNetworkManager.Instance.localPlayerController != null)
+            {
+                StartOfRound.Instance.SwitchCamera(GameNetworkManager.Instance.localPlayerController.gameplayCamera);
+            }
+        }
+
+        private static void EnterVent()
+        {
+            if (!(GOTools.GetObjectPlayerIsLookingAt().name.ToLower().Contains("vent"))) return;
+            if (GameObject.Find("LM_ventCamera") != null) return;
+            Plugin.mls.LogInfo(">>> Entered vent");
+ 
+            GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(false);
+            /*
+            GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
+            if (GameNetworkManager.Instance.localPlayerController == null) return;
+            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
+            */
+
+            CreateVentCamera();
+
+            isInVent = true;
+        }
+
+
+        private static void ExitVent()
+        {
+            RemoveVentCamera();
+            GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
+            isInVent = false;
+        }
 
 
         #endregion Enter Vent
