@@ -191,9 +191,8 @@ namespace LethalMystery.Players
                 {
                     ventCamera = GameObject.Find("LM_ventCamera");
                 }
-                float sensitivity = 10f;
-                float minRotation = 180 - 20; // -60
-                float maxRotation = 180 + 20; // -100
+                float minRotation = 180 - 20;
+                float maxRotation = 180 + 20;
                 //float mouseX = __instance.gameplayCamera.transform.localRotation.x; yes
                 //float mouseX = __instance.gameplayCamera.transform.localRotation.y; no
                 //float mouseX = __instance.gameplayCamera.transform.localRotation.z; no
@@ -205,13 +204,22 @@ namespace LethalMystery.Players
                 float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
                 Plugin.mls.LogInfo($">>> mouseX: {mouseX}");
 
-                //currentRotationX = mouseX;
-                currentRotationX += mouseX;
-                currentRotationX = Mathf.Clamp(currentRotationX, minRotation, maxRotation);
 
-                Plugin.mls.LogInfo($">>> currentRotationX: {currentRotationX}");
+                //currentRotationX += mouseX;
+                //currentRotationX = Mathf.Clamp(currentRotationX, minRotation, maxRotation);
 
-                ventCamera.transform.Rotate(0f, currentRotationX, 0f);
+                //Plugin.mls.LogInfo($">>> currentRotationX: {currentRotationX}");
+
+                //ventCamera.transform.Rotate(0f, currentRotationX, 0f);
+                //ventCamera.transform.rotation = Quaternion.Euler(0, currentRotationX, 0);
+
+                float newRotation = currentRotationX + mouseX;
+                newRotation = Mathf.Clamp(newRotation, minRotation, maxRotation);
+
+                float rotationFix = newRotation - currentRotationX;
+                ventCamera.transform.Rotate(0f, rotationFix, 0f);
+
+                currentRotationX = newRotation;
 
             }
         }
