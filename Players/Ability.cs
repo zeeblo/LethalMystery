@@ -294,6 +294,7 @@ namespace LethalMystery.Players
             CreateVentCamera();
 
             Plugin.localPlayer.thisPlayerBody.transform.Rotate(0, 180, 0);
+            Plugin.localPlayer.disableMoveInput = true;
             isInVent = true;
         }
 
@@ -303,6 +304,7 @@ namespace LethalMystery.Players
             Plugin.mls.LogInfo(">>> Exited vent");
             RemoveVentCamera();
             GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
+            Plugin.localPlayer.disableMoveInput = false;
             isInVent = false;
         }
 
