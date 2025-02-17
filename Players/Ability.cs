@@ -3,7 +3,6 @@ using HarmonyLib;
 using LethalMystery.Maps;
 using LethalMystery.Utils;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 
 namespace LethalMystery.Players
@@ -296,6 +295,7 @@ namespace LethalMystery.Players
             Plugin.localPlayer.thisPlayerBody.transform.Rotate(0, 180, 0);
             Plugin.localPlayer.disableMoveInput = true;
             GOTools.HidePlayerModel();
+            Plugin.netHandler.hidePlayerReceive($"{Plugin.localPlayer.playerClientId}/hide", Plugin.localPlayer.playerClientId);
             isInVent = true;
         }
 
@@ -307,6 +307,7 @@ namespace LethalMystery.Players
             GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
             Plugin.localPlayer.disableMoveInput = false;
             GOTools.HidePlayerModel(false);
+            Plugin.netHandler.hidePlayerReceive($"{Plugin.localPlayer.playerClientId}/show", Plugin.localPlayer.playerClientId);
             isInVent = false;
         }
 

@@ -10,7 +10,7 @@ using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
-using static Unity.Audio.Handle;
+using static UnityEngine.Rendering.DebugUI;
 
 
 namespace LethalMystery.Network
@@ -32,6 +32,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> playerBlood;
         private LNetworkMessage<string> despawnGO;
         private LNetworkMessage<string> currentMap;
+        private LNetworkMessage<string> hidePlayer;
 
         public NetHandler()
         {
@@ -52,6 +53,7 @@ namespace LethalMystery.Network
             playerBlood = LNetworkMessage<string>.Connect("playerBlood");
             despawnGO = LNetworkMessage<string>.Connect("despawnGO");
             currentMap = LNetworkMessage<string>.Connect("currentMap");
+            hidePlayer = LNetworkMessage<string>.Connect("hidePlayer");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -79,6 +81,8 @@ namespace LethalMystery.Network
             despawnGO.OnServerReceived += despawnGOServer;
             currentMap.OnServerReceived += currentMapServer;
             currentMap.OnClientReceived += currentMapClients;
+            hidePlayer.OnServerReceived += hidePlayerServer;
+            hidePlayer.OnClientReceived += hidePlayerClients;
         }
 
         #region Variables
@@ -721,6 +725,36 @@ namespace LethalMystery.Network
         public void currentMapReceive(string data, ulong id)
         {
             currentMap.SendServer(data);
+        }
+
+
+
+
+        private void hidePlayerServer(string data, ulong id)
+        {
+            hidePlayer.SendClients(data);
+        }
+        private void hidePlayerClients(string data)
+        {
+            string[] splitData = data.Split('/');
+            string type = splitData[1];
+            ulong.TryParse(splitData[0], out ulong playerID);
+            bool value = (type == "hide") ? false : true;
+
+            if (playerID == Plugin.localPlayer.playerClientId) return;
+
+            foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (user.playerClientId == playerID)
+                {
+                    user.gameObject.SetActive(value);
+                }
+            }
+
+        }
+        public void hidePlayerReceive(string data, ulong id)
+        {
+            hidePlayer.SendServer(data);
         }
 
 
