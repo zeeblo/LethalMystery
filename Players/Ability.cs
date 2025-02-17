@@ -290,9 +290,10 @@ namespace LethalMystery.Players
             if (GameNetworkManager.Instance.localPlayerController == null) return;
             GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
             */
-
+           
             CreateVentCamera();
 
+            Plugin.localPlayer.thisPlayerBody.transform.Rotate(0, 180, 0);
             isInVent = true;
         }
 
