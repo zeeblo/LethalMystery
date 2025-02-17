@@ -2,6 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using LethalMystery.Utils;
+using LethalMystery.Players;
 
 namespace LethalMystery.Maps
 {
@@ -120,6 +121,11 @@ namespace LethalMystery.Maps
                     vent.layer = LayerMask.NameToLayer("ScanNode");
                     vent.AddComponent<BoxCollider>();
 
+                    // Add custom vent component
+                    int ventIndex = StringAddons.ConvertToInt(link_vent.name.ToLower().Split("vent")[1]);
+                    Ability.LM_Vent ventComp = link_vent.AddComponent<Ability.LM_Vent>();
+                    ventComp.thisIndex = ventIndex;
+                    ventComp.parent = link.name;
 
                     // Allow user to enter vent
                     Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;

@@ -182,6 +182,28 @@ namespace LethalMystery.Players
         public static float currentRotationX = 180f;
         private static GameObject ventCamera;
 
+
+        public class LM_Vent : MonoBehaviour
+        {
+            public int thisIndex;
+            public string parent;
+
+
+            void OnTriggerEnter(Collider other)
+            {
+                if (other.gameObject.GetComponent<Shovel>() != null)
+                {
+                    Plugin.mls.LogInfo(">>> (!) AAAAA Hit by shovel (!)");
+                }
+
+                if (other.gameObject != null)
+                {
+                    Plugin.mls.LogInfo($">>> (?) intered with: {other.gameObject.name}(?)");
+                }
+            }
+        }
+
+
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
         [HarmonyPostfix]
         private static void VentChecks(PlayerControllerB __instance)
@@ -309,12 +331,7 @@ namespace LethalMystery.Players
             Plugin.mls.LogInfo(">>> Entered vent");
  
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(false);
-            /*
-            GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/")?.SetActive(!value);
-            if (GameNetworkManager.Instance.localPlayerController == null) return;
-            GameNetworkManager.Instance.localPlayerController.thisPlayerModelArms.enabled = !value;
-            */
-           
+
             CreateVentCamera();
 
             Plugin.localPlayer.thisPlayerBody.transform.Rotate(0, 180, 0);
