@@ -296,6 +296,10 @@ namespace LethalMystery.Players
             Plugin.localPlayer.disableMoveInput = true;
             GOTools.HidePlayerModel();
             Plugin.netHandler.hidePlayerReceive($"{Plugin.localPlayer.playerClientId}/hide", Plugin.localPlayer.playerClientId);
+
+            HUDManager.Instance.PlayerInfo.targetAlpha = 0;
+            HUDManager.Instance.Tooltips.targetAlpha = 0;
+            HUDManager.Instance.Inventory.targetAlpha = 0;
             isInVent = true;
         }
 
@@ -308,6 +312,12 @@ namespace LethalMystery.Players
             Plugin.localPlayer.disableMoveInput = false;
             GOTools.HidePlayerModel(false);
             Plugin.netHandler.hidePlayerReceive($"{Plugin.localPlayer.playerClientId}/show", Plugin.localPlayer.playerClientId);
+
+
+            HUDManager.Instance.PlayerInfo.targetAlpha = 1;
+            HUDManager.Instance.Tooltips.targetAlpha = 1;
+            HUDManager.Instance.Inventory.targetAlpha = 1;
+
             isInVent = false;
         }
 

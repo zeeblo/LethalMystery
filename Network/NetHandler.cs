@@ -10,7 +10,6 @@ using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
-using static UnityEngine.Rendering.DebugUI;
 
 
 namespace LethalMystery.Network
