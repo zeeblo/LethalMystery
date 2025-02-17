@@ -295,6 +295,7 @@ namespace LethalMystery.Players
 
             Plugin.localPlayer.thisPlayerBody.transform.Rotate(0, 180, 0);
             Plugin.localPlayer.disableMoveInput = true;
+            GOTools.HidePlayerModel();
             isInVent = true;
         }
 
@@ -305,6 +306,7 @@ namespace LethalMystery.Players
             RemoveVentCamera();
             GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
             Plugin.localPlayer.disableMoveInput = false;
+            GOTools.HidePlayerModel(false);
             isInVent = false;
         }
 

@@ -180,5 +180,22 @@ namespace LethalMystery.Utils
                 }
             }
         }
+
+
+        public static void HidePlayerModel(bool value = true)
+        {
+            Plugin.localPlayer.thisPlayerModelArms.gameObject.SetActive(!value);
+            Plugin.localPlayer.thisPlayerModelLOD1.gameObject.SetActive(!value);
+            Plugin.localPlayer.thisPlayerModelLOD2.gameObject.SetActive(!value);
+            Plugin.localPlayer.playerGlobalHead.gameObject.SetActive(!value);
+            Plugin.localPlayer.headCostumeContainer.gameObject.SetActive(!value);
+            Plugin.localPlayer.headCostumeContainerLocal.gameObject.SetActive(!value);
+            Plugin.localPlayer.playerModelArmsMetarig.gameObject.SetActive(!value);
+            Plugin.localPlayer.playerBadgeMesh.gameObject.SetActive(!value);
+            Plugin.localPlayer.playerBetaBadgeMesh.gameObject.SetActive(!value);
+            Plugin.localPlayer.localVisor.gameObject.SetActive(!value);
+
+        }
+
     }
 }
