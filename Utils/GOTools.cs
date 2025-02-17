@@ -194,6 +194,12 @@ namespace LethalMystery.Utils
             Plugin.localPlayer.playerBetaBadgeMesh.gameObject.SetActive(!value);
             Plugin.localPlayer.localVisor.gameObject.SetActive(!value);
 
+            if (Plugin.localPlayer.currentlyHeldObjectServer != null)
+            {
+                Plugin.localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<MeshRenderer>().enabled = !value;
+            }
+            
+
         }
 
     }

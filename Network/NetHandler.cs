@@ -747,6 +747,11 @@ namespace LethalMystery.Network
                 if (user.playerClientId == playerID)
                 {
                     user.gameObject.SetActive(value);
+
+                    if (user.currentlyHeldObjectServer != null)
+                    {
+                        user.currentlyHeldObjectServer.gameObject.GetComponent<MeshRenderer>().enabled = value;
+                    }
                 }
             }
 
