@@ -1,7 +1,9 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Maps;
 using LethalMystery.Utils;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 
 namespace LethalMystery.Players
@@ -234,14 +236,19 @@ namespace LethalMystery.Players
         {
             Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
             ventCamera.tag = "PhysicsProp";
-            GameObject vent1 = GameObject.Find("Office(Clone)/vents/links1/vent1/");
-            //ventCamera.transform.SetParent(vent1.transform); 
 
-            Vector3 vent1pos = new Vector3(vent1.transform.position.x - 0.5f, vent1.transform.position.y, vent1.transform.position.z);
-            ventCamera.transform.position = vent1pos;
+            GameObject raw_vent = GOTools.GetObjectPlayerIsLookingAt();
+            string ventName = raw_vent.name;
+            string ventParentName = raw_vent.transform.parent.name;
+
+            GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
+            GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}/point");
+
+            Vector3 ventpos = new Vector3(ventPoint.transform.position.x, ventPoint.transform.position.y, ventPoint.transform.position.z);
+            ventCamera.transform.position = ventpos;
 
 
-            ventCamera.transform.LookAt(vent1.transform);
+            ventCamera.transform.LookAt(vent.transform);
             ventCamera.transform.Rotate(0, 180, 0);
             ventCamera.cullingMask = GameNetworkManager.Instance.localPlayerController.gameplayCamera.cullingMask;
 

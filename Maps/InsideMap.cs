@@ -114,10 +114,12 @@ namespace LethalMystery.Maps
                     GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
                     GameObject vent = Plugin.Instantiate(shipvent, pos, link_vent.transform.localRotation);
                     vent.transform.SetParent(link_vent.transform);
+
                     vent.transform.localRotation = link_vent.transform.localRotation;
                     vent.transform.localScale = new Vector3(1f, 2f, 3f);
                     vent.layer = LayerMask.NameToLayer("ScanNode");
                     vent.AddComponent<BoxCollider>();
+
 
                     // Allow user to enter vent
                     Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;

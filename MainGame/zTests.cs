@@ -100,7 +100,10 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
+                    GameObject thing = GOTools.GetObjectPlayerIsLookingAt();
 
+
+                    Plugin.mls.LogInfo($">>> Facing: X: {thing.transform.forward.x} | Y: {thing.transform.forward.y} | {thing.transform.forward.z}");
                 }
 
             }
