@@ -231,6 +231,18 @@ namespace LethalMystery.Players
         }
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
+        [HarmonyPrefix]
+        private static bool ScrollPatch()
+        {
+            if (isInVent)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
         private static void CreateVentCamera()
         {
             Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
