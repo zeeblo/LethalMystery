@@ -18,6 +18,8 @@ using LethalMystery.Maps;
 using Unity.Burst.Intrinsics;
 using static UnityEngine.Rendering.DebugUI;
 using static UnityEngine.GraphicsBuffer;
+using Steamworks.Ugc;
+using Unity.Netcode;
 //using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
@@ -102,8 +104,19 @@ namespace LethalMystery.MainGame
                 {
                     GameObject thing = GOTools.GetObjectPlayerIsLookingAt();
 
-
-                    Plugin.mls.LogInfo($">>> Facing: X: {thing.transform.forward.x} | Y: {thing.transform.forward.y} | {thing.transform.forward.z}");
+                    Terminal term = UnityEngine.Object.FindObjectOfType<Terminal>();
+                    foreach (Item itm in term.buyableItemsList)
+                    {
+                        if (itm.itemName.ToLower().Equals("shovel"))
+                        {
+                            Plugin.mls.LogInfo($">>> item: {itm.itemName}");
+                            Plugin.mls.LogInfo($">>> prefabName: {itm.spawnPrefab.name}");
+                            Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y + 2.3f, Plugin.localPlayer.transform.position.z);
+                            GameObject shvl = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
+                            shvl.GetComponent<NetworkObject>().Spawn(true);
+                        }
+                        
+                    }
                 }
 
             }
