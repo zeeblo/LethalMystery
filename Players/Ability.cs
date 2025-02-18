@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using System.Net;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Maps;
 using LethalMystery.Utils;
@@ -185,7 +186,7 @@ namespace LethalMystery.Players
 
         public class LM_Vent : MonoBehaviour
         {
-            public int thisIndex;
+            public string thisIndex;
             public string parent;
 
 
@@ -204,9 +205,18 @@ namespace LethalMystery.Players
         }
 
 
+        public class LM_VentCam : MonoBehaviour
+        {
+            public string thisIndex;
+            public string parent;
+
+
+        }
+
+
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
         [HarmonyPostfix]
-        private static void VentChecks(PlayerControllerB __instance)
+        private static void CameraRotation(PlayerControllerB __instance)
         {
             if (isInVent)
             {
@@ -228,6 +238,71 @@ namespace LethalMystery.Players
 
             }
         }
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPostfix]
+        private static void Movement(PlayerControllerB __instance)
+        {
+            if (isInVent)
+            {
+                if (ventCamera == null)
+                {
+                    ventCamera = GameObject.Find("LM_ventCamera");
+                }
+                float minRotation = 180 - 20;
+                float maxRotation = 180 + 20;
+                float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
+
+                float newRotation = currentRotationX + mouseX;
+                newRotation = Mathf.Clamp(newRotation, minRotation, maxRotation);
+
+                float rotationFix = newRotation - currentRotationX;
+                ventCamera.transform.Rotate(0f, rotationFix, 0f);
+
+                currentRotationX = newRotation;
+
+            }
+        }
+
+
+        private static void CameraPosition()
+        {
+            if (ventCamera == null)
+            {
+                ventCamera = GameObject.Find("LM_ventCamera");
+            }
+
+            LM_VentCam ventComp = ventCamera.GetComponent<LM_VentCam>();
+            int rawIndex = InsideMap.allVents[ventComp.thisIndex].IndexOf(ventComp.thisIndex);
+
+            int newIndex = rawIndex + 1;
+            if (newIndex > InsideMap.allVents[ventComp.thisIndex].Count - 1)
+            {
+                newIndex = 0;
+            }
+            else if (newIndex < 0)
+            {
+                newIndex = InsideMap.allVents[ventComp.thisIndex].Count - 1;
+            }
+
+            ventComp.thisIndex = InsideMap.allVents[ventComp.thisIndex][newIndex];
+
+            SwitchPosition(ventComp.parent, ventComp.thisIndex);
+        }
+
+
+        private static void SwitchPosition(string ventParentName, string ventName)
+        {
+            GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
+            GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}/point");
+
+            Vector3 ventpos = new Vector3(ventPoint.transform.position.x, ventPoint.transform.position.y, ventPoint.transform.position.z);
+            ventCamera.transform.position = ventpos;
+            ventCamera.transform.LookAt(vent.transform);
+            ventCamera.transform.Rotate(0, 180, 0);
+        }
+
 
 
         [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.StopInteraction))]
@@ -289,6 +364,10 @@ namespace LethalMystery.Players
 
             GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
             GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}/point");
+
+            LM_VentCam camComp = ventCamera.transform.gameObject.AddComponent<LM_VentCam>();
+            camComp.thisIndex = ventName;
+            camComp.parent = ventParentName;
 
             Vector3 ventpos = new Vector3(ventPoint.transform.position.x, ventPoint.transform.position.y, ventPoint.transform.position.z);
             ventCamera.transform.position = ventpos;

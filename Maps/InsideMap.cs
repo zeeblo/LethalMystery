@@ -122,7 +122,8 @@ namespace LethalMystery.Maps
                     vent.AddComponent<BoxCollider>();
 
                     // Add custom vent component
-                    int ventIndex = StringAddons.ConvertToInt(link_vent.name.ToLower().Split("vent")[1]);
+                    //int ventIndex = StringAddons.ConvertToInt(link_vent.name.ToLower().Split("vent")[1]);
+                    string ventIndex = link_vent.name.ToLower();
                     Ability.LM_Vent ventComp = link_vent.AddComponent<Ability.LM_Vent>();
                     ventComp.thisIndex = ventIndex;
                     ventComp.parent = link.name;

@@ -7,13 +7,6 @@ namespace LethalMystery.Patches
     internal class ShovelPatch
     {
 
-        [HarmonyPatch(nameof(Shovel.HitShovelClientRpc))]
-        [HarmonyPostfix]
-        private static void CheckID(int hitSurfaceID)
-        {
-            Plugin.mls.LogInfo($">>> HitSurfaceID: {hitSurfaceID}");
-        }
-
 
         [HarmonyPatch(nameof(Shovel.HitShovel))]
         [HarmonyPostfix]
