@@ -121,12 +121,14 @@ namespace LethalMystery.Maps
                     vent.layer = LayerMask.NameToLayer("ScanNode");
                     vent.AddComponent<BoxCollider>();
 
-                    // Add custom vent component
+                    // Add custom vent component to check if user is in vent
                     //int ventIndex = StringAddons.ConvertToInt(link_vent.name.ToLower().Split("vent")[1]);
+                    /*
                     string ventIndex = link_vent.name.ToLower();
                     Ability.LM_Vent ventComp = link_vent.AddComponent<Ability.LM_Vent>();
                     ventComp.thisIndex = ventIndex;
                     ventComp.parent = link.name;
+                    */
 
                     // Allow user to enter vent
                     Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
@@ -161,7 +163,10 @@ namespace LethalMystery.Maps
 
         }
 
-
+        /// <summary>
+        /// Makes the LM generated dungeon door interactable
+        /// which will allow users to leave
+        /// </summary>
         private static void MakeLMDoorInteractive()
         {
             GameObject intr = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos");

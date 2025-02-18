@@ -185,26 +185,6 @@ namespace LethalMystery.Players
         private static GameObject ventCamera;
 
 
-        public class LM_Vent : MonoBehaviour
-        {
-            public string thisIndex;
-            public string parent;
-
-
-            void OnTriggerEnter(Collider other)
-            {
-                if (other.gameObject.GetComponent<Shovel>() != null)
-                {
-                    Plugin.mls.LogInfo(">>> (!) AAAAA Hit by shovel (!)");
-                }
-
-                if (other.gameObject != null)
-                {
-                    Plugin.mls.LogInfo($">>> (?) intered with: {other.gameObject.name}(?)");
-                }
-            }
-        }
-
 
         public class LM_VentCam : MonoBehaviour
         {
@@ -402,6 +382,12 @@ namespace LethalMystery.Players
         private static void ExitVent()
         {
             Plugin.mls.LogInfo(">>> Exited vent");
+            LM_VentCam ventComp = GameObject.Find("LM_ventCamera").GetComponent<LM_VentCam>();
+            string ventParentName = ventComp.parent;
+            string ventName = ventComp.thisIndex;
+            Vector3 pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}/point").transform.position;
+
+            Plugin.localPlayer.TeleportPlayer(pos);
             RemoveVentCamera();
             GameObject.Find("Systems/UI/Canvas/Panel/").SetActive(true);
             Plugin.localPlayer.disableMoveInput = false;
@@ -412,6 +398,8 @@ namespace LethalMystery.Players
             HUDManager.Instance.PlayerInfo.targetAlpha = 1;
             HUDManager.Instance.Tooltips.targetAlpha = 1;
             HUDManager.Instance.Inventory.targetAlpha = 1;
+
+            
 
             isInVent = false;
         }
