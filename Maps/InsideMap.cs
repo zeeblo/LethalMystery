@@ -4,6 +4,7 @@ using UnityEngine;
 using LethalMystery.Utils;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
+using LethalMystery.MainGame;
 
 namespace LethalMystery.Maps
 {
@@ -241,6 +242,7 @@ namespace LethalMystery.Maps
 
             public void OnTriggerEnter(Collider other)
             {
+                if (Meeting.inMeeting.Value == "true") return;
                 if (!(other.tag == "Player"))
                 {
                     return;
