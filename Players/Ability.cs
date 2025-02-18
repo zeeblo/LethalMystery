@@ -1,5 +1,4 @@
-﻿using System.Net;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Maps;
 using LethalMystery.Utils;
@@ -221,32 +220,6 @@ namespace LethalMystery.Players
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
-        [HarmonyPostfix]
-        private static void Movement(PlayerControllerB __instance)
-        {
-            if (isInVent)
-            {
-                if (ventCamera == null)
-                {
-                    ventCamera = GameObject.Find("LM_ventCamera");
-                }
-                float minRotation = 180 - 20;
-                float maxRotation = 180 + 20;
-                float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
-
-                float newRotation = currentRotationX + mouseX;
-                newRotation = Mathf.Clamp(newRotation, minRotation, maxRotation);
-
-                float rotationFix = newRotation - currentRotationX;
-                ventCamera.transform.Rotate(0f, rotationFix, 0f);
-
-                currentRotationX = newRotation;
-
-            }
-        }
-
-
 
         [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.StopInteraction))]
         [HarmonyPostfix]
@@ -267,6 +240,25 @@ namespace LethalMystery.Players
             if (isInVent)
             {
                 ExitVent();
+            }
+        }
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPostfix]
+        private static void MoveToSwitchVent()
+        {
+            if (isInVent)
+            {
+                float num = Plugin.localPlayer.playerActions.Movement.Move.ReadValue<Vector2>().x;
+                if (num > 0f)
+                {
+                    CameraPosition(forward: true);
+                }
+                else if (num < 0f)
+                {
+                    CameraPosition(forward: false);
+                }
             }
         }
 
