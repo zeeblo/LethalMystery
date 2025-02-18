@@ -111,10 +111,17 @@ namespace LethalMystery.Maps
                     if (!link_vent.name.ToLower().Contains("vent")) continue;
 
                     // Find vent model in hangarship and spawn it around the loaded map
+
                     Vector3 pos = new Vector3(link_vent.transform.position.x, link_vent.transform.position.y, link_vent.transform.position.z);
                     GameObject shipvent = GameObject.Find("Environment/HangarShip/VentEntrance");
                     GameObject vent = Plugin.Instantiate(shipvent, pos, link_vent.transform.localRotation);
                     vent.transform.SetParent(link_vent.transform);
+
+                    if (link.name.StartsWith("ground"))
+                    {
+                        vent.transform.Find("Hinge/VentCover").GetComponent<MeshRenderer>().enabled = false;
+                        vent.transform.Find("ventTunnel").GetComponent<MeshRenderer>().enabled = false;
+                    }
 
                     vent.transform.localRotation = link_vent.transform.localRotation;
                     vent.transform.localScale = new Vector3(1f, 2f, 3f);
