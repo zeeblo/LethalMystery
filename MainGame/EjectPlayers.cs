@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.UI;
+using LethalMystery.Utils;
 using LethalNetworkAPI;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace LethalMystery.MainGame
 {
 
-    [HarmonyPatch(typeof(StartOfRound))]
+    [HarmonyPatch]
     internal class EjectPlayers
     {
         public static bool notsafe = false;
@@ -44,6 +45,7 @@ namespace LethalMystery.MainGame
             yield return new WaitForSeconds(5f);
             __instance.shipAnimatorObject.gameObject.GetComponent<Animator>().SetBool("AlarmRinging", value: true);
             //__instance.shipRoomLights.SetShipLightsOnLocalClientOnly(setLightsOn: false);
+            GOTools.TurnLightsRed();
             __instance.shipDoorAudioSource.PlayOneShot(__instance.alarmSFX);
 
             VotingUI.votingGUI.SetActive(false);
@@ -97,6 +99,7 @@ namespace LethalMystery.MainGame
 
             }
 
+            GOTools.TurnLightsRed(false);
             notsafe = false;
             localEject = false;
             currentlyEjectingPlayer.Value = "false";

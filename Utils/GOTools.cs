@@ -198,9 +198,23 @@ namespace LethalMystery.Utils
             {
                 Plugin.localPlayer.currentlyHeldObjectServer.gameObject.GetComponent<MeshRenderer>().enabled = !value;
             }
-            
-
+           
         }
+
+
+        public static void TurnLightsRed(bool value = true)
+        {
+            GameObject lights = GameObject.Find("Environment/HangarShip/ShipElectricLights");
+            foreach (GameObject l in GetAllChildren(lights))
+            {
+                if (l.GetComponent<Light>() != null)
+                {
+                    l.GetComponent<Light>().color = (value) ? Color.red : Color.white;
+                }
+            }
+        }
+
+
 
     }
 }
