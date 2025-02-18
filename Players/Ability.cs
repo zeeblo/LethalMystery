@@ -182,7 +182,7 @@ namespace LethalMystery.Players
         public static bool isInVent = false;
         public static float currentRotationX = 180f;
         private static GameObject ventCamera;
-        private static bool venting = false;
+        public static bool venting = false;
 
 
         public class LM_VentCam : MonoBehaviour
@@ -204,12 +204,15 @@ namespace LethalMystery.Players
                 {
                     ventCamera = GameObject.Find("LM_ventCamera");
                 }
+                string parent_name = ventCamera.GetComponent<LM_VentCam>().parent;
+                bool limitRotate = (parent_name.StartsWith("0") || parent_name.StartsWith("invis")) ? false : true;
+
                 float minRotation = 180 - 20;
                 float maxRotation = 180 + 20;
                 float mouseX = __instance.playerActions.Movement.Look.ReadValue<Vector2>().x * 0.008f * IngamePlayerSettings.Instance.settings.lookSensitivity;
 
                 float newRotation = currentRotationX + mouseX;
-                newRotation = Mathf.Clamp(newRotation, minRotation, maxRotation);
+                newRotation = (limitRotate) ? newRotation : Mathf.Clamp(newRotation, minRotation, maxRotation);
 
                 float rotationFix = newRotation - currentRotationX;
                 ventCamera.transform.Rotate(0f, rotationFix, 0f);
