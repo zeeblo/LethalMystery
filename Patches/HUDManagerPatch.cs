@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Players;
 using LethalMystery.Utils;
@@ -136,6 +137,16 @@ namespace LethalMystery.Patches
             }
         }
 
+
+        /// <summary>
+        /// Send message in chat if special role dropped their item
+        /// </summary>
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DiscardHeldObject))]
+        [HarmonyPostfix]
+        private static void DroppedItemNotif()
+        {
+            GOTools.CheckForWeaponInInventoryNotif();
+        }
 
     }
 }

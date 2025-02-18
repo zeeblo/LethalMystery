@@ -308,23 +308,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        /// <summary>
-        /// If their weapon is for some reason not spawned in their inventory
-        /// notify them in chat on how to spawn it
-        /// </summary>
-        private static void CheckForWeaponInInventory()
-        {
-            if (Roles.CurrentRole == null) return;
 
-            if (Roles.CurrentRole.Type == Roles.RoleType.monster || Roles.CurrentRole.Name == "sheriff")
-            {
-                bool weaponFound = GOTools.CheckForExistingWeapon();
-                if (!weaponFound)
-                {
-                    Commands.DisplayChatMessage($"Press <color=#FF0000>\"{LMConfig.spawnItemBind.Value.ToUpper()}\"</color> to spawn equip your weapon. (this takes a few seconds)");
-                }
-            }
-        }
 
 
 
@@ -419,7 +403,7 @@ namespace LethalMystery.MainGame
             DisableMainCamera(false);
             HideGUI(false);
             TurnMonsterNamesRed();
-            CheckForWeaponInInventory();
+            GOTools.CheckForWeaponInInventoryNotif();
             Start.InfiniteTime();
             ReverseRotation();
         }

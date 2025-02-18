@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Players;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,25 @@ namespace LethalMystery.Utils
 {
     public class GOTools
     {
+
+
+        /// <summary>
+        /// If their weapon is for some reason not spawned in their inventory
+        /// notify them in chat on how to spawn it
+        /// </summary>
+        public static void CheckForWeaponInInventoryNotif()
+        {
+            if (Roles.CurrentRole == null) return;
+
+            if (Roles.CurrentRole.Type == Roles.RoleType.monster || Roles.CurrentRole.Name == "sheriff")
+            {
+                bool weaponFound = GOTools.CheckForExistingWeapon();
+                if (!weaponFound)
+                {
+                    Commands.DisplayChatMessage($"Press <color=#FF0000>\"{LMConfig.spawnItemBind.Value.ToUpper()}\"</color> to spawn and equip your weapon. (this takes a few seconds)");
+                }
+            }
+        }
 
         public static bool CheckForExistingWeapon()
         {
