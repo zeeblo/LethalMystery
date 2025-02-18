@@ -4,7 +4,7 @@ using LethalMystery.Maps;
 using LethalMystery.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using System.Collections;
 
 namespace LethalMystery.Players
 {
@@ -182,7 +182,7 @@ namespace LethalMystery.Players
         public static bool isInVent = false;
         public static float currentRotationX = 180f;
         private static GameObject ventCamera;
-
+        private static bool venting = false;
 
 
         public class LM_VentCam : MonoBehaviour
@@ -253,11 +253,11 @@ namespace LethalMystery.Players
                 float num = Plugin.localPlayer.playerActions.Movement.Move.ReadValue<Vector2>().x;
                 if (num > 0f)
                 {
-                    CameraPosition(forward: true);
+                    StartOfRound.Instance.StartCoroutine(camPositionDelay(forward: true));
                 }
                 else if (num < 0f)
                 {
-                    CameraPosition(forward: false);
+                    StartOfRound.Instance.StartCoroutine(camPositionDelay(forward: false));
                 }
             }
         }
@@ -272,13 +272,11 @@ namespace LethalMystery.Players
                 float num = context.ReadValue<float>();
                 if (num > 0f)
                 {
-                    Plugin.mls.LogInfo($">>> Moving forward: {num}");
-                    CameraPosition(forward: true);
+                    StartOfRound.Instance.StartCoroutine(camPositionDelay(forward: true));
                 }
                 else
                 {
-                    Plugin.mls.LogInfo($">>> Moving Back: {num}");
-                    CameraPosition(forward: false);
+                    StartOfRound.Instance.StartCoroutine(camPositionDelay(forward: false));
                 }
                 return false;
             }
@@ -405,6 +403,10 @@ namespace LethalMystery.Players
                 ventCamera = GameObject.Find("LM_ventCamera");
             }
 
+            Plugin.mls.LogInfo(">>> 4");
+            if (ventCamera == null) return;
+
+            Plugin.mls.LogInfo(">>> 5");
             LM_VentCam ventComp = ventCamera.GetComponent<LM_VentCam>();
             int rawIndex = InsideMap.allVents[ventComp.parent].IndexOf(ventComp.thisIndex);
 
@@ -423,11 +425,30 @@ namespace LethalMystery.Players
             SwitchPosition(ventComp.parent, ventComp.thisIndex);
         }
 
+        private static IEnumerator camPositionDelay(bool forward)
+        {
+            Plugin.mls.LogInfo(">>> 0");
+            if (venting == false)
+            {
+                Plugin.mls.LogInfo(">>> 1");
+                venting = true;
+                Plugin.mls.LogInfo(">>> 2");
+                yield return new WaitForSeconds(0.5f);
+                Plugin.mls.LogInfo(">>> 3");
+                CameraPosition(forward);
+                Plugin.mls.LogInfo(">>> z0");
+                venting = false;
+                Plugin.mls.LogInfo(">>> z1");
+            }
+        }
 
         private static void SwitchPosition(string ventParentName, string ventName)
         {
             GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
             GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}/point");
+            Plugin.mls.LogInfo(">>> 6");
+            if (vent == null || ventPoint == null) return;
+            Plugin.mls.LogInfo(">>> 7");
 
             Vector3 ventpos = new Vector3(ventPoint.transform.position.x, ventPoint.transform.position.y, ventPoint.transform.position.z);
             ventCamera.transform.position = ventpos;
