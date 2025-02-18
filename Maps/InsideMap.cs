@@ -3,6 +3,7 @@ using HarmonyLib;
 using UnityEngine;
 using LethalMystery.Utils;
 using LethalMystery.Players;
+using LethalMystery.Players.Abilities;
 
 namespace LethalMystery.Maps
 {
@@ -181,6 +182,7 @@ namespace LethalMystery.Maps
         private static void MakeLMDoorInteractive()
         {
             GameObject intr = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos");
+            GameObject scan = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos/scan_node");
             if (intr == null) return;
             Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
             intr.tag = "InteractTrigger";
@@ -196,6 +198,17 @@ namespace LethalMystery.Maps
             exitDoor.onInteractEarly = new InteractEvent();
             exitDoor.onStopInteract = new InteractEvent();
             exitDoor.onCancelAnimation = new InteractEvent();
+
+
+            scan.layer = LayerMask.NameToLayer("ScanNode");
+            scan.AddComponent<BoxCollider>();
+            ScanNodeProperties scannode = scan.AddComponent<ScanNodeProperties>();
+            scannode.headerText = "Exit";
+            scannode.subText = "Return to ship";
+            scannode.nodeType = 0;
+            scannode.maxRange = 450;
+            scannode.minRange = 2;
+            scannode.requiresLineOfSight = false;
 
         }
 
