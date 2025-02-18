@@ -311,9 +311,10 @@ namespace LethalMystery.Players
             string ventParentName = raw_vent.transform.parent.name;
 
             bool groundVent = ventParentName.StartsWith("ground");
-            string location = (!ventParentName.StartsWith("ground")) ? $"{ventName}/point" : ventName;
+            string location = (groundVent) ? ventName : $"{ventName}/point";
             GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
             GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}");
+
 
             LM_VentCam camComp = ventCamera.transform.gameObject.AddComponent<LM_VentCam>();
             camComp.thisIndex = ventName;
@@ -384,8 +385,9 @@ namespace LethalMystery.Players
             LM_VentCam ventComp = GameObject.Find("LM_ventCamera").GetComponent<LM_VentCam>();
             string ventParentName = ventComp.parent;
             string ventName = ventComp.thisIndex;
-            string location = (!ventParentName.StartsWith("ground")) ? $"{ventName}/point" : ventName;
-            Vector3 pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}").transform.position;
+            string location = (ventParentName.StartsWith("ground")) ? ventName : $"{ventName}/point";
+            Vector3 raw_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}").transform.position;
+            Vector3 pos = new Vector3(raw_pos.x, raw_pos.y + 0.5f, raw_pos.z);
 
             Plugin.localPlayer.TeleportPlayer(pos);
             RemoveVentCamera();
@@ -438,7 +440,7 @@ namespace LethalMystery.Players
             if (venting == false)
             {
                 venting = true;
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.25f);
                 CameraPosition(forward);
 
                 venting = false;
@@ -447,7 +449,7 @@ namespace LethalMystery.Players
 
         private static void SwitchPosition(string ventParentName, string ventName)
         {
-            string location = (!ventParentName.StartsWith("ground")) ? $"{ventName}/point" : ventName;
+            string location = (ventParentName.StartsWith("ground")) ? ventName : $"{ventName}/point";
             GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
             GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}");
             if (vent == null || ventPoint == null) return;
@@ -456,7 +458,7 @@ namespace LethalMystery.Players
             Vector3 ventpos = new Vector3(ventPoint.transform.position.x, ventPoint.transform.position.y, ventPoint.transform.position.z);
             ventCamera.transform.position = ventpos;
 
-            if (ventParentName.StartsWith("ground"))
+            if (!ventParentName.StartsWith("ground"))
             {
                 ventCamera.transform.LookAt(vent.transform);
                 ventCamera.transform.Rotate(0, 180, 0);

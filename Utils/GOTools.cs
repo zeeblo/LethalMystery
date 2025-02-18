@@ -117,7 +117,7 @@ namespace LethalMystery.Utils
             {
                 if (hit.collider != null)
                 {
-                    Plugin.mls.LogInfo($">>> Looking at {hit.collider.transform.gameObject.name}");
+                    //Plugin.mls.LogInfo($">>> Looking at {hit.collider.transform.gameObject.name}");
                     return hit.collider.transform.gameObject;
                 }
                 return Plugin.shipInstance.gameObject;
