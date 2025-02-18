@@ -36,7 +36,6 @@ namespace LethalMystery.Maps
         {
             TPDungeon();
             MakeLMDoorInteractive();
-            SpawnVents();
         }
 
 
@@ -137,20 +136,25 @@ namespace LethalMystery.Maps
                     ventComp.parent = link.name;
                     */
 
-                    // Allow user to enter vent
-                    Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
-                    link_vent.tag = "InteractTrigger";
-                    link_vent.layer = LayerMask.NameToLayer("InteractableObject");
-                    InteractTrigger useVent = link_vent.AddComponent<InteractTrigger>();
-                    useVent.hoverTip = "ENTER : [LMB]";
-                    useVent.holdInteraction = true;
-                    useVent.hoverIcon = hoverSprite;
-                    useVent.holdingInteractEvent = new InteractEventFloat();
-                    useVent.onInteractEarlyOtherClients = new InteractEvent();
-                    useVent.onInteract = new InteractEvent();
-                    useVent.onInteractEarly = new InteractEvent();
-                    useVent.onStopInteract = new InteractEvent();
-                    useVent.onCancelAnimation = new InteractEvent();
+
+                    if (Roles.CurrentRole.Type == Roles.RoleType.monster)
+                    {
+                        // Allow user to enter vent
+                        Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
+                        link_vent.tag = "InteractTrigger";
+                        link_vent.layer = LayerMask.NameToLayer("InteractableObject");
+                        InteractTrigger useVent = link_vent.AddComponent<InteractTrigger>();
+                        useVent.hoverTip = "ENTER : [LMB]";
+                        useVent.holdInteraction = true;
+                        useVent.hoverIcon = hoverSprite;
+                        useVent.holdingInteractEvent = new InteractEventFloat();
+                        useVent.onInteractEarlyOtherClients = new InteractEvent();
+                        useVent.onInteract = new InteractEvent();
+                        useVent.onInteractEarly = new InteractEvent();
+                        useVent.onStopInteract = new InteractEvent();
+                        useVent.onCancelAnimation = new InteractEvent();
+                    }
+
 
                     // Allow users to scan the vent
                     ScanNodeProperties scannode = vent.AddComponent<ScanNodeProperties>();

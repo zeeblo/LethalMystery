@@ -48,8 +48,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void Begin()
         {
-            Terminal terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
-            terminal.groupCredits = 9999;
+            Plugin.terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
             InsideMap.SpawnInterior();
@@ -220,7 +219,7 @@ namespace LethalMystery.MainGame
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
             InsideMap.TPDungeon();
-            InsideMap.SpawnVents();
+            
         }
 
 

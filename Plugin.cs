@@ -44,6 +44,7 @@ namespace LethalMystery
         public static TextMeshProUGUI? sidebarBodyText;
         public static NetHandler netHandler { get; set; }
         public static PlayerControllerB localPlayer;
+        public static Terminal terminal;
 
 
 

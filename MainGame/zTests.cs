@@ -100,24 +100,7 @@ namespace LethalMystery.MainGame
 
                 }
 
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-                    GameObject thing = GOTools.GetObjectPlayerIsLookingAt();
 
-                    Terminal term = UnityEngine.Object.FindObjectOfType<Terminal>();
-                    foreach (Item itm in term.buyableItemsList)
-                    {
-                        if (itm.itemName.ToLower().Equals("shovel"))
-                        {
-                            Plugin.mls.LogInfo($">>> item: {itm.itemName}");
-                            Plugin.mls.LogInfo($">>> prefabName: {itm.spawnPrefab.name}");
-                            Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y + 2.3f, Plugin.localPlayer.transform.position.z);
-                            GameObject shvl = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
-                            shvl.GetComponent<NetworkObject>().Spawn(true);
-                        }
-                        
-                    }
-                }
 
             }
         }
