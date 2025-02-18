@@ -6,6 +6,7 @@ using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Network;
 using LethalMystery.Players;
+using LethalMystery.Players.Abilities;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using System.Reflection;

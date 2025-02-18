@@ -1,4 +1,5 @@
 ﻿using LethalMystery.MainGame;
+using LethalMystery.Players.Abilities;
 using LethalMystery.Utils;
 using System.Collections;
 using UnityEngine;
@@ -89,7 +90,7 @@ namespace LethalMystery.Players
         public static void StopCleaning()
         {
             cleaningBody = false;
-            Ability.cleaningBloodAmt = 0f;
+            CleanSuit.cleaningBloodAmt = 0f;
             HUDManager.Instance.holdFillAmount = 0f;
             HUDManager.Instance.holdInteractionCanvasGroup.alpha = 0;
         }
