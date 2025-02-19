@@ -58,6 +58,7 @@ namespace LethalMystery.MainGame
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
             BuyItems.SetItemPrices();
+            BuyItems.HideItems();
 
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {

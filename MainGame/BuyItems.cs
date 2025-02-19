@@ -18,7 +18,7 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.Awake))]
         [HarmonyPostfix]
-        private static void BuyPatch(Terminal __instance)
+        private static void AddItemPrices(Terminal __instance)
         {
             itemsAndPrices.Clear();
             foreach (Item itm in __instance.buyableItemsList)
@@ -76,10 +76,23 @@ namespace LethalMystery.MainGame
                 if (itemsAndPrices.ContainsKey(itm.itemName))
                 {
                     itm.creditsWorth = itemsAndPrices[itm.itemName];
-                    Plugin.mls.LogInfo($">>> Set price to: {itm.itemName}");
                 }
             }
         }
+
+
+
+        public static void HideItems()
+        {
+            foreach (Item itm in Plugin.terminal.buyableItemsList)
+            {
+                if (!itemsAndPrices.ContainsKey(itm.itemName))
+                {
+                    itm.creditsWorth = 999;
+                }
+            }
+        }
+
 
         private static bool ContainsShopItemWord(string word)
         {
