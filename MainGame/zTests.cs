@@ -103,8 +103,7 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-
-
+                    SoundManager.Instance.PlaySoundAroundLocalPlayer(Plugin.enemyVent.ventCrawlSFX, 1);
                 }
 
             }

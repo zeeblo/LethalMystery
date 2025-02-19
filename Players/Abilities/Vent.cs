@@ -212,6 +212,9 @@ namespace LethalMystery.Players.Abilities
             HUDManager.Instance.PlayerInfo.targetAlpha = 0;
             HUDManager.Instance.Tooltips.targetAlpha = 0;
             HUDManager.Instance.Inventory.targetAlpha = 0;
+
+            
+            SoundManager.Instance.PlaySoundAroundLocalPlayer(StartOfRound.Instance.damageSFX, 1);
             isInVent = true;
         }
 
@@ -301,6 +304,7 @@ namespace LethalMystery.Players.Abilities
                 ventCamera.transform.Rotate(0, 180, 0);
             }
 
+            SoundManager.Instance.PlaySoundAroundLocalPlayer(Plugin.enemyVent.ventCrawlSFX, 1);
         }
 
 
