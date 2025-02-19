@@ -19,6 +19,7 @@ namespace LethalMystery.Maps
         public static GameObject CurrentInside;
         private static string default_maps = "";
         private static string lll_maps = "";
+        public static string localCurrentInside;
 
         private class NewSelectableLevel : SelectableLevel
         {
@@ -277,6 +278,7 @@ namespace LethalMystery.Maps
         
 
         /// <summary>
+        /// (LethalLevelLoader Config Change)
         /// Set the typed interior to be guaranteed to spawn
         /// Set every other interior to 0
         /// </summary>
@@ -352,6 +354,8 @@ namespace LethalMystery.Maps
                 return;
             }
 
+            string mapName = map.Split('/')[1];
+            localCurrentInside = mapName;
 
             Plugin.netHandler.currentMapReceive(map, 0u);
         }

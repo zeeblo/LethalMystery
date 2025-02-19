@@ -250,7 +250,7 @@ namespace LethalMystery.Network
                         StartOfRound.Instance.allPlayerScripts[i].ItemSlots = new GrabbableObject[5];
                         break;
                     }
-                    
+
                 }
             }
 
@@ -277,7 +277,7 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingClients:");
             StartOfRound.Instance.StartCoroutine(meetingSetup(data));
-            
+
         }
         public void MeetingReceive(string data, ulong id)
         {
@@ -288,7 +288,7 @@ namespace LethalMystery.Network
 
         private static IEnumerator meetingSetup(string data)
         {
-            
+
             if (!Plugin.localPlayer.isInHangarShipRoom)
             {
                 Plugin.localPlayer.DropAllHeldItemsAndSync();
@@ -303,7 +303,7 @@ namespace LethalMystery.Network
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
             HUDManagerPatch.DisplayDaysEdit(data);
-            
+
             yield return new WaitForSeconds(2f);
             VotingUI.isCalled = true;
         }
@@ -573,7 +573,7 @@ namespace LethalMystery.Network
             Dictionary<string, string> rawPlayersWhoVoted = new Dictionary<string, string>();
             string[] splitData = data.Split('/');
             string type = splitData[1];
-            
+
             if (type == "setup")
             {
 
@@ -593,16 +593,16 @@ namespace LethalMystery.Network
             {
                 setupVotes.SendClients(data);
             }
-            
 
 
-            
+
+
         }
         private void setupVotesClients(string data)
         {
             string[] splitData = data.Split('/');
             string playerID = splitData[0].Trim();
-            
+
             Dictionary<string, string> votes = Voting.playersWhoGotVoted.Value;
             votes.Remove(playerID);
 
@@ -692,7 +692,9 @@ namespace LethalMystery.Network
 
         private void currentMapServer(string data, ulong id)
         {
-            if (data.Split('/')[0].Contains("custom_map"))
+            string type = data.Split('/')[0];
+            string mapName = data.Split('/')[1];
+            if (type.Contains("custom_map") || type.Contains("game_started"))
             {
                 CustomLvl.mapName.Value = data.Split('/')[1];
             }
@@ -700,15 +702,20 @@ namespace LethalMystery.Network
             {
                 CustomLvl.mapName.Value = "lll_map";
             }
-                
+
+
             currentMap.SendClients(data);
+
         }
 
         private void currentMapClients(string data)
         {
+            Plugin.mls.LogInfo(">>> in currentMapClients ");
+
+            string type = data.Split('/')[0];
             string mapName = data.Split('/')[1];
 
-            if (data.Split('/')[0].Contains("custom_map"))
+            if (type.Contains("game_started"))
             {
                 switch (mapName)
                 {

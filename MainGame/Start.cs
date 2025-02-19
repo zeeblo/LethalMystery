@@ -42,6 +42,12 @@ namespace LethalMystery.MainGame
         private static void SubscribeToHandler()
         {
             Plugin.netHandler.AddCustomNetEvents();
+
+            if (Plugin.isHost)
+            {
+                Plugin.netHandler.currentMapReceive($"game_started/{CustomLvl.localCurrentInside}", 0);
+            }
+            
         }
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
@@ -53,7 +59,7 @@ namespace LethalMystery.MainGame
             //Plugin.terminal.groupCredits = 20;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
-            InsideMap.SpawnInterior();
+            
             Plugin.ResetVariables();
             Tasks.AppendScraps();
             Roles.AssignRole();

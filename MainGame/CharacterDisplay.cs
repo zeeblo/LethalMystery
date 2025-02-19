@@ -330,6 +330,7 @@ namespace LethalMystery.MainGame
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
+            InsideMap.SpawnInterior();
             InsideMap.SpawnVents();
             InsideMap.SpawnScrapScanPositions();
 

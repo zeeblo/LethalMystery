@@ -183,7 +183,6 @@ namespace LethalMystery.Maps
 
             foreach (GameObject s in GOTools.GetAllChildren(scrapsParent))
             {
-                Plugin.mls.LogInfo($">>> name: {s.name}");
                 if (s.name.ToLower().Contains("scrap"))
                 {
                     GOTools.AddScanNode(s, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
@@ -193,7 +192,6 @@ namespace LethalMystery.Maps
                 // nodes then iterate through those
                 foreach (GameObject child in GOTools.GetAllChildren(s))
                 {
-                    Plugin.mls.LogInfo($">>> name: {child}");
                     if (child.name.ToLower().Contains("scrap"))
                     {
                         GOTools.AddScanNode(child, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
