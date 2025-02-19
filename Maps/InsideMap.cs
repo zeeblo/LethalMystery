@@ -172,9 +172,37 @@ namespace LethalMystery.Maps
                 }
                 allVents.Add(link.name.ToLower(), innerVent);
             }
-
-
         }
+
+
+
+        public static void SpawnScrapScanPositions()
+        {
+            GameObject scrapsParent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/scraps");
+            if (scrapsParent == null) return;
+
+            foreach (GameObject s in GOTools.GetAllChildren(scrapsParent))
+            {
+                Plugin.mls.LogInfo($">>> name: {s.name}");
+                if (s.name.ToLower().Contains("scrap"))
+                {
+                    GOTools.AddScanNode(s, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
+                }
+
+                // If the parent GameObject acts as a "folder" for the actual scrap
+                // nodes then iterate through those
+                foreach (GameObject child in GOTools.GetAllChildren(s))
+                {
+                    Plugin.mls.LogInfo($">>> name: {child}");
+                    if (child.name.ToLower().Contains("scrap"))
+                    {
+                        GOTools.AddScanNode(child, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
+                    }
+                }
+            } 
+        }
+
+
 
         /// <summary>
         /// Makes the LM generated dungeon door interactable

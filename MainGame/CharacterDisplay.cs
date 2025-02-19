@@ -331,6 +331,7 @@ namespace LethalMystery.MainGame
             LookAtCamera();
             ResetAnimation();
             InsideMap.SpawnVents();
+            InsideMap.SpawnScrapScanPositions();
 
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
 

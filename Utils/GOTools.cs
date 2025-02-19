@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using System;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
 using UnityEngine;
@@ -234,6 +235,19 @@ namespace LethalMystery.Utils
             }
         }
 
+
+        public static void AddScanNode(GameObject obj, string headerText, string subText = "", int nodeType = 0, int maxRange = 17, int minRange = 2, bool requiresLineOfSight = true)
+        {
+            obj.layer = LayerMask.NameToLayer("ScanNode");
+            obj.AddComponent<BoxCollider>();
+            ScanNodeProperties scannode = obj.AddComponent<ScanNodeProperties>();
+            scannode.headerText = headerText;
+            scannode.subText = subText;
+            scannode.nodeType = nodeType;
+            scannode.maxRange = maxRange;
+            scannode.minRange = minRange;
+            scannode.requiresLineOfSight = requiresLineOfSight;
+        }
 
 
     }
