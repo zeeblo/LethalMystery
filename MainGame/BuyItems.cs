@@ -56,7 +56,7 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
         [HarmonyPostfix]
-        private static void BuyPatch(TerminalNode node)
+        private static void BuyPatch(Terminal __instance, TerminalNode node)
         {
             if (StartOfRound.Instance.inShipPhase) return;
             if (node.displayText.ToLower().Contains("ordered"))
@@ -64,7 +64,7 @@ namespace LethalMystery.MainGame
                 string raw_orderName = node.displayText.Split("[variableAmount] ")[1];
                 int displayTextLen = raw_orderName.Length - 171;
                 string orderName = raw_orderName.Substring(0, displayTextLen);
-                SpawnShopItem(orderName);
+                SpawnShopItem(orderName, __instance.playerDefinedAmount);
             }
         }
 
@@ -94,9 +94,9 @@ namespace LethalMystery.MainGame
         }
 
 
-        private static void SpawnShopItem(string word)
+        private static void SpawnShopItem(string word, int amt)
         {
-            Plugin.netHandler.buyItemReceive($"{Plugin.localPlayer.playerClientId}/{word}", Plugin.localPlayer.playerClientId);
+            Plugin.netHandler.buyItemReceive($"{Plugin.localPlayer.playerClientId}/{word}/{amt}", Plugin.localPlayer.playerClientId);
         }
 
 

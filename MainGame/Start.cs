@@ -49,8 +49,8 @@ namespace LethalMystery.MainGame
         private static void Begin()
         {
             Plugin.terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
-            //Plugin.terminal.groupCredits = 9999;
             Plugin.terminal.groupCredits = 0;
+            //Plugin.terminal.groupCredits = 20;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
             InsideMap.SpawnInterior();

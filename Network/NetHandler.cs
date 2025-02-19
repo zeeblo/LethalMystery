@@ -8,7 +8,6 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
@@ -773,6 +772,7 @@ namespace LethalMystery.Network
             string[] splitData = data.Split('/');
             string orderName = splitData[1];
             ulong.TryParse(splitData[0], out ulong playerID);
+            Int32.TryParse(splitData[2], out int amt);
             Transform plrT = StartOfRound.Instance.allPlayerScripts[playerID].transform;
 
             foreach (Item itm in Plugin.terminal.buyableItemsList)
@@ -780,8 +780,13 @@ namespace LethalMystery.Network
                 if (itm.itemName.Replace("-", " ").ToLower().StartsWith(orderName.ToLower()))
                 {
                     Vector3 pos = new Vector3(plrT.position.x, plrT.position.y + 2.3f, plrT.position.z);
-                    GameObject boughtItem = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
-                    boughtItem.GetComponent<NetworkObject>().Spawn(true);
+
+                    for (int i = 0; i < amt; i++)
+                    {
+                        GameObject boughtItem = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
+                        boughtItem.GetComponent<NetworkObject>().Spawn(true);
+                    }
+
                     return;
                 }
             }
