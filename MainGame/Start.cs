@@ -57,7 +57,8 @@ namespace LethalMystery.MainGame
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);
-            
+            BuyItems.SetItemPrices();
+
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
                 Plugin.mls.LogInfo(">>> In Begin() method & found LLL");
