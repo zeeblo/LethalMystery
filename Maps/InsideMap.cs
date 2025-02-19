@@ -37,7 +37,7 @@ namespace LethalMystery.Maps
         private static void TeleportToDungeon()
         {
             TPDungeon();
-            MakeLMDoorInteractive();
+            //MakeLMDoorInteractive();
         }
 
 
@@ -206,7 +206,7 @@ namespace LethalMystery.Maps
         /// Makes the LM generated dungeon door interactable
         /// which will allow users to leave
         /// </summary>
-        private static void MakeLMDoorInteractive()
+        public static void MakeLMDoorInteractive()
         {
             GameObject intr = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos");
             GameObject scan = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos/scan_node");

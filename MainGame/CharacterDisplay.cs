@@ -333,6 +333,7 @@ namespace LethalMystery.MainGame
             InsideMap.SpawnInterior();
             InsideMap.SpawnVents();
             InsideMap.SpawnScrapScanPositions();
+            InsideMap.MakeLMDoorInteractive();
 
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
 
@@ -345,7 +346,7 @@ namespace LethalMystery.MainGame
 
             //Plugin.RemoveEnvironment(true);
             GOTools.HideEnvironment(true);
-            GOTools.HideDungeon();
+            GOTools.HideVanillaDungeon();
             EnvironmentLight(false);
             ShowLights(true);
 
@@ -371,7 +372,7 @@ namespace LethalMystery.MainGame
             //Plugin.RemoveEnvironment(false);
             if (CustomLvl.mapName.Value == "lll_map")
             {
-                GOTools.HideDungeon(false);
+                GOTools.HideVanillaDungeon(false);
             }
             GOTools.HideEnvironment(true, ignore: "Lighting"); // re-enables lighting
             InsideMap.TeleportInside();

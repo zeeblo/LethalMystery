@@ -1,6 +1,7 @@
 ﻿using System;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.Maps;
 using LethalMystery.Players;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -189,7 +190,7 @@ namespace LethalMystery.Utils
         }
 
 
-        public static void HideDungeon(bool value = true)
+        public static void HideVanillaDungeon(bool value = true)
         {
             Scene currentScene = SceneManager.GetSceneAt(1);
             foreach (GameObject obj in currentScene.GetRootGameObjects())
@@ -249,6 +250,14 @@ namespace LethalMystery.Utils
             scannode.requiresLineOfSight = requiresLineOfSight;
         }
 
+
+        public static void HideLMInsideDungeon(bool value = true)
+        {
+            GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
+            if (map == null) return;
+
+            map.SetActive(!value);
+        }
 
     }
 }

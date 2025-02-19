@@ -114,6 +114,7 @@ namespace LethalMystery.Maps
         {
             CurrentInside = LMAssets.SkeldMap;
             StartOfRound.Instance.screenLevelDescription.text = $"Map: SKELD";
+            localCurrentInside = "skeld";
         }
 
 

@@ -120,6 +120,7 @@ namespace LethalMystery.Network
                 ship.triggerScript.interactable = true;
 
                 Plugin.RemoveEnvironment(false);
+                GOTools.HideLMInsideDungeon(false);
                 Meeting.MeetingDefaults();
                 StartOfRound.Instance.mapScreen.SwitchScreenOn(true);
                 GOTools.RemoveGameObject("PhysicsProp", "RagdollGrabbableObject");
@@ -302,6 +303,7 @@ namespace LethalMystery.Network
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
+            GOTools.HideLMInsideDungeon();
             HUDManagerPatch.DisplayDaysEdit(data);
 
             yield return new WaitForSeconds(2f);
@@ -710,8 +712,6 @@ namespace LethalMystery.Network
 
         private void currentMapClients(string data)
         {
-            Plugin.mls.LogInfo(">>> in currentMapClients ");
-
             string type = data.Split('/')[0];
             string mapName = data.Split('/')[1];
 
