@@ -103,7 +103,10 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    //string currentScene = SceneManager.GetSceneAt(1).name;
+                    // works, only gives local player this AMT.
+                    // It only updates when I buy something.
+                    // So I think I just need to turn off syncing.
+                    Plugin.terminal.groupCredits = 8; 
                 }
             }
         }
