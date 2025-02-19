@@ -227,7 +227,7 @@ namespace LethalMystery.Players.Abilities
             string ventName = ventComp.thisIndex;
             string location = (ventParentName.StartsWith("ground")) ? ventName : $"{ventName}/point";
             Vector3 raw_pos = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}").transform.position;
-            Vector3 pos = new Vector3(raw_pos.x, raw_pos.y + 0.5f, raw_pos.z);
+            Vector3 pos = new Vector3(raw_pos.x, raw_pos.y + 1f, raw_pos.z);
 
             Plugin.localPlayer.TeleportPlayer(pos);
             RemoveVentCamera();
