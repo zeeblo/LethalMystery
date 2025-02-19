@@ -95,7 +95,7 @@ namespace LethalMystery
         {
             // Environment
             GameObject.Find("OutOfBoundsTerrain")?.gameObject?.SetActive(!value);
-            Scene currentScene = SceneManager.GetSceneAt(1); // might not work on other moons. try getting the current scene
+            Scene currentScene = SceneManager.GetSceneAt(1);
 
             foreach (GameObject obj in currentScene.GetRootGameObjects())
             {

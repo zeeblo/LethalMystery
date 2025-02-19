@@ -20,6 +20,7 @@ using static UnityEngine.Rendering.DebugUI;
 using static UnityEngine.GraphicsBuffer;
 using Steamworks.Ugc;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 //using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
@@ -102,8 +103,7 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    float plrT = StartOfRound.Instance.allPlayerScripts[1].transform.position.x;
-                    Plugin.mls.LogInfo($">>> Xpos: {plrT}");
+                    //string currentScene = SceneManager.GetSceneAt(1).name;
                 }
             }
         }

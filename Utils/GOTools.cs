@@ -253,10 +253,16 @@ namespace LethalMystery.Utils
 
         public static void HideLMInsideDungeon(bool value = true)
         {
-            GameObject map = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
-            if (map == null) return;
-
-            map.SetActive(!value);
+            //Scene currentScene = SceneManager.GetSceneAt(1);
+            Scene targetScene = SceneManager.GetSceneByName("SampleSceneRelay");
+            foreach (GameObject obj in targetScene.GetRootGameObjects())
+            {
+                if (obj.name.Contains(CustomLvl.CurrentInside.name))
+                {
+                    obj.SetActive(!value);
+                    break;
+                }
+            }
         }
 
     }
