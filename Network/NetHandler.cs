@@ -130,7 +130,7 @@ namespace LethalMystery.Network
                 {
                     Plugin.Destroy(VotingUI.votingGUI);
                 }
-
+                GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             }
         }
 
