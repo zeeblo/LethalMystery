@@ -7,7 +7,7 @@ namespace LethalMystery.Patches
     internal class ShovelPatch
     {
 
-
+        /*
         [HarmonyPatch(nameof(Shovel.HitShovel))]
         [HarmonyPostfix]
         private static void HitPatch()
@@ -22,5 +22,6 @@ namespace LethalMystery.Patches
                 Plugin.mls.LogInfo($">>> Just hit: {objectsHitByShovelList[i].transform.gameObject.name}");
             }
         }
+        */
     }
 }

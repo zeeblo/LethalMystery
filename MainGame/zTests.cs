@@ -101,6 +101,12 @@ namespace LethalMystery.MainGame
                 }
 
 
+                if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+
+
+                }
+
             }
         }
     }

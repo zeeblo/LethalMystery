@@ -46,6 +46,7 @@ namespace LethalMystery
         public static NetHandler netHandler { get; set; }
         public static PlayerControllerB localPlayer;
         public static Terminal terminal;
+        public static EnemyVent enemyVent;
 
 
 
