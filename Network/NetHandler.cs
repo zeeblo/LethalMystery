@@ -8,6 +8,8 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Netcode;
 using UnityEngine;
 using static LethalMystery.Players.Roles;
 
@@ -32,6 +34,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> despawnGO;
         private LNetworkMessage<string> currentMap;
         private LNetworkMessage<string> hidePlayer;
+        private LNetworkMessage<string> buyItem;
 
         public NetHandler()
         {
@@ -53,6 +56,7 @@ namespace LethalMystery.Network
             despawnGO = LNetworkMessage<string>.Connect("despawnGO");
             currentMap = LNetworkMessage<string>.Connect("currentMap");
             hidePlayer = LNetworkMessage<string>.Connect("hidePlayer");
+            buyItem = LNetworkMessage<string>.Connect("buyItem");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -82,6 +86,7 @@ namespace LethalMystery.Network
             currentMap.OnClientReceived += currentMapClients;
             hidePlayer.OnServerReceived += hidePlayerServer;
             hidePlayer.OnClientReceived += hidePlayerClients;
+            buyItem.OnServerReceived += buyItemServer;
         }
 
         #region Variables
@@ -759,6 +764,32 @@ namespace LethalMystery.Network
         public void hidePlayerReceive(string data, ulong id)
         {
             hidePlayer.SendServer(data);
+        }
+
+
+
+        private void buyItemServer(string data, ulong id)
+        {
+            string[] splitData = data.Split('/');
+            string orderName = splitData[1];
+            ulong.TryParse(splitData[0], out ulong playerID);
+            Transform plrT = StartOfRound.Instance.allPlayerScripts[playerID].transform;
+
+            foreach (Item itm in Plugin.terminal.buyableItemsList)
+            {
+                if (itm.itemName.Replace("-", " ").ToLower().StartsWith(orderName.ToLower()))
+                {
+                    Vector3 pos = new Vector3(plrT.position.x, plrT.position.y + 2.3f, plrT.position.z);
+                    GameObject boughtItem = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
+                    boughtItem.GetComponent<NetworkObject>().Spawn(true);
+                    return;
+                }
+            }
+        }
+
+        public void buyItemReceive(string data, ulong id)
+        {
+            buyItem.SendServer(data);
         }
 
 

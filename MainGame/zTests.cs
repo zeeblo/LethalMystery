@@ -100,12 +100,11 @@ namespace LethalMystery.MainGame
 
                 }
 
-
                 if (Keyboard.current.digit2Key.wasPressedThisFrame)
                 {
-                    SoundManager.Instance.PlaySoundAroundLocalPlayer(Plugin.enemyVent.ventCrawlSFX, 1);
+                    float plrT = StartOfRound.Instance.allPlayerScripts[1].transform.position.x;
+                    Plugin.mls.LogInfo($">>> Xpos: {plrT}");
                 }
-
             }
         }
     }

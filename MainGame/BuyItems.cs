@@ -64,7 +64,7 @@ namespace LethalMystery.MainGame
                 string raw_orderName = node.displayText.Split("[variableAmount] ")[1];
                 int displayTextLen = raw_orderName.Length - 171;
                 string orderName = raw_orderName.Substring(0, displayTextLen);
-                ContainsShopItemWord(orderName);
+                SpawnShopItem(orderName);
             }
         }
 
@@ -94,19 +94,9 @@ namespace LethalMystery.MainGame
         }
 
 
-        private static bool ContainsShopItemWord(string word)
+        private static void SpawnShopItem(string word)
         {
-            foreach (Item itm in Plugin.terminal.buyableItemsList)
-            {
-                if (itm.itemName.Replace("-", " ").ToLower().StartsWith(word.ToLower()))
-                {
-                    Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x, Plugin.localPlayer.transform.position.y + 2.3f, Plugin.localPlayer.transform.position.z);
-                    GameObject boughtItem = UnityEngine.Object.Instantiate(itm.spawnPrefab, pos, Quaternion.identity);
-                    boughtItem.GetComponent<NetworkObject>().Spawn(true);
-                    return true;
-                }
-            }
-            return false;
+            Plugin.netHandler.buyItemReceive($"{Plugin.localPlayer.playerClientId}/{word}", Plugin.localPlayer.playerClientId);
         }
 
 
