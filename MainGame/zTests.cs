@@ -66,11 +66,11 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.digit3Key.wasPressedThisFrame)
                 {
-                    Commands.SpawnScrapFunc("metalsheet", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);
+                    Commands.SpawnScrapFunc("metalsheet", toInventory: true);
                 }
                 if (Keyboard.current.digit4Key.wasPressedThisFrame)
                 {
-                    Commands.SpawnScrapFunc("ring", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);
+                    Commands.SpawnScrapFunc("ring", toInventory: true);
                 }
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {

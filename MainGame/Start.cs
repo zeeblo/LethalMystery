@@ -7,6 +7,7 @@ using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace LethalMystery.MainGame
 {
@@ -16,6 +17,14 @@ namespace LethalMystery.MainGame
 
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
         public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
+        public static bool startSpawningScraps = false;
+        public static float scrapTimer = 0;
+
+
+        public static void ResetVars()
+        {
+            startSpawningScraps = false;
+        }
 
 
         /// <summary>
@@ -196,6 +205,29 @@ namespace LethalMystery.MainGame
         }
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPostfix]
+        private static void ScrapSpawningTimer()
+        {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (!Plugin.isHost) return;
+            if (startSpawningScraps)
+            {
+
+                scrapTimer -= 1 * Time.deltaTime;
+
+                if (scrapTimer <= 0)
+                {
+                    System.Random randomNum = new System.Random();
+                    int index = randomNum.Next(0, Tasks.allScraps.ToArray().Length);
+                    string scrapName = Tasks.allScraps[index].ToLower();
+                    Commands.SpawnScrapFunc(scrapName);
+                    scrapTimer = LMConfig.defaultScrapTimer;
+                }
+
+            }
+        }
+
 
         private static void SpawnHorn()
         {
@@ -227,8 +259,8 @@ namespace LethalMystery.MainGame
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
             InsideMap.TPDungeon();
-
         }
+
 
 
     }

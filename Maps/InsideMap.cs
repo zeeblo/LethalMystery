@@ -15,6 +15,7 @@ namespace LethalMystery.Maps
 
         private static Vector3 lll_pos = Vector3.zero;
         public static Dictionary<string, List<string>> allVents = new Dictionary<string, List<string>>();
+        public static List<Vector3> scrapLocations = new List<Vector3>();
 
 
 
@@ -178,6 +179,7 @@ namespace LethalMystery.Maps
 
         public static void SpawnScrapScanPositions()
         {
+            scrapLocations.Clear();
             GameObject scrapsParent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/scraps");
             if (scrapsParent == null) return;
 
@@ -186,6 +188,7 @@ namespace LethalMystery.Maps
                 if (s.name.ToLower().Contains("scrap"))
                 {
                     GOTools.AddScanNode(s, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
+                    scrapLocations.Add(s.transform.position);
                 }
 
                 // If the parent GameObject acts as a "folder" for the actual scrap
@@ -195,6 +198,7 @@ namespace LethalMystery.Maps
                     if (child.name.ToLower().Contains("scrap"))
                     {
                         GOTools.AddScanNode(child, "Scrap Spawn", subText: "scraps will spawn here", maxRange: 14);
+                        scrapLocations.Add(child.transform.position);
                     }
                 }
             } 

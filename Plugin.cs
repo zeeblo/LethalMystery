@@ -87,6 +87,7 @@ namespace LethalMystery
             EjectPlayers.ResetVars();
             Ability.ResetVars();
             Controls.ResetVars();
+            Start.ResetVars();
         }
 
 

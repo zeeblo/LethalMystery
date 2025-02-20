@@ -390,6 +390,7 @@ namespace LethalMystery.MainGame
 
 
             inIntro = false;
+            Start.startSpawningScraps = true;
 
             if (Plugin.isHost)
             {

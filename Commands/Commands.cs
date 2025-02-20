@@ -3,6 +3,7 @@ using GameNetcodeStuff;
 using Unity.Netcode;
 using LethalMystery.Utils;
 using System.Xml.Linq;
+using LethalMystery.Maps;
 
 
 namespace LethalMystery
@@ -278,16 +279,11 @@ namespace LethalMystery
 
 
 
-        public static void SpawnScrapFunc(string toSpawn, string location, bool toInventory = false)
+        public static void SpawnScrapFunc(string toSpawn, bool toInventory = false)
         {
 
             Vector3 position = Vector3.zero;
-
-            if (location != "vnt" || location != "btn")
-            {
-                position = CalculateSpawnPosition(playerID: location);
-            }
-
+            position = CalculateSpawnPosition();
 
             if (Plugin.currentRound != null)
             {
@@ -302,7 +298,6 @@ namespace LethalMystery
 
                         GameObject objToSpawn = scrap.spawnPrefab;
                         GameObject gameObject = UnityEngine.Object.Instantiate(objToSpawn, position, Quaternion.identity, Plugin.currentRound.spawnedScrapContainer);
-
                         GrabbableObject component = gameObject.GetComponent<GrabbableObject>();
 
                         component.startFallingPosition = position;
@@ -321,20 +316,29 @@ namespace LethalMystery
                 }
                 if (!spawnable)
                 {
-                    Plugin.mls.LogInfo("Could not spawn " + toSpawn);
+                    //Plugin.mls.LogInfo("Could not spawn " + toSpawn);
                 }
             }
 
         }
 
 
+        private static Vector3 CalculateSpawnPosition()
+        {
+            Vector3 position = Vector3.zero;
+            System.Random randomNum = new System.Random();
+            int index = randomNum.Next(0, InsideMap.scrapLocations.ToArray().Length);
+            position = InsideMap.scrapLocations[index];
 
+            //Plugin.mls.LogInfo($">>> Scrap Position: {position}");
+            return position;
+        }
 
 
         public static void SpawnWeapons(string name)
         {
             Vector3 position = new Vector3(12f, -60f, 15f);
-            SelectableLevel currentLevel = RoundManager.Instance.playersManager.levels[6]; // "6" (rend) is the moon butlers will spawn on
+            SelectableLevel currentLevel = RoundManager.Instance.playersManager.levels[6]; // "6" (rend) is one of the moons a butler will spawn on
 
             if (name.ToLower().Contains("knife") || name == "all")
             {
@@ -369,35 +373,7 @@ namespace LethalMystery
 
 
 
-        private static Vector3 CalculateSpawnPosition(string playerID, string place = "none")
-        {
-            Vector3 position = Vector3.zero;
-            if (place == "skeldmap")
-            {
-                System.Random randomNum = new System.Random();
-                //int index = randomNum.Next(0, scrapLocations.ToArray().Length);
-                //position = scrapLocations[index];
 
-
-            }
-            else
-            {
-                PlayerControllerB[] allPlayerScripts = StartOfRound.Instance.allPlayerScripts;
-                foreach (PlayerControllerB testedPlayer in allPlayerScripts)
-                {
-                    //Plugin.mls.LogInfo($"Checking Playername: {testedPlayer.playerUsername.ToLower()} || {playerID}");
-                    if ($"{testedPlayer.playerClientId}" == playerID)
-                    {
-                        //Plugin.mls.LogInfo($"Found player {testedPlayer.playerUsername}");
-                        position = testedPlayer.transform.position;
-
-                        break;
-                    }
-                }
-            }
-
-            return position;
-        }
 
 
     }
