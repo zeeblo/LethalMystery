@@ -16,7 +16,7 @@ namespace LethalMystery.MainGame
 
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
         public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
-        
+
 
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
@@ -25,8 +25,8 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void NotEnoughPlayers()
         {
+            if (Plugin.inTestMode && Plugin.FoundThisMod("zeebloTesting.zeeblo.dev") && Plugin.isHost) return;
 
-            /*
             if (StartOfRound.Instance.ClientPlayerList.Keys.ToArray().Length < 4)
             {
                 Transform[] playerSpawnPositions = StartOfRound.Instance.playerSpawnPositions;
@@ -34,7 +34,7 @@ namespace LethalMystery.MainGame
                 HUDManager.Instance.DisplayTip("Not Enough Players!", "You need at least 4 players to start the game.", isWarning: true);
 
             }
-            */
+
         }
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
@@ -47,7 +47,7 @@ namespace LethalMystery.MainGame
             {
                 Plugin.netHandler.currentMapReceive($"game_started/{CustomLvl.localCurrentInside}", 0);
             }
-            
+
         }
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
@@ -55,10 +55,9 @@ namespace LethalMystery.MainGame
         private static void Begin()
         {
             Plugin.terminal.groupCredits = 0;
-            //Plugin.terminal.groupCredits = 20;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
 
-            
+
             Plugin.ResetVariables();
             Tasks.AppendScraps();
             Roles.AssignRole();
@@ -121,7 +120,7 @@ namespace LethalMystery.MainGame
                 }
                 else
                 {
-                    
+
                     if (Plugin.isHost)
                     {
                         inGracePeriod.Value = "false";
@@ -228,7 +227,7 @@ namespace LethalMystery.MainGame
             CharacterDisplay.inIntro = true;
             StartOfRound.Instance.StartCoroutine(CharacterDisplay.IntroDisplay());
             InsideMap.TPDungeon();
-            
+
         }
 
 

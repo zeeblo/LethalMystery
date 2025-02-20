@@ -62,6 +62,8 @@ namespace LethalMystery.MainGame
             [HarmonyPostfix]
             private static void Keys(HUDManager __instance)
             {
+                if (!(Plugin.inTestMode && Plugin.FoundThisMod("zeebloTesting.zeeblo.dev") && Plugin.isHost)) return;
+
                 if (Keyboard.current.digit3Key.wasPressedThisFrame)
                 {
                     Commands.SpawnScrapFunc("metalsheet", $"{GameNetworkManager.Instance.localPlayerController.transform.position}", toInventory: true);
@@ -101,13 +103,6 @@ namespace LethalMystery.MainGame
 
                 }
 
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-                    // works, only gives local player this AMT.
-                    // It only updates when I buy something.
-                    // So I think I just need to turn off syncing.
-                    Plugin.terminal.groupCredits = 8; 
-                }
             }
         }
     }

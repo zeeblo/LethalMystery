@@ -47,6 +47,7 @@ namespace LethalMystery
         public static PlayerControllerB localPlayer;
         public static Terminal terminal;
         public static EnemyVent enemyVent;
+        public static bool inTestMode = true;
 
 
 
