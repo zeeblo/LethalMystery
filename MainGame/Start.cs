@@ -54,7 +54,6 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void Begin()
         {
-            Plugin.terminal = UnityEngine.Object.FindObjectOfType<Terminal>();
             Plugin.terminal.groupCredits = 0;
             //Plugin.terminal.groupCredits = 20;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;

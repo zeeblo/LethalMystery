@@ -62,6 +62,7 @@ namespace LethalMystery.MainGame
 
             __instance.carryWeight = 1f;
             currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
+            Plugin.terminal.groupCredits += 1;
         }
 
 
@@ -136,6 +137,7 @@ namespace LethalMystery.MainGame
                     }
 
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
+                    Plugin.terminal.groupCredits += 1;
 
                     return false;
                 }

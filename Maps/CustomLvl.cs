@@ -123,6 +123,7 @@ namespace LethalMystery.Maps
         [HarmonyPrefix]
         private static bool MoonsInTerminal(Terminal __instance)
         {
+            Plugin.terminal = __instance;
             customMoons.Clear();
             LMmoons.Clear();
             AppendLMMoons();
