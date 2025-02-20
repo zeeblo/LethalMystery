@@ -1,28 +1,6 @@
 ﻿using HarmonyLib;
-using LethalMystery.Utils;
-using LethalNetworkAPI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
-using BepInEx;
-using BepInEx.Logging;
-using System;
-using System.Collections.Generic;
-using BepInEx.Bootstrap;
-using GameNetcodeStuff;
-using LethalMystery.UI;
-using LethalMystery.Players;
-using UnityEngine.Rendering;
-using LethalMystery.Maps;
-using Unity.Burst.Intrinsics;
-using static UnityEngine.Rendering.DebugUI;
-using static UnityEngine.GraphicsBuffer;
-using Steamworks.Ugc;
-using Unity.Netcode;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-//using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
 {
@@ -42,16 +20,6 @@ namespace LethalMystery.MainGame
         private static GameObject? HeaderImage;
         private static GameObject? BannerImage;
         private static GameObject? BGCanvas;
-
-
-
-
-        [HarmonyPatch(typeof(Terminal))]
-        internal class AdminCMDS
-        {
-
-
-        }
 
 
 
