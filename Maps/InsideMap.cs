@@ -19,6 +19,27 @@ namespace LethalMystery.Maps
 
 
 
+        private class LMEntrance : MonoBehaviour
+        {
+
+            public void OnTriggerEnter(Collider other)
+            {
+                if (Meeting.inMeeting.Value == "true") return;
+                if (!(other.tag == "Player"))
+                {
+                    return;
+                }
+                PlayerControllerB component = other.GetComponent<PlayerControllerB>();
+                if (GameNetworkManager.Instance.localPlayerController != component)
+                {
+                    return;
+                }
+                component.ResetFallGravity();
+                TeleportInside();
+            }
+        }
+
+
         [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.TeleportPlayer))]
         [HarmonyPrefix]
         private static bool EntrancePatch()
@@ -266,24 +287,15 @@ namespace LethalMystery.Maps
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
         }
 
+        
 
-        private class LMEntrance : MonoBehaviour
+        public static void SetMinimapLayer()
         {
-
-            public void OnTriggerEnter(Collider other)
+            GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/minimap");
+            if (minimapLayer != null)
             {
-                if (Meeting.inMeeting.Value == "true") return;
-                if (!(other.tag == "Player"))
-                {
-                    return;
-                }
-                PlayerControllerB component = other.GetComponent<PlayerControllerB>();
-                if (GameNetworkManager.Instance.localPlayerController != component)
-                {
-                    return;
-                }
-                component.ResetFallGravity();
-                TeleportInside();
+                minimapLayer.layer = 8; // Room layer
+
             }
         }
 
