@@ -21,6 +21,7 @@ using static UnityEngine.GraphicsBuffer;
 using Steamworks.Ugc;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 //using LethalLevelLoader;
 
 namespace LethalMystery.MainGame
@@ -100,8 +101,9 @@ namespace LethalMystery.MainGame
                     }
                     Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
 
-
                 }
+
+
 
             }
         }
