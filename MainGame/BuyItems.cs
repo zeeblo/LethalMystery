@@ -69,6 +69,33 @@ namespace LethalMystery.MainGame
         }
 
 
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.SyncGroupCreditsServerRpc))]
+        [HarmonyPrefix]
+        private static bool SyncCreditsPatch1()
+        {
+            return false;
+        }
+
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.SyncGroupCreditsClientRpc))]
+        [HarmonyPrefix]
+        private static bool SyncCreditsPatch2()
+        {
+            return false;
+        }
+
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.SyncTerminalValuesServerRpc))]
+        [HarmonyPrefix]
+        private static bool SyncCreditsPatch3()
+        {
+            return false;
+        }
+
+
+
         public static void SetItemPrices()
         {
             foreach (Item itm in Plugin.terminal.buyableItemsList)
