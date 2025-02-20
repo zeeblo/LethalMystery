@@ -7,7 +7,6 @@ using LethalMystery.Players;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace LethalMystery.MainGame
 {
@@ -24,6 +23,7 @@ namespace LethalMystery.MainGame
         public static void ResetVars()
         {
             startSpawningScraps = false;
+            scrapTimer = 0;
         }
 
 

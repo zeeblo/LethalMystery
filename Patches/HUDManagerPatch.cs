@@ -29,7 +29,7 @@ namespace LethalMystery.Patches
             if (chatMessage.Length > 150)
             {
                 // possible overflow attack or smthing? idk im paranoid.
-                return true;
+                return false;
             }
 
 
@@ -46,7 +46,17 @@ namespace LethalMystery.Patches
                 return false;
             }
 
-            return true;
+
+            if (LMConfig.enableChat)
+            {
+                return true;
+            }
+            else
+            {
+                Commands.DisplayChatMessage($"Normal chat is  <color=#FF0000>\"Disabled\"</color>. Type {LMConfig.PrefixSetting.Value}help for a list of all commands");
+                return false;
+            }
+
         }
 
 

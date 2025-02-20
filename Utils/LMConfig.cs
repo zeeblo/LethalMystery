@@ -18,6 +18,7 @@ namespace LethalMystery.Utils
         public static float defaultGracePeriodTime = 20f; //80f;
         public static float defaultKillCooldown = 20f;
         public static float defaultScrapTimer = 15f; // 15
+        public static bool enableChat = false;
 
         public static void AllConfigs(ConfigFile cfg)
         {
