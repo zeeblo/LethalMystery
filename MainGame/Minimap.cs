@@ -6,53 +6,104 @@ namespace LethalMystery.MainGame
 {
     internal class Minimap
     {
-
-        public class MinimapClickHandler : MonoBehaviour, IPointerClickHandler
+        public class MinimapWaypoint: MonoBehaviour, IPointerClickHandler
         {
-            //public RectTransform minimapRect; // The UI RectTransform of the minimap
-            public Camera mapCam; // The camera rendering the minimap
-            public Transform player; // The player's transform
 
-            private GameObject currentMarker;
+            public Camera minimapCamera;
+            public Transform playerTransform;
+            public GameObject waypointPrefab;
+            public RectTransform minimapRectTransform;
+
+            public float minimapSize = 448f; // World size represented by the minimap
+            private GameObject currentWaypoint;
+            //private LayerMask Room;
+
+
 
             public void OnPointerClick(PointerEventData eventData)
             {
-                Plugin.mls.LogInfo(">>> Click Clack");
-                RectTransform minimapRect = MinimapUI.minimap.GetComponent<RectTransform>();
-                mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera").GetComponent<Camera>();
-                player = Plugin.localPlayer.transform;
-                Vector2 localPoint;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(minimapRect, eventData.position, eventData.pressEventCamera, out localPoint);
+                Plugin.mls.LogInfo(">>> Clack Clack CLick CLick");
 
-
-                Vector2 normalizedPoint = new Vector2(
-                    (localPoint.x / minimapRect.sizeDelta.x) + 0.5f,
-                    (localPoint.y / minimapRect.sizeDelta.y) + 0.5f
-                );
-
-                // Convert minimap coordinates to world space
-                Vector3 worldPosition = MinimapToWorld(normalizedPoint);
-
-                if (currentMarker != null)
+                // Check if click was on the minimap
+                if (RectTransformUtility.RectangleContainsScreenPoint(minimapRectTransform, eventData.position, eventData.pressEventCamera))
                 {
-                    Destroy(currentMarker);
-                }
+                    Plugin.mls.LogInfo(">>> 1");
+                    // Convert screen position to local point in rectangle
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        minimapRectTransform,
+                        eventData.position,
+                        eventData.pressEventCamera,
+                        out Vector2 localPoint);
 
-                currentMarker = Instantiate(MinimapUI.markerDot, worldPosition, Quaternion.identity);
+                    // Calculate the normalized position (0-1) within the minimap
+                    Vector2 normalizedPos = new Vector2(
+                        (localPoint.x + minimapRectTransform.rect.width * 0.5f) / minimapRectTransform.rect.width,
+                        (localPoint.y + minimapRectTransform.rect.height * 0.5f) / minimapRectTransform.rect.height
+                    );
+
+                    Plugin.mls.LogInfo(">>> 2");
+                    // Convert to world position relative to minimap camera's view
+                    Vector3 worldPos = CalculateWorldPosition(normalizedPos);
+
+                    // Optional: Perform raycast to ensure the waypoint is placed on valid ground
+                    /*
+                    RaycastHit hit;
+                    if (Physics.Raycast(new Vector3(worldPos.x, 1000f, worldPos.z), Vector3.down, out hit, 2000f, Room))
+                    {
+                        worldPos = hit.point;
+                    }
+                    */
+                    Plugin.mls.LogInfo(">>> 4");
+                    PlaceWaypoint(worldPos);
+
+                    Plugin.mls.LogInfo($"Placing waypoint at: {worldPos}, Camera at: {minimapCamera.transform.position}, Click pos normalized: {normalizedPos}");
+                }
             }
 
-            private Vector3 MinimapToWorld(Vector2 minimapPoint)
+
+            private Vector3 CalculateWorldPosition(Vector2 normalizedPos)
             {
-                // Get the minimap's camera world bounds
-                Vector3 center = player.position;
-                float camSize = mapCam.orthographicSize;
-                float aspect = mapCam.aspect;
+                Vector3 viewportPoint = new Vector3(normalizedPos.x, normalizedPos.y, minimapCamera.nearClipPlane);
+                Vector3 worldPos = minimapCamera.ViewportToWorldPoint(viewportPoint);
+                worldPos.y = playerTransform.position.y;
 
-                // Convert minimap coordinates to world coordinates
-                float worldX = center.x + (minimapPoint.x - 0.5f) * camSize * 2 * aspect;
-                float worldZ = center.z + (minimapPoint.y - 0.5f) * camSize * 2;
+                return worldPos;
+            }
 
-                return new Vector3(worldX, player.position.y, worldZ);
+
+
+            private void PlaceWaypoint(Vector3 worldPosition)
+            {
+                Plugin.mls.LogInfo(">>> 5");
+
+                if (currentWaypoint != null)
+                {
+                    Plugin.mls.LogInfo(">>> 6");
+                    Destroy(currentWaypoint);
+                    Plugin.mls.LogInfo(">>> 7");
+                }
+
+                Plugin.mls.LogInfo(">>> 8");
+
+                currentWaypoint = Instantiate(waypointPrefab, worldPosition, Quaternion.identity);
+
+
+            }
+
+            // For manual control of minimap zoom level
+            public void SetMinimapZoom(float zoomLevel)
+            {
+                minimapSize = zoomLevel;
+            }
+
+            // Optional: Method to clear the waypoint
+            public void ClearWaypoint()
+            {
+                if (currentWaypoint != null)
+                {
+                    Destroy(currentWaypoint);
+                    currentWaypoint = null;
+                }
             }
         }
 

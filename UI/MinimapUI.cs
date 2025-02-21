@@ -45,6 +45,7 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void ZoomPatch(InputAction.CallbackContext context)
         {
+            if (border == null) return;
             if (border.activeSelf)
             {
                 float num = context.ReadValue<float>();
@@ -152,7 +153,11 @@ namespace LethalMystery.UI
             //rectMini.pivot = new Vector2(1, 1);
 
             rectMini.anchoredPosition = Vector2.zero;
-            minimap.AddComponent<Minimap.MinimapClickHandler>();
+            Minimap.MinimapWaypoint waypoint = minimap.AddComponent<Minimap.MinimapWaypoint>();
+            waypoint.minimapCamera = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera").GetComponent<Camera>();
+            waypoint.playerTransform = Plugin.localPlayer.transform;
+            waypoint.waypointPrefab = markerDot;
+            waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
         }
 
 
