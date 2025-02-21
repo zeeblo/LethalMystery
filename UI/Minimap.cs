@@ -38,13 +38,23 @@ namespace LethalMystery.UI
             if (border.activeSelf)
             {
                 float num = context.ReadValue<float>();
-                if (num > 0f)
+                if (num < 0f)
                 {
                     // zoom out
+                    GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
+                    Camera cam = mapCam.GetComponent<Camera>();
+                    float raw_size = cam.orthographicSize += 50;
+                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
+                    cam.orthographicSize = size;
                 }
                 else
                 {
                     // zoom in
+                    GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
+                    Camera cam = mapCam.GetComponent<Camera>();
+                    float raw_size = cam.orthographicSize -= 50;
+                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
+                    cam.orthographicSize = size;
                 }
             }
         }
