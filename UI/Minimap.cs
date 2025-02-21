@@ -15,17 +15,6 @@ namespace LethalMystery.UI
         public static GameObject border;
         public static GameObject mapIcon;
 
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
-        [HarmonyPostfix]
-        private static void SetupPatch()
-        {
-            if (Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                //CreateMapIcon();
-               // CreateBorder();
-               // CreateMinimap();
-            }
-        }
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
         [HarmonyPostfix]
@@ -98,10 +87,12 @@ namespace LethalMystery.UI
         }
 
 
-        private static void CreateMinimap()
+        public static void CreateMinimap()
         {
-            GameObject parentUI = GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD");
-            minimap = new GameObject("Minimap");
+            //GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            CreateBorder();
+
+            minimap = new GameObject("MinimapScreen");
             minimap.transform.SetParent(border.transform, false);
 
             RawImage rawImg = minimap.AddComponent<RawImage>();
@@ -112,11 +103,11 @@ namespace LethalMystery.UI
             //minimap.transform.SetSiblingIndex(3);
 
             RectTransform rectMini = minimap.GetComponent<RectTransform>();
-            rectMini.sizeDelta = new Vector2(190, 190);
+            rectMini.sizeDelta = new Vector2(440, 440);
 
-            rectMini.anchorMin = new Vector2(1, 1);
-            rectMini.anchorMax = new Vector2(1, 1);
-            rectMini.pivot = new Vector2(1, 1);
+            //rectMini.anchorMin = new Vector2(1, 1);
+            //rectMini.anchorMax = new Vector2(1, 1);
+            //rectMini.pivot = new Vector2(1, 1);
 
             rectMini.anchoredPosition = Vector2.zero;
         }
@@ -124,8 +115,8 @@ namespace LethalMystery.UI
 
         private static void CreateBorder()
         {
-            GameObject parentUI = GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD");
-            border = new GameObject("MinimapBorder");
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            border = new GameObject("Minimap");
             border.transform.SetParent(parentUI.transform, false);
             Image rawImg = border.AddComponent<Image>();
 
@@ -133,13 +124,13 @@ namespace LethalMystery.UI
             border.transform.SetSiblingIndex(2);
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
-            rectBorder.sizeDelta = new Vector2(200, 200); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);
+            rectBorder.sizeDelta = new Vector2(450, 450); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);
 
-            rectBorder.anchorMin = new Vector2(1, 1); // new Vector2(rectMini.anchorMin.x, rectMini.anchorMin.y);
-            rectBorder.anchorMax = new Vector2(1, 1); // new Vector2(rectMini.anchorMax.x, rectMini.anchorMax.y);
-            rectBorder.pivot = new Vector2(1, 1); // new Vector2(rectMini.pivot.x, rectMini.pivot.y);
+            //rectBorder.anchorMin = new Vector2(1, 1); // new Vector2(rectMini.anchorMin.x, rectMini.anchorMin.y);
+            //rectBorder.anchorMax = new Vector2(1, 1); // new Vector2(rectMini.anchorMax.x, rectMini.anchorMax.y);
+            //rectBorder.pivot = new Vector2(1, 1); // new Vector2(rectMini.pivot.x, rectMini.pivot.y);
 
-            rectBorder.anchoredPosition = new Vector2(-10, -10); // new Vector2(rectMini.anchoredPosition.x, rectMini.anchoredPosition.y);
+            rectBorder.anchoredPosition = Vector2.zero; // new Vector2(rectMini.anchoredPosition.x, rectMini.anchoredPosition.y);
         }
 
     }

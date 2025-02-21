@@ -1,5 +1,6 @@
 ﻿using LethalMystery.MainGame;
 using LethalMystery.Players.Abilities;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using System.Collections;
 using UnityEngine;
@@ -75,7 +76,10 @@ namespace LethalMystery.Players
 
         private static void ShowMap_performed(InputAction.CallbackContext obj)
         {
-            Plugin.mls.LogInfo("Showing Minimap aaaaaaaaaaaa");
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse) return;
+            Minimap.CreateMinimap();
         }
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
