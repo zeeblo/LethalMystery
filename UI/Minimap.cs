@@ -85,7 +85,7 @@ namespace LethalMystery.UI
             keybind.transform.SetParent(mapIcon.transform, false);
             keybind.transform.SetSiblingIndex(1);
             TextMeshProUGUI bindtxt = keybind.AddComponent<TextMeshProUGUI>();
-            bindtxt.text = "[ G ]";
+            bindtxt.text = "[ " + $"{LMConfig.showMapBind.Value.ToUpper()}" + " ]";
             bindtxt.fontSize = 9;
             bindtxt.fontWeight = FontWeight.Heavy;
             bindtxt.alignment = TextAlignmentOptions.Center;

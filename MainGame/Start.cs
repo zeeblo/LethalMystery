@@ -4,6 +4,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Maps;
 using LethalMystery.Players;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
@@ -68,6 +69,7 @@ namespace LethalMystery.MainGame
 
 
             Plugin.ResetVariables();
+            Minimap.CreateMapIcon();
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);

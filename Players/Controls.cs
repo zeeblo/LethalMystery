@@ -15,6 +15,7 @@ namespace LethalMystery.Players
         public static InputActionReference spawnItemRef;
         public static InputActionReference selfcleanRef;
         public static InputActionReference shapeshiftRef;
+        public static InputActionReference showMapRef;
         public static Dictionary<string, InputActionReference> inputRefs = new Dictionary<string, InputActionReference>();
         private static bool spawningWeapon = false;
         public static bool cleaningBody = false;
@@ -22,16 +23,19 @@ namespace LethalMystery.Players
         public static void InitControls()
         {
 
+            InputAction showMap = playerControls.AddAction("show map", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.showMapBind.Value);
             InputAction spawnItem = playerControls.AddAction("spawn item", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.spawnItemBind.Value);
             InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
 
+            showMap.performed += ShowMap_performed;
             spawnItem.performed += SpawnItem_performed;
             selfclean.performed += Selfclean_performed;
             selfclean.canceled += Selfclean_canceled;
             shapeshift.performed += Shapeshift_performed;
 
 
+            showMapRef = InputActionReference.Create(showMap);
             spawnItemRef = InputActionReference.Create(spawnItem);
             selfcleanRef = InputActionReference.Create(selfclean);
             shapeshiftRef = InputActionReference.Create(shapeshift);
@@ -40,8 +44,10 @@ namespace LethalMystery.Players
         }
 
 
+
         private static void AddInputRefs()
         {
+            inputRefs.Add(showMapRef.name.Split("/")[1], showMapRef);
             inputRefs.Add(spawnItemRef.name.Split("/")[1], spawnItemRef);
             inputRefs.Add(selfcleanRef.name.Split("/")[1], selfcleanRef);
             inputRefs.Add(shapeshiftRef.name.Split("/")[1], shapeshiftRef);
@@ -65,6 +71,12 @@ namespace LethalMystery.Players
         }
 
 
+
+
+        private static void ShowMap_performed(InputAction.CallbackContext obj)
+        {
+            Plugin.mls.LogInfo("Showing Minimap aaaaaaaaaaaa");
+        }
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
         {

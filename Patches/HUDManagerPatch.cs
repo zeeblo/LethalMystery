@@ -65,13 +65,6 @@ namespace LethalMystery.Patches
 
 
 
-        [HarmonyPatch(nameof(HUDManager.Awake))]
-        [HarmonyPostfix]
-        private static void AwakePatch()
-        {
-            Minimap.CreateMapIcon();
-        }
-
         /*
         [HarmonyPatch(nameof(HUDManager.DisplayDaysLeft))]
         [HarmonyPostfix]
