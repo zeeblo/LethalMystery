@@ -27,11 +27,12 @@ namespace LethalMystery.UI
         [HarmonyPostfix]
         private static void UpdatePatch(ManualCameraRenderer __instance)
         {
-            if (StartOfRound.Instance.inShipPhase)
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (__instance.cam == null) return;
             //__instance.screenEnabledOnLocalClient = true;
             Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(true);
             __instance.cam.enabled = true;
-            __instance.shipArrowUI.SetActive(value: true);
+            //__instance.shipArrowUI.SetActive(value: true);
         }
 
 
