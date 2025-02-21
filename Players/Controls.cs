@@ -78,15 +78,15 @@ namespace LethalMystery.Players
         {
             if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
-            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
 
-            if (Minimap.minimap == null)
+            if (MinimapUI.minimap == null)
             {
-                Minimap.CreateMinimap();
+                MinimapUI.CreateMinimap();
                 return;
             }
 
-            Minimap.border.SetActive(!Minimap.border.activeSelf);
+            MinimapUI.border.SetActive(!MinimapUI.border.activeSelf);
             
         }
 

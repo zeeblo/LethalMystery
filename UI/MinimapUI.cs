@@ -10,12 +10,22 @@ using GameNetcodeStuff;
 namespace LethalMystery.UI
 {
     [HarmonyPatch]
-    internal class Minimap
+    internal class MinimapUI
     {
 
         public static GameObject minimap;
         public static GameObject border;
         public static GameObject mapIcon;
+        public static GameObject markerDot;
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Start))]
+        [HarmonyPostfix]
+        private static void StartPatch()
+        {
+            
+        }
+
 
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
@@ -26,7 +36,7 @@ namespace LethalMystery.UI
             if (__instance.cam == null) return;
 
             Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
-            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value); ;
+            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
         }
 
 
@@ -142,6 +152,7 @@ namespace LethalMystery.UI
             //rectMini.pivot = new Vector2(1, 1);
 
             rectMini.anchoredPosition = Vector2.zero;
+            minimap.AddComponent<Minimap.MinimapClickHandler>();
         }
 
 
@@ -154,7 +165,7 @@ namespace LethalMystery.UI
             rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
 
             border.layer = 5;
-            border.transform.SetSiblingIndex(2);
+            border.transform.SetSiblingIndex(17); //border.transform.SetSiblingIndex(2);
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
             rectBorder.sizeDelta = new Vector2(450, 450); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);

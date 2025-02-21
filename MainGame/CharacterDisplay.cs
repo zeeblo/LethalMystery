@@ -7,6 +7,7 @@ using LethalMystery.Players;
 using LethalMystery.Patches;
 using LethalMystery.Utils;
 using LethalMystery.Maps;
+using LethalMystery.UI;
 
 namespace LethalMystery.MainGame
 {
@@ -335,12 +336,12 @@ namespace LethalMystery.MainGame
             InsideMap.SpawnScrapScanPositions();
             InsideMap.MakeLMDoorInteractive();
             InsideMap.SetMinimapLayer();
+            MinimapUI.markerDot = GameObject.Find("Environment/HangarShip/Player/Misc/MapDot");
 
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
-
             Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
-
+            
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
             TimeOfDay.Instance.currentDayTimeStarted = false;
