@@ -334,6 +334,7 @@ namespace LethalMystery.MainGame
             InsideMap.SpawnVents();
             InsideMap.SpawnScrapScanPositions();
             InsideMap.MakeLMDoorInteractive();
+            InsideMap.SetMinimapLayer();
 
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
 

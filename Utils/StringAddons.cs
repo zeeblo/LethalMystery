@@ -1,4 +1,5 @@
 ﻿using LethalMystery.MainGame;
+using LethalMystery.Maps;
 
 
 namespace LethalMystery.Utils
@@ -179,6 +180,21 @@ namespace LethalMystery.Utils
                     return true;
             }
 
+            return false;
+        }
+
+        public static bool ContainsSpecialMapID(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            foreach (string mapID in CustomLvl.specialMapID)
+            {
+                if (mapID.ToLower().Contains(input.ToLower())) 
+                    return true;
+            }
             return false;
         }
 

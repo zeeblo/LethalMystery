@@ -291,14 +291,20 @@ namespace LethalMystery.Maps
 
         public static void SetMinimapLayer()
         {
-            GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/minimap");
-            if (minimapLayer != null)
-            {
-                minimapLayer.layer = 8; // Room layer
-
-            }
+            GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
+            ApplyRoomLayer(minimapLayer.transform);
         }
 
+
+        private static void ApplyRoomLayer(Transform parent)
+        {
+            foreach (Transform child in parent)
+            {
+                if (StringAddons.ContainsSpecialMapID(child.name)) continue;
+                child.gameObject.layer = 8;
+                ApplyRoomLayer(child);
+            }
+        }
 
 
     }

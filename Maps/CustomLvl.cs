@@ -20,6 +20,7 @@ namespace LethalMystery.Maps
         private static string default_maps = "";
         private static string lll_maps = "";
         public static string localCurrentInside;
+        public static string[] specialMapID = {"spawn_pos", "exit_pos", "scraps", "vents"};
 
         private class NewSelectableLevel : SelectableLevel
         {
