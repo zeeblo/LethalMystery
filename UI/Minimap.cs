@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using LethalMystery.Utils;
 using TMPro;
+using LethalMystery.MainGame;
 
 namespace LethalMystery.UI
 {
@@ -22,10 +23,9 @@ namespace LethalMystery.UI
         {
             if (StartOfRound.Instance.inShipPhase) return;
             if (__instance.cam == null) return;
-            //__instance.screenEnabledOnLocalClient = true;
-            Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(true);
-            __instance.cam.enabled = true;
-            //__instance.shipArrowUI.SetActive(value: true);
+
+            Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
+            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value); ;
         }
 
 

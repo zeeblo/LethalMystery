@@ -1,5 +1,4 @@
 ﻿using LethalMystery.MainGame;
-using LethalMystery.Maps;
 using LethalMystery.Players.Abilities;
 using LethalMystery.UI;
 using LethalMystery.Utils;
