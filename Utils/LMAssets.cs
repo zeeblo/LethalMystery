@@ -13,6 +13,8 @@ namespace LethalMystery.Utils
         public static Sprite? LethalMysteryBanner;
         public static Sprite? CheckboxEmptyIcon;
         public static Sprite? CheckboxEnabledIcon;
+        public static Sprite? MapIcon;
+        public static Sprite? MapIconHover;
         public static GameObject SkeldMap;
         public static GameObject OfficeMap;
 
@@ -35,6 +37,8 @@ namespace LethalMystery.Utils
             Texture2D BannerTexture = myBundle.LoadAsset<Texture2D>("default_banner.jpg");
             Texture2D CheckboxEmptyTexture = myBundle.LoadAsset<Texture2D>("btn_empty.png");
             Texture2D CheckboxEnabledTexture = myBundle.LoadAsset<Texture2D>("btn_check.png");
+            Texture2D MapIconTexture = myBundle.LoadAsset<Texture2D>("mapIcon.png");
+            Texture2D MapIconHoverTexture = myBundle.LoadAsset<Texture2D>("mapIcon_hover.png");
             KnifeIcon = Sprite.Create(
                 KnifeTexture,
                 new Rect(0, 0, KnifeTexture.width, KnifeTexture.height),
@@ -58,6 +62,16 @@ namespace LethalMystery.Utils
             CheckboxEnabledIcon = Sprite.Create(
                 CheckboxEnabledTexture,
                 new Rect(0, 0, CheckboxEnabledTexture.width, CheckboxEnabledTexture.height),
+                new Vector2(0, 0)
+            );
+            MapIcon = Sprite.Create(
+                MapIconTexture,
+                new Rect(0, 0, MapIconTexture.width, MapIconTexture.height),
+                new Vector2(0, 0)
+            );
+            MapIconHover = Sprite.Create(
+                MapIconHoverTexture,
+                new Rect(0, 0, MapIconHoverTexture.width, MapIconHoverTexture.height),
                 new Vector2(0, 0)
             );
         }

@@ -2,6 +2,7 @@
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Players;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -62,6 +63,14 @@ namespace LethalMystery.Patches
 
         #endregion Chat Commands
 
+
+
+        [HarmonyPatch(nameof(HUDManager.Awake))]
+        [HarmonyPostfix]
+        private static void AwakePatch()
+        {
+            Minimap.CreateMapIcon();
+        }
 
         /*
         [HarmonyPatch(nameof(HUDManager.DisplayDaysLeft))]

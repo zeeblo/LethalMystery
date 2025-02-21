@@ -2,6 +2,8 @@
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine;
+using LethalMystery.Utils;
+using TMPro;
 
 namespace LethalMystery.UI
 {
@@ -11,6 +13,7 @@ namespace LethalMystery.UI
 
         public static GameObject minimap;
         public static GameObject border;
+        public static GameObject mapIcon;
 
         [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
         [HarmonyPostfix]
@@ -18,8 +21,9 @@ namespace LethalMystery.UI
         {
             if (Keyboard.current.digit2Key.wasPressedThisFrame)
             {
-                CreateBorder();
-                CreateMinimap();
+                //CreateMapIcon();
+               // CreateBorder();
+               // CreateMinimap();
             }
         }
 
@@ -35,6 +39,63 @@ namespace LethalMystery.UI
             //__instance.shipArrowUI.SetActive(value: true);
         }
 
+
+
+        public static void CreateMapIcon()
+        {
+
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD");
+            mapIcon = new GameObject("minimapIcon");
+            mapIcon.transform.SetParent(parentUI.transform, false);
+
+            mapIcon.layer = 5;
+            mapIcon.transform.SetSiblingIndex(1);
+
+            Image img = mapIcon.AddComponent<Image>();
+            img.sprite = LMAssets.MapIcon;
+
+            RectTransform rectForm = mapIcon.GetComponent<RectTransform>();
+            rectForm.sizeDelta = new Vector2(64, 64);
+
+            rectForm.anchorMin = new Vector2(1, 1);
+            rectForm.anchorMax = new Vector2(1, 1);
+            rectForm.pivot = new Vector2(1, 1);
+            rectForm.anchoredPosition = new Vector2(-10, 14);
+
+            CreateMapIconKeybind();
+        }
+
+        private static void CreateMapIconKeybind()
+        {
+            GameObject bgObj = new GameObject("background");
+            bgObj.transform.SetParent(mapIcon.transform, false);
+            bgObj.transform.SetSiblingIndex(0);
+            Image bgImage = bgObj.AddComponent<Image>();
+            bgImage.color = new Color(0, 0, 0, 1f); // new Color(13f, 0, 0, 0.2f);
+
+            RectTransform bgRect = bgObj.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(32, 16);
+            bgRect.anchorMin = new Vector2(1, 1);
+            bgRect.anchorMax = new Vector2(1, 1);
+            bgRect.pivot = new Vector2(1.5f, 4.5f);
+            bgRect.anchoredPosition = Vector2.zero;
+            
+
+            GameObject keybind = new GameObject("keybind");
+            keybind.transform.SetParent(mapIcon.transform, false);
+            keybind.transform.SetSiblingIndex(1);
+            TextMeshProUGUI bindtxt = keybind.AddComponent<TextMeshProUGUI>();
+            bindtxt.text = "[ G ]";
+            bindtxt.fontSize = 9;
+            bindtxt.fontWeight = FontWeight.Heavy;
+            bindtxt.alignment = TextAlignmentOptions.Center;
+            bindtxt.color = new Color(0.996f, 0.095f, 0, 1f); // new Color(0.996f, 0.274f, 0, 0.2f);
+
+            RectTransform bindRect = keybind.GetComponent<RectTransform>();
+            bindRect.sizeDelta = new Vector2(280, 80);
+            bindRect.pivot = new Vector2(0.5f, 0.9f);
+            bindRect.anchoredPosition = Vector2.zero;
+        }
 
 
         private static void CreateMinimap()
