@@ -1,4 +1,5 @@
 ﻿using LethalMystery.MainGame;
+using LethalMystery.Maps;
 using LethalMystery.Players.Abilities;
 using LethalMystery.UI;
 using LethalMystery.Utils;
@@ -79,7 +80,15 @@ namespace LethalMystery.Players
             if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse) return;
-            Minimap.CreateMinimap();
+
+            if (Minimap.minimap == null)
+            {
+                Minimap.CreateMinimap();
+                return;
+            }
+
+            Minimap.border.SetActive(!Minimap.border.activeSelf);
+            
         }
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)

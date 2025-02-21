@@ -103,7 +103,7 @@ namespace LethalMystery.UI
             //minimap.transform.SetSiblingIndex(3);
 
             RectTransform rectMini = minimap.GetComponent<RectTransform>();
-            rectMini.sizeDelta = new Vector2(440, 440);
+            rectMini.sizeDelta = new Vector2(448, 448);
 
             //rectMini.anchorMin = new Vector2(1, 1);
             //rectMini.anchorMax = new Vector2(1, 1);
@@ -119,6 +119,7 @@ namespace LethalMystery.UI
             border = new GameObject("Minimap");
             border.transform.SetParent(parentUI.transform, false);
             Image rawImg = border.AddComponent<Image>();
+            rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
 
             border.layer = 5;
             border.transform.SetSiblingIndex(2);
