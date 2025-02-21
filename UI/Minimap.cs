@@ -5,6 +5,7 @@ using UnityEngine;
 using LethalMystery.Utils;
 using TMPro;
 using LethalMystery.MainGame;
+using GameNetcodeStuff;
 
 namespace LethalMystery.UI
 {
@@ -27,6 +28,27 @@ namespace LethalMystery.UI
             Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
             __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value); ;
         }
+
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
+        [HarmonyPostfix]
+        private static void ZoomPatch(InputAction.CallbackContext context)
+        {
+            if (border.activeSelf)
+            {
+                float num = context.ReadValue<float>();
+                if (num > 0f)
+                {
+                    // zoom out
+                }
+                else
+                {
+                    // zoom in
+                }
+            }
+        }
+
 
 
 
