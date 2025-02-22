@@ -16,8 +16,8 @@ namespace LethalMystery.MainGame
     {
 
         public static Vector3 lastPlayerPos = Vector3.zero;
-        [PublicNetworkVariable]
-        public static LNetworkVariable<Dictionary<string, string>> allPlayerPoints = LNetworkVariable<Dictionary<string, string>>.Connect("allPlayerPoints");
+        // public static LNetworkVariable<Dictionary<string, string>> allPlayerPoints = LNetworkVariable<Dictionary<string, string>>.Connect("allPlayerPoints");
+        public static Dictionary<string, string> allPlayerPoints = new Dictionary<string, string>();
         public static GameObject currentWaypoint;
         public static GameObject waypointPrefab;
         public static List<GameObject> waypoints = new List<GameObject>();
@@ -180,8 +180,8 @@ namespace LethalMystery.MainGame
             public static Vector3 GetPlayerPoint(string playerID)
             {
                 Dictionary<string, string> localPlayerPos = new Dictionary<string, string>();
-                localPlayerPos = allPlayerPoints.Value;
-                foreach (KeyValuePair<string, string> plrPos in allPlayerPoints.Value)
+                localPlayerPos = allPlayerPoints;
+                foreach (KeyValuePair<string, string> plrPos in allPlayerPoints)
                 {
                     if (playerID == plrPos.Key)
                     {

@@ -813,20 +813,15 @@ namespace LethalMystery.Network
 
         private void setWaypointServer(string data, ulong id)
         {
+            setWaypoint.SendClients(data);
+        }
+        private void setWaypointClients(string data)
+        {
             string pid = data.Split('/')[0];
             string worldPosition = data.Split('/')[1];
             Dictionary<string, string> localPlayerPoint = new Dictionary<string, string>();
 
-            /*
-            if (Minimap.allPlayerPoints.Value != null)
-            {
-                if (Minimap.allPlayerPoints.Value.Count > 0)
-                    localPlayerPoint = Minimap.allPlayerPoints.Value;
-
-            }
-            */
-            localPlayerPoint = Minimap.allPlayerPoints.Value;
-
+            localPlayerPoint = Minimap.allPlayerPoints;
             if (localPlayerPoint.ContainsKey(pid))
             {
                 localPlayerPoint[pid] = worldPosition;
@@ -835,16 +830,8 @@ namespace LethalMystery.Network
             {
                 localPlayerPoint.Add(pid, worldPosition);
             }
-            
-            Minimap.allPlayerPoints.Value = localPlayerPoint;
-            setWaypoint.SendClients(data);
-        }
-        private void setWaypointClients(string data)
-        {
-            Dictionary<string, string> localPlayerPoint = Minimap.allPlayerPoints.Value;
-            // if type is "delete" then remove the gameObject based of the first index of the name
 
-
+            Minimap.allPlayerPoints = localPlayerPoint;
             foreach (KeyValuePair<string, string> plrPos in localPlayerPoint)
             {
                 Plugin.mls.LogInfo($">>> plrPos: {plrPos.Key}");
