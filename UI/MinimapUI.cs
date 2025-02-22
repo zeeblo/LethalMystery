@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine;
 using LethalMystery.Utils;
 using TMPro;
 using LethalMystery.MainGame;
-using GameNetcodeStuff;
+
 
 namespace LethalMystery.UI
 {
@@ -14,61 +13,10 @@ namespace LethalMystery.UI
     {
 
         public static GameObject minimap;
+        public static GameObject minimapCam;
         public static GameObject border;
         public static GameObject mapIcon;
         public static GameObject markerDot;
-
-
-        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Start))]
-        [HarmonyPostfix]
-        private static void StartPatch()
-        {
-            
-        }
-
-
-
-        [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
-        [HarmonyPostfix]
-        private static void UpdatePatch(ManualCameraRenderer __instance)
-        {
-            if (StartOfRound.Instance.inShipPhase) return;
-            if (__instance.cam == null) return;
-
-            Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
-            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
-        }
-
-
-
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
-        [HarmonyPostfix]
-        private static void ZoomPatch(InputAction.CallbackContext context)
-        {
-            if (border == null) return;
-            if (border.activeSelf)
-            {
-                float num = context.ReadValue<float>();
-                if (num < 0f)
-                {
-                    // zoom out
-                    GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
-                    Camera cam = mapCam.GetComponent<Camera>();
-                    float raw_size = cam.orthographicSize += 50;
-                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
-                    cam.orthographicSize = size;
-                }
-                else
-                {
-                    // zoom in
-                    GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
-                    Camera cam = mapCam.GetComponent<Camera>();
-                    float raw_size = cam.orthographicSize -= 50;
-                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
-                    cam.orthographicSize = size;
-                }
-            }
-        }
 
 
 
@@ -129,18 +77,42 @@ namespace LethalMystery.UI
             bindRect.anchoredPosition = Vector2.zero;
         }
 
+        private static void CreateBorder()
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            border = new GameObject("Minimap");
+            border.transform.SetParent(parentUI.transform, false);
+            Image rawImg = border.AddComponent<Image>();
+            rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
+
+            border.layer = 5;
+            border.transform.SetSiblingIndex(12);
+
+            RectTransform rectBorder = border.GetComponent<RectTransform>();
+            rectBorder.sizeDelta = new Vector2(450, 450); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);
+
+            rectBorder.anchoredPosition = Vector2.zero; // new Vector2(rectMini.anchoredPosition.x, rectMini.anchoredPosition.y);
+        }
 
         public static void CreateMinimap()
         {
-            //GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
             CreateBorder();
 
             minimap = new GameObject("MinimapScreen");
             minimap.transform.SetParent(border.transform, false);
 
+            minimapCam = Plugin.Instantiate(GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera"));
+            minimapCam.name = "MinimapCam";
+            //SetCameraVars(minimapCam.GetComponent<ManualCameraRenderer>());
+
+            GameObject mapScript = new GameObject("MapScript");
+            mapScript.transform.SetParent(minimap.transform);
+            ManualCameraRenderer mcr = mapScript.AddComponent<ManualCameraRenderer>();
+            SetRenderVars(mcr);
+
+
             RawImage rawImg = minimap.AddComponent<RawImage>();
-            ManualCameraRenderer manualCam = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube.001/CameraMonitorScript").GetComponent<ManualCameraRenderer>();
-            rawImg.texture = manualCam.mapCamera.targetTexture;
+            rawImg.texture = mcr.mapCamera.targetTexture;
 
             minimap.layer = 5; // UI Layer
             //minimap.transform.SetSiblingIndex(3);
@@ -154,32 +126,42 @@ namespace LethalMystery.UI
 
             rectMini.anchoredPosition = Vector2.zero;
             Minimap.MinimapWaypoint waypoint = minimap.AddComponent<Minimap.MinimapWaypoint>();
-            waypoint.minimapCamera = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera").GetComponent<Camera>();
+            waypoint.minimapCamera = minimapCam.GetComponent<Camera>();
             waypoint.playerTransform = Plugin.localPlayer.transform;
             waypoint.waypointPrefab = markerDot;
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
         }
 
 
-        private static void CreateBorder()
+        private static void SetRenderVars(ManualCameraRenderer camRender)
         {
-            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
-            border = new GameObject("Minimap");
-            border.transform.SetParent(parentUI.transform, false);
-            Image rawImg = border.AddComponent<Image>();
-            rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
+            ManualCameraRenderer ogManualCam = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube.001/CameraMonitorScript").GetComponent<ManualCameraRenderer>();
 
-            border.layer = 5;
-            border.transform.SetSiblingIndex(17); //border.transform.SetSiblingIndex(2);
 
-            RectTransform rectBorder = border.GetComponent<RectTransform>();
-            rectBorder.sizeDelta = new Vector2(450, 450); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);
+            Camera mapCam = minimapCam.GetComponent<Camera>();
+            RenderTexture newRenderTexture = new RenderTexture(512, 512, 16);
+            mapCam.targetTexture = newRenderTexture;
 
-            //rectBorder.anchorMin = new Vector2(1, 1); // new Vector2(rectMini.anchorMin.x, rectMini.anchorMin.y);
-            //rectBorder.anchorMax = new Vector2(1, 1); // new Vector2(rectMini.anchorMax.x, rectMini.anchorMax.y);
-            //rectBorder.pivot = new Vector2(1, 1); // new Vector2(rectMini.pivot.x, rectMini.pivot.y);
 
-            rectBorder.anchoredPosition = Vector2.zero; // new Vector2(rectMini.anchoredPosition.x, rectMini.anchoredPosition.y);
+            camRender.cam = mapCam;
+            camRender.cameraViews = ogManualCam.cameraViews;
+            camRender.cameraViewIndex = ogManualCam.cameraViewIndex;
+            camRender.currentCameraDisabled = false;
+            camRender.mesh = ogManualCam.mesh;
+            camRender.offScreenMat = ogManualCam.offScreenMat;
+            camRender.onScreenMat = ogManualCam.onScreenMat;
+            camRender.materialIndex = ogManualCam.materialIndex;
+            camRender.overrideCameraForOtherUse = false;
+            camRender.renderAtLowerFramerate = false;
+            camRender.targetedPlayer = Plugin.localPlayer;
+            camRender.radarTargets = ogManualCam.radarTargets;
+            camRender.targetTransformIndex = ogManualCam.targetTransformIndex;
+            camRender.mapCamera = mapCam;
+            camRender.mapCameraLight = ogManualCam.mapCameraLight;
+            camRender.mapCameraAnimator = ogManualCam.mapCameraAnimator;
+            camRender.mapCameraStationaryUI = ogManualCam.mapCameraStationaryUI;
+            camRender.shipArrowPointer = ogManualCam.shipArrowPointer;
+            camRender.shipArrowUI = ogManualCam.shipArrowUI;
         }
 
     }

@@ -1,11 +1,65 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine;
 using LethalMystery.UI;
+using GameNetcodeStuff;
+using HarmonyLib;
+using LethalMystery.Utils;
+using UnityEngine.InputSystem;
+
 
 namespace LethalMystery.MainGame
 {
+    [HarmonyPatch]
     internal class Minimap
     {
+
+
+        [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
+        [HarmonyPostfix]
+        private static void UpdatePatch(ManualCameraRenderer __instance)
+        {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (__instance.cam == null) return;
+            if (MinimapUI.minimapCam == null) return;
+
+            Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
+            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
+        }
+
+
+
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
+        [HarmonyPostfix]
+        private static void ZoomPatch(InputAction.CallbackContext context)
+        {
+            if (MinimapUI.border == null || MinimapUI.minimapCam == null) return;
+            if (MinimapUI.border.activeSelf)
+            {
+                float num = context.ReadValue<float>();
+                if (num < 0f)
+                {
+                    // zoom out
+                    // GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
+                    //GameObject mapCam = GameObject.Find("MinimapCam");
+                    Camera cam = MinimapUI.minimapCam.GetComponent<Camera>();
+                    float raw_size = cam.orthographicSize += 50;
+                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
+                    cam.orthographicSize = size;
+                }
+                else
+                {
+                    // zoom in
+                    Camera cam = MinimapUI.minimapCam.GetComponent<Camera>();
+                    float raw_size = cam.orthographicSize -= 50;
+                    float size = Mathf.Clamp(raw_size, 19.7f, 999f);
+                    cam.orthographicSize = size;
+                }
+            }
+        }
+
+
+
+
         public class MinimapWaypoint: MonoBehaviour, IPointerClickHandler
         {
 
@@ -14,9 +68,7 @@ namespace LethalMystery.MainGame
             public GameObject waypointPrefab;
             public RectTransform minimapRectTransform;
 
-            public float minimapSize = 448f; // World size represented by the minimap
             private GameObject currentWaypoint;
-            //private LayerMask Room;
 
 
 
@@ -27,33 +79,19 @@ namespace LethalMystery.MainGame
                 // Check if click was on the minimap
                 if (RectTransformUtility.RectangleContainsScreenPoint(minimapRectTransform, eventData.position, eventData.pressEventCamera))
                 {
-                    Plugin.mls.LogInfo(">>> 1");
-                    // Convert screen position to local point in rectangle
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
                         minimapRectTransform,
                         eventData.position,
                         eventData.pressEventCamera,
                         out Vector2 localPoint);
 
-                    // Calculate the normalized position (0-1) within the minimap
                     Vector2 normalizedPos = new Vector2(
                         (localPoint.x + minimapRectTransform.rect.width * 0.5f) / minimapRectTransform.rect.width,
                         (localPoint.y + minimapRectTransform.rect.height * 0.5f) / minimapRectTransform.rect.height
                     );
 
-                    Plugin.mls.LogInfo(">>> 2");
-                    // Convert to world position relative to minimap camera's view
-                    Vector3 worldPos = CalculateWorldPosition(normalizedPos);
 
-                    // Optional: Perform raycast to ensure the waypoint is placed on valid ground
-                    /*
-                    RaycastHit hit;
-                    if (Physics.Raycast(new Vector3(worldPos.x, 1000f, worldPos.z), Vector3.down, out hit, 2000f, Room))
-                    {
-                        worldPos = hit.point;
-                    }
-                    */
-                    Plugin.mls.LogInfo(">>> 4");
+                    Vector3 worldPos = CalculateWorldPosition(normalizedPos);
                     PlaceWaypoint(worldPos);
 
                     Plugin.mls.LogInfo($"Placing waypoint at: {worldPos}, Camera at: {minimapCamera.transform.position}, Click pos normalized: {normalizedPos}");
@@ -74,29 +112,18 @@ namespace LethalMystery.MainGame
 
             private void PlaceWaypoint(Vector3 worldPosition)
             {
-                Plugin.mls.LogInfo(">>> 5");
 
                 if (currentWaypoint != null)
                 {
-                    Plugin.mls.LogInfo(">>> 6");
                     Destroy(currentWaypoint);
-                    Plugin.mls.LogInfo(">>> 7");
                 }
-
-                Plugin.mls.LogInfo(">>> 8");
 
                 currentWaypoint = Instantiate(waypointPrefab, worldPosition, Quaternion.identity);
 
 
             }
 
-            // For manual control of minimap zoom level
-            public void SetMinimapZoom(float zoomLevel)
-            {
-                minimapSize = zoomLevel;
-            }
 
-            // Optional: Method to clear the waypoint
             public void ClearWaypoint()
             {
                 if (currentWaypoint != null)
