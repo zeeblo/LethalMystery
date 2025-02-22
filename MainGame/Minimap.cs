@@ -5,6 +5,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Utils;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 
 namespace LethalMystery.MainGame
@@ -13,10 +14,12 @@ namespace LethalMystery.MainGame
     internal class Minimap
     {
 
+        public static Vector3 lastPlayerPos = Vector3.zero;
+
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
         [HarmonyPostfix]
-        private static void UpdatePatch(ManualCameraRenderer __instance)
+        private static void MCRUpdatePatch(ManualCameraRenderer __instance)
         {
             if (StartOfRound.Instance.inShipPhase) return;
             if (__instance.cam == null) return;
@@ -57,6 +60,40 @@ namespace LethalMystery.MainGame
             }
         }
 
+
+    
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPostfix]
+        private static void UpdatePatch()
+        {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (MinimapUI.minimapCam == null) return;
+            if (Plugin.localPlayer.isInHangarShipRoom == false || Meeting.inMeeting.Value == "true")
+            {
+                HidePlayerDots();
+            }
+            else
+            {
+                HidePlayerDots(false);
+            }
+        }
+
+
+
+        public static void HidePlayerDots(bool value = true)
+        {
+            foreach (PlayerControllerB user in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (user != null && GameNetworkManager.Instance.localPlayerController != null)
+                {
+                    if (user.actualClientId != GameNetworkManager.Instance.localPlayerController.actualClientId)
+                    {
+                        user.transform.Find("Misc/MapDot").gameObject.SetActive(!value);
+                    }
+                }
+
+            }
+        }
 
 
 
@@ -119,7 +156,7 @@ namespace LethalMystery.MainGame
                 }
 
                 currentWaypoint = Instantiate(waypointPrefab, worldPosition, Quaternion.identity);
-
+                currentWaypoint.SetActive(true);
 
             }
 
