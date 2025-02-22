@@ -1,5 +1,6 @@
 ﻿using LethalMystery.MainGame;
 using LethalMystery.Maps;
+using UnityEngine;
 
 
 namespace LethalMystery.Utils
@@ -239,6 +240,21 @@ namespace LethalMystery.Utils
             return result;
         }
 
+        public static Vector3 ConvertToVector3(string input)
+        {
+            string vectorString = input;
+            vectorString = vectorString.Trim('(', ')');
+            string[] values = vectorString.Split(',');
+
+            Vector3 parsedVector = new Vector3(
+                float.Parse(values[0].Trim()),
+                float.Parse(values[1].Trim()),
+                float.Parse(values[2].Trim())
+            );
+            return parsedVector;
+        }
+
+
         public static int AddInts(string a, int b)
         {
             int input = ConvertToInt(a);
@@ -259,5 +275,6 @@ namespace LethalMystery.Utils
             }
             return result;
         }
+
     }
 }

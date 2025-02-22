@@ -5,7 +5,8 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Utils;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
+using LethalNetworkAPI;
+
 
 
 namespace LethalMystery.MainGame
@@ -15,7 +16,11 @@ namespace LethalMystery.MainGame
     {
 
         public static Vector3 lastPlayerPos = Vector3.zero;
-
+        [PublicNetworkVariable]
+        public static LNetworkVariable<Dictionary<string, string>> allPlayerPoints = LNetworkVariable<Dictionary<string, string>>.Connect("allPlayerPoints");
+        public static GameObject currentWaypoint;
+        public static GameObject waypointPrefab;
+        public static List<GameObject> waypoints = new List<GameObject>();
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
         [HarmonyPostfix]
@@ -24,9 +29,12 @@ namespace LethalMystery.MainGame
             if (StartOfRound.Instance.inShipPhase) return;
             if (__instance.cam == null) return;
             if (MinimapUI.minimapCam == null) return;
+            if (__instance.cam.name.Contains("MinimapCam"))
+            {
+                //Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
+                __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
+            }
 
-            Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
-            __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
         }
 
 
@@ -102,10 +110,8 @@ namespace LethalMystery.MainGame
 
             public Camera minimapCamera;
             public Transform playerTransform;
-            public GameObject waypointPrefab;
+            //public GameObject waypointPrefab;
             public RectTransform minimapRectTransform;
-
-            private GameObject currentWaypoint;
 
 
 
@@ -150,14 +156,39 @@ namespace LethalMystery.MainGame
             private void PlaceWaypoint(Vector3 worldPosition)
             {
 
-                if (currentWaypoint != null)
+                if (Minimap.currentWaypoint != null)
                 {
-                    Destroy(currentWaypoint);
+                    Plugin.Destroy(Minimap.currentWaypoint);
                 }
 
-                currentWaypoint = Instantiate(waypointPrefab, worldPosition, Quaternion.identity);
-                currentWaypoint.SetActive(true);
 
+                Minimap.currentWaypoint = Plugin.Instantiate(Minimap.waypointPrefab, worldPosition, Quaternion.identity);
+                Minimap.currentWaypoint.SetActive(true);
+
+                Plugin.netHandler.setWaypointReceive($"{Plugin.localPlayer.playerClientId}/{worldPosition}", Plugin.localPlayer.playerClientId);
+            }
+
+
+
+            /*
+            public void UpdateAllPlayerPoints(Vector3 worldPosition)
+            {
+                Plugin.netHandler.setWaypointReceive($"{Plugin.localPlayer.playerClientId}/{worldPosition}", Plugin.localPlayer.playerClientId);
+            }
+            */
+
+            public static Vector3 GetPlayerPoint(string playerID)
+            {
+                Dictionary<string, string> localPlayerPos = new Dictionary<string, string>();
+                localPlayerPos = allPlayerPoints.Value;
+                foreach (KeyValuePair<string, string> plrPos in allPlayerPoints.Value)
+                {
+                    if (playerID == plrPos.Key)
+                    {
+                        return StringAddons.ConvertToVector3(plrPos.Value);
+                    }
+                }
+                return Vector3.zero;
             }
 
 

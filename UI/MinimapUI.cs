@@ -89,9 +89,9 @@ namespace LethalMystery.UI
             border.transform.SetSiblingIndex(12);
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
-            rectBorder.sizeDelta = new Vector2(450, 450); // new Vector3(rectMini.sizeDelta.x + 8, rectMini.sizeDelta.y + 8);
+            rectBorder.sizeDelta = new Vector2(450, 450);
 
-            rectBorder.anchoredPosition = Vector2.zero; // new Vector2(rectMini.anchoredPosition.x, rectMini.anchoredPosition.y);
+            rectBorder.anchoredPosition = Vector2.zero;
         }
 
         public static void CreateMinimap()
@@ -103,7 +103,6 @@ namespace LethalMystery.UI
 
             minimapCam = Plugin.Instantiate(GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera"));
             minimapCam.name = "MinimapCam";
-            //SetCameraVars(minimapCam.GetComponent<ManualCameraRenderer>());
 
             GameObject mapScript = new GameObject("MapScript");
             mapScript.transform.SetParent(minimap.transform);
@@ -115,20 +114,16 @@ namespace LethalMystery.UI
             rawImg.texture = mcr.mapCamera.targetTexture;
 
             minimap.layer = 5; // UI Layer
-            //minimap.transform.SetSiblingIndex(3);
+            markerDot = Plugin.localPlayer.transform.Find("Misc/MapDot").gameObject;
 
             RectTransform rectMini = minimap.GetComponent<RectTransform>();
             rectMini.sizeDelta = new Vector2(448, 448);
-
-            //rectMini.anchorMin = new Vector2(1, 1);
-            //rectMini.anchorMax = new Vector2(1, 1);
-            //rectMini.pivot = new Vector2(1, 1);
-
             rectMini.anchoredPosition = Vector2.zero;
             Minimap.MinimapWaypoint waypoint = minimap.AddComponent<Minimap.MinimapWaypoint>();
             waypoint.minimapCamera = minimapCam.GetComponent<Camera>();
             waypoint.playerTransform = Plugin.localPlayer.transform;
-            waypoint.waypointPrefab = markerDot;
+            //waypoint.waypointPrefab = markerDot;
+            Minimap.waypointPrefab = markerDot;
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
         }
 

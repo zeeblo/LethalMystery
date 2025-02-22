@@ -34,6 +34,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> currentMap;
         private LNetworkMessage<string> hidePlayer;
         private LNetworkMessage<string> buyItem;
+        private LNetworkMessage<string> setWaypoint;
 
         public NetHandler()
         {
@@ -56,6 +57,7 @@ namespace LethalMystery.Network
             currentMap = LNetworkMessage<string>.Connect("currentMap");
             hidePlayer = LNetworkMessage<string>.Connect("hidePlayer");
             buyItem = LNetworkMessage<string>.Connect("buyItem");
+            setWaypoint = LNetworkMessage<string>.Connect("setWaypoint");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -86,6 +88,8 @@ namespace LethalMystery.Network
             hidePlayer.OnServerReceived += hidePlayerServer;
             hidePlayer.OnClientReceived += hidePlayerClients;
             buyItem.OnServerReceived += buyItemServer;
+            setWaypoint.OnServerReceived += setWaypointServer;
+            setWaypoint.OnClientReceived += setWaypointClients;
         }
 
         #region Variables
@@ -802,6 +806,58 @@ namespace LethalMystery.Network
         public void buyItemReceive(string data, ulong id)
         {
             buyItem.SendServer(data);
+        }
+
+
+
+
+        private void setWaypointServer(string data, ulong id)
+        {
+            string pid = data.Split('/')[0];
+            string worldPosition = data.Split('/')[1];
+            Dictionary<string, string> localPlayerPoint = new Dictionary<string, string>();
+
+            /*
+            if (Minimap.allPlayerPoints.Value != null)
+            {
+                if (Minimap.allPlayerPoints.Value.Count > 0)
+                    localPlayerPoint = Minimap.allPlayerPoints.Value;
+
+            }
+            */
+            localPlayerPoint = Minimap.allPlayerPoints.Value;
+
+            if (localPlayerPoint.ContainsKey(pid))
+            {
+                localPlayerPoint[pid] = worldPosition;
+            }
+            else
+            {
+                localPlayerPoint.Add(pid, worldPosition);
+            }
+            
+            Minimap.allPlayerPoints.Value = localPlayerPoint;
+            setWaypoint.SendClients(data);
+        }
+        private void setWaypointClients(string data)
+        {
+            Dictionary<string, string> localPlayerPoint = Minimap.allPlayerPoints.Value;
+            // if type is "delete" then remove the gameObject based of the first index of the name
+
+
+            foreach (KeyValuePair<string, string> plrPos in localPlayerPoint)
+            {
+                Plugin.mls.LogInfo($">>> plrPos: {plrPos.Key}");
+                if ($"{Plugin.localPlayer.playerClientId}" == plrPos.Key) continue;
+
+                Vector3 position = Minimap.MinimapWaypoint.GetPlayerPoint(plrPos.Key);
+                GameObject mapdot = Plugin.Instantiate(Minimap.waypointPrefab, position, Quaternion.identity);
+                mapdot.SetActive(true);
+            }
+        }
+        public void setWaypointReceive(string data, ulong id)
+        {
+            setWaypoint.SendServer(data);
         }
 
 

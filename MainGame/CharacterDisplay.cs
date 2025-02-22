@@ -336,7 +336,7 @@ namespace LethalMystery.MainGame
             InsideMap.SpawnScrapScanPositions();
             InsideMap.MakeLMDoorInteractive();
             InsideMap.SetMinimapLayer();
-            MinimapUI.markerDot = GameObject.Find("Environment/HangarShip/Player/Misc/MapDot");
+            //MinimapUI.markerDot = GameObject.Find("Environment/HangarShip/Player/Misc/MapDot");
             
 
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
