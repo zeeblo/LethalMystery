@@ -836,12 +836,17 @@ namespace LethalMystery.Network
             {
                 Plugin.mls.LogInfo($">>> plrPos: {plrPos.Key}");
                 if ($"{Plugin.localPlayer.playerClientId}" == plrPos.Key) continue;
-
+                if (GameObject.Find($"waypoint_{plrPos.Key}"))
+                {
+                    Plugin.Destroy(GameObject.Find($"waypoint_{plrPos.Key}"));
+                }
                 Vector3 position = Minimap.MinimapWaypoint.GetPlayerPoint(plrPos.Key);
                 GameObject mapdot = Plugin.Instantiate(Minimap.waypointPrefab, position, Quaternion.identity);
+                mapdot.name = $"waypoint_{plrPos.Key}";
                 mapdot.SetActive(true);
             }
         }
+
         public void setWaypointReceive(string data, ulong id)
         {
             setWaypoint.SendServer(data);

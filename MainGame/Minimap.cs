@@ -170,12 +170,6 @@ namespace LethalMystery.MainGame
 
 
 
-            /*
-            public void UpdateAllPlayerPoints(Vector3 worldPosition)
-            {
-                Plugin.netHandler.setWaypointReceive($"{Plugin.localPlayer.playerClientId}/{worldPosition}", Plugin.localPlayer.playerClientId);
-            }
-            */
 
             public static Vector3 GetPlayerPoint(string playerID)
             {
