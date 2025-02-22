@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using LethalMystery.MainGame;
+using LethalMystery.Utils;
 
 namespace LethalMystery.Patches
 {
@@ -32,7 +34,7 @@ namespace LethalMystery.Patches
                 __instance.screenLevelVideoReel.enabled = false;
                 __instance.screenLevelVideoReel.gameObject.SetActive(value: false);
                 __instance.screenLevelDescription.enabled = false;
-                __instance.mapScreenPlayerName.enabled = false;
+                __instance.mapScreenPlayerName.enabled = StringAddons.ConvertToBool(Meeting.inMeeting.Value);
                 __instance.mapScreen.overrideCameraForOtherUse = false;
             }
             return false;
