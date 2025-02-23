@@ -308,7 +308,6 @@ namespace LethalMystery.Network
 
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             Plugin.RemoveEnvironment();
-            GOTools.HideLMInsideDungeon();
             HUDManagerPatch.DisplayDaysEdit(data);
 
             yield return new WaitForSeconds(2f);
