@@ -23,7 +23,6 @@
 		<PackageReference Include="IAmBatby.LethalLevelLoader" Version="1.4.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Assets\AssetBundles\" />
 	  <Folder Include="Libs\" />
 	</ItemGroup>
 </Project>

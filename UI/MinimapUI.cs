@@ -186,41 +186,76 @@ namespace LethalMystery.UI
 
         }
 
+
+        private static void LeftButtonUI()
+        {
+
+        }
+
         private static void SwitchPlayerButton()
         {
-            GameObject switchBtn = new GameObject("switchBtn");
-            switchBtn.transform.SetParent(minimap.transform, false);
+            GameObject LswitchBtn = new GameObject("LswitchBtn");
+            GameObject RswitchBtn = new GameObject("RswitchBtn");
+            LswitchBtn.transform.SetParent(minimap.transform, false);
+            RswitchBtn.transform.SetParent(minimap.transform, false);
 
-            Button btn = switchBtn.AddComponent<Button>();
-            Image img = switchBtn.AddComponent<Image>();
+            Button Lbtn = LswitchBtn.AddComponent<Button>();
+            Image Limg = LswitchBtn.AddComponent<Image>();
 
-            Color normalColor = Color.white;
-            Color hoverColor = Color.gray;
-            img.color = normalColor;
+            Button Rbtn = RswitchBtn.AddComponent<Button>();
+            Image Rimg = RswitchBtn.AddComponent<Image>();
 
-
-            EventTrigger trigger = switchBtn.AddComponent<EventTrigger>();
-
-            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
-            pointerEnter.eventID = EventTriggerType.PointerEnter;
-            pointerEnter.callback.AddListener((data) => { img.color = hoverColor; });
-
-            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
-            pointerExit.eventID = EventTriggerType.PointerExit;
-            pointerExit.callback.AddListener((data) => { img.color = normalColor; });
-
-            trigger.triggers.Add(pointerEnter);
-            trigger.triggers.Add(pointerExit);
+            Sprite arrowImg = LMAssets.PlainArrow;
+            Sprite arrowImgHover = LMAssets.PlainArrowHover;
+            Limg.sprite = arrowImg;
+            Rimg.sprite = arrowImg;
 
 
-            btn.onClick.AddListener(() => Plugin.mls.LogInfo($"Viewing: {Plugin.localPlayer.playerUsername}"));
+            EventTrigger trigger = LswitchBtn.AddComponent<EventTrigger>();
 
-            RectTransform switchRect = switchBtn.GetComponent<RectTransform>();
-            switchRect.sizeDelta = new Vector2(32, 62);
-            switchRect.anchorMin = new Vector2(0, 0);
-            switchRect.anchorMax = new Vector2(0, 0);
-            switchRect.pivot = new Vector2(0, 0);
-            switchRect.anchoredPosition = Vector2.zero;
+            EventTrigger.Entry LpointerEnter = new EventTrigger.Entry();
+            LpointerEnter.eventID = EventTriggerType.PointerEnter;
+            LpointerEnter.callback.AddListener((data) => { Limg.sprite = arrowImgHover; });
+
+            EventTrigger.Entry LpointerExit = new EventTrigger.Entry();
+            LpointerExit.eventID = EventTriggerType.PointerExit;
+            LpointerExit.callback.AddListener((data) => { Limg.sprite = arrowImg; });
+
+
+            EventTrigger.Entry RpointerEnter = new EventTrigger.Entry();
+            RpointerEnter.eventID = EventTriggerType.PointerEnter;
+            RpointerEnter.callback.AddListener((data) => { Rimg.sprite = arrowImgHover; });
+
+            EventTrigger.Entry RpointerExit = new EventTrigger.Entry();
+            RpointerExit.eventID = EventTriggerType.PointerExit;
+            RpointerExit.callback.AddListener((data) => { Rimg.sprite = arrowImg; });
+
+
+            trigger.triggers.Add(LpointerEnter);
+            trigger.triggers.Add(LpointerExit);
+            trigger.triggers.Add(RpointerEnter);
+            trigger.triggers.Add(RpointerExit);
+
+
+            Lbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Left) Viewing: {Plugin.localPlayer.playerUsername}"));
+            Rbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}"));
+
+            RectTransform LswitchRect = LswitchBtn.GetComponent<RectTransform>();
+            LswitchRect.sizeDelta = new Vector2(32, 32);
+            LswitchRect.anchorMin = new Vector2(0, 0);
+            LswitchRect.anchorMax = new Vector2(0, 0);
+            LswitchRect.pivot = new Vector2(1, 0);
+            LswitchRect.anchoredPosition = new Vector2(8f, 2f);
+            LswitchRect.rotation = Quaternion.Euler(0, 0, -90f);
+
+
+            RectTransform RswitchRect = RswitchBtn.GetComponent<RectTransform>();
+            RswitchRect.sizeDelta = new Vector2(32, 32);
+            RswitchRect.anchorMin = new Vector2(0, 0);
+            RswitchRect.anchorMax = new Vector2(0, 0);
+            RswitchRect.pivot = new Vector2(0, 1);
+            RswitchRect.anchoredPosition = new Vector2(80f, 0f);
+            RswitchRect.rotation = Quaternion.Euler(0, 0, 90f);
         }
 
 

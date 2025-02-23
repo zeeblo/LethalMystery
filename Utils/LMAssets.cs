@@ -15,6 +15,8 @@ namespace LethalMystery.Utils
         public static Sprite? CheckboxEnabledIcon;
         public static Sprite? MapIcon;
         public static Sprite? MapIconHover;
+        public static Sprite? PlainArrow;
+        public static Sprite? PlainArrowHover;
         public static GameObject SkeldMap;
         public static GameObject OfficeMap;
 
@@ -39,6 +41,8 @@ namespace LethalMystery.Utils
             Texture2D CheckboxEnabledTexture = myBundle.LoadAsset<Texture2D>("btn_check.png");
             Texture2D MapIconTexture = myBundle.LoadAsset<Texture2D>("mapIcon.png");
             Texture2D MapIconHoverTexture = myBundle.LoadAsset<Texture2D>("mapIcon_hover.png");
+            Texture2D PlainArrowTexture = myBundle.LoadAsset<Texture2D>("plain-arrow.png");
+            Texture2D PlainArrowHoverTexture = myBundle.LoadAsset<Texture2D>("plain-arrow_hover.png");
             KnifeIcon = Sprite.Create(
                 KnifeTexture,
                 new Rect(0, 0, KnifeTexture.width, KnifeTexture.height),
@@ -72,6 +76,16 @@ namespace LethalMystery.Utils
             MapIconHover = Sprite.Create(
                 MapIconHoverTexture,
                 new Rect(0, 0, MapIconHoverTexture.width, MapIconHoverTexture.height),
+                new Vector2(0, 0)
+            );
+            PlainArrow = Sprite.Create(
+                PlainArrowTexture,
+                new Rect(0, 0, PlainArrowTexture.width, PlainArrowTexture.height),
+                new Vector2(0, 0)
+            );
+            PlainArrowHover = Sprite.Create(
+                PlainArrowHoverTexture,
+                new Rect(0, 0, PlainArrowHoverTexture.width, PlainArrowHoverTexture.height),
                 new Vector2(0, 0)
             );
         }
