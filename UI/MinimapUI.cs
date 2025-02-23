@@ -129,6 +129,8 @@ namespace LethalMystery.UI
 
             CreateName();
             SwitchPlayerButton();
+            LeftButtonUI();
+            RightButtonUI();
         }
 
 
@@ -181,35 +183,19 @@ namespace LethalMystery.UI
         }
 
 
-        private static void SwitchName()
-        {
-
-        }
 
 
         private static void LeftButtonUI()
         {
-
-        }
-
-        private static void SwitchPlayerButton()
-        {
             GameObject LswitchBtn = new GameObject("LswitchBtn");
-            GameObject RswitchBtn = new GameObject("RswitchBtn");
             LswitchBtn.transform.SetParent(minimap.transform, false);
-            RswitchBtn.transform.SetParent(minimap.transform, false);
 
             Button Lbtn = LswitchBtn.AddComponent<Button>();
             Image Limg = LswitchBtn.AddComponent<Image>();
 
-            Button Rbtn = RswitchBtn.AddComponent<Button>();
-            Image Rimg = RswitchBtn.AddComponent<Image>();
-
             Sprite arrowImg = LMAssets.PlainArrow;
             Sprite arrowImgHover = LMAssets.PlainArrowHover;
             Limg.sprite = arrowImg;
-            Rimg.sprite = arrowImg;
-
 
             EventTrigger trigger = LswitchBtn.AddComponent<EventTrigger>();
 
@@ -221,24 +207,10 @@ namespace LethalMystery.UI
             LpointerExit.eventID = EventTriggerType.PointerExit;
             LpointerExit.callback.AddListener((data) => { Limg.sprite = arrowImg; });
 
-
-            EventTrigger.Entry RpointerEnter = new EventTrigger.Entry();
-            RpointerEnter.eventID = EventTriggerType.PointerEnter;
-            RpointerEnter.callback.AddListener((data) => { Rimg.sprite = arrowImgHover; });
-
-            EventTrigger.Entry RpointerExit = new EventTrigger.Entry();
-            RpointerExit.eventID = EventTriggerType.PointerExit;
-            RpointerExit.callback.AddListener((data) => { Rimg.sprite = arrowImg; });
-
-
             trigger.triggers.Add(LpointerEnter);
             trigger.triggers.Add(LpointerExit);
-            trigger.triggers.Add(RpointerEnter);
-            trigger.triggers.Add(RpointerExit);
-
 
             Lbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Left) Viewing: {Plugin.localPlayer.playerUsername}"));
-            Rbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}"));
 
             RectTransform LswitchRect = LswitchBtn.GetComponent<RectTransform>();
             LswitchRect.sizeDelta = new Vector2(32, 32);
@@ -248,6 +220,35 @@ namespace LethalMystery.UI
             LswitchRect.anchoredPosition = new Vector2(8f, 2f);
             LswitchRect.rotation = Quaternion.Euler(0, 0, -90f);
 
+        }
+
+
+        private static void RightButtonUI()
+        {
+            GameObject RswitchBtn = new GameObject("RswitchBtn");
+            RswitchBtn.transform.SetParent(minimap.transform, false);
+
+            Button Rbtn = RswitchBtn.AddComponent<Button>();
+            Image Rimg = RswitchBtn.AddComponent<Image>();
+
+            Sprite arrowImg = LMAssets.PlainArrow;
+            Sprite arrowImgHover = LMAssets.PlainArrowHover;
+            Rimg.sprite = arrowImg;
+
+            EventTrigger trigger = RswitchBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry RpointerEnter = new EventTrigger.Entry();
+            RpointerEnter.eventID = EventTriggerType.PointerEnter;
+            RpointerEnter.callback.AddListener((data) => { Rimg.sprite = arrowImgHover; });
+
+            EventTrigger.Entry RpointerExit = new EventTrigger.Entry();
+            RpointerExit.eventID = EventTriggerType.PointerExit;
+            RpointerExit.callback.AddListener((data) => { Rimg.sprite = arrowImg; });
+
+            trigger.triggers.Add(RpointerEnter);
+            trigger.triggers.Add(RpointerExit);
+
+            Rbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}"));
 
             RectTransform RswitchRect = RswitchBtn.GetComponent<RectTransform>();
             RswitchRect.sizeDelta = new Vector2(32, 32);
@@ -256,6 +257,11 @@ namespace LethalMystery.UI
             RswitchRect.pivot = new Vector2(0, 1);
             RswitchRect.anchoredPosition = new Vector2(80f, 0f);
             RswitchRect.rotation = Quaternion.Euler(0, 0, 90f);
+        }
+
+        private static void SwitchPlayerButton()
+        {            
+
         }
 
 
