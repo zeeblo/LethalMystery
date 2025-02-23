@@ -33,8 +33,31 @@ namespace LethalMystery.MainGame
             {
                 //Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
                 __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
+
+                if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+                    __instance.targetedPlayer = null;
+                }
             }
 
+        }
+
+
+        [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.MapCameraFocusOnPosition))]
+        [HarmonyPrefix]
+        private static bool LastPosition(ManualCameraRenderer __instance)
+        {
+            if (__instance.cam.name.Contains("MinimapCam") && __instance.targetedPlayer == null)
+            {
+                float xpos = 4f;
+                float ypos = 8f;
+                float zpos = 9f;
+                __instance.mapCamera.transform.position = new Vector3(xpos, ypos, zpos);
+
+                Plugin.mls.LogInfo(">>> Holding Position");
+                return false;
+            }
+            return true;
         }
 
 

@@ -128,7 +128,6 @@ namespace LethalMystery.UI
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
 
             CreateName();
-            SwitchPlayerButton();
             LeftButtonUI();
             RightButtonUI();
         }
@@ -210,7 +209,7 @@ namespace LethalMystery.UI
             trigger.triggers.Add(LpointerEnter);
             trigger.triggers.Add(LpointerExit);
 
-            Lbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Left) Viewing: {Plugin.localPlayer.playerUsername}"));
+            Lbtn.onClick.AddListener(() => SwitchPlayerButton(forward: false));
 
             RectTransform LswitchRect = LswitchBtn.GetComponent<RectTransform>();
             LswitchRect.sizeDelta = new Vector2(32, 32);
@@ -248,7 +247,7 @@ namespace LethalMystery.UI
             trigger.triggers.Add(RpointerEnter);
             trigger.triggers.Add(RpointerExit);
 
-            Rbtn.onClick.AddListener(() => Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}"));
+            Rbtn.onClick.AddListener(() => SwitchPlayerButton(forward: true));
 
             RectTransform RswitchRect = RswitchBtn.GetComponent<RectTransform>();
             RswitchRect.sizeDelta = new Vector2(32, 32);
@@ -259,9 +258,18 @@ namespace LethalMystery.UI
             RswitchRect.rotation = Quaternion.Euler(0, 0, 90f);
         }
 
-        private static void SwitchPlayerButton()
-        {            
+        private static void SwitchPlayerButton(bool forward)
+        {
 
+            if (forward)
+            {
+                Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}");
+            }
+            else
+            {
+                Plugin.mls.LogInfo($"(Left) Viewing: {Plugin.localPlayer.playerUsername}");
+            }
+            
         }
 
 
