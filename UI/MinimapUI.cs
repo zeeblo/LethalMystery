@@ -125,6 +125,27 @@ namespace LethalMystery.UI
             //waypoint.waypointPrefab = markerDot;
             Minimap.waypointPrefab = markerDot;
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
+
+            CreateName();
+        }
+
+
+        private static void CreateName()
+        {
+            GameObject playerName = new GameObject("playerName");
+            playerName.transform.SetParent(minimap.transform, false);
+
+            TextMeshProUGUI text = playerName.AddComponent<TextMeshProUGUI>();
+            text.font = StartOfRound.Instance.mapScreenPlayerName.font;
+            text.fontSize = StartOfRound.Instance.mapScreenPlayerName.fontSize;
+            text.text = Plugin.localPlayer.playerUsername;
+
+            RectTransform textRect = playerName.GetComponent<RectTransform>();
+            textRect.sizeDelta = new Vector2(280, 80);
+            textRect.anchorMin = new Vector2(0, 1);
+            textRect.anchorMax = new Vector2(0, 1);
+            textRect.pivot = new Vector2(0, 1);
+            textRect.anchoredPosition = Vector2.zero;
         }
 
 
@@ -132,11 +153,9 @@ namespace LethalMystery.UI
         {
             ManualCameraRenderer ogManualCam = GameObject.Find("Environment/HangarShip/ShipModels2b/MonitorWall/Cube.001/CameraMonitorScript").GetComponent<ManualCameraRenderer>();
 
-
             Camera mapCam = minimapCam.GetComponent<Camera>();
             RenderTexture newRenderTexture = new RenderTexture(512, 512, 16);
             mapCam.targetTexture = newRenderTexture;
-
 
             camRender.cam = mapCam;
             camRender.cameraViews = ogManualCam.cameraViews;
