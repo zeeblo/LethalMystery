@@ -4,6 +4,7 @@ using UnityEngine;
 using LethalMystery.Utils;
 using TMPro;
 using LethalMystery.MainGame;
+using UnityEngine.EventSystems;
 
 
 namespace LethalMystery.UI
@@ -127,25 +128,7 @@ namespace LethalMystery.UI
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
 
             CreateName();
-        }
-
-
-        private static void CreateName()
-        {
-            GameObject playerName = new GameObject("playerName");
-            playerName.transform.SetParent(minimap.transform, false);
-
-            TextMeshProUGUI text = playerName.AddComponent<TextMeshProUGUI>();
-            text.font = StartOfRound.Instance.mapScreenPlayerName.font;
-            text.fontSize = StartOfRound.Instance.mapScreenPlayerName.fontSize;
-            text.text = Plugin.localPlayer.playerUsername;
-
-            RectTransform textRect = playerName.GetComponent<RectTransform>();
-            textRect.sizeDelta = new Vector2(280, 80);
-            textRect.anchorMin = new Vector2(0, 1);
-            textRect.anchorMax = new Vector2(0, 1);
-            textRect.pivot = new Vector2(0, 1);
-            textRect.anchoredPosition = Vector2.zero;
+            SwitchPlayerButton();
         }
 
 
@@ -177,6 +160,70 @@ namespace LethalMystery.UI
             camRender.shipArrowPointer = ogManualCam.shipArrowPointer;
             camRender.shipArrowUI = ogManualCam.shipArrowUI;
         }
+
+
+        private static void CreateName()
+        {
+            GameObject playerName = new GameObject("playerName");
+            playerName.transform.SetParent(minimap.transform, false);
+
+            TextMeshProUGUI text = playerName.AddComponent<TextMeshProUGUI>();
+            text.font = StartOfRound.Instance.mapScreenPlayerName.font;
+            text.fontSize = StartOfRound.Instance.mapScreenPlayerName.fontSize;
+            text.text = Plugin.localPlayer.playerUsername;
+
+            RectTransform textRect = playerName.GetComponent<RectTransform>();
+            textRect.sizeDelta = new Vector2(280, 80);
+            textRect.anchorMin = new Vector2(0, 1);
+            textRect.anchorMax = new Vector2(0, 1);
+            textRect.pivot = new Vector2(0, 1);
+            textRect.anchoredPosition = Vector2.zero;
+        }
+
+
+        private static void SwitchName()
+        {
+
+        }
+
+        private static void SwitchPlayerButton()
+        {
+            GameObject switchBtn = new GameObject("switchBtn");
+            switchBtn.transform.SetParent(minimap.transform, false);
+
+            Button btn = switchBtn.AddComponent<Button>();
+            Image img = switchBtn.AddComponent<Image>();
+
+            Color normalColor = Color.white;
+            Color hoverColor = Color.gray;
+            img.color = normalColor;
+
+
+            EventTrigger trigger = switchBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) => { img.color = hoverColor; });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) => { img.color = normalColor; });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+
+            btn.onClick.AddListener(() => Plugin.mls.LogInfo($"Viewing: {Plugin.localPlayer.playerUsername}"));
+
+            RectTransform switchRect = switchBtn.GetComponent<RectTransform>();
+            switchRect.sizeDelta = new Vector2(32, 62);
+            switchRect.anchorMin = new Vector2(0, 0);
+            switchRect.anchorMax = new Vector2(0, 0);
+            switchRect.pivot = new Vector2(0, 0);
+            switchRect.anchoredPosition = Vector2.zero;
+        }
+
+
 
     }
 }
