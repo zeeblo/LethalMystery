@@ -9,6 +9,7 @@
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="MainGame\Minimap.cs~RF3bae146a.TMP" />
 	  <None Remove="MainGame\zTests.cs~RFf1e5636.TMP" />
 	  <None Remove="Maps\CustomLvl.cs~RF1540833d.TMP" />
 	  <None Remove="Maps\CustomLvl.cs~RF15d7f6d8.TMP" />

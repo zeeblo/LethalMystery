@@ -129,6 +129,7 @@ namespace LethalMystery.Network
                 StartOfRound.Instance.mapScreen.SwitchScreenOn(true);
                 GOTools.RemoveGameObject("PhysicsProp", "RagdollGrabbableObject");
                 StartOfRound.Instance.StartCoroutine(cleanSlot());
+                Minimap.allPlayerPoints.Clear();
 
                 if (VotingUI.votingGUI != null)
                 {
@@ -300,7 +301,7 @@ namespace LethalMystery.Network
             }
 
             yield return new WaitForSeconds(0.4f);
-
+            Minimap.lastPlayerPos = Plugin.localPlayer.transform.position;
             MoreSlots.SwitchToEmptySlot();
 
             yield return new WaitForSeconds(0.4f);

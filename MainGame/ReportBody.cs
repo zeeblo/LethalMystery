@@ -1,7 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Utils;
-using UnityEngine;
 
 namespace LethalMystery.MainGame
 {

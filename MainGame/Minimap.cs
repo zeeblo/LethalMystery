@@ -16,11 +16,12 @@ namespace LethalMystery.MainGame
     {
 
         public static Vector3 lastPlayerPos = Vector3.zero;
-        // public static LNetworkVariable<Dictionary<string, string>> allPlayerPoints = LNetworkVariable<Dictionary<string, string>>.Connect("allPlayerPoints");
         public static Dictionary<string, string> allPlayerPoints = new Dictionary<string, string>();
         public static GameObject currentWaypoint;
         public static GameObject waypointPrefab;
         public static List<GameObject> waypoints = new List<GameObject>();
+        public static string currentPointUserID = "";
+
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
         [HarmonyPostfix]
@@ -32,11 +33,15 @@ namespace LethalMystery.MainGame
             if (__instance.cam.name.Contains("MinimapCam"))
             {
                 //Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
-                __instance.cam.enabled = !StringAddons.ConvertToBool(Meeting.inMeeting.Value);
+                __instance.cam.enabled = true;
 
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                if (Meeting.inMeeting.Value == "true")
                 {
                     __instance.targetedPlayer = null;
+                }
+                else
+                {
+                    __instance.targetedPlayer = Plugin.localPlayer;
                 }
             }
 
@@ -45,16 +50,24 @@ namespace LethalMystery.MainGame
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.MapCameraFocusOnPosition))]
         [HarmonyPrefix]
-        private static bool LastPosition(ManualCameraRenderer __instance)
+        private static bool SpectatePlayerPoint(ManualCameraRenderer __instance)
         {
-            if (__instance.cam.name.Contains("MinimapCam") && __instance.targetedPlayer == null)
+            if (__instance.cam.name.Contains("MinimapCam") && Meeting.inMeeting.Value == "true")
             {
-                float xpos = 4f;
-                float ypos = 8f;
-                float zpos = 9f;
-                __instance.mapCamera.transform.position = new Vector3(xpos, ypos, zpos);
+                //__instance.mapCamera.nearClipPlane = -2.47f;
 
-                Plugin.mls.LogInfo(">>> Holding Position");
+                if (allPlayerPoints == null) return false;
+                if (!allPlayerPoints.ContainsKey($"{Plugin.localPlayer.playerClientId}"))
+                {
+                    __instance.mapCamera.transform.position = lastPlayerPos;
+                    currentPointUserID = $"{Plugin.localPlayer.playerClientId}";
+                }
+                else
+                {
+                    __instance.mapCamera.transform.position = StringAddons.ConvertToVector3(allPlayerPoints[currentPointUserID]);
+                }
+                
+
                 return false;
             }
             return true;

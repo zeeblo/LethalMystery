@@ -260,16 +260,26 @@ namespace LethalMystery.UI
 
         private static void SwitchPlayerButton(bool forward)
         {
+            if (Minimap.allPlayerPoints.Count <= 0) return;
 
-            if (forward)
+            List<string> playerList = new List<string>();
+            foreach (KeyValuePair<string, string> plr in Minimap.allPlayerPoints)
             {
-                Plugin.mls.LogInfo($"(Right) Viewing: {Plugin.localPlayer.playerUsername}");
+                playerList.Add(plr.Key);
             }
-            else
+
+            int rawIndex = playerList.IndexOf(Minimap.currentPointUserID);
+            int newIndex = (forward) ? rawIndex + 1 : rawIndex - 1;
+            if (newIndex > playerList.Count - 1)
             {
-                Plugin.mls.LogInfo($"(Left) Viewing: {Plugin.localPlayer.playerUsername}");
+                newIndex = 0;
             }
-            
+            else if (newIndex < 0)
+            {
+                newIndex = playerList.Count - 1;
+            }
+
+            Minimap.currentPointUserID = playerList[newIndex];
         }
 
 
