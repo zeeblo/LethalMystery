@@ -76,18 +76,16 @@ namespace LethalMystery.MainGame
 
 
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
-        [HarmonyPostfix]
-        private static void ZoomPatch(InputAction.CallbackContext context)
+        [HarmonyPrefix]
+        private static bool ZoomPatch(InputAction.CallbackContext context)
         {
-            if (MinimapUI.border == null || MinimapUI.minimapCam == null) return;
+            if (MinimapUI.border == null || MinimapUI.minimapCam == null) return true;
             if (MinimapUI.border.activeSelf)
             {
                 float num = context.ReadValue<float>();
                 if (num < 0f)
                 {
                     // zoom out
-                    // GameObject mapCam = GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera");
-                    //GameObject mapCam = GameObject.Find("MinimapCam");
                     Camera cam = MinimapUI.minimapCam.GetComponent<Camera>();
                     float raw_size = cam.orthographicSize += 50;
                     float size = Mathf.Clamp(raw_size, 19.7f, 999f);
@@ -101,7 +99,9 @@ namespace LethalMystery.MainGame
                     float size = Mathf.Clamp(raw_size, 19.7f, 999f);
                     cam.orthographicSize = size;
                 }
+                return false;
             }
+            return true;
         }
 
 
@@ -178,6 +178,7 @@ namespace LethalMystery.MainGame
 
             public void OnPointerClick(PointerEventData eventData)
             {
+                if (Meeting.inMeeting.Value == "false") return;
                 Plugin.mls.LogInfo(">>> Clack Clack CLick CLick");
 
                 // Check if click was on the minimap

@@ -261,6 +261,7 @@ namespace LethalMystery.UI
 
         private static void SwitchPlayerButton(bool forward)
         {
+            if (Meeting.inMeeting.Value == "false") return;
             if (Minimap.allPlayerPoints.Count <= 0) return;
 
             List<string> playerList = new List<string>();
