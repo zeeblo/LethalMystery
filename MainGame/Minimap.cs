@@ -6,6 +6,7 @@ using HarmonyLib;
 using LethalMystery.Utils;
 using UnityEngine.InputSystem;
 using LethalNetworkAPI;
+using UnityEngine.SceneManagement;
 
 
 
@@ -156,13 +157,22 @@ namespace LethalMystery.MainGame
         }
 
 
-        public void ClearWaypoint()
+        public static void ClearAllPoints()
         {
-            if (currentWaypoint != null)
+            Scene SampleScene = SceneManager.GetSceneAt(0);
+            foreach (GameObject obj in SampleScene.GetRootGameObjects())
             {
-                Plugin.Destroy(currentWaypoint);
-                currentWaypoint = null;
+                if (obj.name.ToLower().Contains("waypoint_"))
+                {
+                    Plugin.Destroy(obj.gameObject);
+                }
             }
+
+            if (Minimap.currentWaypoint != null)
+            {
+                Plugin.Destroy(Minimap.currentWaypoint);
+            }
+
         }
 
 
@@ -178,7 +188,7 @@ namespace LethalMystery.MainGame
 
             public void OnPointerClick(PointerEventData eventData)
             {
-                if (Meeting.inMeeting.Value == "false") return;
+                if (Meeting.inMeeting.Value == "false" || Plugin.localPlayer.isPlayerDead) return;
                 Plugin.mls.LogInfo(">>> Clack Clack CLick CLick");
 
                 // Check if click was on the minimap

@@ -130,6 +130,7 @@ namespace LethalMystery.Network
                 GOTools.RemoveGameObject("PhysicsProp", "RagdollGrabbableObject");
                 StartOfRound.Instance.StartCoroutine(cleanSlot());
                 Minimap.allPlayerPoints.Clear();
+                Minimap.ClearAllPoints();
 
                 if (VotingUI.votingGUI != null)
                 {

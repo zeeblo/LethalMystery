@@ -116,17 +116,14 @@ namespace LethalMystery.UI
             rawImg.texture = mcr.mapCamera.targetTexture;
 
             minimap.layer = 5; // UI Layer
-            markerDot = Plugin.localPlayer.transform.Find("Misc/MapDot").gameObject;
 
             RectTransform rectMini = minimap.GetComponent<RectTransform>();
             rectMini.sizeDelta = new Vector2(448, 448);
             rectMini.anchoredPosition = Vector2.zero;
             Minimap.MinimapWaypoint waypoint = minimap.AddComponent<Minimap.MinimapWaypoint>();
             waypoint.minimapCamera = minimapCam.GetComponent<Camera>();
-            //waypoint.playerTransform = Plugin.localPlayer.transform;
-            //waypoint.waypointPrefab = markerDot;
-            Minimap.waypointPrefab = markerDot;
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
+            Minimap.waypointPrefab = Plugin.localPlayer.transform.Find("Misc/MapDot").gameObject; // done twice
 
             CreateName();
             LeftButtonUI();
