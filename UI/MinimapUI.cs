@@ -18,6 +18,7 @@ namespace LethalMystery.UI
         public static GameObject border;
         public static GameObject mapIcon;
         public static GameObject markerDot;
+        public static TextMeshProUGUI playerNameTXT;
 
 
 
@@ -168,10 +169,10 @@ namespace LethalMystery.UI
             GameObject playerName = new GameObject("playerName");
             playerName.transform.SetParent(minimap.transform, false);
 
-            TextMeshProUGUI text = playerName.AddComponent<TextMeshProUGUI>();
-            text.font = StartOfRound.Instance.mapScreenPlayerName.font;
-            text.fontSize = StartOfRound.Instance.mapScreenPlayerName.fontSize;
-            text.text = Plugin.localPlayer.playerUsername;
+            playerNameTXT = playerName.AddComponent<TextMeshProUGUI>();
+            playerNameTXT.font = StartOfRound.Instance.mapScreenPlayerName.font;
+            playerNameTXT.fontSize = StartOfRound.Instance.mapScreenPlayerName.fontSize;
+            playerNameTXT.text = Plugin.localPlayer.playerUsername;
 
             RectTransform textRect = playerName.GetComponent<RectTransform>();
             textRect.sizeDelta = new Vector2(280, 80);
@@ -280,6 +281,9 @@ namespace LethalMystery.UI
             }
 
             Minimap.currentPointUserID = playerList[newIndex];
+
+            Int32.TryParse(Minimap.currentPointUserID, out int plrid);
+            playerNameTXT.text = StartOfRound.Instance.allPlayerScripts[plrid].playerUsername;
         }
 
 
