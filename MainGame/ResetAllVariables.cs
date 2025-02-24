@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 
 
@@ -18,6 +19,7 @@ namespace LethalMystery.MainGame
             Controls.monsterControls.Disable();
             Controls.playerControls.Disable();
             //GOTools.ClearInventory();
+            MinimapUI.DestroyUI();
             if (Plugin.isHost)
             {
                 RoundManager.Instance.DespawnPropsAtEndOfRound(despawnAllItems: true);
@@ -39,6 +41,7 @@ namespace LethalMystery.MainGame
             Controls.monsterControls.Disable();
             Controls.playerControls.Disable();
             Plugin.ResetVariables();
+            MinimapUI.DestroyUI();
             MoreSlots.DefaultSlots();
             Plugin.netHandler.RemoveCustomNetEvents();
             Plugin.mls.LogInfo(">>> Reset vars from: DisconnectPatch ");

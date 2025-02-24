@@ -17,11 +17,31 @@ namespace LethalMystery.UI
         public static GameObject minimapCam;
         public static GameObject border;
         public static GameObject mapIcon;
-        public static GameObject markerDot;
         public static TextMeshProUGUI playerNameTXT;
 
 
 
+
+        public static void DestroyUI()
+        {
+            if (border != null)
+            {
+                Plugin.Destroy(border);
+            }
+            if (minimap != null)
+            {
+                Plugin.Destroy(minimap);
+            }
+            if (minimapCam != null)
+            {
+                Plugin.Destroy(minimapCam);
+            }
+            if (mapIcon != null)
+            {
+                Plugin.Destroy(mapIcon);
+            }
+            Minimap.ResetVars();
+        }
 
         public static void CreateMapIcon()
         {

@@ -710,9 +710,7 @@ namespace LethalMystery.Network
                 CustomLvl.mapName.Value = "lll_map";
             }
 
-
             currentMap.SendClients(data);
-
         }
 
         private void currentMapClients(string data)

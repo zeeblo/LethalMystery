@@ -20,9 +20,13 @@ namespace LethalMystery.MainGame
         public static Dictionary<string, string> allPlayerPoints = new Dictionary<string, string>();
         public static GameObject currentWaypoint;
         public static GameObject waypointPrefab;
-        public static List<GameObject> waypoints = new List<GameObject>();
         public static string currentPointUserID = "";
 
+
+        public static void ResetVars()
+        {
+            allPlayerPoints.Clear();
+        }
 
         [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
         [HarmonyPostfix]
