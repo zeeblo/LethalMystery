@@ -22,6 +22,8 @@ namespace LethalMystery.Patches
                 Vector3 forward = Plugin.localPlayer.gameplayCamera.transform.forward;
 
                 InstantKill.killType killtype = InstantKill.killMonster(shotgunPosition: shotgunPosition, shotgunForward: forward);
+                
+                /*
                 switch (killtype)
                 {
                     case InstantKill.killType.None:
@@ -31,6 +33,7 @@ namespace LethalMystery.Patches
                     case InstantKill.killType.self:
                         return false;
                 }
+                */
             }
             return true;
         }

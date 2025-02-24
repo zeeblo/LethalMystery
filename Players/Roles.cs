@@ -101,7 +101,7 @@ namespace LethalMystery.Players
 
             /*
            allRoles.Add(new Role(
-           "shapeshifter",
+           "Mimic",
            "Eliminate all the crew and press x to shapeshift",
            RoleType.monster
            ));
