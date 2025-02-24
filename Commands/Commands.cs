@@ -342,12 +342,12 @@ namespace LethalMystery
 
             if (name.ToLower().Contains("knife") || name == "all")
             {
-                position = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[11].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }
             if (name.ToLower().Contains("shotgun") || name == "all")
             {
+                position = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[9].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }
