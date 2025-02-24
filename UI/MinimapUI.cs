@@ -62,7 +62,7 @@ namespace LethalMystery.UI
             rectForm.anchorMin = new Vector2(1, 1);
             rectForm.anchorMax = new Vector2(1, 1);
             rectForm.pivot = new Vector2(1, 1);
-            rectForm.anchoredPosition = new Vector2(-10, 14);
+            rectForm.anchoredPosition = new Vector2(0, 0);
 
             CreateMapIconKeybind();
         }
@@ -108,7 +108,7 @@ namespace LethalMystery.UI
             rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
 
             border.layer = 5;
-            border.transform.SetSiblingIndex(12);
+            border.transform.SetSiblingIndex(14);
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
             rectBorder.sizeDelta = new Vector2(450, 450);

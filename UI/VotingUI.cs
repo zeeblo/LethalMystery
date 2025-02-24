@@ -64,7 +64,7 @@ namespace LethalMystery.UI
 
             VotingMenu.layer = 5; // UI Layer
             VotingMenu.transform.SetParent(canvas.transform, false);
-            VotingMenu.transform.SetSiblingIndex(13);
+            VotingMenu.transform.SetSiblingIndex(12);
 
             plist.transform.SetParent(VotingMenu.transform, false);
 
