@@ -32,7 +32,6 @@ namespace LethalMystery.MainGame
             if (MinimapUI.minimapCam == null) return;
             if (__instance.cam.name.Contains("MinimapCam"))
             {
-                //Traverse.Create(__instance).Field("screenEnabledOnLocalClient").SetValue(!StringAddons.ConvertToBool(Meeting.inMeeting.Value));
                 __instance.cam.enabled = true;
 
                 if (Meeting.inMeeting.Value == "true")
@@ -42,6 +41,7 @@ namespace LethalMystery.MainGame
                 else
                 {
                     __instance.targetedPlayer = Plugin.localPlayer;
+                    //lastPlayerPos = Plugin.localPlayer.transform.position;
                 }
             }
 
@@ -112,13 +112,13 @@ namespace LethalMystery.MainGame
         {
             if (StartOfRound.Instance.inShipPhase) return;
             if (MinimapUI.minimapCam == null) return;
-            if (Plugin.localPlayer.isInHangarShipRoom == false || Meeting.inMeeting.Value == "true")
+            if (Plugin.localPlayer.isInHangarShipRoom && Meeting.inMeeting.Value == "false")
             {
-                HidePlayerDots();
+                HidePlayerDots(false);
             }
             else
             {
-                HidePlayerDots(false);
+                HidePlayerDots();
             }
         }
 
@@ -141,11 +141,36 @@ namespace LethalMystery.MainGame
 
 
 
+        public static Vector3 GetPlayerPoint(string playerID)
+        {
+            Dictionary<string, string> localPlayerPos = new Dictionary<string, string>();
+            localPlayerPos = allPlayerPoints;
+            foreach (KeyValuePair<string, string> plrPos in allPlayerPoints)
+            {
+                if (playerID == plrPos.Key)
+                {
+                    return StringAddons.ConvertToVector3(plrPos.Value);
+                }
+            }
+            return Vector3.zero;
+        }
+
+
+        public void ClearWaypoint()
+        {
+            if (currentWaypoint != null)
+            {
+                Plugin.Destroy(currentWaypoint);
+                currentWaypoint = null;
+            }
+        }
+
+
         public class MinimapWaypoint: MonoBehaviour, IPointerClickHandler
         {
 
             public Camera minimapCamera;
-            public Transform playerTransform;
+            //public Transform playerTransform;
             //public GameObject waypointPrefab;
             public RectTransform minimapRectTransform;
 
@@ -182,9 +207,24 @@ namespace LethalMystery.MainGame
             {
                 Vector3 viewportPoint = new Vector3(normalizedPos.x, normalizedPos.y, minimapCamera.nearClipPlane);
                 Vector3 worldPos = minimapCamera.ViewportToWorldPoint(viewportPoint);
-                worldPos.y = playerTransform.position.y;
+
+                float playerYPos = GetPlayerYPos();
+                worldPos.y = playerYPos;
 
                 return worldPos;
+            }
+
+            private float GetPlayerYPos()
+            {
+                Int32.TryParse(currentPointUserID, out int playerID);
+                float playerYPos = lastPlayerPos.y;
+
+                if (allPlayerPoints.ContainsKey(currentPointUserID))
+                {
+                    playerYPos = StringAddons.ConvertToVector3(allPlayerPoints[currentPointUserID]).y;
+                }
+
+                return playerYPos;
             }
 
 
@@ -206,30 +246,6 @@ namespace LethalMystery.MainGame
 
 
 
-
-            public static Vector3 GetPlayerPoint(string playerID)
-            {
-                Dictionary<string, string> localPlayerPos = new Dictionary<string, string>();
-                localPlayerPos = allPlayerPoints;
-                foreach (KeyValuePair<string, string> plrPos in allPlayerPoints)
-                {
-                    if (playerID == plrPos.Key)
-                    {
-                        return StringAddons.ConvertToVector3(plrPos.Value);
-                    }
-                }
-                return Vector3.zero;
-            }
-
-
-            public void ClearWaypoint()
-            {
-                if (currentWaypoint != null)
-                {
-                    Destroy(currentWaypoint);
-                    currentWaypoint = null;
-                }
-            }
         }
 
     }

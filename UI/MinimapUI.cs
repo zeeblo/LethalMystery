@@ -122,7 +122,7 @@ namespace LethalMystery.UI
             rectMini.anchoredPosition = Vector2.zero;
             Minimap.MinimapWaypoint waypoint = minimap.AddComponent<Minimap.MinimapWaypoint>();
             waypoint.minimapCamera = minimapCam.GetComponent<Camera>();
-            waypoint.playerTransform = Plugin.localPlayer.transform;
+            //waypoint.playerTransform = Plugin.localPlayer.transform;
             //waypoint.waypointPrefab = markerDot;
             Minimap.waypointPrefab = markerDot;
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();

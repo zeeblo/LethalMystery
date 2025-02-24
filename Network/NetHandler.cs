@@ -282,6 +282,7 @@ namespace LethalMystery.Network
         private void MeetingClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingClients:");
+            Minimap.lastPlayerPos = Plugin.localPlayer.transform.position;
             StartOfRound.Instance.StartCoroutine(meetingSetup(data));
 
         }
@@ -301,7 +302,6 @@ namespace LethalMystery.Network
             }
 
             yield return new WaitForSeconds(0.4f);
-            Minimap.lastPlayerPos = Plugin.localPlayer.transform.position;
             MoreSlots.SwitchToEmptySlot();
 
             yield return new WaitForSeconds(0.4f);
@@ -840,7 +840,7 @@ namespace LethalMystery.Network
                 {
                     Plugin.Destroy(GameObject.Find($"waypoint_{plrPos.Key}"));
                 }
-                Vector3 position = Minimap.MinimapWaypoint.GetPlayerPoint(plrPos.Key);
+                Vector3 position = Minimap.GetPlayerPoint(plrPos.Key);
                 GameObject mapdot = Plugin.Instantiate(Minimap.waypointPrefab, position, Quaternion.identity);
                 mapdot.name = $"waypoint_{plrPos.Key}";
                 mapdot.SetActive(true);
