@@ -18,6 +18,48 @@ namespace LethalMystery.Players.Abilities
             killCooldown = 0;
         }
 
+        public enum killType
+        {
+            None,
+            player,
+            self
+        }
+
+
+        #region Sheriff 
+
+
+        public static killType killMonster(ShotgunItem __instance, UnityEngine.Vector3 shotgunPosition, UnityEngine.Vector3 shotgunForward)
+        {
+
+            Ray ray = new Ray(shotgunPosition, shotgunForward);
+            if (Physics.Raycast(ray, out var hitInfo, 30f, StartOfRound.Instance.collidersAndRoomMaskAndPlayers, QueryTriggerInteraction.Ignore))
+            {
+
+                if (hitInfo.collider == null) return killType.None;
+                if (hitInfo.collider.transform.gameObject.GetComponent<PlayerControllerB>() == null) return killType.None;
+                PlayerControllerB targetPlayer = hitInfo.collider.transform.gameObject.GetComponent<PlayerControllerB>();
+
+
+                Plugin.mls.LogInfo($">>> Shot at {hitInfo.collider.transform.gameObject.name}");
+                if (targetPlayer.playerClientId == Plugin.localPlayer.playerClientId) return killType.None;
+                if (Roles.NameIsMonsterType(Roles.localPlayerRoles[targetPlayer.playerClientId]))
+                {
+                    return killType.player;
+                }
+
+                Plugin.localPlayer.DamagePlayer(999);
+                return killType.self;
+
+                
+            }
+            return killType.None;
+        }
+
+
+        #endregion Sheriff
+
+
 
 
         #region Knife Instakill

@@ -348,8 +348,8 @@ namespace LethalMystery
             if (name.ToLower().Contains("shotgun") || name == "all")
             {
                 //position = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/spawn_pos").transform.position;
-                position = InsideMap.lll_pos;
-                Plugin.mls.LogInfo($"Spawing Mob at: {position}");
+                //position = InsideMap.lll_pos;
+
                 UnityEngine.Object.Instantiate<GameObject>(currentLevel.Enemies[9].enemyType.enemyPrefab, position, Quaternion.identity)
                     .gameObject.GetComponentInChildren<NetworkObject>().Spawn(true);
             }

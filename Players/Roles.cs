@@ -77,13 +77,13 @@ namespace LethalMystery.Players
 
         public static void AppendRoles()
         {
-            /*
+            
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
             RoleType.employee)
             );
-             */
+            
 
             allRoles.Add(new Role(
             "sheriff",
@@ -92,14 +92,14 @@ namespace LethalMystery.Players
             ));
 
 
-            /*
+            
            allRoles.Add(new Role(
            "monster",
            "Eliminate all the crew",
            RoleType.monster
            ));
 
-
+            /*
            allRoles.Add(new Role(
            "shapeshifter",
            "Eliminate all the crew and press x to shapeshift",
@@ -148,8 +148,8 @@ namespace LethalMystery.Players
                 System.Random randomNum = new System.Random();
                 System.Random randomPlr = new System.Random();
                 int index = randomNum.Next(0, specialRoles.Count());
-                //int plrIndex = randomPlr.Next(0, playerIDS.Count());
-                int plrIndex = playerIDS.IndexOf(1); // REMEMBER TO CHANGE BACK TO CODE ABOVE
+                int plrIndex = randomPlr.Next(0, playerIDS.Count());
+                //int plrIndex = playerIDS.IndexOf(1); // REMEMBER TO CHANGE BACK TO CODE ABOVE
 
                 Role role = specialRoles[index];
                 ulong plrID = playerIDS[plrIndex];

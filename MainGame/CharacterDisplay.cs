@@ -349,7 +349,7 @@ namespace LethalMystery.MainGame
 
             //Plugin.RemoveEnvironment(true);
             GOTools.HideEnvironment(true);
-            //GOTools.HideVanillaDungeon(); (REMEMBER TO RE-ENABLE THIS PROB)
+            GOTools.HideVanillaDungeon(); // (REMEMBER TO RE-ENABLE THIS PROB)
             EnvironmentLight(false);
             ShowLights(true);
 
