@@ -77,33 +77,35 @@ namespace LethalMystery.Players
 
         public static void AppendRoles()
         {
-            
+            /*
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
             RoleType.employee)
             );
+             */
 
-            /*
             allRoles.Add(new Role(
             "sheriff",
             "Kill the monster(s). Guessing wrong will get you killed.",
             RoleType.employee
             ));
-            */
 
+
+            
             allRoles.Add(new Role(
             "monster",
             "Eliminate all the crew",
             RoleType.monster
             ));
 
+            /*
             allRoles.Add(new Role(
             "shapeshifter",
             "Eliminate all the crew and press x to shapeshift",
             RoleType.monster
             ));
-
+            */
 
         }
 
@@ -131,7 +133,7 @@ namespace LethalMystery.Players
 
             foreach (Role rl in allRoles)
             {
-                if (rl.Type == RoleType.monster && rl.Name != "employee")
+                if ( (rl.Type == RoleType.monster && rl.Name != "employee") || rl.Name == "sheriff")
                 {
                     specialRoles.Add(rl);
                 }

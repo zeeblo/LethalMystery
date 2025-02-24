@@ -50,7 +50,7 @@ namespace LethalMystery.MainGame
 
             VotingUI.votingGUI.SetActive(false);
             Controls.UnlockCursor(false);
-            GOTools.HideLMInsideDungeon(false);
+            GOTools.HideLMInsideDungeon();
 
             yield return new WaitForSeconds(9.37f);
             __instance.shipDoorsAnimator.SetBool("OpenInOrbit", value: true);
