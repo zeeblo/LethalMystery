@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
+using UnityEngine;
 
 
 namespace LethalMystery.Patches
@@ -11,13 +12,16 @@ namespace LethalMystery.Patches
     {
 
 
-        [HarmonyPatch(nameof(ShotgunItem.ShootGun))]
+        [HarmonyPatch(nameof(ShotgunItem.ShootGunAndSync))]
         [HarmonyPrefix]
-        private static bool ShootPatch(ShotgunItem __instance, UnityEngine.Vector3 shotgunPosition, UnityEngine.Vector3 shotgunForward)
+        private static bool ShootPatch()
         {
             if (Roles.CurrentRole != null && Roles.CurrentRole.Name == "sheriff")
             {
-                InstantKill.killType killtype = InstantKill.killMonster(__instance, shotgunPosition: shotgunPosition, shotgunForward: shotgunForward);
+                Vector3 shotgunPosition = Plugin.localPlayer.gameplayCamera.transform.position - Plugin.localPlayer.gameplayCamera.transform.up * 0.45f;
+                Vector3 forward = Plugin.localPlayer.gameplayCamera.transform.forward;
+
+                InstantKill.killType killtype = InstantKill.killMonster(shotgunPosition: shotgunPosition, shotgunForward: forward);
                 switch (killtype)
                 {
                     case InstantKill.killType.None:
@@ -25,7 +29,7 @@ namespace LethalMystery.Patches
                     case InstantKill.killType.player:
                         return true;
                     case InstantKill.killType.self:
-                        return true;
+                        return false;
                 }
             }
             return true;

@@ -29,7 +29,7 @@ namespace LethalMystery.Players.Abilities
         #region Sheriff 
 
 
-        public static killType killMonster(ShotgunItem __instance, UnityEngine.Vector3 shotgunPosition, UnityEngine.Vector3 shotgunForward)
+        public static killType killMonster(UnityEngine.Vector3 shotgunPosition, UnityEngine.Vector3 shotgunForward)
         {
 
             Ray ray = new Ray(shotgunPosition, shotgunForward);
