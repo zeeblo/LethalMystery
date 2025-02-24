@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using LethalMystery.Maps;
+using UnityEngine;
 
 namespace LethalMystery.Patches
 {
@@ -7,18 +9,6 @@ namespace LethalMystery.Patches
     internal class NutcrackerEnemyAIPatch
     {
 
-        [HarmonyPatch(nameof(NutcrackerEnemyAI.Start))]
-        [HarmonyPostfix]
-        private static void StartPatch(NutcrackerEnemyAI __instance)
-        {
-            if (!Plugin.isHost) return;
-
-            __instance.KillEnemy();
-
-
-        }
-
-
 
         [HarmonyPatch(nameof(NutcrackerEnemyAI.SpawnShotgunShells))]
         [HarmonyPrefix]
@@ -26,6 +16,23 @@ namespace LethalMystery.Patches
         {
             return false;
         }
+
+        [HarmonyPatch(nameof(NutcrackerEnemyAI.GrabGun))]
+        [HarmonyPrefix]
+        private static bool GrabGunPatch()
+        {
+            return false;
+        }
+
+
+        /*
+        [HarmonyPatch(nameof(NutcrackerEnemyAI.FireGunServerRpc))]
+        [HarmonyPrefix]
+        private static bool FireGunServerRpcPatch()
+        {
+            return false;
+        }
+        */
 
     }
 }

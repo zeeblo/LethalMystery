@@ -3,7 +3,6 @@ using HarmonyLib;
 using UnityEngine;
 using LethalMystery.Utils;
 using LethalMystery.Players;
-using LethalMystery.Players.Abilities;
 using LethalMystery.MainGame;
 
 namespace LethalMystery.Maps
@@ -13,7 +12,7 @@ namespace LethalMystery.Maps
     internal class InsideMap
     {
 
-        private static Vector3 lll_pos = Vector3.zero;
+        public static Vector3 lll_pos = Vector3.zero;
         public static Dictionary<string, List<string>> allVents = new Dictionary<string, List<string>>();
         public static List<Vector3> scrapLocations = new List<Vector3>();
 
@@ -79,10 +78,9 @@ namespace LethalMystery.Maps
         [HarmonyPostfix]
         private static void UpdatePatch(EntranceTeleport __instance)
         {
-            if (CustomLvl.mapName.Value == "lll_map")
-            {
-                lll_pos = __instance.entrancePoint.position;
-            }
+
+            lll_pos = __instance.entrancePoint.position;
+
         }
 
 
@@ -190,7 +188,7 @@ namespace LethalMystery.Maps
                     scannode.requiresLineOfSight = true;
 
                     innerVent.Add(link_vent.name.ToLower());
-                    
+
                 }
                 allVents.Add(link.name.ToLower(), innerVent);
             }
@@ -222,7 +220,7 @@ namespace LethalMystery.Maps
                         scrapLocations.Add(child.transform.position);
                     }
                 }
-            } 
+            }
         }
 
 
@@ -287,7 +285,7 @@ namespace LethalMystery.Maps
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
         }
 
-        
+
 
         public static void SetMinimapLayer()
         {

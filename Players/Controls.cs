@@ -92,6 +92,8 @@ namespace LethalMystery.Players
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
         {
+            if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.isPlayerDead) return;
             StartOfRound.Instance.StartCoroutine(SpawnWeapon());
         }
 
