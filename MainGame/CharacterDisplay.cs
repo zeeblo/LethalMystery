@@ -415,6 +415,8 @@ namespace LethalMystery.MainGame
             GOTools.CheckForWeaponInInventoryNotif();
             Start.InfiniteTime();
             ReverseRotation();
+
+            Start.gameStarted = true;
         }
 
 

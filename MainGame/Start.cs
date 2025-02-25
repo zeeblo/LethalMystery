@@ -19,12 +19,13 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
         public static bool startSpawningScraps = false;
         public static float scrapTimer = 0;
-
+        public static bool gameStarted = false;
 
         public static void ResetVars()
         {
             startSpawningScraps = false;
             scrapTimer = 0;
+            gameStarted = false;
         }
 
 
@@ -56,6 +57,8 @@ namespace LethalMystery.MainGame
             if (Plugin.isHost)
             {
                 Plugin.netHandler.currentMapReceive($"game_started/{CustomLvl.localCurrentInside}", 0);
+                EndGame.SetupMonsterAmount();
+                EndGame.SetupCrewAmount();
             }
 
         }

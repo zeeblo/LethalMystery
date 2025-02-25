@@ -149,7 +149,6 @@ namespace LethalMystery.Players
                 System.Random randomPlr = new System.Random();
                 int index = randomNum.Next(0, specialRoles.Count());
                 int plrIndex = randomPlr.Next(0, playerIDS.Count());
-                //int plrIndex = playerIDS.IndexOf(1); // REMEMBER TO CHANGE BACK TO CODE ABOVE
 
                 Role role = specialRoles[index];
                 ulong plrID = playerIDS[plrIndex];
