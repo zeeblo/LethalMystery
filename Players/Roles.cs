@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using UnityEngine;
 
@@ -165,6 +166,9 @@ namespace LethalMystery.Players
             {
                 rawAllPlayers.Add(id, "employee");
             }
+
+            EndGame.SetupMonsterAmount(rawAllPlayers);
+            EndGame.SetupCrewAmount(rawAllPlayers);
 
             Plugin.netHandler.SetallPlayerRoles(rawAllPlayers);
 

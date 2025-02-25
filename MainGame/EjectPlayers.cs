@@ -97,7 +97,6 @@ namespace LethalMystery.MainGame
             {
                 GameNetworkManager.Instance.localPlayerController.inSpecialInteractAnimation = false;
                 GameNetworkManager.Instance.localPlayerController.KillPlayer(UnityEngine.Vector3.zero, spawnBody: false, causeOfDeath: CauseOfDeath.Gravity);
-
             }
 
             GOTools.TurnLightsRed(false);
@@ -106,6 +105,7 @@ namespace LethalMystery.MainGame
             currentlyEjectingPlayer.Value = "false";
 
         }
+
 
 
         private static void SuckLocalPlayerOutOfShipDoor(StartOfRound __instance)

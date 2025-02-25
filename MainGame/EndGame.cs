@@ -8,14 +8,25 @@ namespace LethalMystery.MainGame
     [HarmonyPatch]
     internal class EndGame
     {
+        public static bool winCondition = false;
         public static List<ulong> aliveCrew = new List<ulong>();
         public static List<ulong> aliveMonsters = new List<ulong>();
+        
+        /*
         public enum winCondition
         {
             None,
             Crew,
             Monster
         }
+        */
+
+        public static void ResetVars()
+        {
+            aliveCrew.Clear();
+            aliveMonsters.Clear();
+        }
+
 
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
@@ -27,18 +38,38 @@ namespace LethalMystery.MainGame
             if (winCondition) return;
             if (StringAddons.ConvertToInt(Tasks.currentQuota.Value) >= Tasks.maxQuota)
             {
+                string type = "employee";
+                string topText = "Employees Won!";
+                string bottomText = "By tasks";
+                
+                Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
                 winCondition = true;
             }
-            if (aliveCrew.Count  0)
+            if (aliveMonsters.Count <= 0)
             {
-
+                string type = "employee";
+                string topText = "Employees Won!";
+                string bottomText = "";
+                
+                Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
+                winCondition = true;
             }
+            if (aliveCrew.Count <= 1)
+            {
+                string type = "monster";
+                string topText = "Monsters Won!";
+                string bottomText = "";
+                
+                Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
+                winCondition = true;
+            }
+
         }
 
 
-        public static void SetupMonsterAmount()
+        public static void SetupMonsterAmount(Dictionary<ulong, string> playerAndRoles)
         {
-            foreach (KeyValuePair<ulong, string> id in Roles.localPlayerRoles)
+            foreach (KeyValuePair<ulong, string> id in playerAndRoles)
             {
 
                 foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
@@ -53,9 +84,9 @@ namespace LethalMystery.MainGame
         }
 
 
-        public static void SetupCrewAmount()
+        public static void SetupCrewAmount(Dictionary<ulong, string> playerAndRoles)
         {
-            foreach (KeyValuePair<ulong, string> id in Roles.localPlayerRoles)
+            foreach (KeyValuePair<ulong, string> id in playerAndRoles)
             {
 
                 foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)

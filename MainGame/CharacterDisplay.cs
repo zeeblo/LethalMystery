@@ -331,6 +331,7 @@ namespace LethalMystery.MainGame
             EnableMovement(false);
             LookAtCamera();
             ResetAnimation();
+            HUDManager.Instance.ShowPlayersFiredScreen(false);
             InsideMap.SpawnInterior();
             InsideMap.SpawnVents();
             InsideMap.SpawnScrapScanPositions();

@@ -57,8 +57,6 @@ namespace LethalMystery.MainGame
             if (Plugin.isHost)
             {
                 Plugin.netHandler.currentMapReceive($"game_started/{CustomLvl.localCurrentInside}", 0);
-                EndGame.SetupMonsterAmount();
-                EndGame.SetupCrewAmount();
             }
 
         }
@@ -69,7 +67,9 @@ namespace LethalMystery.MainGame
         {
             Plugin.terminal.groupCredits = 0;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
-
+            Plugin.firedText = "Ejected";
+            Plugin.firedTextSub = "";
+            EndGame.winCondition = false;
 
             Plugin.ResetVariables();
             MinimapUI.CreateMapIcon();

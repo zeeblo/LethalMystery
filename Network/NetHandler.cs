@@ -35,6 +35,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> hidePlayer;
         private LNetworkMessage<string> buyItem;
         private LNetworkMessage<string> setWaypoint;
+        private LNetworkMessage<string> roundEnd;
 
         public NetHandler()
         {
@@ -58,6 +59,7 @@ namespace LethalMystery.Network
             hidePlayer = LNetworkMessage<string>.Connect("hidePlayer");
             buyItem = LNetworkMessage<string>.Connect("buyItem");
             setWaypoint = LNetworkMessage<string>.Connect("setWaypoint");
+            roundEnd = LNetworkMessage<string>.Connect("roundEnd");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -90,6 +92,8 @@ namespace LethalMystery.Network
             buyItem.OnServerReceived += buyItemServer;
             setWaypoint.OnServerReceived += setWaypointServer;
             setWaypoint.OnClientReceived += setWaypointClients;
+            roundEnd.OnServerReceived += roundEndServer;
+            roundEnd.OnClientReceived += roundEndClients;
         }
 
         #region Variables
@@ -559,6 +563,10 @@ namespace LethalMystery.Network
 
         private void playerDiedServer(string data, ulong id)
         {
+            ulong.TryParse(data,out id);
+            EndGame.aliveCrew.Remove(id);
+            EndGame.aliveMonsters.Remove(id);
+
             playerDied.SendClients(data);
         }
         private void playerDiedClients(string data)
@@ -850,6 +858,32 @@ namespace LethalMystery.Network
         {
             setWaypoint.SendServer(data);
         }
+
+
+
+
+
+        private void roundEndServer(string data, ulong id)
+        {
+            roundEnd.SendClients(data);
+        }
+        private void roundEndClients(string data)
+        {
+            string type = data.Split("/")[0]; // not used currently, (not sure if it ever will be either tbh)
+            string topText = data.Split("/")[1];
+            string bottomText = data.Split("/")[2];
+
+            Plugin.firedText = topText;
+            Plugin.firedTextSub = bottomText;
+            HUDManager.Instance.ShowPlayersFiredScreen(true);
+            StartOfRound.Instance.ShipLeaveAutomatically();
+
+        }
+        public void roundEndReceive(string data, ulong id)
+        {
+            roundEnd.SendServer(data);
+        }
+
 
 
     }

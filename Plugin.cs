@@ -33,6 +33,7 @@ namespace LethalMystery
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
+        public static bool inTestMode = true;
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
@@ -47,7 +48,9 @@ namespace LethalMystery
         public static PlayerControllerB localPlayer;
         public static Terminal terminal;
         public static EnemyVent enemyVent;
-        public static bool inTestMode = true;
+
+        public static string firedText = "Ejected";
+        public static string firedTextSub = "";
 
 
 

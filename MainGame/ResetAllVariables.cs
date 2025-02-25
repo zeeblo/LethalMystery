@@ -28,7 +28,10 @@ namespace LethalMystery.MainGame
 
             Plugin.ResetVariables();
             MoreSlots.DefaultSlots();
+            HUDManager.Instance.ShowPlayersFiredScreen(false);
             Plugin.netHandler.RemoveCustomNetEvents();
+
+
 
             Plugin.mls.LogInfo(">>> Reset vars from: EndOfGameClientRpcPatch ");
         }

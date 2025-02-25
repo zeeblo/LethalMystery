@@ -40,7 +40,40 @@ namespace LethalMystery.MainGame
                 Plugin.mls.LogInfo(">>> Player has been given back their vote.");
                 hasVoted = false;
             }
+
+            if (Plugin.isHost)
+            {
+                EndGame.aliveCrew.Remove(clientId / 2);
+                EndGame.aliveMonsters.Remove(clientId / 2);
+            }
         }
+
+
+        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.KickPlayer))]
+        [HarmonyPostfix]
+        private static void UserKicked(int playerObjToKick)
+        {
+            // Have not tested this method at all, hoping it works :D
+
+            Plugin.mls.LogInfo($">>> PlayerKicked: {playerObjToKick}");
+            RefreshPlayerVotes($"{playerObjToKick}");
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
+
+            VotingUI.UpdatePlayerList(StartOfRound.Instance.allPlayerScripts[playerObjToKick].playerClientId);
+            Plugin.mls.LogInfo($"<<< localPlayerVote: {localPlayerVote}");
+            if ($"{playerObjToKick}" == $"{localPlayerVote}")
+            {
+                Plugin.mls.LogInfo(">>> Player has been given back their vote.");
+                hasVoted = false;
+            }
+
+            if (Plugin.isHost)
+            {
+                EndGame.aliveCrew.Remove(StartOfRound.Instance.allPlayerScripts[playerObjToKick].playerClientId);
+                EndGame.aliveMonsters.Remove(StartOfRound.Instance.allPlayerScripts[playerObjToKick].playerClientId);
+            }
+        }
+
 
 
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayer))]

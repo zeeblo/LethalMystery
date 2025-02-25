@@ -34,7 +34,7 @@ namespace LethalMystery.Patches
             }
 
 
-           // Plugin.netHandler.chatMsgReceive("", 0);
+            // Plugin.netHandler.chatMsgReceive("", 0);
 
             if (LMConfig.PrefixSetting != null && StringAddons.CheckPrefix(prefix))
             {
@@ -141,12 +141,9 @@ namespace LethalMystery.Patches
         [HarmonyPrefix]
         private static void ShowEjectScreen(ref Animator ___playersFiredAnimator)
         {
+            ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText").GetComponent<TextMeshProUGUI>().text = Plugin.firedText;
+            ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText (1)").GetComponent<TextMeshProUGUI>().text = Plugin.firedTextSub;
 
-            if (StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
-            {
-                ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText").GetComponent<TextMeshProUGUI>().text = "Ejected";
-                ___playersFiredAnimator.gameObject.transform.Find("MaskImage").Find("HeaderText (1)").GetComponent<TextMeshProUGUI>().text = "";
-            }
         }
 
 
