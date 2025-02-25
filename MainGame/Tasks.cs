@@ -62,6 +62,7 @@ namespace LethalMystery.MainGame
 
             __instance.carryWeight = 1f;
             currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
+            Commands.DisplayChatMessage($"Collected <color=#FF0000>+1</color> credits (check shop)");
             Plugin.terminal.groupCredits += 1;
         }
 
@@ -138,7 +139,7 @@ namespace LethalMystery.MainGame
 
                     currentQuota.Value = $"{StringAddons.AddInts(currentQuota.Value, 10)}";
                     Plugin.terminal.groupCredits += 1;
-
+                    Commands.DisplayChatMessage($"Collected <color=#FF0000>+1</color> credits (check shop)");
                     return false;
                 }
 

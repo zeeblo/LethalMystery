@@ -27,7 +27,7 @@ namespace LethalMystery.MainGame
             aliveMonsters.Clear();
         }
 
-
+        /*
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void ChecksPatch()
@@ -76,7 +76,7 @@ namespace LethalMystery.MainGame
             }
 
         }
-
+        */
 
         public static void SetupMonsterAmount(Dictionary<ulong, string> playerAndRoles)
         {

@@ -32,8 +32,24 @@ namespace LethalMystery.MainGame
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
         /// </summary>
+
         [HarmonyPatch(typeof(StartMatchLever), nameof(StartMatchLever.BeginHoldingInteractOnLever))]
         [HarmonyPostfix]
+        private static void StopLeverInteraction()
+        {
+            NotEnoughPlayers();
+
+            if (gameStarted)
+            {
+                Transform[] playerSpawnPositions = StartOfRound.Instance.playerSpawnPositions;
+                GameNetworkManager.Instance.localPlayerController.TeleportPlayer(playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+                HUDManager.Instance.DisplayTip("Not so fast!", "Complete your objective.", isWarning: true);
+
+            }
+        }
+
+
+
         private static void NotEnoughPlayers()
         {
             if (Plugin.inTestMode && Plugin.FoundThisMod("zeebloTesting.zeeblo.dev") && Plugin.isHost) return;
@@ -47,6 +63,9 @@ namespace LethalMystery.MainGame
             }
 
         }
+
+
+
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
         [HarmonyPrefix]
@@ -154,6 +173,12 @@ namespace LethalMystery.MainGame
 
         }
 
+        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.Start))]
+        [HarmonyPostfix]
+        private static void LMChatMsg()
+        {
+            Commands.DisplayChatMessage($"<color=#FF0000>Lethal Mystery</color> v{Plugin.modVersion}");
+        }
 
 
         #region Chat Command
@@ -165,7 +190,6 @@ namespace LethalMystery.MainGame
         {
             Plugin.mls.LogInfo("Host Status: " + RoundManager.Instance.NetworkManager.IsHost);
             Plugin.isHost = RoundManager.Instance.NetworkManager.IsHost;
-
         }
 
 

@@ -17,6 +17,7 @@ namespace LethalMystery.Patches
             /// Disable Deadline
             /// </summary>
             __instance.timeUntilDeadline = 9;
+            __instance.daysUntilDeadline = 3;
             StartOfRound.Instance.deadlineMonitorText.text = $"Meeting:\n {Meeting.MeetingNum}";
 
         }

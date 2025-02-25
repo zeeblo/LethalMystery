@@ -92,7 +92,9 @@ namespace LethalMystery.Players
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
         {
+            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
             StartOfRound.Instance.StartCoroutine(SpawnWeapon());
         }
