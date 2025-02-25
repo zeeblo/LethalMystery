@@ -59,7 +59,18 @@ namespace LethalMystery.MainGame
                 string type = "monster";
                 string topText = "Monsters Won!";
                 string bottomText = "";
-                
+                foreach (ulong impID in aliveMonsters)
+                {
+                    foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
+                    {
+                        if (plr.playerClientId == impID)
+                        {
+                            bottomText += plr.playerUsername + ", ";
+                            bottomText = (bottomText.EndsWith(", ")) ? bottomText.Replace(",", "") : bottomText;
+                        }
+                    }
+                }
+
                 Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
                 winCondition = true;
             }
