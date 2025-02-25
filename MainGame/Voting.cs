@@ -133,7 +133,7 @@ namespace LethalMystery.MainGame
 
         public static void VoteButtonClick(int userID, UnityEngine.UI.Image check)
         {
-            if (canVote == false) return;
+            if (canVote == false || hasVoted) return;
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
             Plugin.mls.LogInfo($"Voted {userID}.");
@@ -157,7 +157,7 @@ namespace LethalMystery.MainGame
 
         public static void SkipButtonClick(UnityEngine.UI.Image check)
         {
-            if (canVote == false) return;
+            if (canVote == false || hasVoted) return;
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) return;
 
             check.sprite = LMAssets.CheckboxEnabledIcon;
