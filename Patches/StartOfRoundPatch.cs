@@ -71,5 +71,14 @@ namespace LethalMystery.Patches
             }
         }
 
+
+
+        [HarmonyPatch(nameof(StartOfRound.AutoSaveShipData))]
+        [HarmonyPrefix]
+        private static bool DontSaveShip()
+        {
+            return false;
+        }
+
     }
 }
