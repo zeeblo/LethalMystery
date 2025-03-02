@@ -879,15 +879,24 @@ namespace LethalMystery.Network
 
             Plugin.firedText = topText;
             Plugin.firedTextSub = bottomText;
-            HUDManager.Instance.ShowPlayersFiredScreen(true);
-            StartOfRound.Instance.ShipLeaveAutomatically();
+            EndGame.AddLastAlive();
 
+            StartOfRound.Instance.StartCoroutine(endEvents());
         }
         public void roundEndReceive(string data, ulong id)
         {
             roundEnd.SendServer(data);
         }
 
+
+        private static IEnumerator endEvents()
+        {
+            HUDManager.Instance.ShowPlayersFiredScreen(true);
+            StartOfRound.Instance.ShipLeaveAutomatically();
+
+            yield return new WaitForSeconds(5f);
+            HUDManager.Instance.ShowPlayersFiredScreen(false);
+        }
 
 
 
@@ -901,7 +910,6 @@ namespace LethalMystery.Network
             string type = data.Split("/")[0];
             ulong.TryParse(data.Split("/")[1], out ulong pid);
             string note = data.Split("/")[2];
-
 
             switch (type)
             {

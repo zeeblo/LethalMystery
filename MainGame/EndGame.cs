@@ -12,16 +12,7 @@ namespace LethalMystery.MainGame
         public static List<ulong> aliveCrew = new List<ulong>();
         public static List<ulong> aliveMonsters = new List<ulong>();
         public static Dictionary<ulong, string> killedByNote = new Dictionary<ulong, string>();
-        public static Dictionary<ulong, bool> deathStatus = new Dictionary<ulong, bool>();
-
-        /*
-        public enum winCondition
-        {
-            None,
-            Crew,
-            Monster
-        }
-        */
+        public static List<ulong> lastPlayersAlive = new List<ulong>();
 
         public static void ResetVars()
         {
@@ -29,7 +20,7 @@ namespace LethalMystery.MainGame
             aliveMonsters.Clear();
         }
 
-        /*
+
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void WinConditionsCheck()
@@ -43,7 +34,7 @@ namespace LethalMystery.MainGame
                 string type = "employee";
                 string topText = "Employees Won!";
                 string bottomText = "By tasks";
-                
+
                 Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
                 winCondition = true;
             }
@@ -52,7 +43,7 @@ namespace LethalMystery.MainGame
                 string type = "employee";
                 string topText = "Employees Won!";
                 string bottomText = "";
-                
+
                 Plugin.netHandler.roundEndReceive($"{type}/{topText}/{bottomText}", Plugin.localPlayer.playerClientId);
                 winCondition = true;
             }
@@ -78,7 +69,7 @@ namespace LethalMystery.MainGame
             }
 
         }
-        */
+
 
         public static void SetupMonsterAmount(Dictionary<ulong, string> playerAndRoles)
         {
@@ -114,6 +105,25 @@ namespace LethalMystery.MainGame
         }
 
 
+
+        /// <summary>
+        /// When a monsters/employees win, tally up the people still alive
+        /// </summary>
+        public static void AddLastAlive()
+        {
+
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (lastPlayersAlive.Contains(player.playerClientId)) continue;
+                if (player.isPlayerDead == false)
+                {
+                    lastPlayersAlive.Add(player.playerClientId);
+                }
+
+            }
+        }
+
+
         /// <summary>
         /// Delete, Delete, Delete!
         /// Shows who killed / how a player died at the end of a round
@@ -126,16 +136,5 @@ namespace LethalMystery.MainGame
         }
 
 
-        /// <summary>
-        /// Adds player's alive condition for when the round ends.
-        /// If they survived the round / died.
-        /// </summary>
-        /*
-        public static void DeathStatus(ulong playerID)
-        {
-            if (deathStatus.ContainsKey(playerID)) return;
-            deathStatus.Add(playerID, true);
-        }
-        */
     }
 }

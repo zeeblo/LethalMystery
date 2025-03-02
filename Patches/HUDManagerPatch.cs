@@ -165,8 +165,18 @@ namespace LethalMystery.Patches
         [HarmonyPostfix]
         private static void RoundStats(HUDManager __instance)
         {
-            //__instance.statsUIElements.playerNamesText[0].text = "weeeee";
-            __instance.statsUIElements.playerStates[0].sprite = __instance.statsUIElements.deceasedIcon;
+            foreach (KeyValuePair<ulong, string> stat in EndGame.killedByNote)
+            {
+                __instance.statsUIElements.playerNotesText[stat.Key].text = "Notes: \n" + stat.Value;
+                __instance.statsUIElements.playerStates[stat.Key].sprite = __instance.statsUIElements.deceasedIcon;
+            }
+
+            foreach (ulong stat in EndGame.lastPlayersAlive)
+            {
+                __instance.statsUIElements.playerNotesText[stat].text = "Notes: \n";
+                __instance.statsUIElements.playerStates[stat].sprite = __instance.statsUIElements.aliveIcon;
+            }
+
             __instance.statsUIElements.allPlayersDeadOverlay.enabled = false;
         }
         
