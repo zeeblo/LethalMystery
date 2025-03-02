@@ -2,8 +2,8 @@
 using GameNetcodeStuff;
 using Unity.Netcode;
 using LethalMystery.Utils;
-using System.Xml.Linq;
 using LethalMystery.Maps;
+using LethalMystery.Players;
 
 
 namespace LethalMystery
@@ -115,7 +115,8 @@ namespace LethalMystery
 
             switch (commandarguments[0])
             {
-                case "set imps":
+                case "set":
+                    SetRoleAmount(role: commandarguments[1], num: commandarguments[2]);
                     break;
             }
         }
@@ -258,6 +259,25 @@ namespace LethalMystery
 
             DisplayChatMessage("<color=#FF00FF>" + msgtitle + "</color>\n" + msgbody);
             return msgbody + "/" + msgtitle;
+        }
+
+
+
+
+        public static void SetRoleAmount(string role, string num)
+        {
+            if (Roles.specialRoleAmount.ContainsKey(role) == false)
+            {
+                DisplayChatError("Invalid Command");
+                Plugin.mls.LogInfo($">>> role: {role} | num: {num} ");
+                return;
+            }
+            int raw_amount = StringAddons.ConvertToInt(num);
+            int amount = (raw_amount == 0 || raw_amount == 1 || raw_amount == 2) ? raw_amount : 1;
+
+            Roles.specialRoleAmount[role] = amount;
+
+            DisplayChatMessage($"Set {role} amount to {amount}");
         }
 
 

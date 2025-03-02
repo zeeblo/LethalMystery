@@ -90,6 +90,7 @@ namespace LethalMystery.MainGame
             Plugin.firedTextSub = "";
             EndGame.winCondition = false;
             EndGame.lastPlayersAlive.Clear();
+            EndGame.killedByNote.Clear();
 
             Plugin.ResetVariables();
             MinimapUI.CreateMapIcon();

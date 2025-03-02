@@ -12,6 +12,7 @@ namespace LethalMystery.Players
         public static List<string> allItems = new List<string>();
         public static Role? CurrentRole;
         public static Dictionary<ulong, string> localPlayerRoles = new Dictionary<ulong, string>();
+        public static Dictionary<string, int> specialRoleAmount = new Dictionary<string, int>();
 
         public enum RoleType
         {
@@ -24,12 +25,14 @@ namespace LethalMystery.Players
             public string Name { get; }
             public string Desc { get; }
             public RoleType Type { get; }
+            public bool special { get; }
 
-            public Role(string roleName, string desc, RoleType type)
+            public Role(string roleName, string desc, RoleType type, bool special = true)
             {
                 Name = roleName;
                 Desc = desc;
                 Type = type;
+                this.special = special;
             }
 
             public void UseAbility()
@@ -82,7 +85,8 @@ namespace LethalMystery.Players
             allRoles.Add(new Role(
             "employee",
             "Bring back items to the ship to meet the quota.",
-            RoleType.employee)
+            RoleType.employee,
+            special: false)
             );
             
 
@@ -108,6 +112,14 @@ namespace LethalMystery.Players
            ));
            */
 
+            foreach( Role rl in allRoles )
+            {
+                if (rl.special)
+                {
+                    specialRoleAmount.Add(rl.Name, 1);
+                }
+            }
+            
         }
 
 
@@ -132,13 +144,19 @@ namespace LethalMystery.Players
 
             }
 
+
+            // Number of special roles
             foreach (Role rl in allRoles)
             {
-                if ( (rl.Type == RoleType.monster && rl.Name != "employee") || rl.Name == "sheriff")
+                if (rl.special)
                 {
-                    specialRoles.Add(rl);
+                    for (int i = 0; i < specialRoleAmount[rl.Name]; i++)
+                    {
+                        specialRoles.Add(rl);
+                    }
                 }
             }
+
 
             // Assign Special Roles
             int specialRoleAmt = specialRoles.Count();
