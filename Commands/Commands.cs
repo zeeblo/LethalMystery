@@ -4,6 +4,8 @@ using Unity.Netcode;
 using LethalMystery.Utils;
 using LethalMystery.Maps;
 using LethalMystery.Players;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace LethalMystery
@@ -116,10 +118,11 @@ namespace LethalMystery
             switch (commandarguments[0])
             {
                 case "set":
-                    SetRoleAmount(role: commandarguments[1], num: commandarguments[2]);
+                    SetCommands(commandarguments, commandarguments.Length);
                     break;
             }
         }
+
 
 
         internal static void SendHostCommand(string commandInput)
@@ -261,6 +264,21 @@ namespace LethalMystery
             return msgbody + "/" + msgtitle;
         }
 
+
+
+
+        private static void SetCommands(string[] command, int args)
+        {
+            switch (args)
+            {
+                case 1:
+                    DisplayChatMessage("You need to specify a set command.");
+                    break;
+                case 3:
+                    SetRoleAmount(role: command[1], num: command[2]);
+                    break;
+            }
+        }
 
 
 

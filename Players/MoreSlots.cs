@@ -3,6 +3,8 @@ using UnityEngine;
 using HarmonyLib;
 using static LethalMystery.Players.Roles;
 using System.Reflection;
+using System.Collections.Generic;
+using System;
 
 namespace LethalMystery.Players
 {

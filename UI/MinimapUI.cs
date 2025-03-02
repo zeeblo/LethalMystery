@@ -5,6 +5,8 @@ using LethalMystery.Utils;
 using TMPro;
 using LethalMystery.MainGame;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using System;
 
 
 namespace LethalMystery.UI

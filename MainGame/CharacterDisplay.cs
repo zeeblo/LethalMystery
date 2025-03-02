@@ -8,6 +8,8 @@ using LethalMystery.Patches;
 using LethalMystery.Utils;
 using LethalMystery.Maps;
 using LethalMystery.UI;
+using System;
+using System.Collections.Generic;
 
 namespace LethalMystery.MainGame
 {

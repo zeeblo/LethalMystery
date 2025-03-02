@@ -1,4 +1,5 @@
-﻿using GameNetcodeStuff;
+﻿using System.Collections.Generic;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.Players;
 using LethalMystery.Utils;

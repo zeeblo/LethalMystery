@@ -9,6 +9,7 @@ using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using System.IO;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -53,7 +54,6 @@ namespace LethalMystery
         public static string firedTextSub = "";
 
 
-
         private void Awake()
         {
             netHandler = new NetHandler();
@@ -66,7 +66,6 @@ namespace LethalMystery
 
 
         }
-
 
 
         private void PatchAllStuff()

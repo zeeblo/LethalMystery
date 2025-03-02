@@ -1,19 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<AssemblyName>zeeblo.LethalMystery</AssemblyName>
 		<Product>LethalMystery</Product>
 		<Version>0.1.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="MainGame\Minimap.cs~RF3bae146a.TMP" />
-	  <None Remove="MainGame\zTests.cs~RFf1e5636.TMP" />
-	  <None Remove="Maps\CustomLvl.cs~RF1540833d.TMP" />
-	  <None Remove="Maps\CustomLvl.cs~RF15d7f6d8.TMP" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Core" Version="5.4.21" PrivateAssets="all" />
 		<PackageReference Include="UnityEngine.Modules" Version="2022.3.9" PrivateAssets="all" />

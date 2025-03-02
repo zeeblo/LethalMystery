@@ -3,6 +3,8 @@ using LethalNetworkAPI;
 using HarmonyLib;
 using LethalMystery.Utils;
 using LethalMystery.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace LethalMystery.MainGame

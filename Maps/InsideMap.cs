@@ -4,6 +4,7 @@ using UnityEngine;
 using LethalMystery.Utils;
 using LethalMystery.Players;
 using LethalMystery.MainGame;
+using System.Collections.Generic;
 
 namespace LethalMystery.Maps
 {

@@ -7,6 +7,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using LethalMystery.Patches;
+using System;
 
 namespace LethalMystery.MainGame
 {
