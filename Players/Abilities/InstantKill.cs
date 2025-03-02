@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using UnityEngine;
 
@@ -45,6 +46,7 @@ namespace LethalMystery.Players.Abilities
                 if (targetPlayer.playerClientId == Plugin.localPlayer.playerClientId) return killType.None;
                 if (Roles.NameIsMonsterType(Roles.localPlayerRoles[targetPlayer.playerClientId]))
                 {
+                    Plugin.netHandler.deathInfoReceive($"killedby/{targetPlayer.playerClientId}/Shot by: {Plugin.localPlayer.playerUsername}", Plugin.localPlayer.playerClientId);
                     return killType.player;
                 }
 
@@ -86,6 +88,7 @@ namespace LethalMystery.Players.Abilities
                     Plugin.netHandler.playerBloodReceive($"{Plugin.localPlayer.playerClientId}/blood", Plugin.localPlayer.playerClientId);
                     killedPlayer = true;
                     killCooldown = LMConfig.defaultKillCooldown;
+                    Plugin.netHandler.deathInfoReceive($"killedby/{plrID}/Stabbed by: {Plugin.localPlayer.playerUsername}", Plugin.localPlayer.playerClientId);
 
                     HUDManager.Instance.DisplayTip("Remove Blood!", $"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself", isWarning: true);
                     Commands.DisplayChatMessage($"Hold <color=#FF0000>\"{LMConfig.selfcleanBind.Value.ToUpper()}\"</color> to clean yourself");

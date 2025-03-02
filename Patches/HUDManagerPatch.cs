@@ -160,15 +160,16 @@ namespace LethalMystery.Patches
 
 
 
-        /*
+        
         [HarmonyPatch(nameof(HUDManager.FillEndGameStats))]
         [HarmonyPostfix]
         private static void RoundStats(HUDManager __instance)
         {
-            __instance.statsUIElements.playerNamesText[0].text = "weeeee";
+            //__instance.statsUIElements.playerNamesText[0].text = "weeeee";
             __instance.statsUIElements.playerStates[0].sprite = __instance.statsUIElements.deceasedIcon;
+            __instance.statsUIElements.allPlayersDeadOverlay.enabled = false;
         }
-        */
+        
 
     }
 }

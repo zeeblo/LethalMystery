@@ -36,6 +36,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> buyItem;
         private LNetworkMessage<string> setWaypoint;
         private LNetworkMessage<string> roundEnd;
+        private LNetworkMessage<string> deathInfo;
 
         public NetHandler()
         {
@@ -60,6 +61,7 @@ namespace LethalMystery.Network
             buyItem = LNetworkMessage<string>.Connect("buyItem");
             setWaypoint = LNetworkMessage<string>.Connect("setWaypoint");
             roundEnd = LNetworkMessage<string>.Connect("roundEnd");
+            deathInfo = LNetworkMessage<string>.Connect("deathInfo");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -94,6 +96,8 @@ namespace LethalMystery.Network
             setWaypoint.OnClientReceived += setWaypointClients;
             roundEnd.OnServerReceived += roundEndServer;
             roundEnd.OnClientReceived += roundEndClients;
+            deathInfo.OnServerReceived += deathInfoServer;
+            deathInfo.OnClientReceived += deathInfoClients;
         }
 
         #region Variables
@@ -885,6 +889,32 @@ namespace LethalMystery.Network
         }
 
 
+
+
+
+        private void deathInfoServer(string data, ulong id)
+        {
+            deathInfo.SendClients(data);
+        }
+        private void deathInfoClients(string data)
+        {
+            string type = data.Split("/")[0];
+            ulong.TryParse(data.Split("/")[1], out ulong pid);
+            string note = data.Split("/")[2];
+
+
+            switch (type)
+            {
+                case "killedby":
+                    EndGame.DeathNote(pid, note);
+                    break;
+            }
+
+        }
+        public void deathInfoReceive(string data, ulong id)
+        {
+            deathInfo.SendServer(data);
+        }
 
     }
 }

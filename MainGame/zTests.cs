@@ -71,11 +71,6 @@ namespace LethalMystery.MainGame
 
                 }
 
-                if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-                    Plugin.mls.LogInfo(">>> Forcing ship to leave");
-                    StartOfRound.Instance.EndGameServerRpc(0);
-                }
 
             }
         }

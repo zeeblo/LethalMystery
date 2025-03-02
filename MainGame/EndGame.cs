@@ -11,7 +11,9 @@ namespace LethalMystery.MainGame
         public static bool winCondition = false;
         public static List<ulong> aliveCrew = new List<ulong>();
         public static List<ulong> aliveMonsters = new List<ulong>();
-        
+        public static Dictionary<ulong, string> killedByNote = new Dictionary<ulong, string>();
+        public static Dictionary<ulong, bool> deathStatus = new Dictionary<ulong, bool>();
+
         /*
         public enum winCondition
         {
@@ -30,7 +32,7 @@ namespace LethalMystery.MainGame
         /*
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
-        private static void ChecksPatch()
+        private static void WinConditionsCheck()
         {
             if (!Plugin.isHost) return;
             if (StartOfRound.Instance.inShipPhase) return;
@@ -111,5 +113,29 @@ namespace LethalMystery.MainGame
             }
         }
 
+
+        /// <summary>
+        /// Delete, Delete, Delete!
+        /// Shows who killed / how a player died at the end of a round
+        /// in the status popup
+        /// </summary>
+        public static void DeathNote(ulong playerID, string note)
+        {
+            if (killedByNote.ContainsKey(playerID)) return;
+            killedByNote.Add(playerID, note);
+        }
+
+
+        /// <summary>
+        /// Adds player's alive condition for when the round ends.
+        /// If they survived the round / died.
+        /// </summary>
+        /*
+        public static void DeathStatus(ulong playerID)
+        {
+            if (deathStatus.ContainsKey(playerID)) return;
+            deathStatus.Add(playerID, true);
+        }
+        */
     }
 }
