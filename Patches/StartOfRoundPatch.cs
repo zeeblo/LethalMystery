@@ -50,10 +50,12 @@ namespace LethalMystery.Patches
             for (int i = 0; i < ___levels.Length; i++)
             {
                 ___levels[i].currentWeather = LevelWeatherType.None;
+                /*
                 if (___levels[i].overrideWeather)
                 {
                     ___levels[i].currentWeather = ___levels[i].overrideWeatherType;
                 }
+                */
             }
             return false;
         }
