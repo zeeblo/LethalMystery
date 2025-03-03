@@ -232,10 +232,16 @@ namespace LethalMystery.Maps
             GameObject sabo = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/sabo");
             GameObject rawsaboBox = GameObject.Find("Environment/HangarShip/DoorGenerator");
             if (sabo == null || rawsaboBox == null) return;
-            GameObject saboBox = Plugin.Instantiate(rawsaboBox, sabo.transform.position, Quaternion.identity);
+            GameObject saboBox = Plugin.Instantiate(rawsaboBox, sabo.transform.position, rawsaboBox.transform.rotation);
 
-            GOTools.AddInteractTrig(saboBox, "FIX", 5f);
-            
+            GOTools.AddInteractTrig(sabo, "FIX", time: 5f);
+
+            GameObject scan_node = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/sabo/scan_node");
+            if (scan_node)
+            {
+                GOTools.AddScanNode(scan_node, "Generator", "FIX", nodeType: 1, requiresLineOfSight: false);
+            }
+
         }
 
 
