@@ -253,6 +253,25 @@ namespace LethalMystery.Utils
         }
 
 
+        public static void AddInteractTrig(GameObject obj, string hoverTip = "HOLD", float time = 1.8f)
+        {
+            Sprite hoverSprite = UnityEngine.Object.FindObjectOfType<InteractTrigger>().hoverIcon;
+            obj.tag = "InteractTrigger";
+            obj.layer = LayerMask.NameToLayer("InteractableObject");
+            InteractTrigger useObj = obj.AddComponent<InteractTrigger>();
+            useObj.hoverTip = hoverTip + " : [LMB]";
+            useObj.timeToHold = time;
+            useObj.holdInteraction = true;
+            useObj.hoverIcon = hoverSprite;
+            useObj.holdingInteractEvent = new InteractEventFloat();
+            useObj.onInteractEarlyOtherClients = new InteractEvent();
+            useObj.onInteract = new InteractEvent();
+            useObj.onInteractEarly = new InteractEvent();
+            useObj.onStopInteract = new InteractEvent();
+            useObj.onCancelAnimation = new InteractEvent();
+        }
+
+
         public static void HideLMInsideDungeon(bool value = true)
         {
             //Scene currentScene = SceneManager.GetSceneAt(1);

@@ -226,6 +226,20 @@ namespace LethalMystery.Maps
 
 
 
+
+        public static void SpawnGeneratorBox()
+        {
+            GameObject sabo = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/sabo");
+            GameObject rawsaboBox = GameObject.Find("Environment/HangarShip/DoorGenerator");
+            if (sabo == null || rawsaboBox == null) return;
+            GameObject saboBox = Plugin.Instantiate(rawsaboBox, sabo.transform.position, Quaternion.identity);
+
+            GOTools.AddInteractTrig(saboBox, "FIX", 5f);
+            
+        }
+
+
+
         /// <summary>
         /// Makes the LM generated dungeon door interactable
         /// which will allow users to leave

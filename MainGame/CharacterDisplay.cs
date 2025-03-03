@@ -336,6 +336,7 @@ namespace LethalMystery.MainGame
             HUDManager.Instance.ShowPlayersFiredScreen(false);
             InsideMap.SpawnInterior();
             InsideMap.SpawnVents();
+            InsideMap.SpawnGeneratorBox();
             InsideMap.SpawnScrapScanPositions();
             InsideMap.MakeLMDoorInteractive();
             InsideMap.SetMinimapLayer();
