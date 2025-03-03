@@ -6,6 +6,7 @@ using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Maps;
+using LethalMystery.Maps.Sabotages;
 using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.UI;
@@ -40,6 +41,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> setWaypoint;
         private LNetworkMessage<string> roundEnd;
         private LNetworkMessage<string> deathInfo;
+        private LNetworkMessage<string> sabotage;
 
         public NetHandler()
         {
@@ -65,6 +67,7 @@ namespace LethalMystery.Network
             setWaypoint = LNetworkMessage<string>.Connect("setWaypoint");
             roundEnd = LNetworkMessage<string>.Connect("roundEnd");
             deathInfo = LNetworkMessage<string>.Connect("deathInfo");
+            sabotage = LNetworkMessage<string>.Connect("sabotage");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -101,6 +104,8 @@ namespace LethalMystery.Network
             roundEnd.OnClientReceived += roundEndClients;
             deathInfo.OnServerReceived += deathInfoServer;
             deathInfo.OnClientReceived += deathInfoClients;
+            sabotage.OnServerReceived += sabotageServer;
+            sabotage.OnClientReceived += sabotageClients;
         }
 
         #region Variables
@@ -925,6 +930,31 @@ namespace LethalMystery.Network
         public void deathInfoReceive(string data, ulong id)
         {
             deathInfo.SendServer(data);
+        }
+
+
+
+        private void sabotageServer(string data, ulong id)
+        {
+            sabotage.SendClients(data);
+        }
+        private void sabotageClients(string data)
+        {
+
+            switch (data)
+            {
+                case "lights/break":
+                    StartOfRound.Instance.StartCoroutine(Generator.generatorEvents());
+                    break;
+                case "lights/fix":
+                    Generator.FixGenerator();
+                    break;
+            }
+
+        }
+        public void sabotageReceive(string data, ulong id)
+        {
+            sabotage.SendServer(data);
         }
 
     }

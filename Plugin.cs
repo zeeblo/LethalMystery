@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
+using LethalMystery.Maps.Sabotages;
 using LethalMystery.Network;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
@@ -90,6 +91,7 @@ namespace LethalMystery
             Ability.ResetVars();
             Controls.ResetVars();
             Start.ResetVars();
+            Sabotage.ResetVars();
         }
 
 

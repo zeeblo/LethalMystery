@@ -7,6 +7,8 @@ using LethalMystery.MainGame;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
+using LethalMystery.Players;
+using LethalMystery.Maps.Sabotages;
 
 
 namespace LethalMystery.UI
@@ -19,29 +21,23 @@ namespace LethalMystery.UI
         public static GameObject minimapCam;
         public static GameObject border;
         public static GameObject mapIcon;
+        public static Image lightIcon;
         public static TextMeshProUGUI playerNameTXT;
+        public static List<GameObject> allMinimapObjects = new List<GameObject>();
 
 
 
 
         public static void DestroyUI()
         {
-            if (border != null)
+            foreach (GameObject obj in allMinimapObjects)
             {
-                Plugin.Destroy(border);
+                if (obj != null)
+                {
+                    Plugin.Destroy(obj);
+                }
             }
-            if (minimap != null)
-            {
-                Plugin.Destroy(minimap);
-            }
-            if (minimapCam != null)
-            {
-                Plugin.Destroy(minimapCam);
-            }
-            if (mapIcon != null)
-            {
-                Plugin.Destroy(mapIcon);
-            }
+            allMinimapObjects.Clear();
             Minimap.ResetVars();
         }
 
@@ -65,6 +61,8 @@ namespace LethalMystery.UI
             rectForm.anchorMax = new Vector2(1, 1);
             rectForm.pivot = new Vector2(1, 1);
             rectForm.anchoredPosition = new Vector2(0, 0);
+
+            allMinimapObjects.Add(mapIcon);
 
             CreateMapIconKeybind();
         }
@@ -114,8 +112,9 @@ namespace LethalMystery.UI
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
             rectBorder.sizeDelta = new Vector2(450, 450);
-
             rectBorder.anchoredPosition = Vector2.zero;
+
+            allMinimapObjects.Add(border);
         }
 
         public static void CreateMinimap()
@@ -147,9 +146,13 @@ namespace LethalMystery.UI
             waypoint.minimapRectTransform = minimap.GetComponent<RectTransform>();
             Minimap.waypointPrefab = Plugin.localPlayer.transform.Find("Misc/MapDot").gameObject; // done twice
 
+            allMinimapObjects.Add(minimap);
+            allMinimapObjects.Add(minimapCam);
+
             CreateName();
             LeftButtonUI();
             RightButtonUI();
+            CreateLightSabotage();
         }
 
 
@@ -307,6 +310,53 @@ namespace LethalMystery.UI
         }
 
 
+
+
+        private static void CreateLightSabotage()
+        {
+            if (Roles.CurrentRole != null && Roles.CurrentRole.Type == Roles.RoleType.employee) return;
+
+            GameObject LightSwitch = new GameObject("LightSwitchBtn");
+            LightSwitch.transform.SetParent(minimap.transform, false);
+
+            Button btn = LightSwitch.AddComponent<Button>();
+            lightIcon = LightSwitch.AddComponent<Image>();
+
+            Sprite baseImg = LMAssets.LightSwitch;
+            Sprite imgHover = LMAssets.LightSwitchHover;
+            Sprite imgSelect = LMAssets.LightSwitchSelect;
+            lightIcon.sprite = baseImg;
+
+            EventTrigger trigger = LightSwitch.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) =>
+            {
+                lightIcon.sprite = (!Sabotage.generatorFixed || Sabotage.fogTimerStarted) ? imgSelect : imgHover;
+            });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) =>
+            {
+                lightIcon.sprite = (!Sabotage.generatorFixed || Sabotage.fogTimerStarted) ? imgSelect : baseImg;
+            });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => Generator.BreakGenerator());
+
+            RectTransform rect = LightSwitch.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(32, 32);
+            rect.anchorMin = new Vector2(1, 1);
+            rect.anchorMax = new Vector2(1, 1);
+            rect.pivot = new Vector2(1, 1);
+            rect.anchoredPosition = new Vector2(-3, -8);
+
+            allMinimapObjects.Add(LightSwitch);
+        }
 
     }
 }

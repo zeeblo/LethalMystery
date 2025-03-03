@@ -9,6 +9,7 @@ namespace LethalMystery.Players.Abilities
     [HarmonyPatch]
     internal class Ability
     {
+        
         public static void ResetVars()
         {
             InstantKill.ResetVars();
@@ -35,5 +36,9 @@ namespace LethalMystery.Players.Abilities
 
             return true;
         }
+
+
+
+
     }
 }
