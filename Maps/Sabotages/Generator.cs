@@ -49,7 +49,10 @@ namespace LethalMystery.Maps.Sabotages
 
         public static void BreakGenerator()
         {
-            Plugin.netHandler.sabotageReceive("lights/break", Plugin.localPlayer.playerClientId);
+            if (Sabotage.generatorFixed == true && Sabotage.fogTimerStarted == false)
+            {
+                Plugin.netHandler.sabotageReceive("lights/break", Plugin.localPlayer.playerClientId);
+            }
         }
 
 
@@ -77,7 +80,10 @@ namespace LethalMystery.Maps.Sabotages
         {
             if (Sabotage.generatorFixed == true && Sabotage.fogTimerStarted == false)
             {
-                MinimapUI.lightIcon.sprite = LMAssets.LightSwitchSelect;
+                if (MinimapUI.lightIcon != null)
+                {
+                    MinimapUI.lightIcon.sprite = LMAssets.LightSwitchSelect;
+                }
                 HUDManager.Instance.RadiationWarningHUD();
                 Sabotage.generatorFixed = false;
                 yield return new WaitForSeconds(1.2f);
