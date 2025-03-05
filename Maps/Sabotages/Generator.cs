@@ -87,7 +87,12 @@ namespace LethalMystery.Maps.Sabotages
                 HUDManager.Instance.RadiationWarningHUD();
                 Sabotage.generatorFixed = false;
                 yield return new WaitForSeconds(1.2f);
-                EnableFog(true);
+
+                if (Roles.CurrentRole != null && Roles.CurrentRole.Type == Roles.RoleType.employee)
+                {
+                    EnableFog(true);
+                }
+               
             }
 
         }
