@@ -108,7 +108,7 @@ namespace LethalMystery.UI
             rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
 
             border.layer = 5;
-            border.transform.SetSiblingIndex(14);
+            border.transform.SetSiblingIndex(13); // before quickmenu
 
             RectTransform rectBorder = border.GetComponent<RectTransform>();
             rectBorder.sizeDelta = new Vector2(450, 450);
