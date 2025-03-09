@@ -70,8 +70,8 @@ namespace LethalMystery.MainGame
             }
 
         }
+        
         */
-
         public static void SetupMonsterAmount(Dictionary<ulong, string> playerAndRoles)
         {
             foreach (KeyValuePair<ulong, string> id in playerAndRoles)

@@ -29,7 +29,7 @@ namespace LethalMystery.Players.Abilities
             if (__instance.ItemSlots[__instance.currentItemSlot] == null) return true;
             if (__instance.ItemSlots[__instance.currentItemSlot].playerHeldBy.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId) return true;
             if (Roles.CurrentRole == null) return true;
-            if (__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains(Roles.CurrentRole.GetItem()))
+            if (__instance.ItemSlots[__instance.currentItemSlot].name.ToLower().Contains(Roles.CurrentRole.GetItem()) && Roles.CurrentRole.GetItem() != "")
             {
                 return false;
             }

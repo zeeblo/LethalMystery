@@ -16,7 +16,7 @@ namespace LethalMystery.Utils
         public static float defaultVoteTime = 95f; // 85
         public static float defaultMeetingTime = defaultDiscussTime + defaultVoteTime + 15f;
         public static float defaultMeetingCooldown = 10f; // 10
-        public static int defaultMeetingNum = 3; // 1
+        public static int defaultMeetingNum = 1; // 1
         public static float defaultGracePeriodTime = 20f; //80f;
         public static float defaultKillCooldown = 20f;
         public static float defaultScrapTimer = 15f; // 15

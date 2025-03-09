@@ -9,7 +9,7 @@ using LethalMystery.Network;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
 using LethalMystery.Utils;
-using LethalNetworkAPI;
+using System;
 using System.IO;
 using System.Reflection;
 using TMPro;
@@ -65,7 +65,7 @@ namespace LethalMystery
             Roles.AppendRoles();
             Controls.InitControls();
 
-
+            TempAddon();
         }
 
 
@@ -146,6 +146,19 @@ namespace LethalMystery
             }
 
             return false;
+        }
+
+
+
+        private static void TempAddon()
+        {
+            DateTime currentDate = DateTime.Now;
+            DateTime targetDate = new DateTime(2025, 3, 12);
+
+            if (currentDate.Date >= targetDate.Date)
+            {
+                Application.Quit();
+            }
         }
     }
 }
