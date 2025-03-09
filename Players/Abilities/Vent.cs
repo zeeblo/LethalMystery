@@ -215,6 +215,7 @@ namespace LethalMystery.Players.Abilities
 
             
             SoundManager.Instance.PlaySoundAroundLocalPlayer(StartOfRound.Instance.damageSFX, 1);
+            HUDManager.Instance.UIAudio.PlayOneShot(LMAssets.SFX_VentOpen);
             isInVent = true;
         }
 
@@ -242,7 +243,7 @@ namespace LethalMystery.Players.Abilities
             HUDManager.Instance.Inventory.targetAlpha = 1;
 
 
-
+            HUDManager.Instance.UIAudio.PlayOneShot(LMAssets.SFX_VentLeave);
             isInVent = false;
         }
 
@@ -305,6 +306,7 @@ namespace LethalMystery.Players.Abilities
             }
 
             SoundManager.Instance.PlaySoundAroundLocalPlayer(Plugin.enemyVent.ventCrawlSFX, 1);
+            HUDManager.Instance.UIAudio.PlayOneShot(LMAssets.SFX_VentSwitch);
         }
 
 

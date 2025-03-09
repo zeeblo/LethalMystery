@@ -20,6 +20,9 @@ namespace LethalMystery.Utils
         public static Sprite? LightSwitch;
         public static Sprite? LightSwitchHover;
         public static Sprite? LightSwitchSelect;
+        public static AudioClip SFX_VentOpen;
+        public static AudioClip SFX_VentLeave;
+        public static AudioClip SFX_VentSwitch;
         public static GameObject SkeldMap;
         public static GameObject OfficeMap;
 
@@ -27,12 +30,12 @@ namespace LethalMystery.Utils
 
         public static void LoadAllAssets()
         {
-            SpriteLoader();
+            ItemsLoader();
             DefaultMapLoader();
         }
 
 
-        private static void SpriteLoader()
+        private static void ItemsLoader()
         {
             string BundleDir = Plugin.MainDir + "\\Assets\\Assetbundles\\items";
 
@@ -109,8 +112,16 @@ namespace LethalMystery.Utils
                 new Rect(0, 0, LightSwitchSelectTexture.width, LightSwitchSelectTexture.height),
                 new Vector2(0, 0)
             );
+
+            AudioLoader(myBundle);
         }
 
+        private static void AudioLoader(AssetBundle bundle)
+        {
+            SFX_VentOpen = bundle.LoadAsset<AudioClip>("vent_open.wav");
+            SFX_VentLeave = bundle.LoadAsset<AudioClip>("vent_leave.wav");
+            SFX_VentSwitch = bundle.LoadAsset<AudioClip>("vent_switch.MP3");   
+        }
 
 
         private static void DefaultMapLoader()
