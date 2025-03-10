@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using Discord;
+﻿using System.Collections;
+using System.Collections.Generic;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 namespace LethalMystery.UI
@@ -36,6 +35,7 @@ namespace LethalMystery.UI
                 isCalled = false;
 
                 UpdateVoteButtonSprite();
+                //StartOfRound.Instance.StartCoroutine(DoubleCheckList());
             }
 
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
@@ -205,7 +205,10 @@ namespace LethalMystery.UI
 
         }
 
-
+        /// <summary>
+        /// During discuss time the buttons must appear as X.
+        /// After they must appear as empty boxes
+        /// </summary>
         private static void UpdateVoteButtonSprite()
         {
             GameObject playerVoteBtn = GetPlayerListSlot().transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
@@ -302,11 +305,15 @@ namespace LethalMystery.UI
                 foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
                 {
                     TextMeshProUGUI pName = players.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                    if (pName.text.EndsWith($"#{userID}"))
+                    foreach (PlayerControllerB sofplayer in StartOfRound.Instance.allPlayerScripts)
                     {
-                        GameObject plrObj = players.transform.Find("Votes").gameObject;
-                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
-                        break;
+                        if (pName.text == sofplayer.playerUsername && (int)sofplayer.playerClientId == userID)
+                        {
+                            Plugin.mls.LogInfo(">>> Found matching name");
+                            GameObject plrObj = players.transform.Find("Votes").gameObject;
+                            plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
+                            break;
+                        }
                     }
 
                 }
@@ -335,11 +342,15 @@ namespace LethalMystery.UI
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
                 Plugin.mls.LogInfo($">>> pName: {pName.text} | playerID: {playerID}");
 
-                if (pName.text.EndsWith($"#{playerID}"))
+                foreach (PlayerControllerB sofplayer in StartOfRound.Instance.allPlayerScripts)
                 {
-                    Plugin.Destroy(player.gameObject);
-                    break;
+                    if (pName.text == sofplayer.playerUsername && sofplayer.playerClientId == playerID)
+                    {
+                        Plugin.mls.LogInfo($"^^^ Found Match! (sofplayer: {sofplayer.playerUsername})");
+                        Plugin.Destroy(player.gameObject);
+                    }
                 }
+
 
             }
         }
@@ -356,9 +367,27 @@ namespace LethalMystery.UI
                 if (plr.isPlayerDead)
                 {
                     UpdatePlayerList(plr.playerClientId);
-                    break;
                 }
             }
+        }
+
+
+
+        /// <summary>
+        /// If for some reason the UI isn't created properly, recreate it
+        /// </summary>
+        private static IEnumerator DoubleCheckList()
+        {
+            yield return new WaitForSeconds(0.8f);
+            if (votingGUI != null)
+            {
+                CheckPlayerList();
+            }
+            else
+            {
+                isCalled = true;
+            }
+            
         }
 
     }

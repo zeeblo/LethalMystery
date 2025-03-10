@@ -150,7 +150,7 @@ namespace LethalMystery.Network
 
                 if (VotingUI.votingGUI != null)
                 {
-                    Plugin.Destroy(VotingUI.votingGUI);
+                    Plugin.Destroy(VotingUI.votingGUI.gameObject);
                 }
                 GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             }
@@ -575,21 +575,26 @@ namespace LethalMystery.Network
 
         private void playerDiedServer(string data, ulong id)
         {
-            ulong.TryParse(data,out id);
-            EndGame.aliveCrew.Remove(id);
-            EndGame.aliveMonsters.Remove(id);
+            ulong.TryParse(data,out ulong deadID);
+            EndGame.aliveCrew.Remove(deadID);
+            EndGame.aliveMonsters.Remove(deadID);
+            
 
             playerDied.SendClients(data);
+            Plugin.mls.LogInfo($">>>  playerDiedServer ID ({deadID})");
         }
         private void playerDiedClients(string data)
         {
             Int32.TryParse(data, out int userID);
+            ulong.TryParse(data, out ulong deadID);
 
+            Plugin.mls.LogInfo($">>> playerDiedClients ID ({userID})");
             Voting.RefreshPlayerVotes($"{userID}");
         }
         public void playerDiedReceive(string data, ulong id)
         {
             playerDied.SendServer(data);
+            Plugin.mls.LogInfo($">>> playerDiedReceive ({Plugin.localPlayer.playerClientId})");
         }
 
 
@@ -636,6 +641,12 @@ namespace LethalMystery.Network
             Voting.playersWhoGotVoted.Value = votes;
             Voting.playersWhoVoted.Value = votes;
 
+            Plugin.mls.LogInfo($">>> setupVotesClients() ID: {playerID}");
+
+            foreach(KeyValuePair<string, string> val in votes)
+            {
+                Plugin.mls.LogInfo($">>> votes Key: {val.Key} | votes Val: {val.Value}");
+            }
         }
         public void setupVotesReceive(string data, ulong id)
         {

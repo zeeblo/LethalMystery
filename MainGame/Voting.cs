@@ -117,6 +117,8 @@ namespace LethalMystery.MainGame
             if (!Plugin.isHost) return;
             if (playersWhoGotVoted.Value == null) return;
 
+            Plugin.mls.LogInfo($">>> RefreshPlayerVotes() id: {playerID}");
+
             Plugin.netHandler.setupVotesReceive($"{playerID}/refresh", Plugin.localPlayer.playerClientId);
         }
 
