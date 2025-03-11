@@ -84,11 +84,12 @@ namespace LethalMystery.Players
             if (MinimapUI.minimap == null)
             {
                 MinimapUI.CreateMinimap();
+                UnlockCursor(true);
                 return;
             }
 
             MinimapUI.border.SetActive(!MinimapUI.border.activeSelf);
-            
+            UnlockCursor(MinimapUI.border.activeSelf);
         }
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
