@@ -7,6 +7,7 @@ using BepInEx;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using LethalMystery.MainGame;
 
 
 namespace LethalMystery.Maps
@@ -97,6 +98,10 @@ namespace LethalMystery.Maps
                     displayText: "Ignore spaces in map names. Eg. \"My map\" should be typed \"mymap\".\n\nCustom Maps:\n\n\n\n",
                     terminalEvent: "cmd");
 
+            NewTerminalNode node4 = new NewTerminalNode(
+                    displayText: BuyItems.ShowAllItems() + "\n\n\n\n",
+                    terminalEvent: "cmd");
+
             customKeywords.Add(new NewTerminalKeyword(
                 word: "skeld",
                 isVerb: false,
@@ -111,6 +116,11 @@ namespace LethalMystery.Maps
                 word: "moons",
                 isVerb: false,
                 specialKeywordResult: node3));
+
+            customKeywords.Add(new NewTerminalKeyword(
+                word: "store",
+                isVerb: false,
+                specialKeywordResult: node4));
         }
 
 
@@ -138,7 +148,7 @@ namespace LethalMystery.Maps
         }
 
 
-        private static void RefreshCustomKeywords()
+        public static void RefreshCustomKeywords()
         {
             customKeywords.Clear();
             AppendNewTerminalKeyword();

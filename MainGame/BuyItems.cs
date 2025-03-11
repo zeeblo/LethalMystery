@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using HarmonyLib;
-using Unity.Netcode;
-using UnityEngine;
+using LethalMystery.Maps;
 
 namespace LethalMystery.MainGame
 {
@@ -51,6 +48,7 @@ namespace LethalMystery.MainGame
                         break;
                 }
             }
+            CustomLvl.RefreshCustomKeywords();
         }
 
 
@@ -118,6 +116,17 @@ namespace LethalMystery.MainGame
                     itm.creditsWorth = 999;
                 }
             }
+        }
+
+        public static string ShowAllItems()
+        {
+            string items = "";
+            foreach (KeyValuePair<string, int> i in itemsAndPrices)
+            {
+                items += $"* {i.Key}  //  Price: ${i.Value}\n";
+            }
+
+            return items;
         }
 
 
