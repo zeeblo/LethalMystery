@@ -35,6 +35,7 @@ namespace LethalMystery.UI
                 isCalled = false;
 
                 UpdateVoteButtonSprite();
+                EnableDisabledList();
                 //StartOfRound.Instance.StartCoroutine(DoubleCheckList());
             }
 
@@ -350,12 +351,25 @@ namespace LethalMystery.UI
                         Plugin.Destroy(player.gameObject);
                     }
                 }
-
-
             }
         }
 
 
+        /// <summary>
+        /// Sometimes certain playerlist that shouldn't appear disabled
+        /// are disabled, this method attempts to fix that
+        /// </summary>
+        private static void EnableDisabledList()
+        {
+            string parentPath = "Systems/UI/Canvas/VotingMenu";
+            string path = $"{parentPath}/PlayerList(Clone)";
+
+            GameObject PlayerList = GameObject.Find(path);
+            if (PlayerList != null)
+            {
+                PlayerList.SetActive(true);
+            }
+        }
 
         /// <summary>
         /// Check if players are dead and remove them from the votelist
