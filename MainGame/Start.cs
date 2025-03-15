@@ -92,6 +92,7 @@ namespace LethalMystery.MainGame
             EndGame.winCondition = false;
             EndGame.lastPlayersAlive.Clear();
             EndGame.killedByNote.Clear();
+            Meeting.MeetingNum = LMConfig.defaultMeetingNum;
 
             Plugin.ResetVariables();
             MinimapUI.CreateMapIcon();
