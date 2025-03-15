@@ -49,6 +49,7 @@ namespace LethalMystery.MainGame
                 return;
             if (!(StringAddons.ConvertToFloat(MeetingCooldown.Value) <= 0)) // If MeetingCooldown is still greater than 0 then dont continue
                 return;
+            if (StartOfRound.Instance.shipLeftAutomatically) return;
 
             MeetingNum -= 1;
             Plugin.netHandler.MeetingReceive("meeting", Plugin.localPlayer.actualClientId);

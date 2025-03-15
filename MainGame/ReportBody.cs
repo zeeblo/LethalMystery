@@ -14,6 +14,7 @@ namespace LethalMystery.MainGame
         {
             if (StartOfRound.Instance.inShipPhase || StringAddons.ConvertToBool(Meeting.inMeeting.Value))
                 return;
+            if (StartOfRound.Instance.shipLeftAutomatically) return;
 
             PlayerControllerB previousPlayerHeldBy = (PlayerControllerB)Traverse.Create(__instance).Field("previousPlayerHeldBy").GetValue();
 

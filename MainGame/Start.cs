@@ -180,7 +180,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void LMChatMsg()
         {
-            Commands.DisplayChatMessage($"<color=#FF0000>Lethal Mystery</color> v{Plugin.modVersion}");
+            Commands.DisplayChatMessage($"<color=#FF0000>Lethal Mystery</color> v{Plugin.modVersion}-alpha");
         }
 
 

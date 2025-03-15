@@ -21,7 +21,7 @@ namespace LethalMystery.MainGame
             aliveMonsters.Clear();
         }
 
-        /*
+        
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void WinConditionsCheck()
@@ -71,7 +71,7 @@ namespace LethalMystery.MainGame
 
         }
         
-        */
+       
         public static void SetupMonsterAmount(Dictionary<ulong, string> playerAndRoles)
         {
             foreach (KeyValuePair<ulong, string> id in playerAndRoles)

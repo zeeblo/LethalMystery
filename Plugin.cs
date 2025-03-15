@@ -153,7 +153,7 @@ namespace LethalMystery
         private static void TempAddon()
         {
             DateTime currentDate = DateTime.Now;
-            DateTime targetDate = new DateTime(2025, 3, 12);
+            DateTime targetDate = new DateTime(2025, 3, 20);
 
             if (currentDate.Date >= targetDate.Date)
             {
