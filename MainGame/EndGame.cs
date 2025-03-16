@@ -26,6 +26,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void WinConditionsCheck()
         {
+            if (Plugin.inTestMode && Plugin.FoundThisMod("zeebloTesting.zeeblo.dev") && Plugin.isHost) return;
             if (!Plugin.isHost) return;
             if (StartOfRound.Instance.inShipPhase) return;
             if (!Start.gameStarted) return;

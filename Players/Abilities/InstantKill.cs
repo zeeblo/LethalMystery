@@ -14,7 +14,7 @@ namespace LethalMystery.Players.Abilities
     {
         public static bool killedPlayer = false;
         public static float killCooldown = 0;
-        
+
         public static void ResetVars()
         {
             killedPlayer = false;
@@ -48,14 +48,18 @@ namespace LethalMystery.Players.Abilities
                 if (targetPlayer.playerClientId == Plugin.localPlayer.playerClientId) return killType.None;
                 if (Roles.NameIsMonsterType(Roles.localPlayerRoles[targetPlayer.playerClientId]))
                 {
-                    Plugin.netHandler.deathInfoReceive($"killedby/{targetPlayer.playerClientId}/Shot by: {Plugin.localPlayer.playerUsername}", Plugin.localPlayer.playerClientId);
                     return killType.player;
                 }
+                else
+                {
+                    Plugin.localPlayer.DamagePlayer(999);
+                }
 
-                Plugin.localPlayer.DamagePlayer(999);
+                Plugin.netHandler.deathInfoReceive($"killedby/{targetPlayer.playerClientId}/Shot by: {Plugin.localPlayer.playerUsername}", Plugin.localPlayer.playerClientId);
+
                 return killType.self;
 
-                
+
             }
             return killType.None;
         }

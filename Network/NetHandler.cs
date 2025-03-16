@@ -930,6 +930,11 @@ namespace LethalMystery.Network
             ulong.TryParse(data.Split("/")[1], out ulong pid);
             string note = data.Split("/")[2];
 
+            if (Plugin.localPlayer.playerClientId == pid)
+            {
+                Plugin.localPlayer.DamagePlayer(999); // kill target player
+            }
+
             switch (type)
             {
                 case "killedby":
