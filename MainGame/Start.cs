@@ -140,6 +140,17 @@ namespace LethalMystery.MainGame
             return true;
         }
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayer))]
+        [HarmonyPrefix]
+        private static bool StopDeath()
+        {
+            if (StringAddons.ConvertToBool(inGracePeriod.Value))
+            {
+                return false;
+            }
+            return true;
+        }
+
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void GracePeriodTime()

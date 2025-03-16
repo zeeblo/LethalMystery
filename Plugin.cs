@@ -29,7 +29,7 @@ namespace LethalMystery
     {
         public const string modGUID = "LethalMystery.zeeblo.dev";
         public const string modName = "zeeblo.LethalMystery";
-        public const string modVersion = "0.1.0";
+        public const string modVersion = "0.1.1";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
@@ -153,7 +153,7 @@ namespace LethalMystery
         private static void TempAddon()
         {
             DateTime currentDate = DateTime.Now;
-            DateTime targetDate = new DateTime(2025, 3, 20);
+            DateTime targetDate = new DateTime(2025, 3, 24);
 
             if (currentDate.Date >= targetDate.Date)
             {
