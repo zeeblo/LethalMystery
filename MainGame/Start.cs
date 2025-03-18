@@ -1,14 +1,18 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalLib.Modules;
 using LethalMystery.Maps;
 using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LethalMystery.MainGame
 {
@@ -28,6 +32,7 @@ namespace LethalMystery.MainGame
             scrapTimer = 0;
             gameStarted = false;
         }
+
 
 
         /// <summary>
@@ -94,6 +99,7 @@ namespace LethalMystery.MainGame
             EndGame.killedByNote.Clear();
             Meeting.MeetingNum = LMConfig.defaultMeetingNum;
 
+
             Plugin.ResetVariables();
             MinimapUI.CreateMapIcon();
             Tasks.AppendScraps();
@@ -101,6 +107,7 @@ namespace LethalMystery.MainGame
             CharacterDisplay.BlackVision(true);
             BuyItems.SetItemPrices();
             BuyItems.HideItems();
+            CheckCustomNames();
 
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
@@ -287,6 +294,53 @@ namespace LethalMystery.MainGame
             float normalizedTimeOfDay = currentDayTime / 1080;
             TimeOfDay.Instance.currentDayTime = currentDayTime;
             TimeOfDay.Instance.sunAnimator.SetFloat("timeOfDay", Mathf.Clamp(normalizedTimeOfDay, 0f, 0.78f));
+        }
+
+
+
+
+        /// <summary>
+        /// Append ids onto player names
+        /// </summary>
+        private static void CheckCustomNames()
+        {
+            GameObject plist = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
+            string listPath = "Image/QuickmenuOverride(Clone)/Holder";
+            Transform allPlayerListObjs = plist.transform.Find(listPath).transform;
+
+            SetCustomNames(); // To properly initiate names
+
+            for (int id = 0; id < StartOfRound.Instance.allPlayerScripts.Length; id++)
+            {
+                string name = StartOfRound.Instance.allPlayerScripts[id].playerUsername;
+                StartOfRound.Instance.allPlayerScripts[id].playerUsername = name + $" #{StartOfRound.Instance.allPlayerScripts[id].playerClientId}";
+            }
+
+            SetCustomNames(); // To rename the player list in the quickmenu
+        }
+
+
+        /// <summary>
+        /// May just be LAN but custom names appear to only be visible
+        /// for the first 2 clients in the QuickMenu
+        /// </summary>
+        private static void SetCustomNames()
+        {
+            GameObject plist = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
+            string listPath = "Image/QuickmenuOverride(Clone)/Holder";
+            Transform allPlayerListObjs = plist.transform.Find(listPath).transform;
+
+            int i = 0;
+            foreach (Transform obj in GOTools.GetAllChildrenAdvanced(allPlayerListObjs))
+            {
+                if (obj.name == "PName")
+                {
+                    // Set Custom QuickMenu Name
+                    TextMeshProUGUI pname = obj.GetComponent<TextMeshProUGUI>();
+                    pname.text = StartOfRound.Instance.allPlayerScripts[i].playerUsername;
+                    i += 1;
+                }
+            }
         }
 
 

@@ -133,7 +133,7 @@ namespace LethalMystery
 
 
 
-
+        // thanks to https://github.com/BepInEx/BepInEx/discussions/320#discussioncomment-1495776
         public static bool FoundThisMod(string modID)
         {
             foreach (var plugin in Chainloader.PluginInfos)

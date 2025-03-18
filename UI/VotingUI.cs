@@ -49,6 +49,7 @@ namespace LethalMystery.UI
 
             }
 
+
         }
 
 
@@ -83,6 +84,7 @@ namespace LethalMystery.UI
             CheckPlayerList();
             return VotingMenu;
         }
+
 
 
         private static void UpdateTextHeader(string text)
@@ -172,11 +174,12 @@ namespace LethalMystery.UI
             GameObject raw_playerVoteBtn = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
             Dictionary<int, GameObject> playerVoteBtn = new Dictionary<int, GameObject>();
 
+            
             foreach (GameObject player in GOTools.GetAllChildren(raw_playerVoteBtn))
             {
                 TextMeshProUGUI pName = player.transform.Find("PlayerNameButton/PName").GetComponent<TextMeshProUGUI>();
                 string name = pName.text;
-                int id = StringAddons.NameToID(name);
+                int id = StringAddons.NameToID(name); // StringAddons.GetLastId(name); //
                 Plugin.mls.LogInfo($">>>ClonedPlayerList: pName: {pName.text} | playerID: {id}");
 
                 if (id == -1) continue;
@@ -185,6 +188,7 @@ namespace LethalMystery.UI
 
                 playerVoteBtn.Add(id, player);
             }
+            
 
             foreach (KeyValuePair<int, GameObject> i in playerVoteBtn)
             {
@@ -356,7 +360,7 @@ namespace LethalMystery.UI
 
 
         /// <summary>
-        /// Sometimes certain playerlist that shouldn't appear disabled
+        /// Sometimes certain playerlistslots that shouldn't appear disabled
         /// are disabled, this method attempts to fix that
         /// </summary>
         private static void EnableDisabledList()

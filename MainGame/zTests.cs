@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GameNetcodeStuff;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -71,6 +72,7 @@ namespace LethalMystery.MainGame
                     Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
 
                 }
+
 
 
             }

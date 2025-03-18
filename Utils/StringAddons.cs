@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using LethalMystery.MainGame;
 using LethalMystery.Maps;
 using UnityEngine;
@@ -274,9 +275,21 @@ namespace LethalMystery.Utils
                 {
                     return (int)StartOfRound.Instance.allPlayerScripts[i.Value].playerClientId;
                 }
+
             }
             return result;
         }
 
+        public static int GetLastId(string name)
+        {
+            MatchCollection matches = Regex.Matches(name, @"#(\d+)");
+
+            if (matches.Count > 0)
+            {
+                return int.Parse(matches[matches.Count - 1].Groups[1].Value);
+            }
+
+            return -1; 
+        }
     }
 }

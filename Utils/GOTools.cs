@@ -49,6 +49,28 @@ namespace LethalMystery.Utils
         }
 
 
+
+        /// <summary>
+        /// Iterates through every object in the parent including the children.
+        /// Only stops when it iterates through everything
+        /// </summary>
+        public static List<Transform> GetAllChildrenAdvanced(Transform parent, List<Transform> children = null)
+        {
+            if (children == null)
+            {
+                children = new List<Transform>();
+            }
+
+            foreach (Transform child in parent)
+            {
+                children.Add(child);
+                GetAllChildrenAdvanced(child, children);
+            }
+
+            return children;
+        }
+
+
         /// <summary>
         /// Get child objects of GameObject
         /// </summary>
