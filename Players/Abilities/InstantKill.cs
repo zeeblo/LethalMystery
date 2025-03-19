@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -93,7 +94,9 @@ namespace LethalMystery.Players.Abilities
                     ___knifeHitForce = 9999;
                     Plugin.netHandler.playerBloodReceive($"{Plugin.localPlayer.playerClientId}/blood", Plugin.localPlayer.playerClientId);
                     killedPlayer = true;
-                    killCooldown = LMConfig.defaultKillCooldown;
+                    killCooldown = 25f; //LMConfig.defaultKillCooldown (should inherit from host);
+
+                    StartOfRound.Instance.StartCoroutine(knifeCooldown());
                     Plugin.netHandler.deathInfoReceive($"killedby/{plrID}/Stabbed by: {Plugin.localPlayer.playerUsername}", Plugin.localPlayer.playerClientId);
 
                     HUDManager.Instance.DisplayTip("Remove Blood!", $"Hold \"{LMConfig.selfcleanBind.Value.ToUpper()}\" to clean yourself", isWarning: true);
@@ -132,6 +135,16 @@ namespace LethalMystery.Players.Abilities
             return killList;
         }
 
+
+        private static IEnumerator knifeCooldown()
+        {
+            yield return new WaitForSeconds(25f); // LMConfig.defaultKillCooldown (should inherit from host)
+            HUDManager.Instance.DisplayTip("Kill Cooldown", "Your cooldown is over!", isWarning: false);
+            killCooldown = 0;
+            killedPlayer = false;
+        }
+
+        /*
         [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
         [HarmonyPostfix]
         private static void killCooldownFunc()
@@ -145,6 +158,7 @@ namespace LethalMystery.Players.Abilities
                 killedPlayer = false;
             }
         }
+        */
 
 
         #endregion Knife Instakill
