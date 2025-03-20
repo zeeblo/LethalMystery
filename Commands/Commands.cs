@@ -331,7 +331,7 @@ namespace LethalMystery
                 for (int i = 0; i < len; i++)
                 {
                     Item scrap = Plugin.currentRound.currentLevel.spawnableScrap[i].spawnableItem;
-                    if (scrap.spawnPrefab.name.ToLower().Contains(toSpawn))
+                    if (scrap.spawnPrefab.name.ToLower().Contains(toSpawn.ToLower()))
                     {
 
                         GameObject objToSpawn = scrap.spawnPrefab;

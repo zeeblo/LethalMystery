@@ -41,7 +41,7 @@ namespace LethalMystery.MainGame
                 }
                 if (Keyboard.current.digit4Key.wasPressedThisFrame)
                 {
-                    Commands.SpawnScrapFunc("ring", toInventory: true);
+                    Commands.SpawnScrapFunc("bottles", toInventory: true);
                 }
                 if (Keyboard.current.digit5Key.wasPressedThisFrame)
                 {
