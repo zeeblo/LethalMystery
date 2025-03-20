@@ -46,7 +46,7 @@ namespace LethalMystery.MainGame
                             Plugin.mls.LogInfo(">>> in CheckForWeapon");
                             Commands.randomObject = obj.GetComponent<GrabbableObject>();
                             Commands.randomObject.itemProperties.itemIcon = Roles.CurrentRole.GetIcon(Commands.randomObject.itemProperties.itemIcon);
-                            Commands.randomObject.itemProperties.weight = 1f;
+                            //Commands.randomObject.itemProperties.weight = 1f;
                             MethodInfo GrabTest = typeof(PlayerControllerB).GetMethod("BeginGrabObject", BindingFlags.NonPublic | BindingFlags.Instance);
                             GrabTest.Invoke(__instance, null);
                             checkedForWeapon = true;
@@ -104,7 +104,7 @@ namespace LethalMystery.MainGame
                     __instance.cursorIcon.enabled = false;
                     __instance.cursorTip.text = "";
                     __instance.twoHanded = Commands.randomObject.itemProperties.twoHanded;
-                    __instance.carryWeight = 1;
+                    __instance.carryWeight = Mathf.Clamp(__instance.carryWeight + (Commands.randomObject.itemProperties.weight - 1f), 1f, 10f);  // __instance.carryWeight = 1;
                     if (Commands.randomObject.itemProperties.grabAnimationTime > 0f)
                     {
                         __instance.grabObjectAnimationTime = Commands.randomObject.itemProperties.grabAnimationTime;
