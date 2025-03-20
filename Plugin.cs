@@ -8,6 +8,7 @@ using LethalMystery.Maps.Sabotages;
 using LethalMystery.Network;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
+using LethalMystery.UI;
 using LethalMystery.Utils;
 using System;
 using System.IO;
@@ -80,6 +81,11 @@ namespace LethalMystery
             if (HUDManager.Instance != null)
             {
                 HUDManager.Instance.loadingText.enabled = false;
+            }
+
+            if (VotingUI.votingGUI != null)
+            {
+                Destroy(VotingUI.votingGUI.gameObject);
             }
 
             Meeting.MeetingDefaults();
