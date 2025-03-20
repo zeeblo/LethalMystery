@@ -151,10 +151,9 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool StopDeath()
         {
-            if (StringAddons.ConvertToBool(inGracePeriod.Value))
-            {
-                return false;
-            }
+            if (EjectPlayers.notsafe) return true;
+            if (StringAddons.ConvertToBool(inGracePeriod.Value)) return false;
+
             return true;
         }
 

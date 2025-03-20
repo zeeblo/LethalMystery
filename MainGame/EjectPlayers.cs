@@ -111,7 +111,7 @@ namespace LethalMystery.MainGame
         private static void SuckLocalPlayerOutOfShipDoor(StartOfRound __instance)
         {
 
-            __instance.suckingPower += Time.deltaTime * 2f;
+            __instance.suckingPower += Time.deltaTime * 12f;
             GameNetworkManager.Instance.localPlayerController.fallValue = 0f;
             GameNetworkManager.Instance.localPlayerController.fallValueUncapped = 0f;
             if (Vector3.Distance(GameNetworkManager.Instance.localPlayerController.transform.position, __instance.middleOfShipNode.position) < 25f)
