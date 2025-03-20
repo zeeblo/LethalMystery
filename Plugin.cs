@@ -6,6 +6,7 @@ using HarmonyLib;
 using LethalMystery.MainGame;
 using LethalMystery.Maps.Sabotages;
 using LethalMystery.Network;
+using LethalMystery.Patches;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
 using LethalMystery.UI;
@@ -88,6 +89,7 @@ namespace LethalMystery
                 Destroy(VotingUI.votingGUI.gameObject);
             }
 
+            UnlockableSuitPatch.ResetVars();
             Meeting.MeetingDefaults();
             Roles.ResetVariables();
             CharacterDisplay.ResetVariables();

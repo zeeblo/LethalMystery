@@ -42,6 +42,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> roundEnd;
         private LNetworkMessage<string> deathInfo;
         private LNetworkMessage<string> sabotage;
+        private LNetworkMessage<string> suits;
 
         public NetHandler()
         {
@@ -68,6 +69,7 @@ namespace LethalMystery.Network
             roundEnd = LNetworkMessage<string>.Connect("roundEnd");
             deathInfo = LNetworkMessage<string>.Connect("deathInfo");
             sabotage = LNetworkMessage<string>.Connect("sabotage");
+            suits = LNetworkMessage<string>.Connect("suits");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -106,6 +108,8 @@ namespace LethalMystery.Network
             deathInfo.OnClientReceived += deathInfoClients;
             sabotage.OnServerReceived += sabotageServer;
             sabotage.OnClientReceived += sabotageClients;
+            suits.OnServerReceived += suitsServer;
+            suits.OnClientReceived += suitsClients;
         }
 
         #region Variables
@@ -971,6 +975,28 @@ namespace LethalMystery.Network
         public void sabotageReceive(string data, ulong id)
         {
             sabotage.SendServer(data);
+        }
+
+
+
+
+
+        private void suitsServer(string data, ulong id)
+        {
+            suits.SendClients(data);
+        }
+        private void suitsClients(string data)
+        {
+            int currentID = StringAddons.ConvertToInt(data.Split("/")[0]);
+            int suitID = StringAddons.ConvertToInt(data.Split("/")[1]);
+
+            UnlockableSuitPatch.playerSuits.Remove(currentID);
+            UnlockableSuitPatch.playerSuits.Add(suitID);
+
+        }
+        public void suitsReceive(string data, ulong id)
+        {
+            suits.SendServer(data);
         }
 
     }

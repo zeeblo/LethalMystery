@@ -74,7 +74,6 @@ namespace LethalMystery.MainGame
                 }
 
 
-
             }
         }
     }
