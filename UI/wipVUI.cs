@@ -122,16 +122,17 @@ namespace LethalMystery.UI
             text.color = new Color(1, 0.5897f, 0, 1);
             text.fontSize = 17.6f;
             text.alignment = TextAlignmentOptions.Left;
-            text.margin = new Vector3(20, 0, 0);
+            text.margin = new Vector3(8, 0, 0);
+            text.overflowMode = TextOverflowModes.Ellipsis;
             text.text = "boop";
 
             username.layer = 5;
 
-            /*
+            
             RectTransform bgRect = username.GetComponent<RectTransform>();
-            bgRect.sizeDelta = new Vector2(-17.14f, 0);
+            bgRect.sizeDelta = new Vector2(180, 20);
             bgRect.anchoredPosition = Vector2.zero;
-            */
+            
         }
 
 
