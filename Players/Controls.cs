@@ -18,6 +18,7 @@ namespace LethalMystery.Players
         public static InputActionReference selfcleanRef;
         public static InputActionReference shapeshiftRef;
         public static InputActionReference showMapRef;
+        public static InputActionReference showVoteRef;
         public static Dictionary<string, InputActionReference> inputRefs = new Dictionary<string, InputActionReference>();
         private static bool spawningWeapon = false;
         public static bool cleaningBody = false;
@@ -25,11 +26,13 @@ namespace LethalMystery.Players
         public static void InitControls()
         {
 
+            InputAction showVote = playerControls.AddAction("show vote", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.showVoteBind.Value);
             InputAction showMap = playerControls.AddAction("show map", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.showMapBind.Value);
             InputAction spawnItem = playerControls.AddAction("spawn item", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.spawnItemBind.Value);
             InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
             InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
 
+            showVote.performed += ShowVote_performed;
             showMap.performed += ShowMap_performed;
             spawnItem.performed += SpawnItem_performed;
             selfclean.performed += Selfclean_performed;
@@ -37,6 +40,7 @@ namespace LethalMystery.Players
             shapeshift.performed += Shapeshift_performed;
 
 
+            showVoteRef = InputActionReference.Create(showVote);
             showMapRef = InputActionReference.Create(showMap);
             spawnItemRef = InputActionReference.Create(spawnItem);
             selfcleanRef = InputActionReference.Create(selfclean);
@@ -49,6 +53,7 @@ namespace LethalMystery.Players
 
         private static void AddInputRefs()
         {
+            inputRefs.Add(showVoteRef.name.Split("/")[1], showVoteRef);
             inputRefs.Add(showMapRef.name.Split("/")[1], showMapRef);
             inputRefs.Add(spawnItemRef.name.Split("/")[1], spawnItemRef);
             inputRefs.Add(selfcleanRef.name.Split("/")[1], selfcleanRef);
@@ -72,6 +77,19 @@ namespace LethalMystery.Players
             }
         }
 
+
+
+
+
+        private static void ShowVote_performed(InputAction.CallbackContext obj)
+        {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
+
+
+            Plugin.mls.LogInfo(">>> Opened Vote Menu");
+        }
 
 
 

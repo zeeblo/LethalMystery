@@ -11,6 +11,7 @@ namespace LethalMystery.Utils
         public static ConfigEntry<string> selfcleanBind;
         public static ConfigEntry<string> spawnItemBind;
         public static ConfigEntry<string> showMapBind;
+        public static ConfigEntry<string> showVoteBind;
         public static List<ConfigEntry<string>> AllHotkeys = new List<ConfigEntry<string>>();
         public static float defaultDiscussTime = 15f; // 35
         public static float defaultVoteTime = 95f; // 85
@@ -29,12 +30,14 @@ namespace LethalMystery.Utils
             selfcleanBind = cfg.Bind("Monster Controls", "Self Clean", "f", "Clean the blood on you");
             spawnItemBind = cfg.Bind("Player Controls", "Spawn Item", "t", "Spawn your role specific item");
             showMapBind = cfg.Bind("Player Controls", "Show Map", "m", "A full view of the map");
+            showVoteBind = cfg.Bind("Player Controls", "Show Votes", "v", "Displays everyone that can be voted");
 
             AllHotkeys.Add(PrefixSetting);
             AllHotkeys.Add(shapeshiftBind);
             AllHotkeys.Add(selfcleanBind);
             AllHotkeys.Add(spawnItemBind);
             AllHotkeys.Add(showMapBind);
+            AllHotkeys.Add(showVoteBind);
 
         }
 

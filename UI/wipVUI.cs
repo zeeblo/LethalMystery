@@ -76,7 +76,7 @@ namespace LethalMystery.UI
             keybind.transform.SetParent(voteIcon.transform, false);
             keybind.transform.SetSiblingIndex(1);
             TextMeshProUGUI bindtxt = keybind.AddComponent<TextMeshProUGUI>();
-            bindtxt.text = "[ " + $"{LMConfig.showMapBind.Value.ToUpper()}" + " ]"; // Reminder: Change to VoteKeybind
+            bindtxt.text = "[ " + $"{LMConfig.showVoteBind.Value.ToUpper()}" + " ]";
             bindtxt.fontSize = 9;
             bindtxt.fontWeight = FontWeight.Heavy;
             bindtxt.alignment = TextAlignmentOptions.Center;
