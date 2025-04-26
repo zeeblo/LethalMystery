@@ -106,7 +106,7 @@ namespace LethalMystery.UI
             CreatePlayerSlot();
             NameTagBg();
             NameTag();
-
+            CreateVoteText();
             CreateVoteButton();
         }
 
@@ -117,13 +117,13 @@ namespace LethalMystery.UI
             playerSlot = new GameObject("playerSlot");
             playerSlot.transform.SetParent(parentUI.transform, false);
             Image bgImage = playerSlot.AddComponent<Image>();
-            bgImage.color = new Color(1, 1, 1, 1); // So I can visually see what the rect looks like
+            bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
 
             playerSlot.layer = 5;
             playerSlot.transform.SetSiblingIndex(13);
 
             RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
-            bgRect.sizeDelta = new Vector2(240, 30);
+            bgRect.sizeDelta = new Vector2(200, 30);
             bgRect.anchoredPosition = Vector2.zero;
         }
 
@@ -136,11 +136,14 @@ namespace LethalMystery.UI
             bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
 
             nametagBG.layer = 5;
-            //nametagBG.transform.SetSiblingIndex(8);
 
             RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
             bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
             bgRect.anchoredPosition = Vector2.zero;
+
+            bgRect.anchorMin = new Vector2(0, 0.5f);
+            bgRect.anchorMax = new Vector2(0, 0.5f);
+            bgRect.pivot = new Vector2(0, 0.5f);
         }
 
 
@@ -164,6 +167,23 @@ namespace LethalMystery.UI
             
         }
 
+
+        public static void CreateVoteText()
+        {
+            GameObject votesTxt = new GameObject("Votes");
+            votesTxt.transform.SetParent(playerSlot.transform, false);
+            TextMeshProUGUI text = votesTxt.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 8f;
+            text.text = "VOTES: ";
+
+            votesTxt.layer = 5;
+
+            RectTransform bgRect = votesTxt.GetComponent<RectTransform>();
+            bgRect.anchorMin = new Vector2(0, 0);
+            bgRect.anchorMax = new Vector2(0, 0);
+            bgRect.pivot = new Vector2(0, 1);
+        }
 
 
         public static void CreatePlayerList()
