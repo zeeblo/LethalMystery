@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using LethalMystery.MainGame;
+using LethalMystery.Maps.Sabotages;
+using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace LethalMystery.UI
@@ -11,8 +14,10 @@ namespace LethalMystery.UI
     {
 
         public static GameObject voteIcon;
+        public static GameObject playerSlot;
         public static GameObject playerList;
         public static GameObject nametagBG;
+        public static Image voteBtnIcon;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
 
 
@@ -96,17 +101,42 @@ namespace LethalMystery.UI
 
 
 
+        public static void SetupPlayerSlot()
+        {
+            CreatePlayerSlot();
+            NameTagBg();
+            NameTag();
+
+            CreateVoteButton();
+        }
+
+
+        public static void CreatePlayerSlot()
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            playerSlot = new GameObject("playerSlot");
+            playerSlot.transform.SetParent(parentUI.transform, false);
+            Image bgImage = playerSlot.AddComponent<Image>();
+            bgImage.color = new Color(1, 1, 1, 1); // So I can visually see what the rect looks like
+
+            playerSlot.layer = 5;
+            playerSlot.transform.SetSiblingIndex(13);
+
+            RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(240, 30);
+            bgRect.anchoredPosition = Vector2.zero;
+        }
 
         public static void NameTagBg()
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
             nametagBG = new GameObject("nametag");
-            nametagBG.transform.SetParent(parentUI.transform, false);
+            nametagBG.transform.SetParent(playerSlot.transform, false);
             Image bgImage = nametagBG.AddComponent<Image>();
             bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
 
             nametagBG.layer = 5;
-            nametagBG.transform.SetSiblingIndex(8);
+            //nametagBG.transform.SetSiblingIndex(8);
 
             RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
             bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
@@ -160,6 +190,59 @@ namespace LethalMystery.UI
         }
 
 
+        
+        private static void CreateVoteButton()
+        {
+            //if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
+
+            GameObject voteBtn = new GameObject("VoteBtn");
+            voteBtn.transform.SetParent(playerSlot.transform, false);
+
+            Button btn = voteBtn.AddComponent<Button>();
+            voteBtnIcon = voteBtn.AddComponent<Image>();
+
+            Sprite baseImg = LMAssets.CheckboxEmptyIcon;
+            Sprite imgSelect = LMAssets.CheckboxEnabledIcon;
+            voteBtnIcon.sprite = baseImg;
+            voteBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+
+            EventTrigger trigger = voteBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) =>
+            {
+                voteBtnIcon.color = Color.white;
+            });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) =>
+            {
+                voteBtnIcon.sprite = baseImg;
+                voteBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+            });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => playerVoted());
+
+            RectTransform rect = voteBtn.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(25, 25);
+            rect.anchorMin = new Vector2(1, 0.5f);
+            rect.anchorMax = new Vector2(1, 0.5f);
+            rect.pivot = new Vector2(1, 0.5f);
+
+            allVoteUIObjects.Add(voteBtn);
+        }
+        
+
+        private static void playerVoted()
+        {
+            voteBtnIcon.sprite = LMAssets.CheckboxEnabledIcon;
+            Plugin.mls.LogInfo(">>>> Player voted!");
+        }
 
     }
 }

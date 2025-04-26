@@ -78,7 +78,8 @@ namespace LethalMystery.MainGame
                 {
                     //wipVUI.NameTagBg();
                     //wipVUI.NameTag();
-                    wipVUI.CreatePlayerList();
+                    //wipVUI.CreatePlayerList();
+                    wipVUI.SetupPlayerSlot();
                 }
             }
         }
