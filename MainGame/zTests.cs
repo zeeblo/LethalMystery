@@ -74,12 +74,11 @@ namespace LethalMystery.MainGame
 
                 }
 
-                if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                if (Keyboard.current.leftBracketKey.wasPressedThisFrame)
                 {
-                    wipVUI.CreateVoteIcon();
+                    wipVUI.NameTagBg();
+                    wipVUI.NameTag();
                 }
-
-
             }
         }
     }

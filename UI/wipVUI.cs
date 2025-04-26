@@ -11,6 +11,7 @@ namespace LethalMystery.UI
     {
 
         public static GameObject voteIcon;
+        public static GameObject nametagBG;
         public static GameObject border;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
 
@@ -27,6 +28,9 @@ namespace LethalMystery.UI
             allVoteUIObjects.Clear();
             Voting.ResetVars();
         }
+
+
+        #region VoteIcon
 
         public static void CreateVoteIcon()
         {
@@ -88,6 +92,47 @@ namespace LethalMystery.UI
             bindRect.anchoredPosition = Vector2.zero;
         }
 
+        #endregion VoteIcon
+
+
+
+
+        public static void NameTagBg()
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            nametagBG = new GameObject("nametag");
+            nametagBG.transform.SetParent(parentUI.transform, false);
+            Image bgImage = nametagBG.AddComponent<Image>();
+            bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
+
+            nametagBG.layer = 5;
+            nametagBG.transform.SetSiblingIndex(8);
+
+            RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
+            bgRect.anchoredPosition = Vector2.zero;
+        }
+
+
+        public static void NameTag()
+        {
+            GameObject username = new GameObject("username");
+            username.transform.SetParent(nametagBG.transform, false);
+            TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 17.6f;
+            text.alignment = TextAlignmentOptions.Left;
+            text.margin = new Vector3(20, 0, 0);
+            text.text = "boop";
+
+            username.layer = 5;
+
+            /*
+            RectTransform bgRect = username.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(-17.14f, 0);
+            bgRect.anchoredPosition = Vector2.zero;
+            */
+        }
 
 
 
