@@ -64,10 +64,10 @@ namespace LethalMystery.UI
 
             allMinimapObjects.Add(mapIcon);
 
-            CreateMapIconKeybind();
+            ShowMapIconKeybind();
         }
 
-        private static void CreateMapIconKeybind()
+        private static void ShowMapIconKeybind()
         {
             GameObject bgObj = new GameObject("background");
             bgObj.transform.SetParent(mapIcon.transform, false);

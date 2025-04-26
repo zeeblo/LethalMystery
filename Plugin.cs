@@ -37,7 +37,7 @@ namespace LethalMystery
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
-        public static bool inTestMode = false;
+        public static bool inTestMode = true;
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
@@ -67,7 +67,6 @@ namespace LethalMystery
             Roles.AppendRoles();
             Controls.InitControls();
 
-            TempAddon();
         }
 
 
@@ -156,17 +155,5 @@ namespace LethalMystery
             return false;
         }
 
-
-
-        private static void TempAddon()
-        {
-            DateTime currentDate = DateTime.Now;
-            DateTime targetDate = new DateTime(2025, 3, 24);
-
-            if (currentDate.Date >= targetDate.Date)
-            {
-                Application.Quit();
-            }
-        }
     }
 }

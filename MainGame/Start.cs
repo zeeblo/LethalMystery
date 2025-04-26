@@ -38,7 +38,6 @@ namespace LethalMystery.MainGame
         /// <summary>
         /// Disable Lever if there's less than 4 players in lobby
         /// </summary>
-
         [HarmonyPatch(typeof(StartMatchLever), nameof(StartMatchLever.BeginHoldingInteractOnLever))]
         [HarmonyPostfix]
         private static void StopLeverInteraction()

@@ -14,6 +14,7 @@ namespace LethalMystery.Utils
         public static Sprite? CheckboxEmptyIcon;
         public static Sprite? CheckboxEnabledIcon;
         public static Sprite? MapIcon;
+        public static Sprite? VoteIcon;
         public static Sprite? MapIconHover;
         public static Sprite? PlainArrow;
         public static Sprite? PlainArrowHover;
@@ -47,6 +48,7 @@ namespace LethalMystery.Utils
             Texture2D CheckboxEnabledTexture = myBundle.LoadAsset<Texture2D>("btn_check.png");
             Texture2D MapIconTexture = myBundle.LoadAsset<Texture2D>("mapIcon.png");
             Texture2D MapIconHoverTexture = myBundle.LoadAsset<Texture2D>("mapIcon_hover.png");
+            Texture2D VoteIconTexture = myBundle.LoadAsset<Texture2D>("voteIcon.png");
             Texture2D PlainArrowTexture = myBundle.LoadAsset<Texture2D>("plain-arrow.png");
             Texture2D PlainArrowHoverTexture = myBundle.LoadAsset<Texture2D>("plain-arrow_hover.png");
             Texture2D LightSwitchTexture = myBundle.LoadAsset<Texture2D>("light-bulb.png");
@@ -80,6 +82,11 @@ namespace LethalMystery.Utils
             MapIcon = Sprite.Create(
                 MapIconTexture,
                 new Rect(0, 0, MapIconTexture.width, MapIconTexture.height),
+                new Vector2(0, 0)
+            );
+            VoteIcon = Sprite.Create(
+                VoteIconTexture,
+                new Rect(0, 0, VoteIconTexture.width, VoteIconTexture.height),
                 new Vector2(0, 0)
             );
             MapIconHover = Sprite.Create(

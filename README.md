@@ -73,10 +73,9 @@ some other stuff too but Im not listing them all
 # Credits
 
 
+[Xilophor](https://github.com/Xilophor) **:** For making [LethalNetworkAPI](https://github.com/Xilophor/LethalNetworkAPI) which greatly helped with the networking
 
 [Toemmsen96](https://github.com/Toemmsen96) **:** For making [ChatCommands](https://github.com/Toemmsen96/ChatCommands) mod (this mod uses an old and modified version)
-
-[Xilophor](https://github.com/Xilophor) **:** For making [LethalNetworkAPI](https://github.com/Xilophor/LethalNetworkAPI) which greatly helped with the networking
 
 
 **Game Icons:**
