@@ -76,8 +76,9 @@ namespace LethalMystery.MainGame
 
                 if (Keyboard.current.leftBracketKey.wasPressedThisFrame)
                 {
-                    wipVUI.NameTagBg();
-                    wipVUI.NameTag();
+                    //wipVUI.NameTagBg();
+                    //wipVUI.NameTag();
+                    wipVUI.CreatePlayerList();
                 }
             }
         }

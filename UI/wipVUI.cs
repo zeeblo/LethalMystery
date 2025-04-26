@@ -11,8 +11,8 @@ namespace LethalMystery.UI
     {
 
         public static GameObject voteIcon;
+        public static GameObject playerList;
         public static GameObject nametagBG;
-        public static GameObject border;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
 
 
@@ -120,7 +120,7 @@ namespace LethalMystery.UI
             username.transform.SetParent(nametagBG.transform, false);
             TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
             text.color = new Color(1, 0.5897f, 0, 1);
-            text.fontSize = 17.6f;
+            text.fontSize = 16f;
             text.alignment = TextAlignmentOptions.Left;
             text.margin = new Vector3(8, 0, 0);
             text.overflowMode = TextOverflowModes.Ellipsis;
@@ -128,7 +128,6 @@ namespace LethalMystery.UI
 
             username.layer = 5;
 
-            
             RectTransform bgRect = username.GetComponent<RectTransform>();
             bgRect.sizeDelta = new Vector2(180, 20);
             bgRect.anchoredPosition = Vector2.zero;
@@ -137,22 +136,27 @@ namespace LethalMystery.UI
 
 
 
-        private static void CreateBorder()
+        public static void CreatePlayerList()
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
-            border = new GameObject("VoteMenu");
-            border.transform.SetParent(parentUI.transform, false);
-            Image rawImg = border.AddComponent<Image>();
-            rawImg.color = new Color(0.996f, 0.095f, 0, 1f);
+            playerList = new GameObject("PlayerList");
+            playerList.transform.SetParent(parentUI.transform, false);
+            Image rawImg = playerList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
 
-            border.layer = 5;
-            border.transform.SetSiblingIndex(13); // before quickmenu
+            playerList.layer = 5;
+            playerList.transform.SetSiblingIndex(13); // before quickmenu
 
-            RectTransform rectBorder = border.GetComponent<RectTransform>();
-            rectBorder.sizeDelta = new Vector2(450, 450);
-            rectBorder.anchoredPosition = Vector2.zero;
+            RectTransform rectBorder = playerList.GetComponent<RectTransform>();
+            rectBorder.sizeDelta = new Vector2(150, 250);
+            rectBorder.anchoredPosition = new Vector2(-140, 0);
 
-            allVoteUIObjects.Add(border);
+            Outline outline = playerList.AddComponent<Outline>();
+            outline.effectColor = new Color(0.996f, 0.095f, 0, 1f);
+            outline.effectDistance = new Vector2(2f, 2f);
+
+
+            allVoteUIObjects.Add(playerList);
         }
 
 
