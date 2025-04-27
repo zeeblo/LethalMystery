@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Discord;
 using LethalMystery.MainGame;
 using LethalMystery.Maps.Sabotages;
 using LethalMystery.Players;
@@ -15,6 +16,7 @@ namespace LethalMystery.UI
 
         public static GameObject voteIcon;
         public static GameObject playerSlot;
+        public static GameObject voteList;
         public static GameObject playerList;
         public static GameObject nametagBG;
         public static Image voteBtnIcon;
@@ -103,7 +105,8 @@ namespace LethalMystery.UI
 
         public static void SetupPlayerSlot()
         {
-            CreatePlayerSlot();
+            CreateVoteList();
+            CreatePlayerList();
             NameTagBg();
             NameTag();
             CreateVoteText();
@@ -111,20 +114,69 @@ namespace LethalMystery.UI
         }
 
 
-        public static void CreatePlayerSlot()
+
+        public static void CreateVoteList()
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            voteList = new GameObject("VoteList");
+            voteList.transform.SetParent(parentUI.transform, false);
+            Image rawImg = voteList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+
+            voteList.layer = 5;
+            voteList.transform.SetSiblingIndex(13); // before quickmenu
+
+            RectTransform rect = voteList.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(250, 300);
+            rect.anchoredPosition = new Vector2(-140, 0);
+            rect.anchorMin = new Vector2(1, 0.5f);
+            rect.anchorMax = new Vector2(1, 0.5f);
+            rect.pivot = new Vector2(1, 0.5f);
+
+            Outline outline = voteList.AddComponent<Outline>();
+            outline.effectColor = new Color(0.996f, 0.095f, 0, 1f);
+            outline.effectDistance = new Vector2(2f, 2f);
+
+            Header();
+            allVoteUIObjects.Add(voteList);
+        }
+
+        public static void CreatePlayerList()
+        {
+            playerList = new GameObject("PlayerList");
+            playerList.transform.SetParent(voteList.transform, false);
+            Image rawImg = playerList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+            playerList.layer = 5;
+
+            RectTransform rect = playerList.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(250, 230);
+
+            ScrollRect scrlRect = playerList.AddComponent<ScrollRect>();
+            scrlRect.horizontal = false;
+            scrlRect.content = CreatePlayerSlot();
+
+            playerList.AddComponent<Mask>();
+
+            allVoteUIObjects.Add(playerList);
+        }
+
+        public static RectTransform CreatePlayerSlot()
+        {
             playerSlot = new GameObject("playerSlot");
-            playerSlot.transform.SetParent(parentUI.transform, false);
+            playerSlot.transform.SetParent(playerList.transform, false);
             Image bgImage = playerSlot.AddComponent<Image>();
             bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
 
             playerSlot.layer = 5;
-            playerSlot.transform.SetSiblingIndex(13);
 
             RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
             bgRect.sizeDelta = new Vector2(200, 30);
-            bgRect.anchoredPosition = Vector2.zero;
+            bgRect.anchoredPosition = new Vector2(10, 0);
+            bgRect.anchorMin = new Vector2(0, 1);
+            bgRect.anchorMax = new Vector2(0, 1);
+            bgRect.pivot = new Vector2(0, 1);
+            return bgRect;
         }
 
         public static void NameTagBg()
@@ -167,6 +219,27 @@ namespace LethalMystery.UI
             
         }
 
+        public static void Header()
+        {
+            GameObject header = new GameObject("Header");
+            header.transform.SetParent(voteList.transform, false);
+            TextMeshProUGUI text = header.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 11f;
+            //text.alignment = TextAlignmentOptions.Left;
+            //text.margin = new Vector3(8, 0, 0);
+            text.overflowMode = TextOverflowModes.Ellipsis;
+            text.text = "DISCUSS: ";
+
+            header.layer = 5;
+
+            RectTransform bgRect = header.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(180, 20);
+            bgRect.anchoredPosition = new Vector2(10, -15);
+            bgRect.anchorMin = new Vector2(0, 1f);
+            bgRect.anchorMax = new Vector2(0, 1f);
+            bgRect.pivot = new Vector2(0, 1);
+        }
 
         public static void CreateVoteText()
         {
@@ -186,28 +259,7 @@ namespace LethalMystery.UI
         }
 
 
-        public static void CreatePlayerList()
-        {
-            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
-            playerList = new GameObject("PlayerList");
-            playerList.transform.SetParent(parentUI.transform, false);
-            Image rawImg = playerList.AddComponent<Image>();
-            rawImg.color = new Color(0.4627f, 0, 0, 1);
 
-            playerList.layer = 5;
-            playerList.transform.SetSiblingIndex(13); // before quickmenu
-
-            RectTransform rectBorder = playerList.GetComponent<RectTransform>();
-            rectBorder.sizeDelta = new Vector2(150, 250);
-            rectBorder.anchoredPosition = new Vector2(-140, 0);
-
-            Outline outline = playerList.AddComponent<Outline>();
-            outline.effectColor = new Color(0.996f, 0.095f, 0, 1f);
-            outline.effectDistance = new Vector2(2f, 2f);
-
-
-            allVoteUIObjects.Add(playerList);
-        }
 
 
         
