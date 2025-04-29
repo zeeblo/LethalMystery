@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using Discord;
 using LethalMystery.MainGame;
-using LethalMystery.Maps.Sabotages;
-using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -19,6 +16,7 @@ namespace LethalMystery.UI
         public static GameObject voteList;
         public static GameObject playerList;
         public static GameObject nametagBG;
+        public static GameObject skipSection;
         public static Image voteBtnIcon;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
 
@@ -111,6 +109,7 @@ namespace LethalMystery.UI
             NameTag();
             CreateVoteText();
             CreateVoteButton();
+            CreateSkipSection();
         }
 
 
@@ -138,6 +137,7 @@ namespace LethalMystery.UI
             outline.effectDistance = new Vector2(2f, 2f);
 
             Header();
+            voteList.AddComponent<Mask>();
             allVoteUIObjects.Add(voteList);
         }
 
@@ -314,6 +314,44 @@ namespace LethalMystery.UI
         {
             voteBtnIcon.sprite = LMAssets.CheckboxEnabledIcon;
             Plugin.mls.LogInfo(">>>> Player voted!");
+        }
+
+
+
+        private static void CreateSkipSection()
+        {
+            skipSection = new GameObject("SkipSection");
+            Image img = skipSection.AddComponent<Image>();
+            skipSection.transform.SetParent(voteList.transform, false);
+
+            img.color = new Color(1, 1, 1, 0);
+
+            RectTransform rect = skipSection.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(voteList.GetComponent<RectTransform>().sizeDelta.x, 30);
+            rect.anchoredPosition = new Vector2(0, 30f);
+            rect.anchorMin = new Vector2(0, 0);
+            rect.anchorMax = new Vector2(0, 0);
+            rect.pivot = new Vector2(0, 1);
+
+            CreateSkipText();
+        }
+
+        private static void CreateSkipText()
+        {
+            GameObject skiptxt = new GameObject("SkipText");
+            TextMeshProUGUI txt = skiptxt.AddComponent<TextMeshProUGUI>();
+            skiptxt.transform.SetParent(skipSection.transform, false);
+
+            txt.color = new Color(1, 0.5897f, 0, 1);
+            txt.fontSize = 12f;
+            txt.fontStyle = FontStyles.Bold;
+            txt.text = "SKIP: ";
+
+            RectTransform rect = skiptxt.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(10, 0);
+            rect.anchorMin = new Vector2(0, 0.5f);
+            rect.anchorMax = new Vector2(0, 0.5f);
+            rect.pivot = new Vector2(0, 1f);
         }
 
     }
