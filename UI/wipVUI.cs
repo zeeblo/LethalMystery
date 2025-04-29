@@ -18,6 +18,7 @@ namespace LethalMystery.UI
         public static GameObject nametagBG;
         public static GameObject skipSection;
         public static Image voteBtnIcon;
+        public static Image skipBtnIcon;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
 
 
@@ -259,9 +260,6 @@ namespace LethalMystery.UI
         }
 
 
-
-
-
         
         private static void CreateVoteButton()
         {
@@ -348,11 +346,63 @@ namespace LethalMystery.UI
             txt.text = "SKIP: ";
 
             RectTransform rect = skiptxt.GetComponent<RectTransform>();
-            rect.anchoredPosition = new Vector2(10, 0);
+            rect.anchoredPosition = new Vector2(35, 0);
             rect.anchorMin = new Vector2(0, 0.5f);
             rect.anchorMax = new Vector2(0, 0.5f);
-            rect.pivot = new Vector2(0, 1f);
+            rect.pivot = new Vector2(0, 0.9f);
+
+            CreateSkipButton();
         }
 
+
+        private static void CreateSkipButton()
+        {
+            GameObject voteBtn = new GameObject("SkipBtn");
+            voteBtn.transform.SetParent(skipSection.transform, false);
+
+            Button btn = voteBtn.AddComponent<Button>();
+            skipBtnIcon = voteBtn.AddComponent<Image>();
+
+            Sprite baseImg = LMAssets.CheckboxEmptyIcon;
+            Sprite imgSelect = LMAssets.CheckboxEnabledIcon;
+            skipBtnIcon.sprite = baseImg;
+            skipBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+
+            EventTrigger trigger = voteBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) =>
+            {
+                skipBtnIcon.color = Color.white;
+            });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) =>
+            {
+                skipBtnIcon.sprite = baseImg;
+                skipBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+            });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => playerSkipped());
+
+            RectTransform rect = voteBtn.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(25, 25);
+            rect.anchorMin = new Vector2(0, 0.5f);
+            rect.anchorMax = new Vector2(0, 0.5f);
+            rect.pivot = new Vector2(0, 0.5f);
+
+            allVoteUIObjects.Add(voteBtn);
+        }
+
+
+        private static void playerSkipped()
+        {
+            Plugin.mls.LogInfo(">>>> Player Skipped.");
+        }
     }
 }
