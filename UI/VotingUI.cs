@@ -6,6 +6,8 @@ using LethalMystery.MainGame;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 namespace LethalMystery.UI
@@ -14,9 +16,18 @@ namespace LethalMystery.UI
     internal class VotingUI
     {
         public static bool isCalled = false;
-        public static GameObject votingGUI;
-        private static Sprite xButtonSprite;
         public static bool inVoteTime = false;
+        public static GameObject votingGUI;
+        public static GameObject voteIcon;
+        public static GameObject playerSlot;
+        public static GameObject voteList;
+        public static GameObject playerList;
+        public static GameObject header;
+        public static GameObject nametagBG;
+        public static GameObject skipSection;
+        public static Image voteBtnIcon;
+        public static Image skipBtnIcon;
+        private static Sprite xButtonSprite;
 
 
         #region Patches
@@ -31,7 +42,7 @@ namespace LethalMystery.UI
                 GameObject xButtonObj = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList/Image/PlayerListSlot/KickButton");
                 xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
 
-                votingGUI = CreateVotingGUI(__instance);
+                votingGUI = CreateVoteList();
                 isCalled = false;
 
                 UpdateVoteButtonSprite();
@@ -406,6 +417,304 @@ namespace LethalMystery.UI
                 isCalled = true;
             }
             
+        }
+
+
+
+
+
+        private static GameObject CreateVoteList()
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            voteList = new GameObject("VoteList");
+            voteList.transform.SetParent(parentUI.transform, false);
+            Image rawImg = voteList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+
+            voteList.layer = 5;
+            voteList.transform.SetSiblingIndex(13); // before quickmenu
+
+            RectTransform rect = voteList.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(250, 300);
+            rect.anchoredPosition = new Vector2(-140, 0);
+            rect.anchorMin = new Vector2(1, 0.5f);
+            rect.anchorMax = new Vector2(1, 0.5f);
+            rect.pivot = new Vector2(1, 0.5f);
+
+            Outline outline = voteList.AddComponent<Outline>();
+            outline.effectColor = new Color(0.996f, 0.095f, 0, 1f);
+            outline.effectDistance = new Vector2(2f, 2f);
+
+            Header();
+            voteList.AddComponent<Mask>();
+
+            CreatePlayerList(voteList);
+            CreateSkipSection();
+            return voteList;
+        }
+
+        private static void CreatePlayerList(GameObject voteList)
+        {
+            playerList = new GameObject("PlayerList");
+            playerList.transform.SetParent(voteList.transform, false);
+            Image rawImg = playerList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+            playerList.layer = 5;
+
+            RectTransform rect = playerList.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(250, 230);
+
+            ScrollRect scrlRect = playerList.AddComponent<ScrollRect>();
+            scrlRect.horizontal = false;
+            scrlRect.content = CreatePlayerSlot();
+
+            playerList.AddComponent<Mask>();
+
+        }
+
+        public static RectTransform CreatePlayerSlot()
+        {
+            playerSlot = new GameObject("playerSlot");
+            playerSlot.transform.SetParent(playerList.transform, false);
+            Image bgImage = playerSlot.AddComponent<Image>();
+            bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
+
+            playerSlot.layer = 5;
+
+            RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(200, 30);
+            bgRect.anchoredPosition = new Vector2(10, 0);
+            bgRect.anchorMin = new Vector2(0, 1);
+            bgRect.anchorMax = new Vector2(0, 1);
+            bgRect.pivot = new Vector2(0, 1);
+
+            NameTagParent();
+            CreateVoteText();
+            CreateVoteButton();
+            return bgRect;
+        }
+
+        public static void NameTagParent()
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            nametagBG = new GameObject("nametag");
+            nametagBG.transform.SetParent(playerSlot.transform, false);
+            Image bgImage = nametagBG.AddComponent<Image>();
+            bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
+
+            nametagBG.layer = 5;
+
+            RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
+            bgRect.anchoredPosition = Vector2.zero;
+
+            bgRect.anchorMin = new Vector2(0, 0.5f);
+            bgRect.anchorMax = new Vector2(0, 0.5f);
+            bgRect.pivot = new Vector2(0, 0.5f);
+
+            NameTag();
+        }
+
+
+        public static void NameTag()
+        {
+            GameObject username = new GameObject("username");
+            username.transform.SetParent(nametagBG.transform, false);
+            TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 16f;
+            text.alignment = TextAlignmentOptions.Left;
+            text.margin = new Vector3(8, 0, 0);
+            text.overflowMode = TextOverflowModes.Ellipsis;
+            text.text = "boop";
+
+            username.layer = 5;
+
+            RectTransform bgRect = username.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(180, 20);
+            bgRect.anchoredPosition = Vector2.zero;
+
+        }
+
+        public static void Header()
+        {
+            header = new GameObject("Header");
+            header.transform.SetParent(voteList.transform, false);
+            TextMeshProUGUI text = header.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 11f;
+            text.overflowMode = TextOverflowModes.Ellipsis;
+            text.text = "DISCUSS: ";
+
+            header.layer = 5;
+
+            RectTransform bgRect = header.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(180, 20);
+            bgRect.anchoredPosition = new Vector2(10, -15);
+            bgRect.anchorMin = new Vector2(0, 1f);
+            bgRect.anchorMax = new Vector2(0, 1f);
+            bgRect.pivot = new Vector2(0, 1);
+        }
+
+        public static void CreateVoteText()
+        {
+            GameObject votesTxt = new GameObject("Votes");
+            votesTxt.transform.SetParent(playerSlot.transform, false);
+            TextMeshProUGUI text = votesTxt.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 8f;
+            text.text = "VOTES: ";
+
+            votesTxt.layer = 5;
+
+            RectTransform bgRect = votesTxt.GetComponent<RectTransform>();
+            bgRect.anchorMin = new Vector2(0, 0);
+            bgRect.anchorMax = new Vector2(0, 0);
+            bgRect.pivot = new Vector2(0, 1);
+        }
+
+
+
+        private static void CreateVoteButton()
+        {
+            //if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
+
+            GameObject voteBtn = new GameObject("VoteBtn");
+            voteBtn.transform.SetParent(playerSlot.transform, false);
+
+            Button btn = voteBtn.AddComponent<Button>();
+            voteBtnIcon = voteBtn.AddComponent<Image>();
+
+            Sprite baseImg = LMAssets.CheckboxEmptyIcon;
+            Sprite imgSelect = LMAssets.CheckboxEnabledIcon;
+            voteBtnIcon.sprite = baseImg;
+            voteBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+
+            EventTrigger trigger = voteBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) =>
+            {
+                voteBtnIcon.color = Color.white;
+            });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) =>
+            {
+                voteBtnIcon.sprite = baseImg;
+                voteBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+            });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => playerVoted());
+
+            RectTransform rect = voteBtn.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(25, 25);
+            rect.anchorMin = new Vector2(1, 0.5f);
+            rect.anchorMax = new Vector2(1, 0.5f);
+            rect.pivot = new Vector2(1, 0.5f);
+
+        }
+
+
+        private static void playerVoted()
+        {
+            voteBtnIcon.sprite = LMAssets.CheckboxEnabledIcon;
+            Plugin.mls.LogInfo(">>>> Player voted!");
+        }
+
+
+
+        private static void CreateSkipSection()
+        {
+            skipSection = new GameObject("SkipSection");
+            Image img = skipSection.AddComponent<Image>();
+            skipSection.transform.SetParent(voteList.transform, false);
+
+            img.color = new Color(1, 1, 1, 0);
+
+            RectTransform rect = skipSection.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(voteList.GetComponent<RectTransform>().sizeDelta.x, 30);
+            rect.anchoredPosition = new Vector2(0, 30f);
+            rect.anchorMin = new Vector2(0, 0);
+            rect.anchorMax = new Vector2(0, 0);
+            rect.pivot = new Vector2(0, 1);
+
+            CreateSkipText();
+            CreateSkipButton();
+        }
+
+        private static void CreateSkipText()
+        {
+            GameObject skiptxt = new GameObject("SkipText");
+            TextMeshProUGUI txt = skiptxt.AddComponent<TextMeshProUGUI>();
+            skiptxt.transform.SetParent(skipSection.transform, false);
+
+            txt.color = new Color(1, 0.5897f, 0, 1);
+            txt.fontSize = 12f;
+            txt.fontStyle = FontStyles.Bold;
+            txt.text = "SKIP: ";
+
+            RectTransform rect = skiptxt.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(35, 0);
+            rect.anchorMin = new Vector2(0, 0.5f);
+            rect.anchorMax = new Vector2(0, 0.5f);
+            rect.pivot = new Vector2(0, 0.9f);
+
+        }
+
+
+        private static void CreateSkipButton()
+        {
+            GameObject voteBtn = new GameObject("SkipBtn");
+            voteBtn.transform.SetParent(skipSection.transform, false);
+
+            Button btn = voteBtn.AddComponent<Button>();
+            skipBtnIcon = voteBtn.AddComponent<Image>();
+
+            Sprite baseImg = LMAssets.CheckboxEmptyIcon;
+            Sprite imgSelect = LMAssets.CheckboxEnabledIcon;
+            skipBtnIcon.sprite = baseImg;
+            skipBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+
+            EventTrigger trigger = voteBtn.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) =>
+            {
+                skipBtnIcon.color = Color.white;
+            });
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) =>
+            {
+                skipBtnIcon.sprite = baseImg;
+                skipBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
+            });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => playerSkipped());
+
+            RectTransform rect = voteBtn.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(25, 25);
+            rect.anchorMin = new Vector2(0, 0.5f);
+            rect.anchorMax = new Vector2(0, 0.5f);
+            rect.pivot = new Vector2(0, 0.5f);
+
+        }
+
+
+        private static void playerSkipped()
+        {
+            Plugin.mls.LogInfo(">>>> Player Skipped.");
         }
 
     }

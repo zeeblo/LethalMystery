@@ -12,11 +12,12 @@ namespace LethalMystery.UI
     {
 
         public static GameObject voteIcon;
-        public static GameObject playerSlot;
+        //public static GameObject playerSlot;
         public static GameObject voteList;
         public static GameObject playerList;
-        public static GameObject nametagBG;
+        //public static GameObject nametagBG;
         public static GameObject skipSection;
+        public static GameObject SlotHolder;
         public static Image voteBtnIcon;
         public static Image skipBtnIcon;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
@@ -106,10 +107,10 @@ namespace LethalMystery.UI
         {
             CreateVoteList();
             CreatePlayerList();
-            NameTagBg();
-            NameTag();
-            CreateVoteText();
-            CreateVoteButton();
+            //NameTagBg();
+            //NameTag();
+            //CreateVoteText();
+            //CreateVoteButton();
             CreateSkipSection();
         }
 
@@ -142,84 +143,6 @@ namespace LethalMystery.UI
             allVoteUIObjects.Add(voteList);
         }
 
-        public static void CreatePlayerList()
-        {
-            playerList = new GameObject("PlayerList");
-            playerList.transform.SetParent(voteList.transform, false);
-            Image rawImg = playerList.AddComponent<Image>();
-            rawImg.color = new Color(0.4627f, 0, 0, 1);
-            playerList.layer = 5;
-
-            RectTransform rect = playerList.GetComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(250, 230);
-
-            ScrollRect scrlRect = playerList.AddComponent<ScrollRect>();
-            scrlRect.horizontal = false;
-            scrlRect.content = CreatePlayerSlot();
-
-            playerList.AddComponent<Mask>();
-
-            allVoteUIObjects.Add(playerList);
-        }
-
-        public static RectTransform CreatePlayerSlot()
-        {
-            playerSlot = new GameObject("playerSlot");
-            playerSlot.transform.SetParent(playerList.transform, false);
-            Image bgImage = playerSlot.AddComponent<Image>();
-            bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
-
-            playerSlot.layer = 5;
-
-            RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
-            bgRect.sizeDelta = new Vector2(200, 30);
-            bgRect.anchoredPosition = new Vector2(10, 0);
-            bgRect.anchorMin = new Vector2(0, 1);
-            bgRect.anchorMax = new Vector2(0, 1);
-            bgRect.pivot = new Vector2(0, 1);
-            return bgRect;
-        }
-
-        public static void NameTagBg()
-        {
-            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
-            nametagBG = new GameObject("nametag");
-            nametagBG.transform.SetParent(playerSlot.transform, false);
-            Image bgImage = nametagBG.AddComponent<Image>();
-            bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
-
-            nametagBG.layer = 5;
-
-            RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
-            bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
-            bgRect.anchoredPosition = Vector2.zero;
-
-            bgRect.anchorMin = new Vector2(0, 0.5f);
-            bgRect.anchorMax = new Vector2(0, 0.5f);
-            bgRect.pivot = new Vector2(0, 0.5f);
-        }
-
-
-        public static void NameTag()
-        {
-            GameObject username = new GameObject("username");
-            username.transform.SetParent(nametagBG.transform, false);
-            TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
-            text.color = new Color(1, 0.5897f, 0, 1);
-            text.fontSize = 16f;
-            text.alignment = TextAlignmentOptions.Left;
-            text.margin = new Vector3(8, 0, 0);
-            text.overflowMode = TextOverflowModes.Ellipsis;
-            text.text = "boop";
-
-            username.layer = 5;
-
-            RectTransform bgRect = username.GetComponent<RectTransform>();
-            bgRect.sizeDelta = new Vector2(180, 20);
-            bgRect.anchoredPosition = Vector2.zero;
-            
-        }
-
         public static void Header()
         {
             GameObject header = new GameObject("Header");
@@ -242,7 +165,125 @@ namespace LethalMystery.UI
             bgRect.pivot = new Vector2(0, 1);
         }
 
-        public static void CreateVoteText()
+        public static void CreatePlayerList()
+        {
+            playerList = new GameObject("PlayerList");
+            playerList.transform.SetParent(voteList.transform, false);
+            Image rawImg = playerList.AddComponent<Image>();
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+            playerList.layer = 5;
+
+            RectTransform rect = playerList.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(250, 230);
+
+            ScrollRect scrlRect = playerList.AddComponent<ScrollRect>();
+            scrlRect.horizontal = false;
+            scrlRect.content = CreatePlayerSlotHolder();
+
+            playerList.AddComponent<Mask>();
+
+            allVoteUIObjects.Add(playerList);
+        }
+
+        public static RectTransform CreatePlayerSlotHolder()
+        {
+            SlotHolder = new GameObject("PlayerSlotHolder");
+            SlotHolder.transform.SetParent(playerList.transform, false);
+            Image rawImg = SlotHolder.AddComponent<Image>();
+            //rawImg.color = new Color(0.4627f, 0, 0, 1);
+            rawImg.color = new Color(1, 1, 1, 1);
+            SlotHolder.layer = 5;
+
+            RectTransform rect = SlotHolder.GetComponent<RectTransform>();
+            //rect.sizeDelta = new Vector2(250, 230);
+
+            VerticalLayoutGroup layout = SlotHolder.AddComponent<VerticalLayoutGroup>();
+            /*
+            layout.childAlignment = TextAnchor.UpperCenter;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            */
+            layout.spacing = 8;
+
+
+
+            CreatePlayerSlot();
+            CreatePlayerSlot();
+            CreatePlayerSlot();
+            CreatePlayerSlot();
+            CreatePlayerSlot();
+            return rect;
+        }
+
+        public static RectTransform CreatePlayerSlot()
+        {
+            GameObject playerSlot = new GameObject("playerSlot");
+            playerSlot.transform.SetParent(SlotHolder.transform, false);
+            Image bgImage = playerSlot.AddComponent<Image>();
+            bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
+
+            playerSlot.layer = 5;
+
+            RectTransform bgRect = playerSlot.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(200, 30);
+            bgRect.anchoredPosition = new Vector2(10, 0);
+            bgRect.anchorMin = new Vector2(0, 1);
+            bgRect.anchorMax = new Vector2(0, 1);
+            bgRect.pivot = new Vector2(0, 1);
+
+            NameTagBg(playerSlot);
+            CreateVoteButton(playerSlot);
+            CreateVoteText(playerSlot);
+            return bgRect;
+        }
+
+        public static void NameTagBg(GameObject playerSlot)
+        {
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
+            GameObject nametagBG = new GameObject("nametag");
+            nametagBG.transform.SetParent(playerSlot.transform, false);
+            Image bgImage = nametagBG.AddComponent<Image>();
+            bgImage.color = new Color(0.6509f, 0.2091f, 0.0031f, 1);
+
+            nametagBG.layer = 5;
+
+            RectTransform bgRect = nametagBG.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(166.38f, 23.19f);
+            bgRect.anchoredPosition = Vector2.zero;
+
+            bgRect.anchorMin = new Vector2(0, 0.5f);
+            bgRect.anchorMax = new Vector2(0, 0.5f);
+            bgRect.pivot = new Vector2(0, 0.5f);
+
+            NameTag(nametagBG);
+        }
+
+
+        public static void NameTag(GameObject nametagBG)
+        {
+            GameObject username = new GameObject("username");
+            username.transform.SetParent(nametagBG.transform, false);
+            TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
+            text.color = new Color(1, 0.5897f, 0, 1);
+            text.fontSize = 16f;
+            text.alignment = TextAlignmentOptions.Left;
+            text.margin = new Vector3(8, 0, 0);
+            text.overflowMode = TextOverflowModes.Ellipsis;
+            text.text = "boop";
+
+            username.layer = 5;
+
+            RectTransform bgRect = username.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(180, 20);
+            bgRect.anchoredPosition = Vector2.zero;
+            
+        }
+
+
+
+        public static void CreateVoteText(GameObject playerSlot)
         {
             GameObject votesTxt = new GameObject("Votes");
             votesTxt.transform.SetParent(playerSlot.transform, false);
@@ -256,12 +297,12 @@ namespace LethalMystery.UI
             RectTransform bgRect = votesTxt.GetComponent<RectTransform>();
             bgRect.anchorMin = new Vector2(0, 0);
             bgRect.anchorMax = new Vector2(0, 0);
-            bgRect.pivot = new Vector2(0, 1);
+            bgRect.pivot = new Vector2(0, 0.5f);
         }
 
 
         
-        private static void CreateVoteButton()
+        private static void CreateVoteButton(GameObject playerSlot)
         {
             //if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
 
