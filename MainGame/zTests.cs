@@ -81,6 +81,11 @@ namespace LethalMystery.MainGame
                     //wipVUI.CreatePlayerList();
                     wipVUI.SetupPlayerSlot();
                 }
+
+                if (Keyboard.current.kKey.wasPressedThisFrame)
+                {
+                    wipVUI.CreatePlayerSlot(wipVUI.SlotHolder.GetComponent<RectTransform>());
+                }
             }
         }
     }

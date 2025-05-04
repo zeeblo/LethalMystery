@@ -21,7 +21,7 @@ namespace LethalMystery.UI
         public static Image voteBtnIcon;
         public static Image skipBtnIcon;
         public static List<GameObject> allVoteUIObjects = new List<GameObject>();
-
+        private static int num = 0;
 
         public static void DestroyUI()
         {
@@ -195,29 +195,26 @@ namespace LethalMystery.UI
             SlotHolder.layer = 5;
 
             RectTransform rect = SlotHolder.GetComponent<RectTransform>();
-            //rect.sizeDelta = new Vector2(250, 230);
+            rect.sizeDelta = new Vector2(250, 30);
+            rect.anchorMin = new Vector2(0, 1);
+            rect.anchorMax = new Vector2(1, 1);
+            rect.pivot = new Vector2(0.5f, 1);
 
-            VerticalLayoutGroup layout = SlotHolder.AddComponent<VerticalLayoutGroup>();
-            /*
+            
+            GridLayoutGroup layout = SlotHolder.AddComponent<GridLayoutGroup>();
+            layout.cellSize = new Vector2(245, 50);
+            //layout.spacing = new Vector2(0, 1);
             layout.childAlignment = TextAnchor.UpperCenter;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = false;
-            layout.childControlWidth = true;
-            layout.childControlHeight = true;
-            */
-            layout.spacing = 8;
+            layout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            layout.constraintCount = 1;
+          
 
-
-
-            CreatePlayerSlot();
-            CreatePlayerSlot();
-            CreatePlayerSlot();
-            CreatePlayerSlot();
-            CreatePlayerSlot();
+            CreatePlayerSlot(slotRect: rect);
+            CreatePlayerSlot(slotRect: rect);
             return rect;
         }
 
-        public static RectTransform CreatePlayerSlot()
+        public static void CreatePlayerSlot(RectTransform slotRect)
         {
             GameObject playerSlot = new GameObject("playerSlot");
             playerSlot.transform.SetParent(SlotHolder.transform, false);
@@ -236,7 +233,11 @@ namespace LethalMystery.UI
             NameTagBg(playerSlot);
             CreateVoteButton(playerSlot);
             CreateVoteText(playerSlot);
-            return bgRect;
+
+
+            float slot_x = slotRect.sizeDelta.x;
+            float slot_y = slotRect.sizeDelta.y + 55;
+            slotRect.sizeDelta = new Vector2(slot_x, slot_y);
         }
 
         public static void NameTagBg(GameObject playerSlot)
@@ -263,6 +264,7 @@ namespace LethalMystery.UI
 
         public static void NameTag(GameObject nametagBG)
         {
+            num += 1;
             GameObject username = new GameObject("username");
             username.transform.SetParent(nametagBG.transform, false);
             TextMeshProUGUI text = username.AddComponent<TextMeshProUGUI>();
@@ -271,7 +273,7 @@ namespace LethalMystery.UI
             text.alignment = TextAlignmentOptions.Left;
             text.margin = new Vector3(8, 0, 0);
             text.overflowMode = TextOverflowModes.Ellipsis;
-            text.text = "boop";
+            text.text = $"#{num} boop";
 
             username.layer = 5;
 
@@ -289,15 +291,17 @@ namespace LethalMystery.UI
             votesTxt.transform.SetParent(playerSlot.transform, false);
             TextMeshProUGUI text = votesTxt.AddComponent<TextMeshProUGUI>();
             text.color = new Color(1, 0.5897f, 0, 1);
-            text.fontSize = 8f;
-            text.text = "VOTES: ";
+            text.fontSize = 12f;
+            text.fontStyle = FontStyles.Bold;
+            text.text = "0";
 
             votesTxt.layer = 5;
 
             RectTransform bgRect = votesTxt.GetComponent<RectTransform>();
-            bgRect.anchorMin = new Vector2(0, 0);
-            bgRect.anchorMax = new Vector2(0, 0);
-            bgRect.pivot = new Vector2(0, 0.5f);
+            bgRect.anchoredPosition = new Vector2(125, -15);
+            bgRect.anchorMin = new Vector2(1, 0.5f);
+            bgRect.anchorMax = new Vector2(1, 0.5f);
+            bgRect.pivot = new Vector2(1, 0.5f);
         }
 
 
