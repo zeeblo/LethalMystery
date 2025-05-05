@@ -106,7 +106,6 @@ namespace LethalMystery.MainGame
             CharacterDisplay.BlackVision(true);
             BuyItems.SetItemPrices();
             BuyItems.HideItems();
-            CheckCustomNames();
 
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
@@ -294,52 +293,6 @@ namespace LethalMystery.MainGame
             TimeOfDay.Instance.sunAnimator.SetFloat("timeOfDay", Mathf.Clamp(normalizedTimeOfDay, 0f, 0.78f));
         }
 
-
-
-
-        /// <summary>
-        /// Append ids onto player names
-        /// </summary>
-        private static void CheckCustomNames()
-        {
-            GameObject plist = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
-            string listPath = "Image/QuickmenuOverride(Clone)/Holder";
-            Transform allPlayerListObjs = plist.transform.Find(listPath).transform;
-
-            SetCustomNames(); // To properly initiate names
-
-            for (int id = 0; id < StartOfRound.Instance.allPlayerScripts.Length; id++)
-            {
-                string name = StartOfRound.Instance.allPlayerScripts[id].playerUsername;
-                StartOfRound.Instance.allPlayerScripts[id].playerUsername = name + $" #{StartOfRound.Instance.allPlayerScripts[id].playerClientId}";
-            }
-
-            SetCustomNames(); // To rename the player list in the quickmenu
-        }
-
-
-        /// <summary>
-        /// May just be LAN but custom names appear to only be visible
-        /// for the first 2 clients in the QuickMenu
-        /// </summary>
-        private static void SetCustomNames()
-        {
-            GameObject plist = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList");
-            string listPath = "Image/QuickmenuOverride(Clone)/Holder";
-            Transform allPlayerListObjs = plist.transform.Find(listPath).transform;
-
-            int i = 0;
-            foreach (Transform obj in GOTools.GetAllChildrenAdvanced(allPlayerListObjs))
-            {
-                if (obj.name == "PName")
-                {
-                    // Set Custom QuickMenu Name
-                    TextMeshProUGUI pname = obj.GetComponent<TextMeshProUGUI>();
-                    pname.text = StartOfRound.Instance.allPlayerScripts[i].playerUsername;
-                    i += 1;
-                }
-            }
-        }
 
 
 
