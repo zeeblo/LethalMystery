@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalLib.Modules;
 using LethalMystery.MainGame;
+using LethalMystery.Players;
 using LethalMystery.Utils;
 using TMPro;
 using UnityEngine;
@@ -21,20 +22,10 @@ namespace LethalMystery.UI
         public static bool inVoteTime = false;
         public static GameObject votingGUI;
         public static GameObject voteIcon;
-        public static GameObject playerSlot;
-        public static GameObject voteList;
-        //public static GameObject playerList;
-        public static GameObject header;
         public static GameObject skipSection;
         public static GameObject SlotHolder;
-        public static List<GameObject> allVoteUIObjects = new List<GameObject>();
         public static List<GameObject> slotObjects = new List<GameObject>();
-        //public static Image voteBtnIcon;
-        //public static Image skipBtnIcon;
         private static Sprite xButtonSprite;
-
-
-        #region Patches
 
 
         [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
@@ -43,18 +34,17 @@ namespace LethalMystery.UI
         {
             if (isCalled)
             {
+                CreateVoteIcon();
                 GameObject xButtonObj = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList/Image/PlayerListSlot/KickButton"); // Note: Check if MoreCompany is found
                 xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
 
                 votingGUI = CreateVoteList();
+                Controls.ShowVoteUI();
                 isCalled = false;
 
-                UpdateVoteButtonSprite();
-                EnableDisabledList();
-                //StartOfRound.Instance.StartCoroutine(DoubleCheckList());
             }
 
-            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value))
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) && votingGUI != null)
             {
                 bool condition = LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
                 float vote = StringAddons.ConvertToFloat(Meeting.voteTime.Value);
@@ -70,363 +60,66 @@ namespace LethalMystery.UI
 
 
 
+        #region VoteIcon
 
-        #endregion Patches
-
-
-        private static GameObject CreateVotingGUI(QuickMenuManager __instance)
+        public static void CreateVoteIcon()
         {
-            GameObject canvas = GameObject.Find("Systems/UI/Canvas/");
-            GameObject VotingMenu = new GameObject("VotingMenu");
-            GameObject plist = Plugin.Instantiate(__instance.playerListPanel); //ClonedPlayerList(__instance.playerListPanel); // Plugin.Instantiate(__instance.playerListPanel);
+            GameObject parentUI = GameObject.Find("Systems/UI/Canvas/IngamePlayerHUD");
+            voteIcon = new GameObject("voteIcon");
+            voteIcon.transform.SetParent(parentUI.transform, false);
 
-            VotingMenu.layer = 5; // UI Layer
-            VotingMenu.transform.SetParent(canvas.transform, false);
-            VotingMenu.transform.SetSiblingIndex(12);
+            voteIcon.layer = 5; // (UI Layer)
+            voteIcon.transform.SetSiblingIndex(1);
 
-            plist.transform.SetParent(VotingMenu.transform, false);
+            Image img = voteIcon.AddComponent<Image>();
+            img.sprite = LMAssets.VoteIcon;
 
-            string rawHeaderText = (LMConfig.defaultDiscussTime == 0) ? "VOTE: " : "DISCUSS: ";
-            float vote = StringAddons.ConvertToFloat(Meeting.voteTime.Value);
-            float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
-            string HeaderText = (rawHeaderText.Equals("VOTE: ")) ? rawHeaderText + $"{(int)vote}" : rawHeaderText + $"{(int)discuss}";
+            RectTransform rectForm = voteIcon.GetComponent<RectTransform>();
+            rectForm.sizeDelta = new Vector2(64, 64);
 
-            plist.transform.Find("Image/Header").gameObject.GetComponent<TextMeshProUGUI>().text = HeaderText;
+            rectForm.anchorMin = new Vector2(1, 1);
+            rectForm.anchorMax = new Vector2(1, 1);
+            rectForm.pivot = new Vector2(1, 1);
+            rectForm.anchoredPosition = new Vector2(-80, 0);
 
-            ShowVotesForPlayers(plist);
-            VoteButton(plist);
-            SkipButton(plist);
-            CheckPlayerList();
-            return VotingMenu;
+            ShowVoteIconKeybind();
         }
 
 
 
-        private static void UpdateTextHeader(string text)
+        private static void ShowVoteIconKeybind()
         {
-            GameObject header = GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/Header");
-            if (header)
-            {
-                header.gameObject.GetComponent<TextMeshProUGUI>().text = text;
-            }
+            GameObject bgObj = new GameObject("background");
+            bgObj.transform.SetParent(voteIcon.transform, false);
+            bgObj.transform.SetSiblingIndex(0);
+            Image bgImage = bgObj.AddComponent<Image>();
+            bgImage.color = new Color(0, 0, 0, 1f);
 
-            if (text.ToLower().Contains("vote") && inVoteTime == false)
-            {
-                UpdateVoteButtonSprite();
-                inVoteTime = true;
-            }
+            RectTransform bgRect = bgObj.GetComponent<RectTransform>();
+            bgRect.sizeDelta = new Vector2(32, 16);
+            bgRect.anchorMin = new Vector2(1, 1);
+            bgRect.anchorMax = new Vector2(1, 1);
+            bgRect.pivot = new Vector2(1.5f, 4.5f);
+            bgRect.anchoredPosition = Vector2.zero;
+
+
+            GameObject keybind = new GameObject("keybind");
+            keybind.transform.SetParent(voteIcon.transform, false);
+            keybind.transform.SetSiblingIndex(1);
+            TextMeshProUGUI bindtxt = keybind.AddComponent<TextMeshProUGUI>();
+            bindtxt.text = "[ " + $"{LMConfig.showVoteBind.Value.ToUpper()}" + " ]";
+            bindtxt.fontSize = 9;
+            bindtxt.fontWeight = FontWeight.Heavy;
+            bindtxt.alignment = TextAlignmentOptions.Center;
+            bindtxt.color = new Color(0.996f, 0.095f, 0, 1f);
+
+            RectTransform bindRect = keybind.GetComponent<RectTransform>();
+            bindRect.sizeDelta = new Vector2(280, 80);
+            bindRect.pivot = new Vector2(0.5f, 0.9f);
+            bindRect.anchoredPosition = Vector2.zero;
         }
 
-
-        private static GameObject GetTextHeader()
-        {
-            return GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)/Image/Header");
-        }
-
-
-
-        private static GameObject GetPlayerListSlot()
-        {
-            return GameObject.Find("Systems/UI/Canvas/VotingMenu/PlayerList(Clone)");
-        }
-
-
-
-
-        public static List<int> GetPlayerIDs()
-        {
-            string parentPath = "Systems/UI/Canvas/QuickMenu";
-            string path = $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
-            List<int> playerIDS = new List<int>();
-
-            GameObject playerVoteObj = GameObject.Find(path);
-            foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
-            {
-                TextMeshProUGUI pName = players.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                string actualID = pName.text.Split("#")[1];
-                playerIDS.Add(StringAddons.ConvertToInt(actualID));
-            }
-            return playerIDS;
-        }
-
-
-
-        public static void SkipButton(GameObject playerListSlot)
-        {
-            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string path = (moreCompany == false) ? $"Image/PlayerListSlot/VoteButton" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoteButton";
-
-            GameObject plistClone = playerListSlot.transform.Find("Image").gameObject;
-            GameObject playerVoteBtn = playerListSlot.transform.Find(path).gameObject;
-
-
-            GameObject skipButton = Plugin.Instantiate(playerVoteBtn);
-            RectTransform skipButtonRect = skipButton.GetComponent<RectTransform>();
-            skipButton.gameObject.name = "SkipButton";
-            skipButton.transform.SetParent(plistClone.transform, false);
-            skipButtonRect.anchoredPosition = new Vector2(-100f, -155f);
-
-
-            GameObject skipObj = Plugin.Instantiate(GetTextHeader());
-            RectTransform skipTextRect = skipObj.GetComponent<RectTransform>();
-            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
-            skipObj.gameObject.name = "SkipText";
-            skipText.fontSize = 17;
-            skipText.text = "SKIP: " + Voting.skipVotes.Value;
-            skipObj.transform.SetParent(plistClone.transform, false);
-            skipTextRect.anchoredPosition = new Vector2(45f, -318f);
-
-            UnityEngine.UI.Image skipCheckSprite = skipButton.GetComponent<UnityEngine.UI.Image>();
-            UnityEngine.UI.Button skipBtn = skipButton.GetComponent<UnityEngine.UI.Button>();
-            skipCheckSprite.sprite = LMAssets.CheckboxEmptyIcon;
-            skipBtn.onClick.AddListener(() => Voting.SkipButtonClick(skipCheckSprite));
-
-        }
-
-
-        public static void VoteButton(GameObject playerListSlot)
-        {
-            GameObject raw_playerVoteBtn = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
-            Dictionary<int, GameObject> playerVoteBtn = new Dictionary<int, GameObject>();
-
-            
-            foreach (GameObject player in GOTools.GetAllChildren(raw_playerVoteBtn))
-            {
-                TextMeshProUGUI pName = player.transform.Find("PlayerNameButton/PName").GetComponent<TextMeshProUGUI>();
-                string name = pName.text;
-                int id = StringAddons.NameToID(name); // StringAddons.GetLastId(name); //
-                Plugin.mls.LogInfo($">>>ClonedPlayerList: pName: {pName.text} | playerID: {id}");
-
-                if (id == -1) continue;
-                if (StartOfRound.Instance.allPlayerScripts[id].isPlayerDead) continue;
-                if (!Voting.playersWhoGotVoted.Value.ContainsKey($"{id}")) continue;
-
-                playerVoteBtn.Add(id, player);
-            }
-            
-
-            foreach (KeyValuePair<int, GameObject> i in playerVoteBtn)
-            {
-                int index = i.Key; // because apparently using just "i" doesn't work for events, it needs to be stored in a variable
-
-                GameObject VoteBtn = i.Value.transform.Find("KickButton").gameObject;
-                VoteBtn.gameObject.name = "VoteButton";
-                VoteBtn.SetActive(true);
-
-                UnityEngine.UI.Image plrCheckSprite = VoteBtn.GetComponent<UnityEngine.UI.Image>();
-                UnityEngine.UI.Button plrbutton = VoteBtn.GetComponent<UnityEngine.UI.Button>();
-                plrCheckSprite.sprite = (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0) ? xButtonSprite : LMAssets.CheckboxEmptyIcon;
-
-                Plugin.mls.LogInfo($">>> Logging num: {index}");
-                plrbutton.onClick.AddListener(() => Voting.VoteButtonClick(index, plrCheckSprite));
-
-            }
-
-
-        }
-
-        /// <summary>
-        /// During discuss time the buttons must appear as X.
-        /// After they must appear as empty boxes
-        /// </summary>
-        private static void UpdateVoteButtonSprite()
-        {
-            GameObject playerVoteBtn = GetPlayerListSlot().transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
-            foreach (GameObject players in GOTools.GetAllChildren(playerVoteBtn))
-            {
-                // if (StartOfRound.Instance.allPlayerScripts[i].isPlayerDead) continue;
-                Transform rawPlrObj = players.transform.Find("VoteButton");
-                if (rawPlrObj == null) continue;
-
-                GameObject plrObj = rawPlrObj.gameObject;
-                if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
-                {
-                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;
-                }
-                else
-                {
-                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.CheckboxEmptyIcon;
-                }
-
-            }
-
-
-        }
-
-
-        private static void ShowVotesForPlayers(GameObject playerListSlot)
-        {
-            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-
-            for (int i = 0; i < StartOfRound.Instance.allPlayerScripts.Length; i++)
-            {
-                if (!Voting.playersWhoGotVoted.Value.ContainsKey($"{i}")) continue;
-
-                string votes = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{i}"];
-                string playerBeingVoted = (i > 0) ? $"PlayerListSlot ({i})" : "PlayerListSlot";
-                string path = (moreCompany == false) ? $"Image/{playerBeingVoted}/VoiceVolumeSlider" : "Image/QuickmenuOverride(Clone)/Holder/PlayerListSlot(Clone)/VoiceVolumeSlider";
-
-                GameObject VolSlider = playerListSlot.transform.Find(path).gameObject;
-                VolSlider.SetActive(true);
-                VolSlider.transform.Find("Image").gameObject.SetActive(false);
-                VolSlider.transform.Find("Slider").gameObject.SetActive(false);
-
-                GameObject playerVoteObj = playerListSlot; // placeholder
-                if (moreCompany == false)
-                {
-                    playerVoteObj = playerListSlot.transform.Find($"{path}/Text (1)").gameObject;
-                }
-                else
-                {
-                    playerVoteObj = playerListSlot.transform.Find("Image/QuickmenuOverride(Clone)/Holder").gameObject;
-                    foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
-                    {
-                        GameObject plrObj = players.transform.Find("Text (1)").gameObject;
-                        GameObject plrVolume = players.transform.Find("PlayerVolumeSlider").gameObject;
-                        plrVolume.SetActive(false);
-                        plrObj.name = "Votes";
-                        plrObj.SetActive(true);
-                        plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
-                    }
-                    break;
-                }
-
-                playerVoteObj.name = "Votes";
-                playerVoteObj.SetActive(true);
-                playerVoteObj.gameObject.GetComponent<TextMeshProUGUI>().text = votes;
-            }
-        }
-
-
-
-        public static void UpdateSkipText()
-        {
-            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/SkipText" : $"{parentPath}/PlayerList(Clone)/Image/SkipText";
-
-            GameObject skipObj = GameObject.Find(path);
-            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
-            skipText.text = "SKIP: " + Voting.skipVotes.Value;
-        }
-
-
-        public static void UpdateVoteText(int userID)
-        {
-            bool moreCompany = Plugin.FoundThisMod("me.swipez.melonloader.morecompany");
-            string playerBeingVoted = (userID > 0) ? $"PlayerListSlot ({userID})" : "PlayerListSlot";
-            string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = (moreCompany == false) ? $"{parentPath}/PlayerList(Clone)/Image/{playerBeingVoted}/VoiceVolumeSlider/Votes" : $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
-
-            if (moreCompany)
-            {
-
-                GameObject playerVoteObj = GameObject.Find(path);
-                foreach (GameObject players in GOTools.GetAllChildren(playerVoteObj))
-                {
-                    TextMeshProUGUI pName = players.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                    foreach (PlayerControllerB sofplayer in StartOfRound.Instance.allPlayerScripts)
-                    {
-                        if (pName.text == sofplayer.playerUsername && (int)sofplayer.playerClientId == userID)
-                        {
-                            Plugin.mls.LogInfo(">>> Found matching name");
-                            GameObject plrObj = players.transform.Find("Votes").gameObject;
-                            plrObj.gameObject.GetComponent<TextMeshProUGUI>().text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
-                            break;
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-                GameObject playerVoteObj = GameObject.Find(path);
-                TextMeshProUGUI playerVoteText = playerVoteObj.GetComponent<TextMeshProUGUI>();
-                playerVoteText.text = "VOTES: " + Voting.playersWhoGotVoted.Value[$"{userID}"];
-            }
-
-        }
-
-
-        /// <summary>
-        /// Refresh playerlist when player leaves or dies
-        /// </summary>
-        public static void UpdatePlayerList(ulong playerID)
-        {
-            string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = $"{parentPath}/PlayerList(Clone)/Image/QuickmenuOverride(Clone)/Holder";
-
-            GameObject playerVoteObj = GameObject.Find(path);
-            foreach (GameObject player in GOTools.GetAllChildren(playerVoteObj))
-            {
-                TextMeshProUGUI pName = player.transform.Find("PlayerNameButton").transform.Find("PName").GetComponent<TextMeshProUGUI>();
-                Plugin.mls.LogInfo($">>> pName: {pName.text} | playerID: {playerID}");
-
-                foreach (PlayerControllerB sofplayer in StartOfRound.Instance.allPlayerScripts)
-                {
-                    if (pName.text == sofplayer.playerUsername && sofplayer.playerClientId == playerID)
-                    {
-                        Plugin.mls.LogInfo($"^^^ Found Match! (sofplayer: {sofplayer.playerUsername})");
-                        Plugin.Destroy(player.gameObject);
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Sometimes certain playerlistslots that shouldn't appear disabled
-        /// are disabled, this method attempts to fix that
-        /// </summary>
-        private static void EnableDisabledList()
-        {
-            string parentPath = "Systems/UI/Canvas/VotingMenu";
-            string path = $"{parentPath}/PlayerList(Clone)";
-
-            GameObject PlayerList = GameObject.Find(path);
-            if (PlayerList != null)
-            {
-                PlayerList.SetActive(true);
-            }
-        }
-
-        /// <summary>
-        /// Check if players are dead and remove them from the votelist
-        /// </summary>
-        private static void CheckPlayerList()
-        {
-            foreach (PlayerControllerB plr in StartOfRound.Instance.allPlayerScripts)
-            {
-                if (plr.isPlayerDead)
-                {
-                    UpdatePlayerList(plr.playerClientId);
-                }
-            }
-        }
-
-
-
-        /// <summary>
-        /// If for some reason the UI isn't created properly, recreate it
-        /// </summary>
-        private static IEnumerator DoubleCheckList()
-        {
-            yield return new WaitForSeconds(0.8f);
-            if (votingGUI != null)
-            {
-                CheckPlayerList();
-            }
-            else
-            {
-                isCalled = true;
-            }
-            
-        }
-
-
-
-
-
+        #endregion VoteIcon
 
 
 
@@ -441,16 +134,16 @@ namespace LethalMystery.UI
         }
 
 
-        public static GameObject CreateVoteList()
+        private static GameObject CreateVoteList()
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
-            voteList = new GameObject("VoteList");
+            GameObject voteList = new GameObject("VoteList");
             voteList.transform.SetParent(parentUI.transform, false);
             Image rawImg = voteList.AddComponent<Image>();
             rawImg.color = new Color(0.4627f, 0, 0, 1);
 
             voteList.layer = 5;
-            voteList.transform.SetSiblingIndex(13); // before quickmenu
+            voteList.transform.SetSiblingIndex(12); // before quickmenu
 
             RectTransform rect = voteList.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(250, 300);
@@ -464,16 +157,17 @@ namespace LethalMystery.UI
             outline.effectDistance = new Vector2(2f, 2f);
 
             voteList.AddComponent<Mask>();
-            allVoteUIObjects.Add(voteList);
 
-            Header();
-            CreatePlayerList();
-            CreateSkipSection();
+            slotObjects.Clear();
+
+            Header(voteList);
+            CreatePlayerList(voteList);
+            CreateSkipSection(voteList);
 
             return voteList;
         }
 
-        public static void Header()
+        private static void Header(GameObject voteList)
         {
             GameObject header = new GameObject("Header");
             header.transform.SetParent(voteList.transform, false);
@@ -483,7 +177,7 @@ namespace LethalMystery.UI
             //text.alignment = TextAlignmentOptions.Left;
             //text.margin = new Vector3(8, 0, 0);
             text.overflowMode = TextOverflowModes.Ellipsis;
-            text.text = "DISCUSS: ";
+            text.text = "[loading]: ";
 
             header.layer = 5;
 
@@ -495,7 +189,7 @@ namespace LethalMystery.UI
             bgRect.pivot = new Vector2(0, 1);
         }
 
-        public static void CreatePlayerList()
+        private static void CreatePlayerList(GameObject voteList)
         {
             GameObject playerList = new GameObject("PlayerList");
             playerList.transform.SetParent(voteList.transform, false);
@@ -511,18 +205,15 @@ namespace LethalMystery.UI
             scrlRect.content = CreatePlayerSlotHolder(playerList);
 
             playerList.AddComponent<Mask>();
-            allVoteUIObjects.Add(playerList);
-
-
         }
 
-        public static RectTransform CreatePlayerSlotHolder(GameObject playerList)
+        private static RectTransform CreatePlayerSlotHolder(GameObject playerList)
         {
             SlotHolder = new GameObject("PlayerSlotHolder");
             SlotHolder.transform.SetParent(playerList.transform, false);
             Image rawImg = SlotHolder.AddComponent<Image>();
-            //rawImg.color = new Color(0.4627f, 0, 0, 1);
-            rawImg.color = new Color(1, 1, 1, 1);
+            rawImg.color = new Color(0.4627f, 0, 0, 1);
+            //rawImg.color = new Color(1, 1, 1, 1);
             SlotHolder.layer = 5;
 
             RectTransform rect = SlotHolder.GetComponent<RectTransform>();
@@ -550,7 +241,7 @@ namespace LethalMystery.UI
             return rect;
         }
 
-        public static void CreatePlayerSlot(RectTransform slotRect, ulong playerID)
+        private static void CreatePlayerSlot(RectTransform slotRect, ulong playerID)
         {
             GameObject playerSlot = new GameObject("playerSlot");
             playerSlot.transform.SetParent(SlotHolder.transform, false);
@@ -576,13 +267,13 @@ namespace LethalMystery.UI
             pslot.playerSlot = playerSlot;
 
             NameTag(NameTagBg(playerSlot), playerID);
-            CreateVoteButton(playerSlot);
+            CreateVoteButton(playerSlot, playerID);
             pslot.votes = CreateVoteText(playerSlot);
 
             slotObjects.Add(playerSlot);
         }
 
-        public static GameObject NameTagBg(GameObject playerSlot)
+        private static GameObject NameTagBg(GameObject playerSlot)
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
             GameObject nametagBG = new GameObject("nametag");
@@ -603,7 +294,7 @@ namespace LethalMystery.UI
         }
 
 
-        public static void NameTag(GameObject nametagBG, ulong playerID)
+        private static void NameTag(GameObject nametagBG, ulong playerID)
         {
             GameObject username = new GameObject("username");
             username.transform.SetParent(nametagBG.transform, false);
@@ -625,7 +316,7 @@ namespace LethalMystery.UI
 
 
 
-        public static GameObject CreateVoteText(GameObject playerSlot)
+        private static GameObject CreateVoteText(GameObject playerSlot)
         {
             GameObject votesTxt = new GameObject("Votes");
             votesTxt.transform.SetParent(playerSlot.transform, false);
@@ -647,7 +338,7 @@ namespace LethalMystery.UI
 
 
 
-        private static void CreateVoteButton(GameObject playerSlot)
+        private static void CreateVoteButton(GameObject playerSlot, ulong playerID)
         {
             //if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
 
@@ -682,7 +373,9 @@ namespace LethalMystery.UI
             trigger.triggers.Add(pointerEnter);
             trigger.triggers.Add(pointerExit);
 
-            btn.onClick.AddListener(() => playerVoted(voteBtnIcon));
+
+            int index = (int)playerID;
+            btn.onClick.AddListener(() => Voting.VoteButtonClick(index, voteBtnIcon));
 
             RectTransform rect = voteBtn.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(25, 25);
@@ -690,7 +383,6 @@ namespace LethalMystery.UI
             rect.anchorMax = new Vector2(1, 0.5f);
             rect.pivot = new Vector2(1, 0.5f);
 
-            allVoteUIObjects.Add(voteBtn);
         }
 
 
@@ -702,7 +394,7 @@ namespace LethalMystery.UI
 
 
 
-        private static void CreateSkipSection()
+        private static void CreateSkipSection(GameObject voteList)
         {
             skipSection = new GameObject("SkipSection");
             Image img = skipSection.AddComponent<Image>();
@@ -774,7 +466,7 @@ namespace LethalMystery.UI
             trigger.triggers.Add(pointerEnter);
             trigger.triggers.Add(pointerExit);
 
-            btn.onClick.AddListener(() => playerSkipped());
+            btn.onClick.AddListener(() => Voting.SkipButtonClick(skipBtnIcon));
 
             RectTransform rect = skipBtn.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(25, 25);
@@ -782,7 +474,6 @@ namespace LethalMystery.UI
             rect.anchorMax = new Vector2(0, 0.5f);
             rect.pivot = new Vector2(0, 0.5f);
 
-            allVoteUIObjects.Add(skipBtn);
         }
 
 
@@ -790,6 +481,102 @@ namespace LethalMystery.UI
         {
             Plugin.mls.LogInfo(">>>> Player Skipped.");
         }
+
+
+
+
+
+
+        private static void UpdateTextHeader(string text)
+        {
+            GameObject header = votingGUI.transform.Find("Header").gameObject;
+            if (header)
+            {
+                header.gameObject.GetComponent<TextMeshProUGUI>().text = text;
+            }
+
+            if (text.ToLower().Contains("vote") && inVoteTime == false)
+            {
+                UpdateVoteButtonSprite();
+                inVoteTime = true;
+            }
+        }
+
+        /// <summary>
+        /// During discuss time the buttons must appear as X.
+        /// After they must appear as empty boxes
+        /// </summary>
+        private static void UpdateVoteButtonSprite()
+        {
+
+            foreach (GameObject playerslot in slotObjects)
+            {
+                Transform rawPlrObj = playerslot.transform.Find("VoteBtn");
+                if (rawPlrObj == null) continue;
+
+                GameObject plrObj = rawPlrObj.gameObject;
+                if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
+                {
+                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;
+                }
+                else
+                {
+                    plrObj.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.CheckboxEmptyIcon;
+                }
+
+            }
+
+        }
+
+
+
+        public static void UpdateSkipText()
+        {
+            GameObject skipObj = skipSection.transform.Find("SkipText").gameObject;
+            TextMeshProUGUI skipText = skipObj.GetComponent<TextMeshProUGUI>();
+            skipText.text = "SKIP: " + Voting.skipVotes.Value;
+        }
+
+
+        public static void UpdateVoteText(int userID)
+        {
+            foreach (KeyValuePair<string, string> id in Voting.playersWhoGotVoted.Value)
+            {
+                foreach (GameObject slot in slotObjects)
+                {
+                    PlayerSlot comp = slot.GetComponent<PlayerSlot>();
+                    TextMeshProUGUI votes = comp.votes.GetComponent<TextMeshProUGUI>();
+                    int pid = (int)comp.playerID;
+
+                    if (pid == StringAddons.ConvertToInt(id.Value))
+                    {
+                        votes.text = "VOTES: " + id.Value;
+                        break;
+                    }
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        /// Refresh playerlist when player leaves or dies
+        /// </summary>
+        public static void UpdatePlayerList(ulong playerID)
+        {
+            foreach (GameObject player in slotObjects)
+            {
+                ulong pid = player.GetComponent<PlayerSlot>().playerID;
+
+                if (pid == playerID)
+                {
+                    Plugin.Destroy(player);
+                    break;
+                }
+            }
+        }
+
+
 
     }
 }

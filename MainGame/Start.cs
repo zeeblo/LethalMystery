@@ -101,7 +101,6 @@ namespace LethalMystery.MainGame
 
             Plugin.ResetVariables();
             MinimapUI.CreateMapIcon();
-            wipVUI.CreateVoteIcon();
             Tasks.AppendScraps();
             Roles.AssignRole();
             CharacterDisplay.BlackVision(true);

@@ -86,11 +86,18 @@ namespace LethalMystery.Players
             if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
+            if (VotingUI.votingGUI == null) return;
+            if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false || StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value) == true) return;
 
-
-            Plugin.mls.LogInfo(">>> Opened Vote Menu");
+            ShowVoteUI();
         }
 
+        public static void ShowVoteUI()
+        {
+            VotingUI.votingGUI.SetActive(!VotingUI.votingGUI.activeSelf);
+            UnlockCursor(VotingUI.votingGUI.activeSelf);
+            Plugin.mls.LogInfo(">>> Opened Vote Menu");
+        }
 
 
         private static void ShowMap_performed(InputAction.CallbackContext obj)

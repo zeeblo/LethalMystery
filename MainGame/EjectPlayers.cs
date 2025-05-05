@@ -48,7 +48,8 @@ namespace LethalMystery.MainGame
             GOTools.TurnLightsRed();
             __instance.shipDoorAudioSource.PlayOneShot(__instance.alarmSFX);
 
-            VotingUI.votingGUI.SetActive(false);
+            Plugin.Destroy(VotingUI.votingGUI);
+            Plugin.Destroy(VotingUI.voteIcon);
             Controls.UnlockCursor(false);
             GOTools.HideLMInsideDungeon();
 

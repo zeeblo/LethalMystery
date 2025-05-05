@@ -26,6 +26,19 @@ namespace LethalMystery.MainGame
         #region Patches
 
 
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Look_performed))]
+        [HarmonyPrefix]
+        private static bool PreventLooking()
+        {
+            if (VotingUI.votingGUI == null) return true;
+            if (VotingUI.votingGUI.activeSelf)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
         [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.OnPlayerDC))]
         [HarmonyPostfix]
         private static void UserLeft(ulong clientId)
