@@ -96,10 +96,7 @@ namespace LethalMystery.MainGame
 
 
                 StartOfRound.Instance.mapScreen.SwitchScreenOn(false);
-                if (!StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value))
-                {
-                    Controls.UnlockCursor(true);
-                }
+
             }
 
 
