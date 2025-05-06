@@ -155,6 +155,7 @@ namespace LethalMystery.Network
                 if (VotingUI.votingGUI != null)
                 {
                     Plugin.Destroy(VotingUI.votingGUI.gameObject);
+                    Plugin.Destroy(VotingUI.voteIcon);
                 }
                 GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             }
