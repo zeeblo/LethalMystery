@@ -39,7 +39,6 @@ namespace LethalMystery.UI
                 xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
 
                 votingGUI = CreateVoteList();
-                Controls.ShowVoteUI();
                 isCalled = false;
 
             }
@@ -163,6 +162,7 @@ namespace LethalMystery.UI
             Header(voteList);
             CreatePlayerList(voteList);
             CreateSkipSection(voteList);
+            Controls.UnlockCursor(true);
 
             return voteList;
         }
@@ -366,7 +366,6 @@ namespace LethalMystery.UI
             pointerExit.eventID = EventTriggerType.PointerExit;
             pointerExit.callback.AddListener((data) =>
             {
-                voteBtnIcon.sprite = baseImg;
                 voteBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
             });
 
@@ -383,13 +382,6 @@ namespace LethalMystery.UI
             rect.anchorMax = new Vector2(1, 0.5f);
             rect.pivot = new Vector2(1, 0.5f);
 
-        }
-
-
-        private static void playerVoted(Image voteBtnIcon)
-        {
-            voteBtnIcon.sprite = LMAssets.CheckboxEnabledIcon;
-            Plugin.mls.LogInfo(">>>> Player voted!");
         }
 
 
@@ -459,7 +451,6 @@ namespace LethalMystery.UI
             pointerExit.eventID = EventTriggerType.PointerExit;
             pointerExit.callback.AddListener((data) =>
             {
-                skipBtnIcon.sprite = baseImg;
                 skipBtnIcon.color = new Color(0.651f, 0.2118f, 0.0039f, 1);
             });
 
@@ -475,15 +466,6 @@ namespace LethalMystery.UI
             rect.pivot = new Vector2(0, 0.5f);
 
         }
-
-
-        private static void playerSkipped()
-        {
-            Plugin.mls.LogInfo(">>>> Player Skipped.");
-        }
-
-
-
 
 
 

@@ -74,6 +74,24 @@ namespace LethalMystery.MainGame
 
                 }
 
+                if (Keyboard.current.digit7Key.wasPressedThisFrame)
+                {
+
+                    Plugin.mls.LogInfo($">>> My ID is: {Plugin.localPlayer.actualClientId}");
+                    Plugin.mls.LogInfo($">>> My PID is: {Plugin.localPlayer.playerClientId}");
+                    Plugin.mls.LogInfo($">>> thisClientPlayerId: {StartOfRound.Instance.thisClientPlayerId}");
+                    Plugin.mls.LogInfo($">>> connectedPlayersAmount: {StartOfRound.Instance.connectedPlayersAmount}");
+                    Plugin.mls.LogInfo($">>> livingPlayers: {StartOfRound.Instance.livingPlayers}");
+                    //ClientPlayerList.Remove(clientId); (startofround)
+
+                    foreach (KeyValuePair<string, string> d in Voting.playersWhoGotVoted.Value)
+                    {
+                        Plugin.mls.LogInfo($">>> PID: {d.Key} | VoteVal: {d.Value}");
+                    }
+                    Plugin.mls.LogInfo($">>skipVal es: {Voting.skipVotes.Value}");
+
+                }
+
             }
         }
     }
