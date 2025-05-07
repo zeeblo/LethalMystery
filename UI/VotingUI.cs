@@ -215,7 +215,7 @@ namespace LethalMystery.UI
             SlotHolder.transform.SetParent(playerList.transform, false);
             Image rawImg = SlotHolder.AddComponent<Image>();
             rawImg.color = new Color(0.4627f, 0, 0, 1);
-            //rawImg.color = new Color(1, 1, 1, 1);
+            //rawImg.color = new Color(0, 1, 0, 1);
             SlotHolder.layer = 5;
 
             RectTransform rect = SlotHolder.GetComponent<RectTransform>();
@@ -248,7 +248,7 @@ namespace LethalMystery.UI
             GameObject playerSlot = new GameObject("playerSlot");
             playerSlot.transform.SetParent(SlotHolder.transform, false);
             Image bgImage = playerSlot.AddComponent<Image>();
-            bgImage.color = new Color(1, 1, 1, 0); // So I can visually see what the rect looks like when i need to
+            bgImage.color = new Color(1, 0, 0, 0); // So I can visually see what the rect looks like when i need to
 
             playerSlot.layer = 5;
 
@@ -329,6 +329,7 @@ namespace LethalMystery.UI
             text.text = "0";
 
             votesTxt.layer = 5;
+            votesTxt.transform.SetAsFirstSibling();
 
             RectTransform bgRect = votesTxt.GetComponent<RectTransform>();
             bgRect.anchoredPosition = new Vector2(125, -15);
@@ -510,7 +511,6 @@ namespace LethalMystery.UI
             }
 
             Transform skipbtn = votingGUI.transform.Find("SkipSection/SkipBtn");
-
             if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
             {
                 skipbtn.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;
