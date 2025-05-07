@@ -14,7 +14,9 @@ using LethalMystery.Utils;
 using LethalNetworkAPI;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 using static LethalMystery.Players.Roles;
+using static LethalMystery.UI.VotingUI;
 
 
 namespace LethalMystery.Network
@@ -550,12 +552,14 @@ namespace LethalMystery.Network
             string[] splitData = data.Split('/');
             string type = splitData[0];
             Int32.TryParse(splitData[1], out int userID);
+            ulong.TryParse(splitData[2], out ulong playerThatVoted);
             string skipVal = Voting.skipVotes.Value;
             Dictionary<string, string> votes = Voting.playersWhoGotVoted.Value;
 
             //Plugin.mls.LogInfo($">> type: {type}");
             //Plugin.mls.LogInfo($">> userID: {userID}");
             //Plugin.mls.LogInfo($">> SKIPS: {skipVal}");
+            SetVoteBackground(playerThatVoted);
 
             switch (type)
             {
@@ -574,6 +578,23 @@ namespace LethalMystery.Network
         {
             Plugin.mls.LogInfo($"<><><> I am in the playerVotedReceive:");
             playerVoted.SendServer(data);
+        }
+
+
+        /// <summary>
+        /// Set player slot background for player that voted
+        /// </summary>
+        private static void SetVoteBackground(ulong targetID)
+        {
+            foreach (GameObject slot in VotingUI.slotObjects)
+            {
+                PlayerSlot comp = slot.GetComponent<PlayerSlot>();
+                if (comp.playerID == targetID)
+                {
+                    slot.transform.Find("nametag").GetComponent<Image>().color = new Color(0.6509f, 0, 0.1431f, 1);
+                    break;
+                }
+            }
         }
 
 
