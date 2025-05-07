@@ -535,21 +535,20 @@ namespace LethalMystery.UI
 
         public static void UpdateVoteText(int userID)
         {
-            foreach (KeyValuePair<string, string> id in Voting.playersWhoGotVoted.Value)
-            {
-                foreach (GameObject slot in slotObjects)
-                {
-                    PlayerSlot comp = slot.GetComponent<PlayerSlot>();
-                    TextMeshProUGUI votes = comp.votes.GetComponent<TextMeshProUGUI>();
-                    int pid = (int)comp.playerID;
 
-                    if (pid == StringAddons.ConvertToInt(id.Value))
-                    {
-                        votes.text = "VOTES: " + id.Value;
-                        break;
-                    }
+            foreach (GameObject slot in slotObjects)
+            {
+                PlayerSlot comp = slot.GetComponent<PlayerSlot>();
+                TextMeshProUGUI votes = comp.votes.GetComponent<TextMeshProUGUI>();
+                int pid = (int)comp.playerID;
+
+                if (pid == userID)
+                {
+                    votes.text = Voting.playersWhoGotVoted.Value[$"{userID}"];
+                    break;
                 }
             }
+
 
         }
 
