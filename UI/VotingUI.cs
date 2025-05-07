@@ -11,6 +11,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static LethalMystery.UI.VotingUI;
 
 
 namespace LethalMystery.UI
@@ -39,6 +40,7 @@ namespace LethalMystery.UI
                 xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
 
                 votingGUI = CreateVoteList();
+                UpdateVoteButtonSprite();
                 isCalled = false;
 
             }
@@ -505,8 +507,19 @@ namespace LethalMystery.UI
                 {
                     plrObj.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.CheckboxEmptyIcon;
                 }
-
             }
+
+            Transform skipbtn = votingGUI.transform.Find("SkipSection/SkipBtn");
+
+            if (StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0)
+            {
+                skipbtn.GetComponent<UnityEngine.UI.Image>().sprite = xButtonSprite;
+            }
+            else
+            {
+                skipbtn.GetComponent<UnityEngine.UI.Image>().sprite = LMAssets.CheckboxEmptyIcon;
+            }
+
 
         }
 
