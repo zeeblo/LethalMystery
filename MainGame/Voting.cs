@@ -45,12 +45,12 @@ namespace LethalMystery.MainGame
         {
             Plugin.mls.LogInfo($">>> PlayerLeft: {clientId}");
             Plugin.mls.LogInfo($">>> PlayerLeftDiv: {clientId / 2}");
-            RefreshPlayerVotes($"{clientId / 2}");
+            RefreshPlayerVotes($"{clientId}");
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false) return;
 
-            VotingUI.UpdatePlayerList(clientId / 2);
+            VotingUI.UpdatePlayerList(clientId);
             Plugin.mls.LogInfo($"<<< localPlayerVote: {localPlayerVote}");
-            if ($"{clientId / 2}" == $"{localPlayerVote}")
+            if ($"{clientId}" == $"{localPlayerVote}")
             {
                 Plugin.mls.LogInfo(">>> Player has been given back their vote.");
                 hasVoted = false;
@@ -58,8 +58,8 @@ namespace LethalMystery.MainGame
 
             if (Plugin.isHost)
             {
-                EndGame.aliveCrew.Remove(clientId / 2);
-                EndGame.aliveMonsters.Remove(clientId / 2);
+                EndGame.aliveCrew.Remove(clientId);
+                EndGame.aliveMonsters.Remove(clientId);
             }
         }
 

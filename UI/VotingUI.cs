@@ -135,6 +135,8 @@ namespace LethalMystery.UI
         }
 
 
+        #region Create Section
+
         private static GameObject CreateVoteList()
         {
             GameObject parentUI = GameObject.Find("Systems/UI/Canvas");
@@ -472,6 +474,12 @@ namespace LethalMystery.UI
 
 
 
+
+
+        #endregion Create Section
+
+
+
         private static void UpdateTextHeader(string text)
         {
             GameObject header = votingGUI.transform.Find("Header").gameObject;
@@ -533,7 +541,7 @@ namespace LethalMystery.UI
         }
 
 
-        public static void UpdateVoteText(int userID)
+        public static void UpdateVoteNum(int userID)
         {
 
             foreach (GameObject slot in slotObjects)

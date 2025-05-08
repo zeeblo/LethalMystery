@@ -565,7 +565,7 @@ namespace LethalMystery.Network
             {
                 case "vote":
                     votes[$"{userID}"] = $"{StringAddons.AddInts(votes[$"{userID}"], 1)}";
-                    VotingUI.UpdateVoteText(userID);
+                    VotingUI.UpdateVoteNum(userID);
                     break;
                 case "skip":
                     Voting.skipVotes.Value = $"{StringAddons.AddInts(skipVal, 1)}";
@@ -588,6 +588,7 @@ namespace LethalMystery.Network
         {
             foreach (GameObject slot in VotingUI.slotObjects)
             {
+                if (slot == null) continue;
                 PlayerSlot comp = slot.GetComponent<PlayerSlot>();
                 if (comp.playerID == targetID)
                 {
