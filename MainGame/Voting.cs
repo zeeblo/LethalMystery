@@ -54,6 +54,7 @@ namespace LethalMystery.MainGame
             {
                 Plugin.mls.LogInfo(">>> Player has been given back their vote.");
                 hasVoted = false;
+                Plugin.netHandler.resetSlotBgReceive($"{Plugin.localPlayer.playerClientId}", Plugin.localPlayer.playerClientId);
             }
 
             if (Plugin.isHost)

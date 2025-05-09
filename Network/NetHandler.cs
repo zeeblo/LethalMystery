@@ -45,6 +45,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> deathInfo;
         private LNetworkMessage<string> sabotage;
         private LNetworkMessage<string> suits;
+        private LNetworkMessage<string> resetSlotBg;
 
         public NetHandler()
         {
@@ -72,6 +73,7 @@ namespace LethalMystery.Network
             deathInfo = LNetworkMessage<string>.Connect("deathInfo");
             sabotage = LNetworkMessage<string>.Connect("sabotage");
             suits = LNetworkMessage<string>.Connect("suits");
+            resetSlotBg = LNetworkMessage<string>.Connect("resetSlotBg");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -112,6 +114,8 @@ namespace LethalMystery.Network
             sabotage.OnClientReceived += sabotageClients;
             suits.OnServerReceived += suitsServer;
             suits.OnClientReceived += suitsClients;
+            resetSlotBg.OnServerReceived += resetSlotBgServer;
+            resetSlotBg.OnClientReceived += resetSlotBgClients;
         }
 
         #region Variables
@@ -584,15 +588,16 @@ namespace LethalMystery.Network
         /// <summary>
         /// Set player slot background for player that voted
         /// </summary>
-        private static void SetVoteBackground(ulong targetID)
+        private static void SetVoteBackground(ulong targetID, bool voted = true)
         {
+            Color voteColor = (voted) ? new Color(0.6509f, 0, 0.1431f, 1) : new Color(0.6509f, 0.2091f, 0.0031f, 1);
             foreach (GameObject slot in VotingUI.slotObjects)
             {
                 if (slot == null) continue;
                 PlayerSlot comp = slot.GetComponent<PlayerSlot>();
                 if (comp.playerID == targetID)
                 {
-                    slot.transform.Find("nametag").GetComponent<Image>().color = new Color(0.6509f, 0, 0.1431f, 1);
+                    slot.transform.Find("nametag").GetComponent<Image>().color = voteColor;
                     break;
                 }
             }
@@ -600,28 +605,50 @@ namespace LethalMystery.Network
 
 
 
+
+        private void resetSlotBgServer(string data, ulong id)
+        {
+            ulong.TryParse(data, out ulong userID);
+            // Change "voted" string back to nothing 
+            Voting.playersWhoVoted.Value[$"{userID}"] = "";
+            resetSlotBg.SendClients(data);
+        }
+        private void resetSlotBgClients(string data)
+        {
+            ulong.TryParse(data, out ulong userID);
+            SetVoteBackground(userID, false);
+        }
+        public void resetSlotBgReceive(string data, ulong id)
+        {
+            resetSlotBg.SendServer(data);
+            Plugin.mls.LogInfo($">>> resetSlotBg ({Plugin.localPlayer.playerClientId})");
+        }
+
+
+
+
+
+
+
         private void playerDiedServer(string data, ulong id)
         {
-            ulong.TryParse(data,out ulong deadID);
+            ulong.TryParse(data, out ulong deadID);
             EndGame.aliveCrew.Remove(deadID);
             EndGame.aliveMonsters.Remove(deadID);
-            
+
 
             playerDied.SendClients(data);
-            Plugin.mls.LogInfo($">>>  playerDiedServer ID ({deadID})");
         }
         private void playerDiedClients(string data)
         {
             Int32.TryParse(data, out int userID);
             ulong.TryParse(data, out ulong deadID);
 
-            Plugin.mls.LogInfo($">>> playerDiedClients ID ({userID})");
             Voting.RefreshPlayerVotes($"{userID}");
         }
         public void playerDiedReceive(string data, ulong id)
         {
             playerDied.SendServer(data);
-            Plugin.mls.LogInfo($">>> playerDiedReceive ({Plugin.localPlayer.playerClientId})");
         }
 
 
@@ -653,9 +680,6 @@ namespace LethalMystery.Network
                 setupVotes.SendClients(data);
             }
 
-
-
-
         }
         private void setupVotesClients(string data)
         {
@@ -670,7 +694,7 @@ namespace LethalMystery.Network
 
             Plugin.mls.LogInfo($">>> setupVotesClients() ID: {playerID}");
 
-            foreach(KeyValuePair<string, string> val in votes)
+            foreach (KeyValuePair<string, string> val in votes)
             {
                 Plugin.mls.LogInfo($">>> votes Key: {val.Key} | votes Val: {val.Value}");
             }
