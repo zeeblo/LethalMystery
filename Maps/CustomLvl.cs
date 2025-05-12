@@ -22,9 +22,10 @@ namespace LethalMystery.Maps
         public static LNetworkVariable<string> mapName = LNetworkVariable<string>.Connect("mapName");
         public static GameObject CurrentInside;
         private static string default_maps = "";
+        private static string vanilla_maps = "";
         private static string lll_maps = "";
         public static string localCurrentInside;
-        public static string[] specialMapID = {"spawn_pos", "exit_pos", "scraps", "vents", "sabo"};
+        public static string[] specialMapID = { "spawn_pos", "exit_pos", "scraps", "vents", "sabo" };
 
         private class NewSelectableLevel : SelectableLevel
         {
@@ -182,11 +183,24 @@ namespace LethalMystery.Maps
         private static void DefaultMapsInTerminal()
         {
             default_maps = "";
+            vanilla_maps = "\nVanilla Maps:\n\n";
             foreach (string moon in LMmoons)
             {
                 default_maps += $"\n* {StringAddons.Title(moon)}\n";
             }
 
+            for (int i = 0; i < StartOfRound.Instance.levels.Length; i++)
+            {
+                string raw_name = StartOfRound.Instance.levels[i].name;
+                if (!raw_name.ToLower().EndsWith("level") || StartOfRound.Instance.levels[i].levelID == 3) continue;
+
+                string prefix = "Level";
+                string name = raw_name.Substring(0, raw_name.Length - prefix.Length);
+                vanilla_maps += $"\n* {name}\n";
+
+            }
+
+            default_maps += vanilla_maps;
         }
 
 
@@ -236,7 +250,7 @@ namespace LethalMystery.Maps
         }
 
 
-        
+
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyFinalizer]
         private static Exception ShowMapsInTerminalHandler(Exception __exception)
@@ -255,7 +269,7 @@ namespace LethalMystery.Maps
 
             return null;
         }
-        
+
 
 
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNode))]
@@ -291,7 +305,7 @@ namespace LethalMystery.Maps
             }
         }
 
-        
+
 
         /// <summary>
         /// (LethalLevelLoader Config Change)

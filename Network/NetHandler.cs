@@ -609,7 +609,7 @@ namespace LethalMystery.Network
         private void resetSlotBgServer(string data, ulong id)
         {
             ulong.TryParse(data, out ulong userID);
-            // Change "voted" string back to nothing 
+            // Change "voted" string back to nothing
             Voting.playersWhoVoted.Value[$"{userID}"] = "";
             resetSlotBg.SendClients(data);
         }
