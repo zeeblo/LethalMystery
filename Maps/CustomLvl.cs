@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using LethalMystery.MainGame;
+using System.Linq;
 
 
 namespace LethalMystery.Maps
@@ -368,6 +369,28 @@ namespace LethalMystery.Maps
 
             return null;
         }
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNodeIfAffordable))]
+        [HarmonyPrefix]
+        private static void FreeMoons(TerminalNode node)
+        {
+            if (node == null || node.buyRerouteToMoon == -1)
+                return;
+
+            foreach (SelectableLevel lvl in StartOfRound.Instance.levels)
+            {
+                if (lvl.levelID == 3) continue;
+
+                string name = lvl.PlanetName.Replace(" ", "-");
+                if (node.displayText.Contains(name))
+                {
+                    node.itemCost = 0;
+                }
+            }
+        }
+
+
 
 
 
