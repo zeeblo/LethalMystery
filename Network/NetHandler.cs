@@ -787,6 +787,10 @@ namespace LethalMystery.Network
             {
                 CustomLvl.mapName.Value = data.Split('/')[1];
             }
+            else if (type.StartsWith("normal"))
+            {
+                CustomLvl.mapName.Value = mapName;
+            }
             else
             {
                 CustomLvl.mapName.Value = "lll_map";
@@ -813,6 +817,10 @@ namespace LethalMystery.Network
                 }
             }
 
+            if (type.Contains("normal"))
+            {
+                CustomLvl.CurrentInside = null;
+            }
 
             StartOfRound.Instance.screenLevelDescription.text = $"Map: {mapName.ToUpper()}";
         }

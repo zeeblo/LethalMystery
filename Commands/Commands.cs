@@ -319,7 +319,7 @@ namespace LethalMystery
 
         public static void SpawnScrapFunc(string toSpawn, bool toInventory = false)
         {
-
+            if (CustomLvl.CurrentInside == null) return;
             Vector3 position = Vector3.zero;
             position = CalculateSpawnPosition();
 

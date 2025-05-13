@@ -98,6 +98,7 @@ namespace LethalMystery.Maps
         public static void TPDungeon()
         {
             if (GameObject.Find("Environment/HangarShip/ShipExit") != null) return;
+            if (CustomLvl.CurrentInside == null) return;
             GameObject outsideShip = GameObject.Find("Environment/HangarShip/ReverbTriggers/OutsideShip");
             GameObject enter = Plugin.Instantiate(outsideShip);
             enter.name = "ShipExit";
@@ -112,6 +113,7 @@ namespace LethalMystery.Maps
         public static void SpawnInterior()
         {
             if (CustomLvl.mapName.Value == "lll_map") return;
+            if (CustomLvl.CurrentInside == null) return;
             Vector3 pos = new Vector3(0f, -150, 0f);
             Plugin.Instantiate(CustomLvl.CurrentInside, pos, Quaternion.identity);
         }
@@ -119,6 +121,7 @@ namespace LethalMystery.Maps
 
         public static void SpawnVents()
         {
+            if (CustomLvl.CurrentInside == null) return;
             GameObject map_vents = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents");
             List<string> innerVent = new List<string>();
             allVents.Clear();
@@ -199,6 +202,7 @@ namespace LethalMystery.Maps
 
         public static void SpawnScrapScanPositions()
         {
+            if (CustomLvl.CurrentInside == null) return;
             scrapLocations.Clear();
             GameObject scrapsParent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/scraps");
             if (scrapsParent == null) return;
@@ -229,6 +233,7 @@ namespace LethalMystery.Maps
 
         public static void SpawnGeneratorBox()
         {
+            if (CustomLvl.CurrentInside == null) return;
             GameObject sabo = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/sabo");
             GameObject rawsaboBox = GameObject.Find("Environment/HangarShip/DoorGenerator");
             if (sabo == null || rawsaboBox == null) return;
@@ -252,6 +257,7 @@ namespace LethalMystery.Maps
         /// </summary>
         public static void MakeLMDoorInteractive()
         {
+            if (CustomLvl.CurrentInside == null) return;
             GameObject intr = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos");
             GameObject scan = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/exit_pos/scan_node");
             if (intr == null) return;
@@ -289,6 +295,12 @@ namespace LethalMystery.Maps
         /// </summary>
         public static void TeleportInside()
         {
+            if (CustomLvl.CurrentInside == null)
+            {
+                Transform[] playerSpawnPositions = StartOfRound.Instance.playerSpawnPositions;
+                Plugin.localPlayer.TeleportPlayer(playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
+                return;
+            }
             Vector3 spawn_pos = Vector3.zero;
             if (CustomLvl.mapName.Value != "lll_map")
             {
@@ -310,6 +322,7 @@ namespace LethalMystery.Maps
 
         public static void SetMinimapLayer()
         {
+            if (CustomLvl.CurrentInside == null) return;
             GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
             ApplyRoomLayer(minimapLayer.transform);
         }

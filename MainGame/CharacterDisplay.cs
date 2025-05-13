@@ -252,7 +252,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        
+
         private static void TurnMonsterNamesRed()
         {
             if (Roles.CurrentRole == null) return;
@@ -346,13 +346,22 @@ namespace LethalMystery.MainGame
             Plugin.enemyVent = UnityEngine.Object.FindObjectOfType<EnemyVent>();
             Plugin.netHandler.SpawnWeaponReceive($"{Roles.CurrentRole.Type}/{Roles.CurrentRole.Name}", Plugin.localPlayer.playerClientId);
             yield return new WaitForSeconds(1.5f);
-            
+
             ShowPlayers(false);
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(modelPosition);
             TimeOfDay.Instance.currentDayTimeStarted = false;
 
-            //Plugin.RemoveEnvironment(true);
-            GOTools.HideEnvironment(true);
+
+            if (CustomLvl.mapName.Value == "lll_map" || CustomLvl.CurrentInside == null)
+            {
+                Plugin.RemoveEnvironment(true);
+            }
+            else
+            {
+                GOTools.HideEnvironment(true);
+            }
+
+
             GOTools.HideVanillaDungeon();
             EnvironmentLight(false);
             ShowLights(true);
@@ -377,11 +386,19 @@ namespace LethalMystery.MainGame
             ShowPlayers(true);
             //GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
             //Plugin.RemoveEnvironment(false);
-            if (CustomLvl.mapName.Value == "lll_map")
+            if (CustomLvl.mapName.Value == "lll_map" || CustomLvl.CurrentInside == null)
             {
                 GOTools.HideVanillaDungeon(false);
+                Plugin.RemoveEnvironment(false);
+
             }
-            GOTools.HideEnvironment(true, ignore: "Lighting"); // re-enables lighting
+
+            bool vanillaMap = CustomLvl.CurrentInside != null;
+            if (vanillaMap)
+            {
+                GOTools.HideEnvironment(true, ignore: "Lighting"); // re-enables lighting
+            }
+
             InsideMap.TeleportInside();
             EnvironmentLight(true);
             ShowLights(false);

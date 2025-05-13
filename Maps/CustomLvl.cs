@@ -387,6 +387,15 @@ namespace LethalMystery.Maps
                 {
                     node.itemCost = 0;
                 }
+
+                Plugin.mls.LogInfo($">>> reroute Num: {node.buyRerouteToMoon}");
+                Plugin.mls.LogInfo($">>> displayText: {node.displayText}");
+                if (node.buyRerouteToMoon > -1 && node.displayText.Contains(name))
+                {
+                    Plugin.mls.LogInfo($">>> Set to normal map: {name}");
+                    ChangeMap($"normal/{name}");
+                    break;
+                }
             }
         }
 

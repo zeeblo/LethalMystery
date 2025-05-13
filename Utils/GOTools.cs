@@ -206,7 +206,8 @@ namespace LethalMystery.Utils
                         {
                             child.SetActive(value);
                             continue;
-                        } 
+                        }
+                        if (!child.activeSelf) continue;
                         child.SetActive(!value);
                     }
                 }
@@ -294,8 +295,12 @@ namespace LethalMystery.Utils
         }
 
 
+        /// <summary>
+        /// Hides LethalMystery custom map
+        /// </summary>
         public static void HideLMInsideDungeon(bool value = true)
         {
+            if (CustomLvl.CurrentInside == null) return;
             //Scene currentScene = SceneManager.GetSceneAt(1);
             Scene targetScene = SceneManager.GetSceneByName("SampleSceneRelay");
             foreach (GameObject obj in targetScene.GetRootGameObjects())

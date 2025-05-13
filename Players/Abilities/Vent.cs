@@ -140,6 +140,7 @@ namespace LethalMystery.Players.Abilities
 
         private static void CreateVentCamera()
         {
+            if (CustomLvl.CurrentInside == null) return;
             Camera ventCamera = new GameObject("LM_ventCamera").AddComponent<Camera>();
             ventCamera.tag = "PhysicsProp";
 
@@ -198,6 +199,7 @@ namespace LethalMystery.Players.Abilities
         {
             if (!(GOTools.GetObjectPlayerIsLookingAt().name.ToLower().Contains("vent"))) return;
             if (GameObject.Find("LM_ventCamera") != null) return;
+            if (CustomLvl.CurrentInside == null) return;
             Plugin.mls.LogInfo(">>> Entered vent");
 
             GameObject.Find("Systems/UI/Canvas/Panel/")?.SetActive(false);
@@ -222,6 +224,7 @@ namespace LethalMystery.Players.Abilities
 
         private static void ExitVent()
         {
+            if (CustomLvl.CurrentInside == null) return;
             Plugin.mls.LogInfo(">>> Exited vent");
             LM_VentCam ventComp = GameObject.Find("LM_ventCamera").GetComponent<LM_VentCam>();
             string ventParentName = ventComp.parent;
@@ -290,6 +293,7 @@ namespace LethalMystery.Players.Abilities
 
         private static void SwitchPosition(string ventParentName, string ventName)
         {
+            if (CustomLvl.CurrentInside == null) return;
             string location = (ventParentName.StartsWith("ground")) ? ventName : $"{ventName}/point";
             GameObject vent = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{ventName}");
             GameObject ventPoint = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)/vents/{ventParentName}/{location}");
