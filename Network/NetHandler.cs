@@ -952,7 +952,7 @@ namespace LethalMystery.Network
         }
         private void roundEndClients(string data)
         {
-            string type = data.Split("/")[0]; // not used currently, (not sure if it ever will be either tbh)
+            string type = data.Split("/")[0];
             string topText = data.Split("/")[1];
             string bottomText = data.Split("/")[2];
 
@@ -960,7 +960,7 @@ namespace LethalMystery.Network
             Plugin.firedTextSub = bottomText;
             EndGame.AddLastAlive();
 
-            StartOfRound.Instance.StartCoroutine(endEvents());
+            StartOfRound.Instance.StartCoroutine(endEvents(type));
         }
         public void roundEndReceive(string data, ulong id)
         {
@@ -968,15 +968,17 @@ namespace LethalMystery.Network
         }
 
 
-        private static IEnumerator endEvents()
+        private static IEnumerator endEvents(string impNames)
         {
             HUDManager.Instance.ShowPlayersFiredScreen(true);
             StartOfRound.Instance.ShipLeaveAutomatically();
 
             yield return new WaitForSeconds(5f);
             HUDManager.Instance.ShowPlayersFiredScreen(false);
-        }
 
+            yield return new WaitForSeconds(15f);
+            HUDManager.Instance.AddChatMessage(impNames, "<color=green>IMPOSTERS</color>");
+        }
 
 
 

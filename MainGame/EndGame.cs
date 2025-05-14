@@ -14,11 +14,13 @@ namespace LethalMystery.MainGame
         public static List<ulong> aliveMonsters = new List<ulong>();
         public static Dictionary<ulong, string> killedByNote = new Dictionary<ulong, string>();
         public static List<ulong> lastPlayersAlive = new List<ulong>();
+        public static string monsterNames = "";
 
         public static void ResetVars()
         {
             aliveCrew.Clear();
             aliveMonsters.Clear();
+            monsterNames = "";
         }
 
         
@@ -26,6 +28,7 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void WinConditionsCheck()
         {
+            // Note: Replace names with ids instead then convert back to names
             if (Plugin.inTestMode && Plugin.FoundThisMod("zeebloTesting.zeeblo.dev") && Plugin.isHost) return;
             if (!Plugin.isHost) return;
             if (StartOfRound.Instance.inShipPhase) return;
@@ -33,7 +36,7 @@ namespace LethalMystery.MainGame
             if (winCondition) return;
             if (StringAddons.ConvertToInt(Tasks.currentQuota.Value) >= Tasks.maxQuota)
             {
-                string type = "employee";
+                string type = monsterNames;
                 string topText = "Employees Won!";
                 string bottomText = "By tasks";
 
@@ -42,7 +45,7 @@ namespace LethalMystery.MainGame
             }
             if (aliveMonsters.Count <= 0)
             {
-                string type = "employee";
+                string type = monsterNames;
                 string topText = "Employees Won!";
                 string bottomText = "";
 
@@ -51,7 +54,7 @@ namespace LethalMystery.MainGame
             }
             if (aliveCrew.Count <= 1)
             {
-                string type = "monster";
+                string type = monsterNames;
                 string topText = "Monsters Won!";
                 string bottomText = "";
                 foreach (ulong impID in aliveMonsters)
@@ -84,6 +87,8 @@ namespace LethalMystery.MainGame
                     if (id.Key == player.playerClientId && Roles.NameIsMonsterType(id.Value))
                     {
                         aliveMonsters.Add(player.playerClientId);
+                        monsterNames += player.playerUsername + ", ";
+                        monsterNames = (monsterNames.EndsWith(", ")) ? monsterNames.Replace(",", "") : monsterNames;
                     }
                 }
             }

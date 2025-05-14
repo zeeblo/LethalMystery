@@ -111,6 +111,7 @@ namespace LethalMystery.MainGame
             EndGame.lastPlayersAlive.Clear();
             EndGame.killedByNote.Clear();
             Meeting.MeetingNum = LMConfig.defaultMeetingNum;
+            EndGame.monsterNames = "";
 
 
             Plugin.ResetVariables();
