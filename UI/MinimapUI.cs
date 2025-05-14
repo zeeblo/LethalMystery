@@ -26,6 +26,48 @@ namespace LethalMystery.UI
         public static List<GameObject> allMinimapObjects = new List<GameObject>();
 
 
+        public class ArrowPointer : MonoBehaviour
+        {
+            public Transform arrow;
+            public GameObject pointer;
+
+
+            public void Start()
+            {
+                SpawnPointer();
+            }
+
+            public void Update()
+            {
+                AdjustPosition();
+            }
+
+            private void SpawnPointer()
+            {
+                if (StartOfRound.Instance.inShipPhase) return;
+                Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x - 5, Plugin.localPlayer.transform.position.y, Plugin.localPlayer.transform.position.z);
+                pointer = Plugin.Instantiate(Minimap.waypointPrefab, pos, Quaternion.identity);
+                pointer.SetActive(true);
+
+                // disable dot
+                pointer.GetComponent<MeshRenderer>().enabled = false;
+            }
+
+            /// <summary>
+            /// Makes the arrow on the minimap face the ship
+            /// </summary>
+            private void AdjustPosition()
+            {
+                if (pointer == null) return;
+                Vector3 playerSpawn = StartOfRound.Instance.playerSpawnPositions[0].position;
+                pointer.transform.LookAt(playerSpawn);
+                Vector3 pos = new Vector3(Plugin.localPlayer.transform.position.x - 5, Plugin.localPlayer.transform.position.y, Plugin.localPlayer.transform.position.z);
+                pointer.transform.position = pos;
+            }
+
+
+        }
+
 
 
         public static void DestroyUI()
@@ -81,7 +123,7 @@ namespace LethalMystery.UI
             bgRect.anchorMax = new Vector2(1, 1);
             bgRect.pivot = new Vector2(1.5f, 4.5f);
             bgRect.anchoredPosition = Vector2.zero;
-            
+
 
             GameObject keybind = new GameObject("keybind");
             keybind.transform.SetParent(mapIcon.transform, false);
@@ -127,11 +169,17 @@ namespace LethalMystery.UI
             minimapCam = Plugin.Instantiate(GameObject.Find("Systems/GameSystems/ItemSystems/MapCamera"));
             minimapCam.name = "MinimapCam";
 
+
             GameObject mapScript = new GameObject("MapScript");
             mapScript.transform.SetParent(minimap.transform);
             ManualCameraRenderer mcr = mapScript.AddComponent<ManualCameraRenderer>();
             SetRenderVars(mcr);
 
+
+            GameObject arrowParent = Plugin.Instantiate(GameObject.Find("Systems/GameSystems/ItemSystems/MapScreenUI/ArrowUI"));
+            arrowParent.transform.SetParent(minimap.transform, false);
+            arrowParent.SetActive(true);
+            arrowParent.AddComponent<ArrowPointer>().arrow = arrowParent.transform.Find("ArrowContainer/Arrow");
 
             RawImage rawImg = minimap.AddComponent<RawImage>();
             rawImg.texture = mcr.mapCamera.targetTexture;

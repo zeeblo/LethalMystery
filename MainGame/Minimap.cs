@@ -179,6 +179,7 @@ namespace LethalMystery.MainGame
             }
 
         }
+        
 
 
         public class MinimapWaypoint: MonoBehaviour, IPointerClickHandler
