@@ -44,6 +44,7 @@ namespace LethalMystery.Maps
         [HarmonyPrefix]
         private static bool EntrancePatch()
         {
+            if (CustomLvl.CurrentInside == null) return true;
             Plugin.mls.LogInfo(">>> Attempted to teleport");
             if (Plugin.localPlayer.isInsideFactory)
             {
@@ -87,6 +88,7 @@ namespace LethalMystery.Maps
 
         private static void ExitFacility()
         {
+            if (CustomLvl.CurrentInside == null) return;
             if (GOTools.GetObjectPlayerIsLookingAt().name.ToLower() == "exit_pos")
                 GameNetworkManager.Instance.localPlayerController.TeleportPlayer(StartOfRound.Instance.playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
         }

@@ -178,8 +178,8 @@ namespace LethalMystery.UI
 
             GameObject arrowParent = Plugin.Instantiate(GameObject.Find("Systems/GameSystems/ItemSystems/MapScreenUI/ArrowUI"));
             arrowParent.transform.SetParent(minimap.transform, false);
-            arrowParent.SetActive(true);
-            arrowParent.AddComponent<ArrowPointer>().arrow = arrowParent.transform.Find("ArrowContainer/Arrow");
+            arrowParent.SetActive(false); // Add arrow to point to ship later
+
 
             RawImage rawImg = minimap.AddComponent<RawImage>();
             rawImg.texture = mcr.mapCamera.targetTexture;
