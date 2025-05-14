@@ -23,14 +23,28 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> inGracePeriod = LNetworkVariable<string>.Connect("inGracePeriod");
         public static LNetworkVariable<string> currentGracePeriodTime = LNetworkVariable<string>.Connect("currentGracePeriodCountdown");
         public static bool startSpawningScraps = false;
-        public static float scrapTimer = 0;
         public static bool gameStarted = false;
+        public static bool localGracePeriod = false;
+        public static float scrapTimer = 0;
+
 
         public static void ResetVars()
         {
             startSpawningScraps = false;
             scrapTimer = 0;
             gameStarted = false;
+            localGracePeriod = false;
+        }
+
+
+
+
+
+        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Start))]
+        [HarmonyPostfix]
+        private static void StartPatch()
+        {
+            Plugin.terminal.groupCredits = 0;
         }
 
 
@@ -138,7 +152,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool GracePeriod()
         {
-            if (StringAddons.ConvertToBool(inGracePeriod.Value))
+            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod)
             {
                 return false;
             }
@@ -150,7 +164,7 @@ namespace LethalMystery.MainGame
         private static bool StopDeath()
         {
             if (EjectPlayers.notsafe) return true;
-            if (StringAddons.ConvertToBool(inGracePeriod.Value)) return false;
+            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod) return false;
 
             return true;
         }
@@ -161,7 +175,7 @@ namespace LethalMystery.MainGame
         {
             if (StartOfRound.Instance.inShipPhase) return;
 
-            if (StringAddons.ConvertToBool(inGracePeriod.Value))
+            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod)
             {
                 // Countdown from the set grace period time
                 if (StringAddons.ConvertToFloat(currentGracePeriodTime.Value) >= 0 && Plugin.isHost)
@@ -177,13 +191,14 @@ namespace LethalMystery.MainGame
                     {
                         inGracePeriod.Value = "false";
                     }
+                    localGracePeriod = false;
 
                 }
 
                 HUDManager.Instance.Clock.targetAlpha = 0f; // Hide clock GUI
 
                 // Show GUI that displays the grace period time
-                if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false && StringAddons.ConvertToBool(inGracePeriod.Value))
+                if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false && (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod))
                 {
                     HUDManager.Instance.loadingText.enabled = true;
                     HUDManager.Instance.loadingText.text = $"Grace Period: {(int)StringAddons.ConvertToFloat(currentGracePeriodTime.Value)}";

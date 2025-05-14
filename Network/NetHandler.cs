@@ -310,6 +310,7 @@ namespace LethalMystery.Network
         private void MeetingClients(string data)
         {
             Plugin.mls.LogInfo($"<><><> I am in the MeetingClients:");
+            Start.localGracePeriod = true;
             Minimap.lastPlayerPos = Plugin.localPlayer.transform.position;
             StartOfRound.Instance.StartCoroutine(meetingSetup(data));
 

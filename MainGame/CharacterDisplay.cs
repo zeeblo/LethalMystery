@@ -420,7 +420,7 @@ namespace LethalMystery.MainGame
             {
                 Start.inGracePeriod.Value = "true";
             }
-
+            Start.localGracePeriod = true;
 
             SwitchToNextItem(lastItem: false);
             yield return new WaitForSeconds(1f);
