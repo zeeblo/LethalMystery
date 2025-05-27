@@ -340,6 +340,7 @@ namespace LethalMystery.MainGame
             InsideMap.SpawnScrapScanPositions();
             InsideMap.MakeLMDoorInteractive();
             InsideMap.SetMinimapLayer();
+            InsideMap.SetEntranceScan();
             Minimap.waypointPrefab = Plugin.localPlayer.transform.Find("Misc/MapDot").gameObject;
 
 

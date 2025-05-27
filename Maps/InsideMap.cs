@@ -13,7 +13,8 @@ namespace LethalMystery.Maps
     internal class InsideMap
     {
 
-        public static Vector3 lll_pos = Vector3.zero;
+        public static Vector3 entrance_pos = Vector3.zero;
+        public static Transform exitDoor;
         public static Dictionary<string, List<string>> allVents = new Dictionary<string, List<string>>();
         public static List<Vector3> scrapLocations = new List<Vector3>();
 
@@ -81,8 +82,8 @@ namespace LethalMystery.Maps
         private static void UpdatePatch(EntranceTeleport __instance)
         {
 
-            lll_pos = __instance.entrancePoint.position;
-
+            entrance_pos = __instance.entrancePoint.position;
+            exitDoor = __instance.entrancePoint;
         }
 
 
@@ -311,7 +312,7 @@ namespace LethalMystery.Maps
             }
             else if (CustomLvl.mapName.Value == "lll_map")
             {
-                spawn_pos = lll_pos;
+                spawn_pos = entrance_pos;
             }
 
             GameNetworkManager.Instance.localPlayerController.isInElevator = false;
@@ -319,7 +320,6 @@ namespace LethalMystery.Maps
             GameNetworkManager.Instance.localPlayerController.isInsideFactory = true;
             GameNetworkManager.Instance.localPlayerController.TeleportPlayer(spawn_pos);
         }
-
 
 
         public static void SetMinimapLayer()
@@ -339,6 +339,21 @@ namespace LethalMystery.Maps
                 ApplyRoomLayer(child);
             }
         }
+
+
+
+        /// <summary>
+        /// Give exit door a scan node
+        /// </summary>
+        public static void SetEntranceScan()
+        {
+            GameObject scan_node = exitDoor.gameObject;
+            if (scan_node)
+            {
+                GOTools.AddScanNode(scan_node, "Exit", "Return to ship", nodeType: 0, requiresLineOfSight: false, maxRange: 9950);
+            }
+        }
+
 
 
     }
