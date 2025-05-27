@@ -285,7 +285,7 @@ namespace LethalMystery.Maps
             scannode.headerText = "Exit";
             scannode.subText = "Return to ship";
             scannode.nodeType = 0;
-            scannode.maxRange = 450;
+            scannode.maxRange = 950;
             scannode.minRange = 2;
             scannode.requiresLineOfSight = false;
 
