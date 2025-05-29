@@ -8,9 +8,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
-using LethalLib.Modules;
-using UnityEngine.UIElements;
-
 
 
 namespace LethalMystery.MainGame
@@ -181,7 +178,60 @@ namespace LethalMystery.MainGame
             }
 
         }
-        
+
+
+
+        public static void SwitchPlayerButton(bool forward)
+        {
+            if (Meeting.inMeeting.Value == "false") return;
+            if (Minimap.allPlayerPoints.Count <= 0) return;
+
+            List<string> playerList = new List<string>();
+            foreach (KeyValuePair<string, string> plr in Minimap.allPlayerPoints)
+            {
+                playerList.Add(plr.Key);
+            }
+
+            int rawIndex = playerList.IndexOf(Minimap.currentPointUserID);
+            int newIndex = (forward) ? rawIndex + 1 : rawIndex - 1;
+            if (newIndex > playerList.Count - 1)
+            {
+                newIndex = 0;
+            }
+            else if (newIndex < 0)
+            {
+                newIndex = playerList.Count - 1;
+            }
+
+            Minimap.currentPointUserID = playerList[newIndex];
+
+            Int32.TryParse(Minimap.currentPointUserID, out int plrid);
+            MinimapUI.playerNameTXT.text = StartOfRound.Instance.allPlayerScripts[plrid].playerUsername;
+        }
+
+
+
+        public static void JumpToPlayerButton(int targetIndex)
+        {
+            if (Meeting.inMeeting.Value == "false") return;
+            if (Minimap.allPlayerPoints.Count <= 0) return;
+
+            ulong.TryParse($"{targetIndex}", out ulong playerID);
+
+            foreach (GameObject slot in MinimapUI.slotObjects)
+            {
+                if (slot == null) continue;
+                PlayerSlot comp = slot.GetComponent<PlayerSlot>();
+                if (comp.playerID == playerID)
+                {
+                    currentPointUserID = $"{playerID}";
+                    break;
+                }
+            }
+
+            MinimapUI.playerNameTXT.text = StartOfRound.Instance.allPlayerScripts[targetIndex].playerUsername;
+        }
+
 
 
         public class MinimapWaypoint: MonoBehaviour, IPointerClickHandler

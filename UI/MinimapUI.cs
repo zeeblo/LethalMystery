@@ -294,7 +294,7 @@ namespace LethalMystery.UI
             trigger.triggers.Add(LpointerEnter);
             trigger.triggers.Add(LpointerExit);
 
-            Lbtn.onClick.AddListener(() => SwitchPlayerButton(forward: false));
+            Lbtn.onClick.AddListener(() => Minimap.SwitchPlayerButton(forward: false));
 
             RectTransform LswitchRect = LswitchBtn.GetComponent<RectTransform>();
             LswitchRect.sizeDelta = new Vector2(32, 32);
@@ -332,7 +332,7 @@ namespace LethalMystery.UI
             trigger.triggers.Add(RpointerEnter);
             trigger.triggers.Add(RpointerExit);
 
-            Rbtn.onClick.AddListener(() => SwitchPlayerButton(forward: true));
+            Rbtn.onClick.AddListener(() => Minimap.SwitchPlayerButton(forward: true));
 
             RectTransform RswitchRect = RswitchBtn.GetComponent<RectTransform>();
             RswitchRect.sizeDelta = new Vector2(32, 32);
@@ -343,33 +343,7 @@ namespace LethalMystery.UI
             RswitchRect.rotation = Quaternion.Euler(0, 0, 90f);
         }
 
-        private static void SwitchPlayerButton(bool forward)
-        {
-            if (Meeting.inMeeting.Value == "false") return;
-            if (Minimap.allPlayerPoints.Count <= 0) return;
 
-            List<string> playerList = new List<string>();
-            foreach (KeyValuePair<string, string> plr in Minimap.allPlayerPoints)
-            {
-                playerList.Add(plr.Key);
-            }
-
-            int rawIndex = playerList.IndexOf(Minimap.currentPointUserID);
-            int newIndex = (forward) ? rawIndex + 1 : rawIndex - 1;
-            if (newIndex > playerList.Count - 1)
-            {
-                newIndex = 0;
-            }
-            else if (newIndex < 0)
-            {
-                newIndex = playerList.Count - 1;
-            }
-
-            Minimap.currentPointUserID = playerList[newIndex];
-
-            Int32.TryParse(Minimap.currentPointUserID, out int plrid);
-            playerNameTXT.text = StartOfRound.Instance.allPlayerScripts[plrid].playerUsername;
-        }
 
 
 
@@ -572,7 +546,29 @@ namespace LethalMystery.UI
             bgRect.sizeDelta = new Vector2(180, 20);
             bgRect.anchoredPosition = Vector2.zero;
 
+
+            Button btn = username.AddComponent<Button>();
+
+            EventTrigger trigger = username.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) => { text.color = Color.white; });
+
+
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) => { text.color = new Color(1, 0.5897f, 0, 1); });
+
+            trigger.triggers.Add(pointerEnter);
+            trigger.triggers.Add(pointerExit);
+
+            btn.onClick.AddListener(() => Minimap.JumpToPlayerButton((int)playerID));
         }
+
+
+
+
 
         private static void PositionText(GameObject namebg, ulong playerID, Vector3 pos)
         {
@@ -584,7 +580,7 @@ namespace LethalMystery.UI
             text.alignment = TextAlignmentOptions.Left;
             text.margin = new Vector3(8, 0, 0);
             text.overflowMode = TextOverflowModes.Ellipsis;
-            text.text = $"({pos})";
+            text.text = $"{pos}";
 
             position.layer = 5;
 
