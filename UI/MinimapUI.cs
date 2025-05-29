@@ -84,6 +84,14 @@ namespace LethalMystery.UI
                     Plugin.Destroy(obj);
                 }
             }
+            foreach (GameObject obj in slotObjects)
+            {
+                if (obj != null)
+                {
+                    Plugin.Destroy(obj);
+                }
+            }
+            slotObjects.Clear();
             allMinimapObjects.Clear();
             Minimap.ResetVars();
         }

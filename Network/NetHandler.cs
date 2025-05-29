@@ -159,7 +159,8 @@ namespace LethalMystery.Network
                 StartOfRound.Instance.StartCoroutine(cleanSlot());
                 Minimap.allPlayerPoints.Clear();
                 Minimap.ClearAllPoints();
-
+                MinimapUI.DestroyUI();
+                MinimapUI.CreateMapIcon();
                 if (VotingUI.votingGUI != null)
                 {
                     Plugin.Destroy(VotingUI.votingGUI.gameObject);
