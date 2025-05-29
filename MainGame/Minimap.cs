@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
+using LethalLib.Modules;
+using UnityEngine.UIElements;
 
 
 
@@ -257,6 +259,8 @@ namespace LethalMystery.MainGame
 
                 Minimap.currentWaypoint = Plugin.Instantiate(Minimap.waypointPrefab, worldPosition, Quaternion.identity);
                 Minimap.currentWaypoint.SetActive(true);
+                MinimapUI.CreatePositionSlot(Plugin.localPlayer.playerClientId, worldPosition);
+
 
                 Plugin.netHandler.setWaypointReceive($"{Plugin.localPlayer.playerClientId}/{worldPosition}", Plugin.localPlayer.playerClientId);
             }

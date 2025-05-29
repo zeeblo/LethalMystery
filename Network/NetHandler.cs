@@ -12,11 +12,13 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static LethalMystery.Players.Roles;
-using static LethalMystery.UI.VotingUI;
+using static UnityEngine.GraphicsBuffer;
+
 
 
 namespace LethalMystery.Network
@@ -934,6 +936,8 @@ namespace LethalMystery.Network
                 GameObject mapdot = Plugin.Instantiate(Minimap.waypointPrefab, position, Quaternion.identity);
                 mapdot.name = $"waypoint_{plrPos.Key}";
                 mapdot.SetActive(true);
+                ulong.TryParse(plrPos.Key, out ulong playid);
+                MinimapUI.CreatePositionSlot(playid, position);
             }
         }
 
@@ -941,6 +945,7 @@ namespace LethalMystery.Network
         {
             setWaypoint.SendServer(data);
         }
+
 
 
 

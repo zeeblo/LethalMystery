@@ -425,6 +425,8 @@ namespace LethalMystery.MainGame
 
             SwitchToNextItem(lastItem: false);
             yield return new WaitForSeconds(1f);
+            MinimapUI.CreateMinimap();
+            MinimapUI.border.SetActive(false);
 
 
             GameObject.Find("ShotgunItem(Clone)/ScanNode")?.gameObject.SetActive(true);
