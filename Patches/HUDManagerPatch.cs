@@ -49,7 +49,7 @@ namespace LethalMystery.Patches
             }
 
 
-            if (LMConfig.enableChat)
+            if (Start.hostEnableChat)
             {
                 return true;
             }

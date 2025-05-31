@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BepInEx.Configuration;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalLib.Modules;
 using LethalMystery.Maps;
 using LethalMystery.Players;
+using LethalMystery.Players.Abilities;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using static LethalMystery.Utils.LMConfig;
 
 namespace LethalMystery.MainGame
 {
@@ -26,7 +27,17 @@ namespace LethalMystery.MainGame
         public static bool gameStarted = false;
         public static bool localGracePeriod = false;
         public static float scrapTimer = 0;
-
+        [Header("Host Config")]
+        public static MonsterAmt hostImposterAmt;
+        public static SheriffAmt hostSheriffAmt;
+        public static float hostDiscussTime;
+        public static float hostVoteTime;
+        public static float hostMeetingCooldown;
+        public static int hostMeetingNum;
+        public static float hostGracePeriodTime;
+        public static float hostKillCooldown;
+        public static float hostScrapTimer;
+        public static bool hostEnableChat;
 
         public static void ResetVars()
         {
@@ -39,13 +50,26 @@ namespace LethalMystery.MainGame
 
 
 
-
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.Start))]
         [HarmonyPostfix]
         private static void StartPatch()
         {
             Plugin.terminal.groupCredits = 0;
         }
+
+
+        /// <summary>
+        /// When player joins for the first time, sync all the host settings
+        /// with them.
+        /// </summary>
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ConnectClientToPlayerObject))]
+        [HarmonyPostfix]
+        private static void RefreshHostConfig(PlayerControllerB __instance)
+        {
+            Plugin.localID = __instance.playerClientId;
+            LMConfig.SetHostConfigs((int)Plugin.localID);
+        }
+
 
 
 
@@ -95,14 +119,18 @@ namespace LethalMystery.MainGame
             if (Plugin.isHost)
             {
                 Plugin.netHandler.currentMapReceive($"game_started/{CustomLvl.localCurrentInside}", 0);
-            }
+                //SetHostConfigs();
 
+            }
         }
+
+
 
         [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.GenerateNewFloor))]
         [HarmonyPostfix]
         private static void Begin()
         {
+            LMConfig.defaultMeetingTime = defaultDiscussTime.Value + defaultVoteTime.Value + 15f;
             Plugin.terminal.groupCredits = 0;
             Plugin.localPlayer = GameNetworkManager.Instance.localPlayerController;
             Plugin.firedText = "Ejected";
@@ -110,7 +138,7 @@ namespace LethalMystery.MainGame
             EndGame.winCondition = false;
             EndGame.lastPlayersAlive.Clear();
             EndGame.killedByNote.Clear();
-            Meeting.MeetingNum = LMConfig.defaultMeetingNum;
+            Meeting.MeetingNum = hostMeetingNum;
             EndGame.monsterNames = "";
 
 
@@ -286,7 +314,7 @@ namespace LethalMystery.MainGame
                     int index = randomNum.Next(0, Tasks.allScraps.ToArray().Length);
                     string scrapName = Tasks.allScraps[index].ToLower();
                     Commands.SpawnScrapFunc(scrapName);
-                    scrapTimer = LMConfig.defaultScrapTimer;
+                    scrapTimer = hostScrapTimer;
                 }
 
             }

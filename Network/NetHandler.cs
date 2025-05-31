@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Configuration;
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMystery.MainGame;
@@ -12,12 +13,10 @@ using LethalMystery.Players;
 using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using static LethalMystery.Players.Roles;
-using static UnityEngine.GraphicsBuffer;
 
 
 
@@ -48,6 +47,7 @@ namespace LethalMystery.Network
         private LNetworkMessage<string> sabotage;
         private LNetworkMessage<string> suits;
         private LNetworkMessage<string> resetSlotBg;
+        private LNetworkMessage<string> setHostConfigs;
 
         public NetHandler()
         {
@@ -76,6 +76,7 @@ namespace LethalMystery.Network
             sabotage = LNetworkMessage<string>.Connect("sabotage");
             suits = LNetworkMessage<string>.Connect("suits");
             resetSlotBg = LNetworkMessage<string>.Connect("resetSlotBg");
+            setHostConfigs = LNetworkMessage<string>.Connect("setHostConfigs");
 
             spawnWeapon.OnServerReceived += SpawnWeaponServer;
             slots.OnServerReceived += SlotsServer;
@@ -118,6 +119,8 @@ namespace LethalMystery.Network
             suits.OnClientReceived += suitsClients;
             resetSlotBg.OnServerReceived += resetSlotBgServer;
             resetSlotBg.OnClientReceived += resetSlotBgClients;
+            setHostConfigs.OnServerReceived += SetHostConfigsServer;
+            setHostConfigs.OnClientReceived += SetHostConfigsClients;
         }
 
         #region Variables
@@ -1061,6 +1064,119 @@ namespace LethalMystery.Network
         public void suitsReceive(string data, ulong id)
         {
             suits.SendServer(data);
+        }
+
+
+
+        private void SetHostConfigsServer(string data, ulong id)
+        {
+
+            string[] splitData = data.Split("/");
+            string key = splitData[0];
+            string value = splitData[1];
+            ulong.TryParse(splitData[2], out ulong playerID);
+
+            if (playerID >= 0)
+            {
+                Plugin.mls.LogInfo($">>> >= 0 SetHostConfigsServer(): {data}");
+                string newData = ReConfigSettings(key, playerID);
+                setHostConfigs.SendClients(newData);
+            }
+            else
+            {
+                Plugin.mls.LogInfo($">>> -1 SetHostConfigsServer(): {data}");
+                setHostConfigs.SendClients(data);
+            }
+
+        }
+        private void SetHostConfigsClients(string data)
+        {
+            string[] splitData = data.Split("/");
+            string key = splitData[0];
+            string value = splitData[1];
+            ulong.TryParse(splitData[2], out ulong playerID);
+
+            
+            if (Plugin.localID != playerID && playerID >= 0) return;
+
+
+
+            Plugin.mls.LogInfo($">>> SetHostConfigsClients(): {data}");
+
+            switch (key)
+            {
+                case "Imposter Amount":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostImposterAmt = StringAddons.ConvertToMonsterAmt(value);
+                    break;
+                case "Sheriff Amount":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostSheriffAmt = StringAddons.ConvertToSheriffAmt(value);
+                    break;
+                case "Discuss Time":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostDiscussTime = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Vote Time":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostVoteTime = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Meeting Cooldown":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostMeetingCooldown = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Meeting Amount":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostMeetingNum = StringAddons.ConvertToInt(value);
+                    break;
+                case "Grace Period":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostGracePeriodTime = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Kill Cooldown":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostKillCooldown = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Scrap Spawn Timer":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostScrapTimer = StringAddons.ConvertToFloat(value);
+                    break;
+                case "Enable Chat":
+                    Plugin.mls.LogInfo($">>> SetHostConfigsClients() SWITCH: {key}");
+                    Start.hostEnableChat = StringAddons.ConvertToBool(value);
+                    break;
+            }
+
+        }
+        public void SetHostConfigsReceive(string data)
+        {
+            setHostConfigs.SendServer(data);
+        }
+
+
+        private static string ReConfigSettings(string key, ulong playerID)
+        {
+            string new_path = "";
+            foreach (KeyValuePair<ConfigDefinition, ConfigEntryBase> entry in LMConfig._config)
+            {
+                string hostSection = entry.Key.Section;
+                string hostKey = entry.Key.Key;
+                string hostValue = $"{entry.Value.BoxedValue}";
+
+                if (hostSection != "Host Settings") continue;
+
+                Plugin.mls.LogInfo($"hostKey - {hostKey} | givenKey - {key}");
+
+                if (hostKey == key)
+                {
+                    new_path += $"{hostKey}/{hostValue}/{playerID}";
+
+                    Plugin.mls.LogInfo($"ADDED | hostKey - {hostKey} | givenKey - {key}");
+                    break;
+                }
+
+            }
+            return new_path;
         }
 
     }

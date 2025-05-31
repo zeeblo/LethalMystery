@@ -258,6 +258,34 @@ namespace LethalMystery.Utils
         }
 
 
+        public static LMConfig.MonsterAmt ConvertToMonsterAmt(string input)
+        {
+            switch (input)
+            {
+                case "One":
+                    return LMConfig.MonsterAmt.One;
+                case "Two":
+                    return LMConfig.MonsterAmt.Two;
+            }
+            return LMConfig.MonsterAmt.One;
+        }
+
+
+        public static LMConfig.SheriffAmt ConvertToSheriffAmt(string input)
+        {
+            switch (input)
+            {
+                case "Zero":
+                    return LMConfig.SheriffAmt.Zero;
+                case "One":
+                    return LMConfig.SheriffAmt.One;
+                case "Two":
+                    return LMConfig.SheriffAmt.Two;
+            }
+            return LMConfig.SheriffAmt.One;
+        }
+
+
         public static int AddInts(string a, int b)
         {
             int input = ConvertToInt(a);

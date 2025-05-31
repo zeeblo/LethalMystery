@@ -138,7 +138,7 @@ namespace LethalMystery.Players.Abilities
 
         private static IEnumerator knifeCooldown()
         {
-            yield return new WaitForSeconds(25f); // LMConfig.defaultKillCooldown (should inherit from host)
+            yield return new WaitForSeconds(Start.hostKillCooldown);
             HUDManager.Instance.DisplayTip("Kill Cooldown", "Your cooldown is over!", isWarning: false);
             killCooldown = 0;
             killedPlayer = false;

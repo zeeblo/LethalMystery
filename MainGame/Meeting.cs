@@ -18,7 +18,7 @@ namespace LethalMystery.MainGame
         public static LNetworkVariable<string> inMeeting = LNetworkVariable<string>.Connect("inMeeting");
         public static LNetworkVariable<string> currentMeetingTime = LNetworkVariable<string>.Connect("currentMeetingCountdown");
         public static LNetworkVariable<string> MeetingCooldown = LNetworkVariable<string>.Connect("MeetingCooldown");
-        public static int MeetingNum = LMConfig.defaultMeetingNum;
+        public static int MeetingNum;
 
         public static void MeetingDefaults()
         {
@@ -30,13 +30,13 @@ namespace LethalMystery.MainGame
             if (!Plugin.isHost) return;
             Plugin.mls.LogInfo(">>> b4inMeetingVal:");
 
-            Start.currentGracePeriodTime.Value = $"{LMConfig.defaultGracePeriodTime}";
+            Start.currentGracePeriodTime.Value = $"{Start.hostGracePeriodTime}";
             inMeeting.Value = "false";
             Plugin.mls.LogInfo($">>> inMeetingVal: {inMeeting.Value}");
             //currentMeetingCountdown.Value = $"{LMConfig.defaultMeetingCountdown}";
-            MeetingCooldown.Value = $"{LMConfig.defaultMeetingCooldown}";
-            discussTime.Value = $"{LMConfig.defaultDiscussTime}";
-            voteTime.Value = $"{LMConfig.defaultVoteTime}";
+            MeetingCooldown.Value = $"{Start.hostMeetingCooldown}";
+            discussTime.Value = $"{Start.hostDiscussTime}";
+            voteTime.Value = $"{Start.hostVoteTime}";
         }
 
 
@@ -111,7 +111,7 @@ namespace LethalMystery.MainGame
 
         private static void VoteCountdown()
         {
-            if (LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(discussTime.Value) > 0)
+            if (Start.hostDiscussTime > 0 && StringAddons.ConvertToFloat(discussTime.Value) > 0)
             {
                 float countdown = StringAddons.ConvertToFloat(discussTime.Value);
                 countdown -= Time.deltaTime;

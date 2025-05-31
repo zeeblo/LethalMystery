@@ -16,7 +16,8 @@
 		<PackageReference Include="Xilophor.LethalNetworkAPI" Version="3.3.2" />
 		<PackageReference Include="IAmBatby.LethalLevelLoader" Version="1.4.0" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <Folder Include="Libs\" />
+		<Reference Include="Libs/LethalConfig/LethalConfig.dll" />
 	</ItemGroup>
 </Project>

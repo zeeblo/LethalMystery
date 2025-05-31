@@ -47,7 +47,7 @@ namespace LethalMystery.UI
 
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) && votingGUI != null)
             {
-                bool condition = LMConfig.defaultDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
+                bool condition = Start.hostDiscussTime > 0 && StringAddons.ConvertToFloat(Meeting.discussTime.Value) > 0;
                 float vote = StringAddons.ConvertToFloat(Meeting.voteTime.Value);
                 float discuss = StringAddons.ConvertToFloat(Meeting.discussTime.Value);
                 string value = (condition) ? $"DISCUSS: {(int)discuss}" : $"VOTE: {(int)vote}";

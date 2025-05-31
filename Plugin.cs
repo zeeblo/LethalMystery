@@ -21,12 +21,12 @@ using static BepInEx.BepInDependency;
 
 
 
-
 namespace LethalMystery
 {
 
     [BepInPlugin(modGUID, modName, modVersion)]
     [BepInDependency(LethalNetworkAPI.MyPluginInfo.PLUGIN_GUID, DependencyFlags.HardDependency)]
+    [BepInDependency("ainavt.lc.lethalconfig")]
     public class Plugin : BaseUnityPlugin
     {
         public const string modGUID = "LethalMystery.zeeblo.dev";
@@ -55,6 +55,7 @@ namespace LethalMystery
 
         public static string firedText = "Ejected";
         public static string firedTextSub = "";
+        public static ulong localID;
 
 
         private void Awake()
