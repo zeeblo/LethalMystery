@@ -1074,12 +1074,13 @@ namespace LethalMystery.Network
             string[] splitData = data.Split("/");
             string key = splitData[0];
             string value = splitData[1];
-            ulong.TryParse(splitData[2], out ulong playerID);
+            
+            int.TryParse(splitData[2], out int playerID);
 
             if (playerID >= 0)
             {
                 Plugin.mls.LogInfo($">>> >= 0 SetHostConfigsServer(): {data}");
-                string newData = ReConfigSettings(key, playerID);
+                string newData = ReConfigSettings(key, (ulong)playerID);
                 setHostConfigs.SendClients(newData);
             }
             else

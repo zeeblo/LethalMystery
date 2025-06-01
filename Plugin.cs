@@ -31,13 +31,13 @@ namespace LethalMystery
     {
         public const string modGUID = "LethalMystery.zeeblo.dev";
         public const string modName = "zeeblo.LethalMystery";
-        public const string modVersion = "0.3.0";
+        public const string modVersion = "0.4.0";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
         internal static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
-        public static bool inTestMode = true;
+        public static bool inTestMode = false;
         internal static SelectableLevel? currentLevel;
         internal static EnemyVent[]? currentLevelVents;
         internal static RoundManager? currentRound;
