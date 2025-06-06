@@ -28,6 +28,27 @@ namespace LethalMystery.MainGame
             allPlayerPoints.Clear();
         }
 
+
+        [HarmonyPatch(typeof(ManualCameraRenderer), "Start")]
+        [HarmonyPrefix]
+        private static bool StartPatch(ManualCameraRenderer __instance)
+        {
+            if (StartOfRound.Instance.inShipPhase) return true;
+            if (__instance.cam == null) return true;
+            if (MinimapUI.minimapCam == null) return true;
+            if (__instance.cam.name.Contains("MinimapCam"))
+            {
+                if (__instance.cam == null)
+                {
+                    __instance.cam = __instance.GetComponent<Camera>();
+                }
+
+                return false;
+            }
+            return true;
+        }
+
+
         [HarmonyPatch(typeof(ManualCameraRenderer), "Update")]
         [HarmonyPostfix]
         private static void MCRUpdatePatch(ManualCameraRenderer __instance)
