@@ -326,6 +326,9 @@ namespace LethalMystery.Maps
         {
             if (CustomLvl.CurrentInside == null) return;
             GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
+            GameObject mapRadar = new GameObject("Custom - MapRadar");
+            mapRadar.transform.SetParent(minimapLayer.transform);
+            RemakeMap(minimapLayer.transform, mapRadar.transform);
             ApplyRoomLayer(minimapLayer.transform);
         }
 
@@ -334,10 +337,23 @@ namespace LethalMystery.Maps
         {
             foreach (Transform child in parent)
             {
-                if (StringAddons.ContainsSpecialMapID(child.name)) continue;
-                child.gameObject.layer = 8;
+                if (StringAddons.ContainsSpecialMapID(child.name) || child.name.Contains("Custom - MapRadar")) continue;
+                child.gameObject.layer = 14;
                 ApplyRoomLayer(child);
             }
+        }
+
+
+        private static void RemakeMap(Transform parent, Transform radarParent)
+        {
+            foreach (Transform child in parent)
+            {
+                if (StringAddons.ContainsSpecialMapID(child.name) || child.name.Contains("Custom - MapRadar")) continue;
+                GameObject mapRadarObj = Plugin.Instantiate(child.gameObject);
+                mapRadarObj.transform.SetParent(radarParent.transform);
+                mapRadarObj.transform.position = new Vector3(child.position.x, -150, child.position.z);
+            }
+
         }
 
 

@@ -53,6 +53,15 @@ namespace LethalMystery.MainGame
         }
 
 
+        [HarmonyPatch(typeof(ManualCameraRenderer), "SetLineToExitFromRadarTarget")]
+        [HarmonyPrefix]
+        private static bool SetLineToExitFromRadarTargetPatch()
+        {
+            return false;
+        }
+
+
+
         [HarmonyPatch(typeof(ManualCameraRenderer), "MapCameraFocusOnPosition")]
         [HarmonyPrefix]
         private static bool SpectatePlayerPoint(ManualCameraRenderer __instance)
