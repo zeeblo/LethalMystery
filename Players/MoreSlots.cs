@@ -15,7 +15,7 @@ namespace LethalMystery.Players
         /// <summary>
         /// Visual of extra slot
         /// </summary>
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Awake))]
+        [HarmonyPatch(typeof(HUDManager), "Awake")]
         [HarmonyPostfix]
         private static void DisplayMoreSlotsPatch(HUDManager __instance)
         {

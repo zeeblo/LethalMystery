@@ -221,7 +221,7 @@ namespace LethalMystery.UI
         /// If the user closes the Keybind Menu, re-enable the custom keybinds.
         /// (If they're in a game)
         /// </summary>
-        [HarmonyPatch(typeof(KepRemapPanel), nameof(KepRemapPanel.OnDisable))]
+        [HarmonyPatch(typeof(KepRemapPanel), "OnDisable")]
         [HarmonyPostfix]
         private static void KepOnDisablePatch()
         {

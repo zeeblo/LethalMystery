@@ -7,7 +7,6 @@ using LethalConfig;
 using UnityEngine;
 using LethalMystery.Players;
 using static LethalMystery.Players.Roles;
-using static Steamworks.InventoryItem;
 
 
 namespace LethalMystery.Utils

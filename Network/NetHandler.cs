@@ -986,7 +986,8 @@ namespace LethalMystery.Network
             HUDManager.Instance.ShowPlayersFiredScreen(false);
 
             yield return new WaitForSeconds(15f);
-            HUDManager.Instance.AddChatMessage(impNames, "<color=green>IMPOSTERS</color>");
+            //HUDManager.Instance.AddChatMessage(impNames, "<color=green>IMPOSTERS</color>");
+            Commands.DisplayChatMessage($"Imposters: <color=#FF0000> {impNames}</color>");
         }
 
 

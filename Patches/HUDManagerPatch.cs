@@ -18,7 +18,7 @@ namespace LethalMystery.Patches
         #region Chat Commands
 
 
-        [HarmonyPatch(nameof(HUDManager.AddPlayerChatMessageServerRpc))]
+        [HarmonyPatch("AddPlayerChatMessageServerRpc")]
         [HarmonyPrefix]
         private static bool ReadChatMessage(HUDManager __instance, ref string chatMessage)
         {

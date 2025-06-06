@@ -32,7 +32,7 @@ namespace LethalMystery.MainGame
 
         #region patches
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.PlayerLookInput))]
+        [HarmonyPatch(typeof(PlayerControllerB), "PlayerLookInput")]
         [HarmonyPrefix]
         private static bool PlayerLookPatch()
         {
@@ -44,7 +44,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
         [HarmonyPostfix]
         private static void HideWeaponsPatch()
         {

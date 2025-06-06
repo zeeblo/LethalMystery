@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalLib.Modules;
 using LethalMystery.MainGame;
 using LethalMystery.Players;
 using LethalMystery.Utils;
@@ -29,7 +28,7 @@ namespace LethalMystery.UI
         private static Sprite xButtonSprite;
 
 
-        [HarmonyPatch(typeof(QuickMenuManager), nameof(QuickMenuManager.Update))]
+        [HarmonyPatch(typeof(QuickMenuManager), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(QuickMenuManager __instance)
         {

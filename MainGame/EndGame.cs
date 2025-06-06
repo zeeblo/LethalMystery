@@ -24,7 +24,7 @@ namespace LethalMystery.MainGame
         }
 
         
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void WinConditionsCheck()
         {

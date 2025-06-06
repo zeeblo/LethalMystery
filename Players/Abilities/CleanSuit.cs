@@ -35,7 +35,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch()
         {
@@ -46,7 +46,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.StopHoldInteractionOnTrigger))]
+        [HarmonyPatch(typeof(PlayerControllerB), "StopHoldInteractionOnTrigger")]
         [HarmonyPrefix]
         private static bool StopHoldInteractionOnTriggerPatch()
         {

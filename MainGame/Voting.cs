@@ -26,7 +26,7 @@ namespace LethalMystery.MainGame
         #region Patches
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.PlayerLookInput))]
+        [HarmonyPatch(typeof(PlayerControllerB), "PlayerLookInput")]
         [HarmonyPrefix]
         private static bool PreventLooking()
         {

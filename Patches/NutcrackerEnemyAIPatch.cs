@@ -10,14 +10,14 @@ namespace LethalMystery.Patches
     {
 
 
-        [HarmonyPatch(nameof(NutcrackerEnemyAI.SpawnShotgunShells))]
+        [HarmonyPatch("SpawnShotgunShells")]
         [HarmonyPrefix]
         private static bool NoBulletObjects()
         {
             return false;
         }
 
-        [HarmonyPatch(nameof(NutcrackerEnemyAI.GrabGun))]
+        [HarmonyPatch("GrabGun")]
         [HarmonyPrefix]
         private static bool GrabGunPatch()
         {

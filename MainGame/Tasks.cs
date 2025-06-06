@@ -24,7 +24,7 @@ namespace LethalMystery.MainGame
         /// removes currentlyHeld scrap item in user's inventory if they're inside
         /// the ship. This also updates the current quota.
         /// </summary>
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void TaskUpdate(PlayerControllerB __instance)
         {
@@ -103,7 +103,7 @@ namespace LethalMystery.MainGame
         /// (Basically this allows players to pickup items from outside the ship while
         /// being inside the ship itself)
         /// </summary>
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.BeginGrabObject))]
+        [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject")]
         [HarmonyPrefix]
         private static bool GrabFix(PlayerControllerB __instance)
         {
@@ -152,7 +152,7 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
+        [HarmonyPatch(typeof(HUDManager), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch()
         {
@@ -163,7 +163,7 @@ namespace LethalMystery.MainGame
         /// <summary>
         /// If user attempted to drop an item then call DisplayNewScrapFound
         /// </summary>
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
+        [HarmonyPatch(typeof(HUDManager), "Update")]
         [HarmonyPostfix]
         private static void CheckCollectItem()
         {

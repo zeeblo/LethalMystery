@@ -61,7 +61,7 @@ namespace LethalMystery.Patches
         }
 
 
-        [HarmonyPatch(nameof(StartOfRound.Update))]
+        [HarmonyPatch("Update")]
         [HarmonyPostfix]
         private static void stopSpeaker(StartOfRound __instance)
         {
@@ -73,7 +73,7 @@ namespace LethalMystery.Patches
 
 
 
-        [HarmonyPatch(nameof(StartOfRound.AutoSaveShipData))]
+        [HarmonyPatch("AutoSaveShipData")]
         [HarmonyPrefix]
         private static bool DontSaveShip()
         {

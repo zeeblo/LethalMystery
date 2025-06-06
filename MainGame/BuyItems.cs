@@ -13,7 +13,7 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Awake))]
+        [HarmonyPatch(typeof(Terminal), "Awake")]
         [HarmonyPostfix]
         private static void AddItemPrices(Terminal __instance)
         {

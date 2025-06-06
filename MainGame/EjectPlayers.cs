@@ -25,7 +25,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(StartOfRound), nameof(StartOfRound.Update))]
+        [HarmonyPatch(typeof(StartOfRound), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(ref StartOfRound __instance)
         {

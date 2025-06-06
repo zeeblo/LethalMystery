@@ -6,6 +6,7 @@ using LethalMystery.UI;
 using LethalMystery.Utils;
 using LethalNetworkAPI;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace LethalMystery.MainGame
 {
@@ -56,7 +57,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(ShipAlarmCord), nameof(ShipAlarmCord.Update))]
+        [HarmonyPatch(typeof(ShipAlarmCord), "Update")]
         [HarmonyPostfix]
         private static void Cooldown()
         {

@@ -32,7 +32,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
         [HarmonyPostfix]
         private static void CameraRotation(PlayerControllerB __instance)
         {
@@ -74,7 +74,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Interact_performed))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Interact_performed")]
         [HarmonyPostfix]
         private static void ExitVentPatch()
         {
@@ -85,7 +85,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.LateUpdate))]
+        [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
         [HarmonyPostfix]
         private static void MoveToSwitchVent()
         {
@@ -104,7 +104,7 @@ namespace LethalMystery.Players.Abilities
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
+        [HarmonyPatch(typeof(PlayerControllerB), "ScrollMouse_performed")]
         [HarmonyPrefix]
         private static bool ScrollToSwitchVent(InputAction.CallbackContext context)
         {
@@ -126,7 +126,7 @@ namespace LethalMystery.Players.Abilities
 
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.CanUseItem))]
+        [HarmonyPatch(typeof(PlayerControllerB), "CanUseItem")]
         [HarmonyPrefix]
         private static bool CanUseItemPatch()
         {

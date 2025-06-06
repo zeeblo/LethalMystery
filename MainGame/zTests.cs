@@ -30,7 +30,7 @@ namespace LethalMystery.MainGame
         [HarmonyPatch(typeof(HUDManager))]
         internal class AdminCMDS_2
         {
-            [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.Update))]
+            [HarmonyPatch(typeof(HUDManager), "Update")]
             [HarmonyPostfix]
             private static void Keys(HUDManager __instance)
             {

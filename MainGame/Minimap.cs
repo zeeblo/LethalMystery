@@ -28,7 +28,7 @@ namespace LethalMystery.MainGame
             allPlayerPoints.Clear();
         }
 
-        [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.Update))]
+        [HarmonyPatch(typeof(ManualCameraRenderer), "Update")]
         [HarmonyPostfix]
         private static void MCRUpdatePatch(ManualCameraRenderer __instance)
         {
@@ -53,7 +53,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(ManualCameraRenderer), nameof(ManualCameraRenderer.MapCameraFocusOnPosition))]
+        [HarmonyPatch(typeof(ManualCameraRenderer), "MapCameraFocusOnPosition")]
         [HarmonyPrefix]
         private static bool SpectatePlayerPoint(ManualCameraRenderer __instance)
         {
@@ -80,7 +80,7 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.ScrollMouse_performed))]
+        [HarmonyPatch(typeof(PlayerControllerB), "ScrollMouse_performed")]
         [HarmonyPrefix]
         private static bool ZoomPatch(InputAction.CallbackContext context)
         {
@@ -111,7 +111,7 @@ namespace LethalMystery.MainGame
 
 
     
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch()
         {

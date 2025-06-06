@@ -9,7 +9,7 @@ namespace LethalMystery.UI
     internal class MainMenu
     {
 
-        [HarmonyPatch(typeof(MenuManager), nameof(MenuManager.Start))]
+        [HarmonyPatch(typeof(MenuManager), "Start")]
         [HarmonyPostfix]
         [HarmonyAfter("me.swipez.melonloader.morecompany")]
         private static void StartPatch()

@@ -5,7 +5,6 @@ using System.Reflection;
 using BepInEx.Configuration;
 using GameNetcodeStuff;
 using HarmonyLib;
-using LethalLib.Modules;
 using LethalMystery.Maps;
 using LethalMystery.Players;
 using LethalMystery.Players.Abilities;
@@ -50,7 +49,7 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Start))]
+        [HarmonyPatch(typeof(Terminal), "Start")]
         [HarmonyPostfix]
         private static void StartPatch()
         {
@@ -198,7 +197,7 @@ namespace LethalMystery.MainGame
             return true;
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void GracePeriodTime()
         {
@@ -236,7 +235,7 @@ namespace LethalMystery.MainGame
 
         }
 
-        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.Start))]
+        [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPostfix]
         private static void LMChatMsg()
         {
@@ -247,7 +246,7 @@ namespace LethalMystery.MainGame
         #region Chat Command
 
 
-        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.Start))]
+        [HarmonyPatch(typeof(RoundManager), "Start")]
         [HarmonyPrefix]
         private static void SetIsHost()
         {
@@ -266,7 +265,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(RoundManager), nameof(RoundManager.AdvanceHourAndSpawnNewBatchOfEnemies))]
+        [HarmonyPatch(typeof(RoundManager), "AdvanceHourAndSpawnNewBatchOfEnemies")]
         [HarmonyPrefix]
         private static void UpdateCurrentLevelInfo(ref EnemyVent[] ___allEnemyVents, ref SelectableLevel ___currentLevel)
         {
@@ -289,7 +288,7 @@ namespace LethalMystery.MainGame
 
 
 
-        [HarmonyPatch(typeof(HangarShipDoor), nameof(HangarShipDoor.Start))]
+        [HarmonyPatch(typeof(HangarShipDoor), "Start")]
         [HarmonyPostfix]
         private static void SampleSceneObjects()
         {
@@ -297,7 +296,7 @@ namespace LethalMystery.MainGame
         }
 
 
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.Update))]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void ScrapSpawningTimer()
         {

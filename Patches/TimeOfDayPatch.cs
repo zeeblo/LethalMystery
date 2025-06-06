@@ -9,7 +9,7 @@ namespace LethalMystery.Patches
     internal class TimeOfDayPatch
     {
 
-        [HarmonyPatch(nameof(TimeOfDay.Update))]
+        [HarmonyPatch("Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(TimeOfDay __instance)
         {

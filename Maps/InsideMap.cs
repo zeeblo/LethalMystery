@@ -77,7 +77,7 @@ namespace LethalMystery.Maps
         }
 
 
-        [HarmonyPatch(typeof(EntranceTeleport), nameof(EntranceTeleport.Update))]
+        [HarmonyPatch(typeof(EntranceTeleport), "Update")]
         [HarmonyPostfix]
         private static void UpdatePatch(EntranceTeleport __instance)
         {

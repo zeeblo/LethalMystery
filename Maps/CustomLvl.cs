@@ -135,7 +135,7 @@ namespace LethalMystery.Maps
 
 
 
-        [HarmonyPatch(typeof(Terminal), nameof(Terminal.Awake))]
+        [HarmonyPatch(typeof(Terminal), "Awake")]
         [HarmonyPrefix]
         private static bool MoonsInTerminal(Terminal __instance)
         {
@@ -209,6 +209,7 @@ namespace LethalMystery.Maps
         {
             lll_maps = "";
             // Player is using LethalLevelLoader, show custom maps
+            /*
             if (Plugin.FoundThisMod("imabatby.lethallevelloader"))
             {
                 foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
@@ -231,7 +232,7 @@ namespace LethalMystery.Maps
                 }
                 AddNewKeywords();
             }
-
+            */
         }
 
 
@@ -328,6 +329,7 @@ namespace LethalMystery.Maps
             ConfigEntry<string> defaultFacility_manualLevelNames = LLLConfigFile.Bind(defaultFacility, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
 
 
+            /*
             foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
             {
                 if (extendedDungeonFlow.DungeonName == mapName) continue;
@@ -339,7 +341,7 @@ namespace LethalMystery.Maps
                 other_enableContentConfiguration.Value = true;
                 other_manualLevelNames.Value = "Experimentation:0";
             }
-
+            */
 
             enableContentConfiguration.Value = true;
             manualLevelNames.Value = $"Experimentation:{weight}";
@@ -371,7 +373,7 @@ namespace LethalMystery.Maps
         }
 
 
-        [HarmonyPatch(typeof(Terminal), nameof(Terminal.LoadNewNodeIfAffordable))]
+        [HarmonyPatch(typeof(Terminal), "LoadNewNodeIfAffordable")]
         [HarmonyPrefix]
         private static void FreeMoons(TerminalNode node)
         {

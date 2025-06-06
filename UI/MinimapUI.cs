@@ -240,7 +240,7 @@ namespace LethalMystery.UI
             camRender.radarTargets = ogManualCam.radarTargets;
             camRender.targetTransformIndex = ogManualCam.targetTransformIndex;
             camRender.mapCamera = mapCam;
-            camRender.mapCameraLight = ogManualCam.mapCameraLight;
+            //camRender.mapCameraLight = ogManualCam.mapCameraLight;
             camRender.mapCameraAnimator = ogManualCam.mapCameraAnimator;
             camRender.mapCameraStationaryUI = ogManualCam.mapCameraStationaryUI;
             camRender.shipArrowPointer = ogManualCam.shipArrowPointer;
