@@ -128,9 +128,9 @@ namespace LethalMystery.Maps
 
         private static void DefaultSetup()
         {
-            CurrentInside = LMAssets.SkeldMap;
-            StartOfRound.Instance.screenLevelDescription.text = $"Map: SKELD";
-            localCurrentInside = "skeld";
+            CurrentInside = LMAssets.OfficeMap;
+            StartOfRound.Instance.screenLevelDescription.text = $"Map: Office";
+            localCurrentInside = "office";
         }
 
 

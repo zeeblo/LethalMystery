@@ -42,7 +42,13 @@ namespace LethalMystery.MainGame
                 {
                     __instance.cam = __instance.GetComponent<Camera>();
                 }
-
+                Vector3 targetDeathPosition = new Vector3(0f, -100f, 0f);
+                Traverse.Create(__instance).Field("targetDeathPosition").SetValue(targetDeathPosition);
+                if (__instance.cam == __instance.mapCamera)
+                {
+                    __instance.lineFromRadarTargetToExit = __instance.gameObject.AddComponent<LineRenderer>();
+                    Traverse.Create(__instance).Field("checkingCaveNode").SetValue(-1);
+                }
                 return false;
             }
             return true;
