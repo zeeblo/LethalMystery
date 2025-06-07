@@ -304,6 +304,7 @@ namespace LethalMystery.Maps
                 Plugin.localPlayer.TeleportPlayer(playerSpawnPositions[GameNetworkManager.Instance.localPlayerController.playerClientId].position);
                 return;
             }
+
             Vector3 spawn_pos = Vector3.zero;
             if (CustomLvl.mapName.Value != "lll_map")
             {
@@ -328,8 +329,8 @@ namespace LethalMystery.Maps
             GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
             GameObject mapRadar = new GameObject("Custom - MapRadar");
             mapRadar.transform.SetParent(minimapLayer.transform);
-            RemakeMap(minimapLayer.transform, mapRadar.transform);
-            ApplyRoomLayer(minimapLayer.transform);
+           RemakeMap(minimapLayer.transform, mapRadar.transform);
+           ApplyRoomLayer(minimapLayer.transform);
         }
 
 
@@ -337,7 +338,8 @@ namespace LethalMystery.Maps
         {
             foreach (Transform child in parent)
             {
-                if (StringAddons.ContainsSpecialMapID(child.name) || child.name.Contains("Custom - MapRadar")) continue;
+                if (child.name.Contains("Custom - MapRadar")) return;
+                if (StringAddons.ContainsSpecialMapID(child.name)) continue;
                 child.gameObject.layer = 14;
                 ApplyRoomLayer(child);
             }
@@ -351,9 +353,10 @@ namespace LethalMystery.Maps
                 if (StringAddons.ContainsSpecialMapID(child.name) || child.name.Contains("Custom - MapRadar")) continue;
                 GameObject mapRadarObj = Plugin.Instantiate(child.gameObject);
                 mapRadarObj.transform.SetParent(radarParent.transform);
-                mapRadarObj.transform.position = new Vector3(child.position.x, -150, child.position.z);
+                //mapRadarObj.transform.position = new Vector3(child.position.x, -150, child.position.z);
             }
-
+            radarParent.transform.localScale = Vector3.one;
+            radarParent.transform.position = new Vector3(0, -150, 0);
         }
 
 
