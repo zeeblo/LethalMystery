@@ -49,7 +49,7 @@ namespace LethalMystery.Patches
             }
 
 
-            if (Start.hostEnableChat)
+            if (Start.hostEnableChat || StartOfRound.Instance.inShipPhase || StringAddons.ConvertToBool(Meeting.inMeeting.Value))
             {
                 return true;
             }
