@@ -1,13 +1,22 @@
-# Lethal Mystery
+# Lethal Mystery (Alpha)
 
 A murder mystery mod inspired by Among Us.
 
+I made a video summarizing my progress on the mod here:
+https://www.youtube.com/watch?v=P6a_eR3ZgN8
+
+<a href="https://www.youtube.com/watch?v=P6a_eR3ZgN8">
+<img src="https://i.imgur.com/DwK5wRQ.png" alt="YouTube thumbnail">
+</a>
 
 # Gameplay
 
 
+<img src="https://i.imgur.com/7qwKX6b.png" alt="View of an office map">
+
 ## Roles
 
+At the start of the game you'll be given a special item if you have a unique role.
 
 Note: I'm generally not a fan of having a ton of roles because I think it gets too distracting from the core gameplay so I may not add many others but a "Mimic" role is planned.
 
@@ -17,8 +26,6 @@ Note: I'm generally not a fan of having a ton of roles because I think it gets t
 - Reach the quota by carrying all the scrap you can find back to the ship
 - Vote out the monsters
 
-<<<<<Example Image>>>>
-
 
 ### Monster
 
@@ -26,7 +33,8 @@ Note: I'm generally not a fan of having a ton of roles because I think it gets t
 - Kill all the employees
 - Sabotage the crew to slow them down
 
-<<<<<Example Image>>>>
+
+<img src="https://i.imgur.com/c1eNUDI.png" alt="Monster Role">
 
 ## Shop
 
@@ -37,8 +45,7 @@ Collecting scrap will give you credits which you can use to buy certain items in
 
 When the round starts a horn will spawn. To call a meeting, you have to pull the lever.
 
-<<<<<Example Image>>>>
-
+<img src="https://i.imgur.com/8P2B7c2.png" alt="Voting UI">
 
 ## Minimap
 
@@ -48,17 +55,12 @@ You can scroll up and down to zoom in or out.
 
 **Important:** During a meeting your minimap is automatically set to your last location. You can place a dot down somewhere on the map to let others know where you were. (This will also allow you to see other people's location)
 
-<<<<<Example Image>>>>
 
+<img src="https://i.imgur.com/rq8IZ2i.png" alt="Minimap">
 
 ## Maps
 
-Only interiors are available, the outside environment is removed.
-
 To select a map, go to the terminal and type "moons" to see all your options (it automatically defaults to office).
-
-**Important:** If you have LethalLevelLoader, you can choose a specific interior you want to go to but you have to restart your game and select it again.
-
 
 
 

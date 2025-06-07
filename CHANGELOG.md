@@ -1,3 +1,36 @@
+# 0.4.0-alpha
+
+**Features:**
+
+- Added editable host settings
+- If chat is disabled, players can only speak before a round and during a meeting
+- Made Office the default map
+
+
+**Fixes:**
+
+- Destroy map game objects when ship leaves
+
+
+# 0.3.0-alpha
+
+**Features:**
+
+- You can travel to vanilla moons now
+- Display imposter names in chat at the end of every game.
+- Completely revamped voting UI
+- Having the voting UI open will prevent you from scrolling through your inventory & Looking around
+- Players that have voted will be highlighted a different color
+- Credits are automatically set to 0 instead of default 60
+- Removed uid from being appended to usernames
+
+
+**Fixes:**
+
+- Players should no longer die in a meeting if the player count gets too high
+- Reversed forced name change
+
+
 
 # 0.2.0-alpha
 
