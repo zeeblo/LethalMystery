@@ -20,6 +20,18 @@ namespace LethalMystery.Maps
 
 
 
+        public static void ResetVars()
+        {
+            if (CustomLvl.CurrentInside == null) return;
+            GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
+
+            if (minimapLayer != null )
+            {
+                Plugin.Destroy(minimapLayer.gameObject);
+            }
+        } 
+
+
         private class LMEntrance : MonoBehaviour
         {
 
