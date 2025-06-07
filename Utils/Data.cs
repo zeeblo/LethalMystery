@@ -16,7 +16,8 @@ namespace LethalMystery.Utils
 
         public static string GetInfo(string key)
         {
-            string filepath = Plugin.MainDir + "\\Assets\\data\\info.json";
+            //string filepath = Plugin.MainDir + "\\Assets\\data\\info.json";
+            string filepath = Plugin.GetAssetPath(file: "info.json", parent: "data");
             string info = File.ReadAllText(filepath);
 
             var data = JsonConvert.DeserializeObject<CMDInfo>(info);

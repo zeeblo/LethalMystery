@@ -158,5 +158,18 @@ namespace LethalMystery
             return false;
         }
 
+
+        public static string GetAssetPath(string file, string parent = "Assetbundles")
+        {
+            string firstPath = Plugin.MainDir + $"\\Assets\\{parent}\\{file}";
+            string secondPath = Plugin.MainDir + $"/{file}";
+
+            if (File.Exists(firstPath))
+            {
+                return firstPath;
+            }
+            return secondPath;
+        }
+
     }
 }

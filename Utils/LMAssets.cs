@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEngine;
 
@@ -36,9 +37,11 @@ namespace LethalMystery.Utils
         }
 
 
+
+
         private static void ItemsLoader()
         {
-            string BundleDir = Plugin.MainDir + "\\Assets\\Assetbundles\\items";
+            string BundleDir = Plugin.GetAssetPath("items");
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
             Texture2D KnifeTexture = myBundle.LoadAsset<Texture2D>("sprite_knife.png");
@@ -133,10 +136,9 @@ namespace LethalMystery.Utils
 
         private static void DefaultMapLoader()
         {
-            string BundleDir = Plugin.MainDir + "\\Assets\\Assetbundles\\lm_maps";
+            string BundleDir = Plugin.GetAssetPath("lm_maps");
 
             AssetBundle myBundle = AssetBundle.LoadFromFile(BundleDir);
-            //SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
             SkeldMap = myBundle.LoadAsset<GameObject>("Skeld.prefab");
             OfficeMap = myBundle.LoadAsset<GameObject>("Office.prefab");
         }
