@@ -193,7 +193,7 @@ namespace LethalMystery.Maps
             for (int i = 0; i < StartOfRound.Instance.levels.Length; i++)
             {
                 string raw_name = StartOfRound.Instance.levels[i].name;
-                if (!raw_name.ToLower().EndsWith("level") || StartOfRound.Instance.levels[i].levelID == 3) continue;
+                if (!raw_name.ToLower().EndsWith("level") || StartOfRound.Instance.levels[i].levelID == 3 || StartOfRound.Instance.levels[i].levelID == 11) continue;
 
                 string prefix = "Level";
                 string name = raw_name.Substring(0, raw_name.Length - prefix.Length);

@@ -1,3 +1,12 @@
+# 0.4.1-alpha
+
+**Fixes:**
+
+- Removed Liquidation from the list of vanilla map moons a user can travel to
+
+
+
+
 # 0.4.0-alpha
 
 **Features:**
