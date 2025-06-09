@@ -178,6 +178,7 @@ namespace LethalMystery.Maps
             DefaultMapsInTerminal();
             LLLMapsInTerminal();
             CombineMapsInTerminal();
+            
         }
 
 
@@ -253,6 +254,7 @@ namespace LethalMystery.Maps
 
 
 
+
         [HarmonyPatch(typeof(Terminal), nameof(Terminal.BeginUsingTerminal))]
         [HarmonyFinalizer]
         private static Exception ShowMapsInTerminalHandler(Exception __exception)
@@ -316,41 +318,43 @@ namespace LethalMystery.Maps
         /// </summary>
         private static void UpdateLLLConfig(string cmd, int weight = 0)
         {
-            string mapName = cmd.Split("/")[1];
-            string mapSection = "​​​​​​​​​Custom Dungeon:  " + mapName;
-            string defaultFacility = "​​​​​​​Vanilla Dungeon:  Facility (Level1Flow)";
-            Plugin.mls.LogInfo($">>> MapName: {mapName}");
-
-            ConfigFile LLLConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "LethalLevelLoader.cfg"), false);
-            ConfigEntry<bool> enableContentConfiguration = LLLConfigFile.Bind(mapSection, "Enable Content Configuration", false);
-            ConfigEntry<string> manualLevelNames = LLLConfigFile.Bind(mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
-
-            ConfigEntry<bool> defaultFacility_enableContentConfiguration = LLLConfigFile.Bind(defaultFacility, "Enable Content Configuration", false);
-            ConfigEntry<string> defaultFacility_manualLevelNames = LLLConfigFile.Bind(defaultFacility, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
-
-
             /*
-            foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
-            {
-                if (extendedDungeonFlow.DungeonName == mapName) continue;
+           string mapName = cmd.Split("/")[1];
+           string mapSection = "​​​​​​​​​Custom Dungeon:  " + mapName;
+           string defaultFacility = "​​​​​​​Vanilla Dungeon:  Facility (Level1Flow)";
+           Plugin.mls.LogInfo($">>> MapName: {mapName}");
 
-                string other_mapSection = "​​​​​​​​​Custom Dungeon:  " + extendedDungeonFlow.DungeonName;
-                ConfigEntry<bool> other_enableContentConfiguration = LLLConfigFile.Bind(other_mapSection, "Enable Content Configuration", false);
-                ConfigEntry<string> other_manualLevelNames = LLLConfigFile.Bind(other_mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
+           ConfigFile LLLConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "LethalLevelLoader.cfg"), false);
+           ConfigEntry<bool> enableContentConfiguration = LLLConfigFile.Bind(mapSection, "Enable Content Configuration", false);
+           ConfigEntry<string> manualLevelNames = LLLConfigFile.Bind(mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
 
-                other_enableContentConfiguration.Value = true;
-                other_manualLevelNames.Value = "Experimentation:0";
-            }
-            */
-
-            enableContentConfiguration.Value = true;
-            manualLevelNames.Value = $"Experimentation:{weight}";
-
-            defaultFacility_enableContentConfiguration.Value = true;
-            defaultFacility_manualLevelNames.Value = "Experimentation:0";
+           ConfigEntry<bool> defaultFacility_enableContentConfiguration = LLLConfigFile.Bind(defaultFacility, "Enable Content Configuration", false);
+           ConfigEntry<string> defaultFacility_manualLevelNames = LLLConfigFile.Bind(defaultFacility, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
 
 
-            LLLConfigFile.Save();
+
+           foreach (LethalLevelLoader.ExtendedDungeonFlow extendedDungeonFlow in LethalLevelLoader.PatchedContent.ExtendedDungeonFlows)
+           {
+               if (extendedDungeonFlow.DungeonName == mapName) continue;
+
+               string other_mapSection = "​​​​​​​​​Custom Dungeon:  " + extendedDungeonFlow.DungeonName;
+               ConfigEntry<bool> other_enableContentConfiguration = LLLConfigFile.Bind(other_mapSection, "Enable Content Configuration", false);
+               ConfigEntry<string> other_manualLevelNames = LLLConfigFile.Bind(other_mapSection, "Dungeon Injection Settings - Manual Level Names List", "Experimentation: 0");
+
+               other_enableContentConfiguration.Value = true;
+               other_manualLevelNames.Value = "Experimentation:0";
+           }
+
+
+           enableContentConfiguration.Value = true;
+           manualLevelNames.Value = $"Experimentation:{weight}";
+
+           defaultFacility_enableContentConfiguration.Value = true;
+           defaultFacility_manualLevelNames.Value = "Experimentation:0";
+
+
+           LLLConfigFile.Save();
+           */
         }
 
 
@@ -375,16 +379,20 @@ namespace LethalMystery.Maps
 
         [HarmonyPatch(typeof(Terminal), "LoadNewNodeIfAffordable")]
         [HarmonyPrefix]
-        private static void FreeMoons(TerminalNode node)
+        private static bool FreeMoons(TerminalNode node)
         {
+            if (!StartOfRound.Instance.inShipPhase) return true;
             if (node == null || node.buyRerouteToMoon == -1)
-                return;
+                return true;
+
+            node.itemCost = 0;
 
             foreach (SelectableLevel lvl in StartOfRound.Instance.levels)
             {
                 if (lvl.levelID == 3) continue;
 
                 string name = lvl.PlanetName.Replace(" ", "-");
+                string lll_name = lvl.PlanetName;
                 if (node.displayText.Contains(name))
                 {
                     node.itemCost = 0;
@@ -392,13 +400,21 @@ namespace LethalMystery.Maps
 
                 Plugin.mls.LogInfo($">>> reroute Num: {node.buyRerouteToMoon}");
                 Plugin.mls.LogInfo($">>> displayText: {node.displayText}");
+                Plugin.mls.LogInfo($">>> LLLplanetName: {lll_name}");
                 if (node.buyRerouteToMoon > -1 && node.displayText.Contains(name))
                 {
                     Plugin.mls.LogInfo($">>> Set to normal map: {name}");
                     ChangeMap($"normal/{name}");
                     break;
                 }
+                else if (node.buyRerouteToMoon > -1 && node.displayText.Contains(lll_name))
+                {
+                    Plugin.mls.LogInfo($">>> Set to normal map: {lll_name}");
+                    ChangeMap($"normal/{lll_name}");
+                    break;
+                }
             }
+            return true;
         }
 
 

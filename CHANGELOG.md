@@ -1,3 +1,13 @@
+
+# 0.4.2-alpha
+
+**Fixes:**
+
+- Support for LethalLevelLoader (LLL)
+
+
+
+
 # 0.4.1-alpha
 
 **Fixes:**
