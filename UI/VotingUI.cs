@@ -35,8 +35,7 @@ namespace LethalMystery.UI
             if (isCalled)
             {
                 CreateVoteIcon();
-                GameObject xButtonObj = GameObject.Find("Systems/UI/Canvas/QuickMenu/PlayerList/Image/PlayerListSlot/KickButton"); // Note: Check if MoreCompany is found
-                xButtonSprite = xButtonObj.GetComponent<UnityEngine.UI.Image>().sprite;
+                xButtonSprite = LMAssets.CheckboxDisabledIcon;
 
                 votingGUI = CreateVoteList();
                 UpdateVoteButtonSprite();

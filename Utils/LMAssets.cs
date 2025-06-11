@@ -14,6 +14,7 @@ namespace LethalMystery.Utils
         public static Sprite? LethalMysteryBanner;
         public static Sprite? CheckboxEmptyIcon;
         public static Sprite? CheckboxEnabledIcon;
+        public static Sprite? CheckboxDisabledIcon;
         public static Sprite? MapIcon;
         public static Sprite? VoteIcon;
         public static Sprite? MapIconHover;
@@ -49,6 +50,7 @@ namespace LethalMystery.Utils
             Texture2D BannerTexture = myBundle.LoadAsset<Texture2D>("default_banner.jpg");
             Texture2D CheckboxEmptyTexture = myBundle.LoadAsset<Texture2D>("btn_empty.png");
             Texture2D CheckboxEnabledTexture = myBundle.LoadAsset<Texture2D>("btn_check.png");
+            Texture2D CheckboxDisabledTexture = myBundle.LoadAsset<Texture2D>("btn_X.png");
             Texture2D MapIconTexture = myBundle.LoadAsset<Texture2D>("mapIcon.png");
             Texture2D MapIconHoverTexture = myBundle.LoadAsset<Texture2D>("mapIcon_hover.png");
             Texture2D VoteIconTexture = myBundle.LoadAsset<Texture2D>("voteIcon.png");
@@ -80,6 +82,11 @@ namespace LethalMystery.Utils
             CheckboxEnabledIcon = Sprite.Create(
                 CheckboxEnabledTexture,
                 new Rect(0, 0, CheckboxEnabledTexture.width, CheckboxEnabledTexture.height),
+                new Vector2(0, 0)
+            );
+            CheckboxDisabledIcon = Sprite.Create(
+                CheckboxDisabledTexture,
+                new Rect(0, 0, CheckboxDisabledTexture.width, CheckboxDisabledTexture.height),
                 new Vector2(0, 0)
             );
             MapIcon = Sprite.Create(
