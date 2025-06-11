@@ -180,7 +180,7 @@ namespace LethalMystery.MainGame
         [HarmonyPrefix]
         private static bool GracePeriod()
         {
-            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod)
+            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod || StringAddons.ConvertToBool(Meeting.inMeeting.Value))
             {
                 return false;
             }
@@ -192,7 +192,7 @@ namespace LethalMystery.MainGame
         private static bool StopDeath()
         {
             if (EjectPlayers.notsafe) return true;
-            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod) return false;
+            if (StringAddons.ConvertToBool(inGracePeriod.Value) || localGracePeriod || StringAddons.ConvertToBool(Meeting.inMeeting.Value)) return false;
 
             return true;
         }

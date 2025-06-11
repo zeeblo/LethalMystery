@@ -1,5 +1,13 @@
 
 
+# 0.4.5-alpha
+
+
+**Fixes:**
+
+- Player should no longer be able to die while in a meeting
+
+
 
 # 0.4.4-alpha
 

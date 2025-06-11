@@ -106,6 +106,7 @@ namespace LethalMystery.MainGame
 
         public static void ResetVars()
         {
+            if (Plugin.localPlayer == null) return;
             if (Plugin.localPlayer.isPlayerDead) return;
 
             hasVoted = false;
