@@ -1,11 +1,16 @@
 
 
-# 0.5.0-alpha
+
+# 0.4.4-alpha
 
 **Features:**
 
 - Replaced keybinds with InputUtil dependency
 
+
+**Fixes:**
+
+- Sheriffs should be able to spawn their weapon if they for some reason didn't get one
 
 
 # 0.4.3-alpha

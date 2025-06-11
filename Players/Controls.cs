@@ -108,9 +108,12 @@ namespace LethalMystery.Players
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
             if (Roles.CurrentRole == null) return;
-            if (Roles.CurrentRole.Type == Roles.RoleType.employee ) return;
+            if (Roles.CurrentRole.Type == Roles.RoleType.monster || Roles.CurrentRole.Name.ToLower() == "sheriff")
+            {
+                StartOfRound.Instance.StartCoroutine(SpawnWeapon());
+            }
 
-            StartOfRound.Instance.StartCoroutine(SpawnWeapon());
+            
         }
 
 
