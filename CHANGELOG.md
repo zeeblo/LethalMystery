@@ -1,4 +1,12 @@
 
+
+# 0.4.3-alpha
+
+**Fixes:**
+
+- Removed reliance on in-game kick button icon (which is used for the voting)
+
+
 # 0.4.2-alpha
 
 **Fixes:**
