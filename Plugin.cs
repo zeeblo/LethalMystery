@@ -19,6 +19,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static BepInEx.BepInDependency;
+using static LethalMystery.Players.Controls;
 
 
 
@@ -27,12 +28,13 @@ namespace LethalMystery
 
     [BepInPlugin(modGUID, modName, modVersion)]
     [BepInDependency(LethalNetworkAPI.MyPluginInfo.PLUGIN_GUID, DependencyFlags.HardDependency)]
+    [BepInDependency("com.rune580.LethalCompanyInputUtils", DependencyFlags.HardDependency)]
     [BepInDependency("ainavt.lc.lethalconfig")]
     public class Plugin : BaseUnityPlugin
     {
         public const string modGUID = "LethalMystery.zeeblo.dev";
         public const string modName = "zeeblo.LethalMystery";
-        public const string modVersion = "0.4.3";
+        public const string modVersion = "0.5.0";
         private readonly Harmony _harmony = new(modGUID);
         public static Plugin? instance;
         public static string MainDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
@@ -58,10 +60,13 @@ namespace LethalMystery
         public static string firedTextSub = "";
         public static ulong localID;
 
+        public static PlayerBinds actionInstance;
+
 
         private void Awake()
         {
             netHandler = new NetHandler();
+            actionInstance = new PlayerBinds();
 
             LMConfig.AllConfigs(Config);
             PatchAllStuff();

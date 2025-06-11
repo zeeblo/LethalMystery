@@ -16,9 +16,6 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void EndOfGameClientRpcPatch()
         {
-            Controls.monsterControls.Disable();
-            Controls.playerControls.Disable();
-            //GOTools.ClearInventory();
             MinimapUI.DestroyUI();
             if (Plugin.isHost)
             {
@@ -41,8 +38,6 @@ namespace LethalMystery.MainGame
         [HarmonyPostfix]
         private static void DisconnectPatch()
         {
-            Controls.monsterControls.Disable();
-            Controls.playerControls.Disable();
             Plugin.ResetVariables();
             MinimapUI.DestroyUI();
             MoreSlots.DefaultSlots();

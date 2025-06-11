@@ -405,14 +405,7 @@ namespace LethalMystery.MainGame
             ShowLights(false);
 
             DisableIntroCamera();
-
             Roles.ShowRole(Roles.CurrentRole);
-            if (Roles.CurrentRole.Type == Roles.RoleType.monster)
-            {
-                Controls.monsterControls.Enable();
-            }
-            Controls.playerControls.Enable();
-
 
             inIntro = false;
             Start.startSpawningScraps = true;

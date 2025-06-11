@@ -1,5 +1,13 @@
 
 
+# 0.5.0-alpha
+
+**Features:**
+
+- Replaced keybinds with InputUtil dependency
+
+
+
 # 0.4.3-alpha
 
 **Fixes:**

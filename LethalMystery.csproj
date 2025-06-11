@@ -3,7 +3,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>zeeblo.LethalMystery</AssemblyName>
 		<Product>LethalMystery</Product>
-		<Version>0.4.3</Version>
+		<Version>0.5.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
@@ -13,6 +13,7 @@
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all" />
 		<PackageReference Include="Xilophor.LethalNetworkAPI" Version="3.3.2" />
+		<PackageReference Include="Rune580.Mods.LethalCompany.InputUtils" Version="0.7.10" />
 	</ItemGroup>
 
 	<ItemGroup>

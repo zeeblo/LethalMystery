@@ -1,4 +1,5 @@
-﻿using LethalMystery.MainGame;
+﻿using LethalCompanyInputUtils.Api;
+using LethalMystery.MainGame;
 using LethalMystery.Players.Abilities;
 using LethalMystery.UI;
 using LethalMystery.Utils;
@@ -9,56 +10,39 @@ using UnityEngine.InputSystem;
 
 namespace LethalMystery.Players
 {
-    internal class Controls
+    public class Controls
     {
-        private static InputActionAsset actionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
-        public static InputActionMap monsterControls = actionAsset.AddActionMap("MonsterControls");
-        public static InputActionMap playerControls = actionAsset.AddActionMap("PlayerControls");
-        public static InputActionReference spawnItemRef;
-        public static InputActionReference selfcleanRef;
-        public static InputActionReference shapeshiftRef;
-        public static InputActionReference showMapRef;
-        public static InputActionReference showVoteRef;
-        public static Dictionary<string, InputActionReference> inputRefs = new Dictionary<string, InputActionReference>();
         private static bool spawningWeapon = false;
         public static bool cleaningBody = false;
+
+
+        public class PlayerBinds : LcInputActions
+        {
+            [InputAction("<Keyboard>/v", Name = "Show Vote")]
+            public InputAction showVote { get; set; }
+
+            [InputAction("<Keyboard>/m", Name = "Show Map")]
+            public InputAction showMap { get; set; }
+
+            [InputAction("<Keyboard>/t", Name = "Spawn Item")]
+            public InputAction spawnItem { get; set; }
+
+            [InputAction("<Keyboard>/f", Name = "Self Clean", ActionType = InputActionType.Value)]
+            public InputAction selfclean { get; set; }
+
+        }
+
 
         public static void InitControls()
         {
 
-            InputAction showVote = playerControls.AddAction("show vote", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.showVoteBind.Value);
-            InputAction showMap = playerControls.AddAction("show map", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.showMapBind.Value);
-            InputAction spawnItem = playerControls.AddAction("spawn item", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.spawnItemBind.Value);
-            InputAction selfclean = monsterControls.AddAction("self clean", InputActionType.Value, binding: "<Keyboard>/" + LMConfig.selfcleanBind.Value);
-            InputAction shapeshift = monsterControls.AddAction("shapeshift", InputActionType.Button, binding: "<Keyboard>/" + LMConfig.shapeshiftBind.Value);
-
-            showVote.performed += ShowVote_performed;
-            showMap.performed += ShowMap_performed;
-            spawnItem.performed += SpawnItem_performed;
-            selfclean.performed += Selfclean_performed;
-            selfclean.canceled += Selfclean_canceled;
-            shapeshift.performed += Shapeshift_performed;
-
-
-            showVoteRef = InputActionReference.Create(showVote);
-            showMapRef = InputActionReference.Create(showMap);
-            spawnItemRef = InputActionReference.Create(spawnItem);
-            selfcleanRef = InputActionReference.Create(selfclean);
-            shapeshiftRef = InputActionReference.Create(shapeshift);
-
-            AddInputRefs();
+            Plugin.actionInstance.showVote.performed += ShowVote_performed;
+            Plugin.actionInstance.showMap.performed += ShowMap_performed;
+            Plugin.actionInstance.spawnItem.performed += SpawnItem_performed;
+            Plugin.actionInstance.selfclean.performed += Selfclean_performed;
+            Plugin.actionInstance.selfclean.canceled += Selfclean_canceled;
         }
 
-
-
-        private static void AddInputRefs()
-        {
-            inputRefs.Add(showVoteRef.name.Split("/")[1], showVoteRef);
-            inputRefs.Add(showMapRef.name.Split("/")[1], showMapRef);
-            inputRefs.Add(spawnItemRef.name.Split("/")[1], spawnItemRef);
-            inputRefs.Add(selfcleanRef.name.Split("/")[1], selfcleanRef);
-            inputRefs.Add(shapeshiftRef.name.Split("/")[1], shapeshiftRef);
-        }
 
 
         public static void ResetVars()
@@ -123,6 +107,9 @@ namespace LethalMystery.Players
             if (Plugin.localPlayer == null) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
+            if (Roles.CurrentRole == null) return;
+            if (Roles.CurrentRole.Type == Roles.RoleType.employee ) return;
+
             StartOfRound.Instance.StartCoroutine(SpawnWeapon());
         }
 
@@ -130,6 +117,13 @@ namespace LethalMystery.Players
 
         private static void Selfclean_performed(InputAction.CallbackContext context)
         {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
+            if (Plugin.localPlayer.isPlayerDead) return;
+            if (Roles.CurrentRole == null) return;
+            if (Roles.CurrentRole.Type != Roles.RoleType.monster) return;
+
             Plugin.mls.LogInfo(">> Cleaning Blood");
             cleaningBody = true;
             HUDManager.Instance.holdInteractionCanvasGroup.alpha = 1;
@@ -137,6 +131,13 @@ namespace LethalMystery.Players
 
         private static void Selfclean_canceled(InputAction.CallbackContext context)
         {
+            if (StartOfRound.Instance.inShipPhase) return;
+            if (Plugin.localPlayer == null) return;
+            if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
+            if (Plugin.localPlayer.isPlayerDead) return;
+            if (Roles.CurrentRole == null) return;
+            if (Roles.CurrentRole.Type != Roles.RoleType.monster) return;
+
             Plugin.mls.LogInfo(">> Stopped cleaning");
             StopCleaning();
         }
