@@ -118,6 +118,7 @@ namespace LethalMystery.MainGame
         {
 
             ResetVars();
+            if (Plugin.localPlayer == null) return;
             if (!Plugin.isHost) return;
 
             Plugin.netHandler.setupVotesReceive("/setup", Plugin.localPlayer.playerClientId);

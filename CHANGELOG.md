@@ -1,5 +1,16 @@
 
 
+
+# 0.4.6-alpha
+
+
+**Fixes:**
+
+- Visiting a custom map then visiting a vanilla map would prevent the user from leaving the ship regularly by teleporting them back inside. This has now been resolved.
+- Check if user is in-game before registering keybinds
+
+
+
 # 0.4.5-alpha
 
 

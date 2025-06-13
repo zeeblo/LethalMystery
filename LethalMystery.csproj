@@ -3,7 +3,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>zeeblo.LethalMystery</AssemblyName>
 		<Product>LethalMystery</Product>
-		<Version>0.4.5</Version>
+		<Version>0.4.6</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>

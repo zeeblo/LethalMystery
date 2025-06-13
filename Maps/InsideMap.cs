@@ -17,11 +17,16 @@ namespace LethalMystery.Maps
         public static Transform exitDoor;
         public static Dictionary<string, List<string>> allVents = new Dictionary<string, List<string>>();
         public static List<Vector3> scrapLocations = new List<Vector3>();
+        private static GameObject shipExit;
 
 
 
         public static void ResetVars()
         {
+            if (shipExit != null)
+            {
+                Plugin.Destroy(shipExit);
+            }
             if (CustomLvl.CurrentInside == null) return;
             GameObject minimapLayer = GameObject.Find($"{CustomLvl.CurrentInside.name}(Clone)");
 
@@ -122,6 +127,7 @@ namespace LethalMystery.Maps
             enter.GetComponent<Collider>().enabled = true;
             enter.GetComponent<AudioReverbTrigger>().enabled = false;
             enter.transform.position = outsideShip.transform.position;
+            shipExit = enter;
         }
 
 

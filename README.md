@@ -2,6 +2,10 @@
 
 A murder mystery mod inspired by Among Us.
 
+**IMPORTANT NOTE:** Because this is in early alpha, there's a high chance it may not work well with other mods.
+
+
+
 I made a video summarizing my progress on the mod here:
 https://www.youtube.com/watch?v=P6a_eR3ZgN8
 

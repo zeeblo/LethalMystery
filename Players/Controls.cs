@@ -67,8 +67,8 @@ namespace LethalMystery.Players
 
         private static void ShowVote_performed(InputAction.CallbackContext obj)
         {
-            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (VotingUI.votingGUI == null) return;
             if (StringAddons.ConvertToBool(Meeting.inMeeting.Value) == false || StringAddons.ConvertToBool(EjectPlayers.currentlyEjectingPlayer.Value) == true) return;
@@ -86,8 +86,8 @@ namespace LethalMystery.Players
 
         private static void ShowMap_performed(InputAction.CallbackContext obj)
         {
-            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
 
             if (MinimapUI.minimap == null)
@@ -103,8 +103,8 @@ namespace LethalMystery.Players
 
         private static void SpawnItem_performed(InputAction.CallbackContext context)
         {
-            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
             if (Roles.CurrentRole == null) return;
@@ -120,8 +120,8 @@ namespace LethalMystery.Players
 
         private static void Selfclean_performed(InputAction.CallbackContext context)
         {
-            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.inShipPhase) return;   
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
             if (Roles.CurrentRole == null) return;
@@ -134,8 +134,8 @@ namespace LethalMystery.Players
 
         private static void Selfclean_canceled(InputAction.CallbackContext context)
         {
-            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer == null) return;
+            if (StartOfRound.Instance.inShipPhase) return;
             if (Plugin.localPlayer.quickMenuManager.isMenuOpen || Plugin.terminal.terminalInUse || Plugin.localPlayer.isTypingChat) return;
             if (Plugin.localPlayer.isPlayerDead) return;
             if (Roles.CurrentRole == null) return;
