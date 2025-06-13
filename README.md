@@ -2,7 +2,9 @@
 
 A murder mystery mod inspired by Among Us.
 
-**IMPORTANT NOTE:** Because this is in early alpha, there's a high chance it may not work well with other mods.
+**IMPORTANT NOTE:** Because this is basically it's own gamemode, there's a high chance it may not work well with other mods.
+
+If you want a place to play with other people, I've made this server: https://discord.gg/6ZTgRRq7Ek
 
 
 
